@@ -29,6 +29,8 @@ services:
       GEMINI_API_KEY: AIzaSyDAX-EZaIj62Al8Xe7yd9l-iBdUZgqZIso
       GEMINI_MODEL: gemini-2.5-flash
       MAX_IMAGE_SIZE_MB: 4
+      SMTP_USER: qerimivaldrin85@gmail.com
+      SMTP_PASS: bcqjqodfmdzrekjb
     depends_on:
       postgres:
         condition: service_healthy

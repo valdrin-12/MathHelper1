@@ -1,6 +1,7 @@
 const userModel = require('../models/userModel');
 const { generateAccessToken, generateRefreshToken, verifyToken, getRefreshTokenExpiry } = require('../utils/tokens');
 const pool = require('../config/database');
+const { sendWelcomeEmail } = require('../services/emailService');
 
 async function register(req, res) {
   try {
@@ -23,6 +24,9 @@ async function register(req, res) {
       'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
       [user.id, refreshToken, expiresAt]
     );
+
+    // Send welcome email (non-blocking)
+    sendWelcomeEmail(email, name.trim());
 
     res.status(201).json({
       success: true,
