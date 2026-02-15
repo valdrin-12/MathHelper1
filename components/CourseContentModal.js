@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import * as statsService from '../services/statsService';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalizedCourses, useLocalizedCourseContent } from '../hooks/useLocalizedData';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
@@ -59,7 +60,7 @@ export default function CourseContentModal({ visible, course, onClose, onComplet
         {/* Header */}
         <View style={[styles.header, { backgroundColor: category?.color || COLORS.primary }]}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-            <Text style={styles.closeButtonText}>←</Text>
+            <Ionicons name="chevron-back" size={24} color={COLORS.textLight} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
             <Text style={styles.headerTitle} numberOfLines={1}>{course.title}</Text>
@@ -199,7 +200,10 @@ export default function CourseContentModal({ visible, course, onClose, onComplet
             onPress={() => currentLesson > 0 && handleLessonChange(currentLesson - 1)}
             disabled={currentLesson === 0}
           >
-            <Text style={[styles.navButtonText, currentLesson === 0 && styles.navButtonTextDisabled]}>{`← ${t('courseContent.previous')}`}</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <Ionicons name="chevron-back" size={18} color={currentLesson === 0 ? COLORS.textMuted : COLORS.textDark} />
+              <Text style={[styles.navButtonText, currentLesson === 0 && styles.navButtonTextDisabled]}>{t('courseContent.previous')}</Text>
+            </View>
           </TouchableOpacity>
           <View style={styles.progressDots}>
             {lessons.slice(Math.max(0, currentLesson - 2), currentLesson + 3).map((_, i) => {
@@ -229,7 +233,10 @@ export default function CourseContentModal({ visible, course, onClose, onComplet
               style={[styles.navButton, styles.navButtonNext, { backgroundColor: category?.color || COLORS.primary }]}
               onPress={() => handleLessonChange(currentLesson + 1)}
             >
-              <Text style={styles.navButtonNextText}>{`${t('courseContent.next')} →`}</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+                <Text style={styles.navButtonNextText}>{t('courseContent.next')}</Text>
+                <Ionicons name="chevron-forward" size={18} color={COLORS.textLight} />
+              </View>
             </TouchableOpacity>
           )}
         </View>
@@ -257,11 +264,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.25)',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 22,
-    color: COLORS.textLight,
-    fontWeight: 'bold',
   },
   headerCenter: {
     flex: 1,

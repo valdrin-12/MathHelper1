@@ -10,6 +10,7 @@ import {
   ScrollView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
 export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete }) {
@@ -94,10 +95,10 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
         {/* Header */}
         <View style={styles.header}>
           <TouchableOpacity onPress={handleQuit} style={styles.quitButton}>
-            <Text style={styles.quitText}>✕</Text>
+            <Ionicons name="close" size={22} color={COLORS.textSecondary} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>{quizSet.title}</Text>
+            <Text style={styles.headerTitle} numberOfLines={1}>{quizSet.title}</Text>
             <Text style={styles.headerProgress}>{currentIndex + 1} / {totalQuestions}</Text>
           </View>
           <View style={styles.difficultyBadge}>
@@ -228,11 +229,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  quitText: {
-    fontSize: 16,
-    color: COLORS.textMuted,
-    fontWeight: 'bold',
   },
   headerCenter: {
     alignItems: 'center',

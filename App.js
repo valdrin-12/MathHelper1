@@ -3,13 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { SavedItemsProvider } from './context/SavedItemsContext';
 import { UserProvider, useUser } from './context/UserContext';
 import { StatsProvider } from './context/StatsContext';
 import { LanguageProvider } from './context/LanguageContext';
-import { COLORS } from './theme/constants';
+import { COLORS, SHADOWS, TYPOGRAPHY } from './theme/constants';
 import './locales/i18n';
 
 import DashboardScreen from './screens/DashboardScreen';
@@ -55,21 +55,34 @@ function MainApp() {
             tabBarIcon: ({ focused, color, size }) => {
               const icons = TAB_ICONS[route.name];
               const iconName = focused ? icons.active : icons.inactive;
-              return <Ionicons name={iconName} size={size} color={color} />;
+              return (
+                <View style={{ alignItems: 'center' }}>
+                  {focused && (
+                    <View style={{
+                      width: 24,
+                      height: 3,
+                      borderRadius: 1.5,
+                      backgroundColor: COLORS.primary,
+                      marginBottom: 4,
+                    }} />
+                  )}
+                  <Ionicons name={iconName} size={focused ? 24 : 22} color={color} />
+                </View>
+              );
             },
             tabBarActiveTintColor: COLORS.tabBarActive,
             tabBarInactiveTintColor: COLORS.tabBarInactive,
             tabBarStyle: {
-              paddingBottom: 5,
-              paddingTop: 5,
-              height: 65,
+              paddingBottom: Platform.OS === 'ios' ? 20 : 8,
+              paddingTop: 8,
+              height: Platform.OS === 'ios' ? 85 : 65,
               backgroundColor: COLORS.tabBarBg,
-              borderTopWidth: 1,
-              borderTopColor: COLORS.tabBarBorder,
+              borderTopWidth: 0,
+              ...SHADOWS.medium,
             },
             tabBarLabelStyle: {
-              fontSize: 12,
-              fontWeight: '600',
+              ...TYPOGRAPHY.tabLabel,
+              marginTop: 2,
             },
             headerShown: false,
           })}

@@ -1,119 +1,61 @@
-// Shërbim për ruajtjen e të dhënave lokale
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const SAVED_ITEMS_KEY_PREFIX = '@saved_math_problems_';
-const USER_KEY = '@math_helper_user';
-
-const getCurrentUserId = async () => {
-  try {
-    const userData = await AsyncStorage.getItem(USER_KEY);
-    if (!userData) return null;
-    const user = JSON.parse(userData);
-    return user.id;
-  } catch {
-    return null;
-  }
-};
+import api from './apiClient';
 
 /**
- * Merr të gjitha problemet e ruajtura
+ * Get all saved items from backend
  * @returns {Promise<Array>}
  */
 export const getSavedItems = async () => {
   try {
-    const userId = await getCurrentUserId();
-    if (!userId) return [];
-
-    const itemsKey = `${SAVED_ITEMS_KEY_PREFIX}${userId}`;
-    const savedData = await AsyncStorage.getItem(itemsKey);
-    return savedData ? JSON.parse(savedData) : [];
+    const data = await api.get('/api/saved-items');
+    return data.items || [];
   } catch (error) {
-    console.error('Gabim gjatë leximit të të dhënave:', error);
+    console.error('Error fetching saved items:', error);
     return [];
   }
 };
 
 /**
- * Ruaj një problem të ri
- * @param {Object} item - Problemi për t'u ruajtur
+ * Save a new item
+ * @param {Object} item - Item to save
  * @returns {Promise<boolean>}
  */
 export const saveItem = async (item) => {
   try {
-    const userId = await getCurrentUserId();
-    if (!userId) throw new Error('Duhet të jeni të kyçur për të ruajtur.');
-
-    const existingItems = await getSavedItems();
-
-    // Shto ID dhe datën nëse nuk ekzistojnë
-    const newItem = {
-      ...item,
-      id: item.id || Date.now().toString(),
-      savedAt: item.savedAt || new Date().toISOString(),
-    };
-
-    const updatedItems = [newItem, ...existingItems];
-    const itemsKey = `${SAVED_ITEMS_KEY_PREFIX}${userId}`;
-    await AsyncStorage.setItem(itemsKey, JSON.stringify(updatedItems));
+    await api.post('/api/saved-items', {
+      imageData: item.imageData || null,
+      problemText: item.problemText || null,
+      answer: item.answer,
+      steps: item.steps,
+      explanation: item.explanation,
+    });
     return true;
   } catch (error) {
-    console.error('Gabim gjatë ruajtjes:', error);
-    throw new Error(error.message || 'Nuk mund të ruhet problemi. Provoni përsëri.');
+    console.error('Error saving item:', error);
+    throw new Error(error.message || 'Failed to save item');
   }
 };
 
 /**
- * Fshi një problem të ruajtur
- * @param {string} id - ID e problemit
+ * Delete a saved item
+ * @param {string} id - Item ID
  * @returns {Promise<boolean>}
  */
 export const deleteItem = async (id) => {
   try {
-    const userId = await getCurrentUserId();
-    if (!userId) throw new Error('Duhet të jeni të kyçur.');
-
-    const existingItems = await getSavedItems();
-    const updatedItems = existingItems.filter(item => item.id !== id);
-    const itemsKey = `${SAVED_ITEMS_KEY_PREFIX}${userId}`;
-    await AsyncStorage.setItem(itemsKey, JSON.stringify(updatedItems));
+    await api.delete(`/api/saved-items/${id}`);
     return true;
   } catch (error) {
-    console.error('Gabim gjatë fshirjes:', error);
-    throw new Error(error.message || 'Nuk mund të fshihet problemi. Provoni përsëri.');
+    console.error('Error deleting item:', error);
+    throw new Error(error.message || 'Failed to delete item');
   }
 };
 
 /**
- * Kontrollo nëse një problem është i ruajtur
- * @param {string} imageUri - URI e imazhit
+ * Check if an item is saved
  * @returns {Promise<boolean>}
  */
-export const isItemSaved = async (imageUri) => {
-  try {
-    const existingItems = await getSavedItems();
-    return existingItems.some(item => item.imageUri === imageUri);
-  } catch (error) {
-    console.error('Gabim gjatë kontrollimit:', error);
-    return false;
-  }
-};
-
-/**
- * Pastro të gjitha të dhënat (për testim)
- * @returns {Promise<boolean>}
- */
-export const clearAllItems = async () => {
-  try {
-    const userId = await getCurrentUserId();
-    if (!userId) return false;
-
-    const itemsKey = `${SAVED_ITEMS_KEY_PREFIX}${userId}`;
-    await AsyncStorage.removeItem(itemsKey);
-    return true;
-  } catch (error) {
-    console.error('Gabim gjatë pastrimit:', error);
-    return false;
-  }
+export const isItemSaved = async () => {
+  return false;
 };
 
 export default {
@@ -121,5 +63,4 @@ export default {
   saveItem,
   deleteItem,
   isItemSaved,
-  clearAllItems,
 };

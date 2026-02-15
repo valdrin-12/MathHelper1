@@ -147,8 +147,8 @@ export default function QuizScreen() {
                     <Text style={styles.quizIcon}>{quizSet.icon}</Text>
                   </View>
                   <View style={styles.quizTitleContainer}>
-                    <Text style={styles.quizTitle}>{quizSet.title}</Text>
-                    <Text style={styles.quizCategory}>{quizSet.category}</Text>
+                    <Text style={styles.quizTitle} numberOfLines={2}>{quizSet.title}</Text>
+                    <Text style={styles.quizCategory} numberOfLines={1}>{quizSet.category}</Text>
                   </View>
                   <View style={[styles.difficultyBadge, { backgroundColor: getDifficultyColor(quizSet.difficulty) + '20' }]}>
                     <Text style={[styles.difficultyBadgeText, { color: getDifficultyColor(quizSet.difficulty) }]}>

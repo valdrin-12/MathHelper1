@@ -11,6 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
 import { useSavedItems } from '../context/SavedItemsContext';
@@ -97,9 +98,9 @@ export default function ProfileModal({ visible, onClose }) {
           <View style={styles.header}>
             <View style={styles.headerLeft}>
               <TouchableOpacity onPress={onClose} style={styles.backButton}>
-                <Text style={styles.backButtonText}>←</Text>
+                <Ionicons name="chevron-back" size={22} color={COLORS.textSubtle} />
               </TouchableOpacity>
-              <Text style={styles.headerTitle}>{t('profileModal.title')}</Text>
+              <Text style={styles.headerTitle} numberOfLines={1}>{t('profileModal.title')}</Text>
             </View>
           </View>
 
@@ -223,10 +224,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.tabBg,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: COLORS.primary,
   },
   headerTitle: {
     fontSize: TYPOGRAPHY.h2.fontSize,

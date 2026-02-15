@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
 export default function ResultsModal({ visible, result, onClose, onSave, imageUri }) {
@@ -51,7 +52,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
           <View style={styles.header}>
             <Text style={styles.headerTitle}>{t('results.title')}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>✕</Text>
+              <Ionicons name="close" size={24} color={COLORS.textSecondary} />
             </TouchableOpacity>
           </View>
 
@@ -166,11 +167,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.borderLight,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: COLORS.textSecondary,
-    fontWeight: 'bold',
   },
   content: {
     flex: 1,

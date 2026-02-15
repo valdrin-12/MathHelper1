@@ -39,6 +39,7 @@ export default function DashboardScreen() {
   const [inputMode, setInputMode] = useState('keyboard'); // 'keyboard' or 'camera'
   const [mathProblemText, setMathProblemText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  const [lastBase64, setLastBase64] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -86,7 +87,10 @@ export default function DashboardScreen() {
     }
   };
 
-  const removeImage = () => setSelectedImage(null);
+  const removeImage = () => {
+    setSelectedImage(null);
+    setLastBase64(null);
+  };
 
   const handleAnalyzeProblem = async () => {
     try {
@@ -106,6 +110,7 @@ export default function DashboardScreen() {
         }
         setIsAnalyzing(true);
         const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
+        setLastBase64(base64);
         const result = await geminiService.analyzeMathProblem(base64, mimeType);
         setAnalysisResult(result);
         setShowResultModal(true);
@@ -124,12 +129,11 @@ export default function DashboardScreen() {
         throw new Error(t('dashboard.noResultsToSave'));
       }
       const savedItem = {
-        imageUri: inputMode === 'camera' ? selectedImage : null,
+        imageData: inputMode === 'camera' ? lastBase64 : null,
         problemText: inputMode === 'keyboard' ? mathProblemText : null,
         answer: analysisResult.answer,
         steps: analysisResult.steps,
         explanation: analysisResult.explanation,
-        savedAt: new Date().toISOString(),
       };
       await addItem(savedItem);
       await recordProblemSolved();
@@ -286,28 +290,28 @@ export default function DashboardScreen() {
                 <Text style={styles.statIconEmoji}>✅</Text>
               </View>
               <Text style={styles.statNumber}>{savedItems.length}</Text>
-              <Text style={styles.statLabel}>{t('dashboard.problemsSolved')}</Text>
+              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.problemsSolved')}</Text>
             </View>
             <View style={[styles.statCard, { backgroundColor: COLORS.warningLight }]}>
               <View style={[styles.statIconBox, { backgroundColor: COLORS.warning }]}>
                 <Text style={styles.statIconEmoji}>🔥</Text>
               </View>
               <Text style={styles.statNumber}>{streak}</Text>
-              <Text style={styles.statLabel}>{t('dashboard.dayStreak')}</Text>
+              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.dayStreak')}</Text>
             </View>
             <View style={[styles.statCard, { backgroundColor: COLORS.successLight }]}>
               <View style={[styles.statIconBox, { backgroundColor: COLORS.success }]}>
                 <Text style={styles.statIconEmoji}>📚</Text>
               </View>
               <Text style={styles.statNumber}>{completedCoursesCount}</Text>
-              <Text style={styles.statLabel}>{t('dashboard.coursesCompleted')}</Text>
+              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.coursesCompleted')}</Text>
             </View>
             <View style={[styles.statCard, { backgroundColor: COLORS.purpleLight }]}>
               <View style={[styles.statIconBox, { backgroundColor: COLORS.purple }]}>
                 <Text style={styles.statIconEmoji}>🎯</Text>
               </View>
               <Text style={styles.statNumber}>{completedQuizzesCount}</Text>
-              <Text style={styles.statLabel}>{t('dashboard.quizzesCompleted')}</Text>
+              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.quizzesCompleted')}</Text>
             </View>
           </View>
         </View>
@@ -325,8 +329,8 @@ export default function DashboardScreen() {
           ) : (
             recentItems.map((item, index) => (
               <View key={item.id || index} style={styles.activityCard}>
-                {item.imageUri && (
-                  <Image source={{ uri: item.imageUri }} style={styles.activityThumb} />
+                {item.imageData && (
+                  <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.activityThumb} />
                 )}
                 <View style={styles.activityContent}>
                   <Text style={styles.activityTitle} numberOfLines={1}>

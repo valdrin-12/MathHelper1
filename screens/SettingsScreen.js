@@ -96,9 +96,9 @@ export default function SettingsScreen() {
         <View style={styles.settingItem}>
           <View style={styles.settingLeft}>
             <Text style={styles.settingIcon}>🔔</Text>
-            <View>
-              <Text style={styles.settingTitle}>{t('settings.notifications')}</Text>
-              <Text style={styles.settingDescription}>{t('settings.notificationsDesc')}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.notifications')}</Text>
+              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.notificationsDesc')}</Text>
             </View>
           </View>
           <Switch value={notifications} onValueChange={setNotifications}
@@ -108,9 +108,9 @@ export default function SettingsScreen() {
         <View style={styles.settingItem}>
           <View style={styles.settingLeft}>
             <Text style={styles.settingIcon}>🌙</Text>
-            <View>
-              <Text style={styles.settingTitle}>{t('settings.darkMode')}</Text>
-              <Text style={styles.settingDescription}>{t('settings.darkModeDesc')}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.darkMode')}</Text>
+              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.darkModeDesc')}</Text>
             </View>
           </View>
           <Switch value={darkMode} onValueChange={setDarkMode}
@@ -120,9 +120,9 @@ export default function SettingsScreen() {
         <View style={styles.settingItem}>
           <View style={styles.settingLeft}>
             <Text style={styles.settingIcon}>🔊</Text>
-            <View>
-              <Text style={styles.settingTitle}>{t('settings.soundEffects')}</Text>
-              <Text style={styles.settingDescription}>{t('settings.soundEffectsDesc')}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.soundEffects')}</Text>
+              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.soundEffectsDesc')}</Text>
             </View>
           </View>
           <Switch value={soundEffects} onValueChange={setSoundEffects}
@@ -132,9 +132,9 @@ export default function SettingsScreen() {
         <View style={styles.settingItem}>
           <View style={styles.settingLeft}>
             <Text style={styles.settingIcon}>🌐</Text>
-            <View>
-              <Text style={styles.settingTitle}>{t('settings.language')}</Text>
-              <Text style={styles.settingDescription}>{t('settings.languageDesc')}</Text>
+            <View style={{ flex: 1 }}>
+              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.language')}</Text>
+              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.languageDesc')}</Text>
             </View>
           </View>
         </View>

@@ -12,6 +12,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocale } from '../locales/i18n';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
 export default function SavedItemDetailModal({ visible, item, onClose, onDelete }) {
@@ -20,7 +21,7 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
 
   if (!item) return null;
 
-  const { imageUri, answer, steps, explanation, savedAt } = item;
+  const { imageData, answer, steps, explanation, savedAt } = item;
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -46,16 +47,16 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
           <View style={styles.header}>
             <Text style={styles.headerTitle}>{t('savedItemDetail.title')}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>{'\u2715'}</Text>
+              <Ionicons name="close" size={22} color={COLORS.textSecondary} />
             </TouchableOpacity>
           </View>
 
           {/* Content */}
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Image Preview */}
-            {imageUri && (
+            {imageData && (
               <View style={styles.imageSection}>
-                <Image source={{ uri: imageUri }} style={styles.image} />
+                <Image source={{ uri: `data:image/jpeg;base64,${imageData}` }} style={styles.image} />
                 <Text style={styles.imageDate}>{t('savedItemDetail.savedAt', { date: formatDate(savedAt) })}</Text>
               </View>
             )}
@@ -155,11 +156,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.borderLight,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: COLORS.textSecondary,
-    fontWeight: 'bold',
   },
   content: {
     flex: 1,

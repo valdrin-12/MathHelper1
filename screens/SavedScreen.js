@@ -114,8 +114,8 @@ export default function SavedScreen() {
                 onPress={() => handleViewItem(item)}
               >
                 {/* Image or Text Preview */}
-                {item.imageUri ? (
-                  <Image source={{ uri: item.imageUri }} style={styles.itemImage} />
+                {item.imageData ? (
+                  <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.itemImage} />
                 ) : item.problemText ? (
                   <View style={styles.textPreviewBox}>
                     <Text style={styles.textPreviewIcon}>⌨️</Text>
@@ -128,8 +128,8 @@ export default function SavedScreen() {
                 {/* Content */}
                 <View style={styles.itemContent}>
                   <View style={styles.itemHeader}>
-                    <Text style={styles.itemTitle}>
-                      {item.imageUri ? `📷 ${t('saved.photoItem')}` : `⌨️ ${t('saved.textItem')}`}
+                    <Text style={styles.itemTitle} numberOfLines={1}>
+                      {item.imageData ? `📷 ${t('saved.photoItem')}` : `⌨️ ${t('saved.textItem')}`}
                     </Text>
                     <Text style={styles.itemDate}>{formatDate(item.savedAt)}</Text>
                   </View>

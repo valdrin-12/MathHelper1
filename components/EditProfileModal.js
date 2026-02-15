@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../context/UserContext';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
@@ -101,9 +102,9 @@ export default function EditProfileModal({ visible, onClose }) {
           {/* Header */}
           <View style={styles.header}>
             <TouchableOpacity onPress={onClose} style={styles.backButton}>
-              <Text style={styles.backButtonText}>✕</Text>
+              <Ionicons name="close" size={22} color={COLORS.textSubtle} />
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>{t('editProfile.title')}</Text>
+            <Text style={styles.headerTitle} numberOfLines={1}>{t('editProfile.title')}</Text>
             <View style={styles.placeholder} />
           </View>
 
@@ -221,11 +222,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.tabBg,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 20,
-    color: COLORS.primary,
-    fontWeight: 'bold',
   },
   headerTitle: {
     fontSize: TYPOGRAPHY.h2.fontSize,

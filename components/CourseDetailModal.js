@@ -9,6 +9,7 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useLocalizedCourses } from '../hooks/useLocalizedData';
 import CourseContentModal from './CourseContentModal';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
@@ -40,9 +41,9 @@ export default function CourseDetailModal({ visible, course, onClose }) {
           <View style={styles.header}>
             <View style={styles.headerLeft}>
               <TouchableOpacity onPress={onClose} style={styles.backButton}>
-                <Text style={styles.backButtonText}>←</Text>
+                <Ionicons name="chevron-back" size={22} color={COLORS.textSecondary} />
               </TouchableOpacity>
-              <Text style={styles.headerTitle}>{t('courseDetail.title')}</Text>
+              <Text style={styles.headerTitle} numberOfLines={1}>{t('courseDetail.title')}</Text>
             </View>
           </View>
 
@@ -51,7 +52,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
             {/* Course Header */}
             <View style={[styles.courseHeader, { backgroundColor: category?.color || COLORS.primary }]}>
               <Text style={styles.categoryIcon}>{category?.icon || '📚'}</Text>
-              <Text style={styles.courseTitle}>{course.title}</Text>
+              <Text style={styles.courseTitle} numberOfLines={2}>{course.title}</Text>
               <Text style={styles.categoryName}>{category?.name}</Text>
             </View>
 
@@ -172,10 +173,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.borderLight,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  backButtonText: {
-    fontSize: 24,
-    color: COLORS.textSecondary,
   },
   headerTitle: {
     fontSize: 20,
