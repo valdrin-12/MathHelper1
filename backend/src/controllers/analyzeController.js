@@ -1,7 +1,7 @@
 const { getModel } = require('../config/gemini');
 
 const LANGUAGE_NAMES = {
-  sq: 'Albanian (Shqip)',
+  al: 'Albanian (Shqip)',
   en: 'English',
   de: 'German (Deutsch)',
 };
@@ -146,7 +146,7 @@ async function analyzeImage(req, res) {
     };
 
     const result = await model.generateContent([
-      getMathAnalysisPrompt(language || 'sq'),
+      getMathAnalysisPrompt(language || 'al'),
       imagePart,
     ]);
 
@@ -179,7 +179,7 @@ async function analyzeText(req, res) {
 
     const model = getModel();
     const result = await model.generateContent(
-      getTextAnalysisPrompt(problemText, language || 'sq')
+      getTextAnalysisPrompt(problemText, language || 'al')
     );
 
     const response = await result.response;

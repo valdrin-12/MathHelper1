@@ -977,14 +977,14 @@ const courseContents_de = {
 };
 
 const contentsMap = {
-  sq: courseContents_sq,
+  al: courseContents_sq,
   en: courseContents_en,
   de: courseContents_de,
 };
 
 // Get localized course contents
-export const getLocalizedCourseContents = (lang = 'sq') => {
-  return contentsMap[lang] || contentsMap.sq;
+export const getLocalizedCourseContents = (lang = 'al') => {
+  return contentsMap[lang] || contentsMap.al;
 };
 
 // Legacy: backward-compatible Albanian export

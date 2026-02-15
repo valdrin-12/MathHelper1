@@ -6,7 +6,7 @@ import { coursesTranslations_en } from './localized/courses_en';
 import { coursesTranslations_de } from './localized/courses_de';
 
 const translationsMap = {
-  sq: coursesTranslations_sq,
+  al: coursesTranslations_sq,
   en: coursesTranslations_en,
   de: coursesTranslations_de,
 };
@@ -25,7 +25,7 @@ export const mathCategories = [
 
 // Category names by language
 const categoryNames = {
-  sq: {
+  al: {
     algebra: 'Algjebër', geometry: 'Gjeometri', calculus: 'Kalkulus',
     statistics: 'Statistikë', trigonometry: 'Trigonometri', arithmetic: 'Aritmetikë',
     linearAlgebra: 'Algjebër Lineare', numberTheory: 'Teoria e Numrave',
@@ -51,7 +51,7 @@ export const difficultyMeta = {
 
 // Difficulty names by language
 const difficultyNames = {
-  sq: { beginner: 'Fillestar', intermediate: 'Mesatar', advanced: 'Avancuar' },
+  al: { beginner: 'Fillestar', intermediate: 'Mesatar', advanced: 'Avancuar' },
   en: { beginner: 'Beginner', intermediate: 'Intermediate', advanced: 'Advanced' },
   de: { beginner: 'Anfänger', intermediate: 'Mittelstufe', advanced: 'Fortgeschritten' },
 };
@@ -114,8 +114,8 @@ const coursesStructure = [
 ];
 
 // Get localized categories
-export const getLocalizedCategories = (lang = 'sq') => {
-  const names = categoryNames[lang] || categoryNames.sq;
+export const getLocalizedCategories = (lang = 'al') => {
+  const names = categoryNames[lang] || categoryNames.al;
   return mathCategories.map(cat => ({
     ...cat,
     name: names[cat.id] || cat.id,
@@ -123,8 +123,8 @@ export const getLocalizedCategories = (lang = 'sq') => {
 };
 
 // Get localized difficulty levels
-export const getLocalizedDifficulty = (lang = 'sq') => {
-  const names = difficultyNames[lang] || difficultyNames.sq;
+export const getLocalizedDifficulty = (lang = 'al') => {
+  const names = difficultyNames[lang] || difficultyNames.al;
   const result = {};
   Object.entries(difficultyMeta).forEach(([key, meta]) => {
     result[key] = { ...meta, name: names[key] || key };
@@ -133,13 +133,13 @@ export const getLocalizedDifficulty = (lang = 'sq') => {
 };
 
 // Legacy: difficultyLevels for backward compatibility (Albanian)
-export const difficultyLevels = getLocalizedDifficulty('sq');
+export const difficultyLevels = getLocalizedDifficulty('al');
 
 // Get localized courses
-export const getLocalizedCourses = (lang = 'sq') => {
-  const translations = translationsMap[lang] || translationsMap.sq;
+export const getLocalizedCourses = (lang = 'al') => {
+  const translations = translationsMap[lang] || translationsMap.al;
   return coursesStructure.map(course => {
-    const t = translations[course.id] || translationsMap.sq[course.id] || {};
+    const t = translations[course.id] || translationsMap.al[course.id] || {};
     return {
       ...course,
       title: t.title || course.id,
@@ -152,18 +152,18 @@ export const getLocalizedCourses = (lang = 'sq') => {
 };
 
 // Legacy: courses array for backward compatibility (Albanian)
-export const courses = getLocalizedCourses('sq');
+export const courses = getLocalizedCourses('al');
 
 // Helper functions
-export const getCoursesByCategory = (categoryId, lang = 'sq') => {
+export const getCoursesByCategory = (categoryId, lang = 'al') => {
   return getLocalizedCourses(lang).filter(course => course.category === categoryId);
 };
 
-export const getCoursesByDifficulty = (difficulty, lang = 'sq') => {
+export const getCoursesByDifficulty = (difficulty, lang = 'al') => {
   return getLocalizedCourses(lang).filter(course => course.difficulty === difficulty);
 };
 
-export const searchCourses = (query, lang = 'sq') => {
+export const searchCourses = (query, lang = 'al') => {
   const lowerQuery = query.toLowerCase();
   return getLocalizedCourses(lang).filter(course =>
     course.title.toLowerCase().includes(lowerQuery) ||

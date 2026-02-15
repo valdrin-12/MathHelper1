@@ -1899,8 +1899,8 @@ export const quizSets = [
 ];
 
 // Get localized quiz sets
-export const getLocalizedQuizSets = (lang = 'sq') => {
-  if (lang === 'sq') return quizSets;
+export const getLocalizedQuizSets = (lang = 'al') => {
+  if (lang === 'al') return quizSets;
 
   const translations = quizzesTranslationsMap[lang];
   if (!translations) return quizSets;
@@ -1929,13 +1929,13 @@ export const getLocalizedQuizSets = (lang = 'sq') => {
 
 // Stats helpers
 const difficultyLabels = {
-  sq: { beginner: '🌱 Fillestar', intermediate: '🔥 Mesatar', advanced: '🚀 Avancuar' },
+  al: { beginner: '🌱 Fillestar', intermediate: '🔥 Mesatar', advanced: '🚀 Avancuar' },
   en: { beginner: '🌱 Beginner', intermediate: '🔥 Intermediate', advanced: '🚀 Advanced' },
   de: { beginner: '🌱 Anfänger', intermediate: '🔥 Mittelstufe', advanced: '🚀 Fortgeschritten' },
 };
 
-export const getDifficultyLabel = (d, lang = 'sq') => {
-  const map = difficultyLabels[lang] || difficultyLabels.sq;
+export const getDifficultyLabel = (d, lang = 'al') => {
+  const map = difficultyLabels[lang] || difficultyLabels.al;
   return map[d] || d;
 };
 
