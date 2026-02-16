@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const ACCESS_TOKEN_KEY = '@math_helper_access_token';
 const REFRESH_TOKEN_KEY = '@math_helper_refresh_token';
 
-const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'http://localhost:3001';
+const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://mathhelper1-4zct.onrender.com';
 
 let isRefreshing = false;
 let refreshQueue = [];
