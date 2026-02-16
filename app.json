@@ -19,6 +19,7 @@
       }
     },
     "android": {
+      "package": "com.valdrin.mathhelper",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -31,6 +32,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "3aea0943-960a-4945-bb9a-477f14dc717f"
+      }
+    },
+    "owner": "valdrin11"
   }
 }
