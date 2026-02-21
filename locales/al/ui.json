@@ -25,7 +25,7 @@
   "auth": {
     "login": "Kyçu",
     "register": "Regjistrohu",
-    "welcomeBack": "Mirë se u ktheve!",
+    "welcomeBack": "Mirë se erdhe!",
     "loginSubtitle": "Kyçu për të vazhduar mësimet",
     "createAccount": "Krijo llogari",
     "registerSubtitle": "Fillo udhëtimin tënd matematikor",
@@ -121,7 +121,11 @@
     "lessons": "mësime",
     "viewDetails": "Shiko Detajet →",
     "noCourseFound": "Asnjë Kurs i Gjetur",
-    "tryDifferentFilters": "Provoni të ndryshoni filtrat ose kërkimin tuaj."
+    "tryDifferentFilters": "Provoni të ndryshoni filtrat ose kërkimin tuaj.",
+    "statusCompleted": "I Kompletuar",
+    "statusLearning": "Duke Mësuar",
+    "statusStart": "Fillo Kursin",
+    "resumeMessage": "Këtu ishit herën e fundit, të lutem vazhdo kursin"
   },
   "quiz": {
     "title": "Kuize",
@@ -130,7 +134,10 @@
     "questions": "{{count}} pyetje",
     "startQuiz": "Fillo Kuizin →",
     "quizCount_one": "{{count}} kuiz",
-    "quizCount_other": "{{count}} kuize"
+    "quizCount_other": "{{count}} kuize",
+    "challengeOfDay": "Sfida e Ditës",
+    "daily": "Ditore",
+    "bestScore": "Më i miri: {{score}}%"
   },
   "saved": {
     "title": "Të Ruajtura",
@@ -258,7 +265,8 @@
     "yourAnswer": "Pergjigjja juaj: {{answer}}",
     "correctAnswer": "Përgjigja e saktë: {{answer}}",
     "retry": "Provo Përsëri",
-    "goBack": "Kthehu"
+    "goBack": "Kthehu",
+    "perfectScore": "REZULTAT PERFEKT!"
   },
   "profileModal": {
     "title": "Profili Im",
@@ -272,7 +280,11 @@
     "editProfileSub": "Ndrysho emrin, emailin",
     "logoutAction": "Çkyçu",
     "logoutSub": "Dil nga llogaria",
-    "logoutConfirm": "Jeni i sigurt që dëshironi të çkyçeni?"
+    "logoutConfirm": "Jeni i sigurt që dëshironi të çkyçeni?",
+    "weeklyActivity": "Aktiviteti Javor",
+    "daysStreak": "{{count}} ditë radhazi",
+    "longestStreak": "Më e gjata: {{count}} ditë",
+    "achievements": "Arritjet"
   },
   "editProfile": {
     "title": "Edito Profilin",
@@ -448,11 +460,11 @@
       },
       "features": {
         "heading": "Karakteristikat",
-        "text": "• 52 kurse matematikore\n• Kuize interaktive\n• Analizë problemesh me Google Gemini AI\n• Gjurmim i progresit\n• Sistem arritjesh"
+        "text": "• 52 kurse matematikore\n• Kuize interaktive\n• Analizë problemesh me AI\n• Gjurmim i progresit\n• Sistem arritjesh"
       },
       "developer": {
         "heading": "Zhvilluesi",
-        "text": "Zhvilluar me ❤️ për studentët shqiptarë.\n\nTek: Expo / React Native\nAI: Google Gemini"
+        "text": "Zhvilluar me ❤️ për studentet"
       }
     },
     "goals": {
@@ -480,5 +492,32 @@
     "notMathImage": "Kjo fotografi nuk përmban një problem matematikor të qartë",
     "unclearImage": "Fotografia është shumë e paqartë për të analizuar. Ju lutemi bëni një fotografi më të qartë",
     "notMathText": "Kjo nuk është një problem matematikor i qartë"
+  },
+  "mathKeyboard": {
+    "selectKeyboard": "Zgjidhni një tastierë",
+    "basicMath": "Tastiera e Matematikës Bazë",
+    "preAlgebra": "Tastiera Para-Algjebrës",
+    "algebra": "Tastiera e Algjebrës",
+    "trigonometry": "Tastiera e Trigonometrisë",
+    "precalculus": "Tastiera e Parakalkulusit",
+    "calculus": "Tastiera e Kalkulusit",
+    "statistics": "Tastiera e Statistikës",
+    "finiteMath": "Tastiera e Matematikës Finite",
+    "linearAlgebra": "Tastiera e Algjebrës Lineare",
+    "chemistry": "Tastiera e Kimisë",
+    "physics": "Tastiera e Fizikës",
+    "graphing": "Tastiera e Grafikëve",
+    "clearAll": "Pastro të gjitha"
+  },
+  "onboarding": {
+    "slide1Title": "Skano & Zgjidh Menjehere",
+    "slide1Desc": "Bej nje foto te problemit matematikor ose shkruaje, dhe merr zgjidhje hap pas hapi me AI.",
+    "slide2Title": "Meso me Ritmin Tend",
+    "slide2Desc": "Eksploro 50+ kurse nga aritmetika baze deri ne kalkulus te avancuar. Mesimet interaktive e bejne matematiken argetime.",
+    "slide3Title": "Gjurmo Progresin Tend",
+    "slide3Desc": "Nderto streak ditor, fito arritje, dhe shiko si rriten aftesite e tua matematikore me kalimin e kohes.",
+    "skip": "Kalo",
+    "next": "Vazhdo",
+    "getStarted": "Fillo Tani"
   }
 }

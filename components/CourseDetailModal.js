@@ -10,32 +10,68 @@ import {
   Alert,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalizedCourses, useLocalizedCourseContent } from '../hooks/useLocalizedData';
-import * as statsService from '../services/statsService';
+import { useStats } from '../context/StatsContext';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+
+const COURSE_PROGRESS_KEY = '@mathhelper_course_progress';
 
 export default function CourseDetailModal({ visible, course, onClose }) {
   const { t } = useTranslation();
   const { categories, difficultyLevels } = useLocalizedCourses();
   const { courseContents } = useLocalizedCourseContent();
+  const { recordCourseCompleted } = useStats();
   const [showContent, setShowContent] = useState(false);
 
   // Course content state
   const [currentLesson, setCurrentLesson] = useState(0);
   const [expandedPractice, setExpandedPractice] = useState({});
   const [courseCompleted, setCourseCompleted] = useState(false);
+  const [savedLesson, setSavedLesson] = useState(null);
+  const [showResumeMessage, setShowResumeMessage] = useState(false);
   const scrollRef = useRef(null);
 
-  // Reset when modal closes
+  // Load saved progress when modal opens
   useEffect(() => {
+    if (visible && course) {
+      loadCourseProgress();
+    }
     if (!visible) {
       setShowContent(false);
       setCurrentLesson(0);
       setExpandedPractice({});
       setCourseCompleted(false);
+      setSavedLesson(null);
+      setShowResumeMessage(false);
     }
-  }, [visible]);
+  }, [visible, course]);
+
+  const loadCourseProgress = async () => {
+    try {
+      const data = await AsyncStorage.getItem(COURSE_PROGRESS_KEY);
+      if (data) {
+        const progress = JSON.parse(data);
+        if (progress[course.id] !== undefined && progress[course.id] > 0) {
+          setSavedLesson(progress[course.id]);
+        }
+      }
+    } catch (e) {
+      console.error('Error loading course progress:', e);
+    }
+  };
+
+  const saveCourseProgress = async (lessonIndex) => {
+    try {
+      const data = await AsyncStorage.getItem(COURSE_PROGRESS_KEY);
+      const progress = data ? JSON.parse(data) : {};
+      progress[course.id] = lessonIndex;
+      await AsyncStorage.setItem(COURSE_PROGRESS_KEY, JSON.stringify(progress));
+    } catch (e) {
+      console.error('Error saving course progress:', e);
+    }
+  };
 
   if (!course) return null;
 
@@ -45,7 +81,15 @@ export default function CourseDetailModal({ visible, course, onClose }) {
   const lessons = content?.lessons || [];
 
   const handleStartCourse = () => {
-    setShowContent(true);
+    if (savedLesson !== null && savedLesson > 0) {
+      // Show resume message and jump to saved lesson
+      setCurrentLesson(savedLesson);
+      setShowContent(true);
+      setShowResumeMessage(true);
+      setTimeout(() => setShowResumeMessage(false), 3000);
+    } else {
+      setShowContent(true);
+    }
   };
 
   const handleBackFromContent = () => {
@@ -58,16 +102,22 @@ export default function CourseDetailModal({ visible, course, onClose }) {
     setCurrentLesson(index);
     setExpandedPractice({});
     scrollRef.current?.scrollTo({ y: 0, animated: true });
+    // Save progress
+    saveCourseProgress(index);
   };
 
   const handleCompleteCourse = async () => {
-    await statsService.recordCourseCompleted(course.id, course.title);
+    await recordCourseCompleted(course.id, course.title);
     setCourseCompleted(true);
-    Alert.alert(
-      `${t('courseContent.courseCompleted')}`,
-      t('courseContent.courseCompletedMessage', { title: course.title }),
-      [{ text: t('common.continue'), onPress: onClose }]
-    );
+    // Close the course modal immediately, then show success alert
+    onClose();
+    setTimeout(() => {
+      Alert.alert(
+        `${t('courseContent.courseCompleted')}`,
+        t('courseContent.courseCompletedMessage', { title: course.title }),
+        [{ text: t('common.ok') }]
+      );
+    }, 300);
   };
 
   const togglePractice = (index) => {
@@ -114,6 +164,14 @@ export default function CourseDetailModal({ visible, course, onClose }) {
             ))}
           </ScrollView>
         </View>
+
+        {/* Resume Message */}
+        {showResumeMessage && (
+          <View style={contentStyles.resumeBanner}>
+            <Ionicons name="bookmark" size={16} color="#D97706" />
+            <Text style={contentStyles.resumeBannerText}>{t('learn.resumeMessage')}</Text>
+          </View>
+        )}
 
         {/* Content */}
         {lesson ? (
@@ -601,6 +659,20 @@ const contentStyles = StyleSheet.create({
     fontSize: 13,
     fontWeight: 'bold',
     color: COLORS.textLight,
+  },
+  resumeBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF3C7',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    gap: 8,
+  },
+  resumeBannerText: {
+    flex: 1,
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#92400E',
   },
   lessonNav: {
     backgroundColor: COLORS.surface,

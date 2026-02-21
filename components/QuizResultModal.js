@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   Modal,
   View,
@@ -7,11 +7,110 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
 
-export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry }) {
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const CONFETTI_COUNT = 40;
+const CONFETTI_COLORS = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#F59E0B', '#8B5CF6', '#10B981', '#EF4444', '#3B82F6'];
+
+// Confetti particle component
+function ConfettiParticle({ delay, color, startX }) {
+  const fallAnim = useRef(new Animated.Value(-20)).current;
+  const opacityAnim = useRef(new Animated.Value(1)).current;
+  const rotateAnim = useRef(new Animated.Value(0)).current;
+  const swayAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(fallAnim, {
+          toValue: SCREEN_HEIGHT + 50,
+          duration: 2500 + Math.random() * 1500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(opacityAnim, {
+          toValue: 0,
+          duration: 3000,
+          delay: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(rotateAnim, { toValue: 1, duration: 400 + Math.random() * 400, useNativeDriver: true }),
+            Animated.timing(rotateAnim, { toValue: 0, duration: 400 + Math.random() * 400, useNativeDriver: true }),
+          ])
+        ),
+        Animated.loop(
+          Animated.sequence([
+            Animated.timing(swayAnim, { toValue: 1, duration: 500 + Math.random() * 300, useNativeDriver: true }),
+            Animated.timing(swayAnim, { toValue: -1, duration: 500 + Math.random() * 300, useNativeDriver: true }),
+          ])
+        ),
+      ]).start();
+    }, delay);
+
+    return () => clearTimeout(timeout);
+  }, [delay, fallAnim, opacityAnim, rotateAnim, swayAnim]);
+
+  const rotate = rotateAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  const translateX = swayAnim.interpolate({
+    inputRange: [-1, 1],
+    outputRange: [-15, 15],
+  });
+
+  const isSquare = Math.random() > 0.5;
+
+  return (
+    <Animated.View
+      style={{
+        position: 'absolute',
+        left: startX,
+        top: 0,
+        width: isSquare ? 10 : 8,
+        height: isSquare ? 10 : 14,
+        borderRadius: isSquare ? 2 : 4,
+        backgroundColor: color,
+        opacity: opacityAnim,
+        transform: [
+          { translateY: fallAnim },
+          { translateX },
+          { rotate },
+        ],
+      }}
+    />
+  );
+}
+
+// Confetti overlay
+function ConfettiAnimation() {
+  const particles = useRef(
+    Array.from({ length: CONFETTI_COUNT }, (_, i) => ({
+      id: i,
+      delay: Math.random() * 800,
+      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
+      startX: Math.random() * SCREEN_WIDTH,
+    }))
+  ).current;
+
+  return (
+    <View style={StyleSheet.absoluteFill} pointerEvents="none">
+      {particles.map((p) => (
+        <ConfettiParticle key={p.id} delay={p.delay} color={p.color} startX={p.startX} />
+      ))}
+    </View>
+  );
+}
+
+export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, isPerfectScore }) {
   const { t } = useTranslation();
 
   if (!result || !quizSet) return null;
@@ -21,11 +120,11 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
   const percentage = Math.round((correctCount / totalQuestions) * 100);
 
   const getGradeInfo = () => {
-    if (percentage >= 90) return { emoji: '\u{1F3C6}', label: t('quizResult.excellent'), color: '#FFD700', message: t('quizResult.excellentMsg') };
-    if (percentage >= 75) return { emoji: '\u{1F31F}', label: t('quizResult.veryGood'), color: COLORS.success, message: t('quizResult.veryGoodMsg') };
-    if (percentage >= 60) return { emoji: '\u{1F44D}', label: t('quizResult.good'), color: COLORS.info, message: t('quizResult.goodMsg') };
-    if (percentage >= 40) return { emoji: '\u{1F4DA}', label: t('quizResult.sufficient'), color: '#FF9800', message: t('quizResult.sufficientMsg') };
-    return { emoji: '\u{1F4AA}', label: t('quizResult.keepGoing'), color: COLORS.destructive, message: t('quizResult.keepGoingMsg') };
+    if (percentage >= 90) return { icon: 'trophy', iconColor: '#FFD700', label: t('quizResult.excellent'), color: '#FFD700', message: t('quizResult.excellentMsg') };
+    if (percentage >= 75) return { icon: 'star', iconColor: COLORS.success, label: t('quizResult.veryGood'), color: COLORS.success, message: t('quizResult.veryGoodMsg') };
+    if (percentage >= 60) return { icon: 'thumbs-up', iconColor: COLORS.info, label: t('quizResult.good'), color: COLORS.info, message: t('quizResult.goodMsg') };
+    if (percentage >= 40) return { icon: 'book', iconColor: '#FF9800', label: t('quizResult.sufficient'), color: '#FF9800', message: t('quizResult.sufficientMsg') };
+    return { icon: 'fitness', iconColor: COLORS.destructive, label: t('quizResult.keepGoing'), color: COLORS.destructive, message: t('quizResult.keepGoingMsg') };
   };
 
   const grade = getGradeInfo();
@@ -33,9 +132,20 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={onClose}>
       <SafeAreaView style={styles.safeArea}>
+        {/* Confetti for perfect score */}
+        {isPerfectScore && <ConfettiAnimation />}
+
         {/* Result Header */}
         <View style={[styles.resultHeader, { backgroundColor: quizSet.color }]}>
-          <Text style={styles.gradeEmoji}>{grade.emoji}</Text>
+          {isPerfectScore && (
+            <View style={styles.perfectBadge}>
+              <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
+              <Text style={styles.perfectBadgeText}>{t('quizResult.perfectScore')}</Text>
+            </View>
+          )}
+          <View style={styles.gradeIconContainer}>
+            <Ionicons name={grade.icon} size={42} color={grade.iconColor} />
+          </View>
           <Text style={styles.gradeLabel}>{grade.label}</Text>
           <Text style={styles.gradeMessage}>{grade.message}</Text>
 
@@ -49,14 +159,17 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
         {/* Stats */}
         <View style={styles.statsRow}>
           <View style={styles.statCard}>
+            <Ionicons name="checkmark-circle" size={20} color={COLORS.success} style={{ marginBottom: 4 }} />
             <Text style={styles.statValue}>{correctCount}</Text>
             <Text style={styles.statLabel}>{t('quizResult.correctLabel')}</Text>
           </View>
           <View style={[styles.statCard, styles.statCardCenter]}>
+            <Ionicons name="close-circle" size={20} color={COLORS.destructive} style={{ marginBottom: 4 }} />
             <Text style={styles.statValue}>{totalQuestions - correctCount}</Text>
             <Text style={styles.statLabel}>{t('quizResult.wrongLabel')}</Text>
           </View>
           <View style={styles.statCard}>
+            <Ionicons name="layers" size={20} color={COLORS.primary} style={{ marginBottom: 4 }} />
             <Text style={styles.statValue}>{totalQuestions}</Text>
             <Text style={styles.statLabel}>{t('quizResult.totalLabel')}</Text>
           </View>
@@ -71,9 +184,16 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
             return (
               <View key={question.id} style={[styles.reviewCard, isCorrect ? styles.reviewCardCorrect : styles.reviewCardWrong]}>
                 <View style={styles.reviewCardHeader}>
-                  <Text style={[styles.reviewStatus, isCorrect ? styles.reviewStatusCorrect : styles.reviewStatusWrong]}>
-                    {isCorrect ? t('quizResult.correctStatus') : t('quizResult.wrongStatus')}
-                  </Text>
+                  <View style={styles.reviewStatusContainer}>
+                    <Ionicons
+                      name={isCorrect ? 'checkmark-circle' : 'close-circle'}
+                      size={18}
+                      color={isCorrect ? COLORS.success : COLORS.destructive}
+                    />
+                    <Text style={[styles.reviewStatus, isCorrect ? styles.reviewStatusCorrect : styles.reviewStatusWrong]}>
+                      {isCorrect ? t('quizResult.correctStatus') : t('quizResult.wrongStatus')}
+                    </Text>
+                  </View>
                   <Text style={styles.reviewQuestionNum}>#{index + 1}</Text>
                 </View>
                 <Text style={styles.reviewQuestion}>{question.question}</Text>
@@ -95,10 +215,12 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
         {/* Footer Buttons */}
         <View style={styles.footer}>
           <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-            <Text style={styles.retryButtonText}>{'\u{1F504}'} {t('quizResult.retry')}</Text>
+            <Ionicons name="refresh" size={18} color={COLORS.textSecondary} style={{ marginRight: 6 }} />
+            <Text style={styles.retryButtonText}>{t('quizResult.retry')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.closeButton, { backgroundColor: quizSet.color }]} onPress={onClose}>
-            <Text style={styles.closeButtonText}>{'\u2713'} {t('quizResult.goBack')}</Text>
+            <Ionicons name="checkmark" size={18} color="#FFFFFF" style={{ marginRight: 6 }} />
+            <Text style={styles.closeButtonText}>{t('quizResult.goBack')}</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -116,9 +238,34 @@ const styles = StyleSheet.create({
     paddingVertical: 30,
     paddingHorizontal: SPACING.xl,
   },
-  gradeEmoji: {
-    fontSize: 50,
-    marginBottom: SPACING.sm,
+  perfectBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginBottom: 12,
+    gap: 6,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.4)',
+  },
+  perfectBadgeText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
+  },
+  gradeIconContainer: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: SPACING.md,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.3)',
   },
   gradeLabel: {
     fontSize: 26,
@@ -211,6 +358,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: SPACING.sm,
   },
+  reviewStatusContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   reviewStatus: {
     fontSize: 13,
     fontWeight: 'bold',
@@ -262,10 +414,12 @@ const styles = StyleSheet.create({
   },
   retryButton: {
     flex: 1,
+    flexDirection: 'row',
     backgroundColor: COLORS.borderLight,
     borderRadius: BORDER_RADIUS.md,
     paddingVertical: 15,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   retryButtonText: {
     fontSize: 16,
@@ -274,9 +428,11 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     flex: 1,
+    flexDirection: 'row',
     borderRadius: BORDER_RADIUS.md,
     paddingVertical: 15,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   closeButtonText: {
     fontSize: 16,

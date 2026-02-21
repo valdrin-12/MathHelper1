@@ -121,7 +121,11 @@
     "lessons": "lessons",
     "viewDetails": "View Details →",
     "noCourseFound": "No Courses Found",
-    "tryDifferentFilters": "Try changing your filters or search."
+    "tryDifferentFilters": "Try changing your filters or search.",
+    "statusCompleted": "Completed",
+    "statusLearning": "Learning",
+    "statusStart": "Start Course",
+    "resumeMessage": "You were here last time, please continue the course"
   },
   "quiz": {
     "title": "Quizzes",
@@ -130,7 +134,10 @@
     "questions": "{{count}} questions",
     "startQuiz": "Start Quiz →",
     "quizCount_one": "{{count}} quiz",
-    "quizCount_other": "{{count}} quizzes"
+    "quizCount_other": "{{count}} quizzes",
+    "challengeOfDay": "Challenge of the Day",
+    "daily": "Daily",
+    "bestScore": "Best: {{score}}%"
   },
   "saved": {
     "title": "Saved",
@@ -258,7 +265,8 @@
     "yourAnswer": "Your answer: {{answer}}",
     "correctAnswer": "Correct answer: {{answer}}",
     "retry": "Try Again",
-    "goBack": "Go Back"
+    "goBack": "Go Back",
+    "perfectScore": "PERFECT SCORE!"
   },
   "profileModal": {
     "title": "My Profile",
@@ -272,7 +280,11 @@
     "editProfileSub": "Change name, email",
     "logoutAction": "Sign Out",
     "logoutSub": "Sign out of account",
-    "logoutConfirm": "Are you sure you want to sign out?"
+    "logoutConfirm": "Are you sure you want to sign out?",
+    "weeklyActivity": "Weekly Activity",
+    "daysStreak": "{{count}} days streak",
+    "longestStreak": "Longest: {{count}} days",
+    "achievements": "Achievements"
   },
   "editProfile": {
     "title": "Edit Profile",
@@ -387,5 +399,32 @@
     "notMathImage": "This photo does not contain a clear math problem",
     "unclearImage": "The photo is too unclear to analyze. Please take a clearer photo",
     "notMathText": "This is not a clear math problem"
+  },
+  "mathKeyboard": {
+    "selectKeyboard": "Select a keyboard",
+    "basicMath": "Basic Math keyboard",
+    "preAlgebra": "Pre-Algebra keyboard",
+    "algebra": "Algebra keyboard",
+    "trigonometry": "Trigonometry keyboard",
+    "precalculus": "Precalculus keyboard",
+    "calculus": "Calculus keyboard",
+    "statistics": "Statistics keyboard",
+    "finiteMath": "Finite Math keyboard",
+    "linearAlgebra": "Linear Algebra keyboard",
+    "chemistry": "Chemistry keyboard",
+    "physics": "Physics keyboard",
+    "graphing": "Graphing keyboard",
+    "clearAll": "Clear all"
+  },
+  "onboarding": {
+    "slide1Title": "Scan & Solve Instantly",
+    "slide1Desc": "Take a photo of any math problem or type it in, and get step-by-step solutions powered by AI.",
+    "slide2Title": "Learn at Your Pace",
+    "slide2Desc": "Explore 50+ courses from basic arithmetic to advanced calculus. Interactive lessons make math fun.",
+    "slide3Title": "Track Your Progress",
+    "slide3Desc": "Build daily streaks, earn achievements, and watch your math skills grow over time.",
+    "skip": "Skip",
+    "next": "Next",
+    "getStarted": "Get Started"
   }
 }

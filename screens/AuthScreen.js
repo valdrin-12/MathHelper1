@@ -10,11 +10,17 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
+  Dimensions,
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+
+const { width } = Dimensions.get('window');
 
 export default function AuthScreen() {
   const { login, register } = useUser();
@@ -23,13 +29,13 @@ export default function AuthScreen() {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
 
-  // Fushat e formularit
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Gabimet e validimit
   const [errors, setErrors] = useState({});
 
   const clearForm = () => {
@@ -38,6 +44,8 @@ export default function AuthScreen() {
     setPassword('');
     setConfirmPassword('');
     setErrors({});
+    setShowPassword(false);
+    setShowConfirmPassword(false);
   };
 
   const toggleMode = () => {
@@ -47,53 +55,44 @@ export default function AuthScreen() {
 
   const validateLogin = () => {
     const newErrors = {};
-
     if (!email.trim()) {
       newErrors.email = t('auth.validation.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       newErrors.email = t('auth.validation.emailInvalid');
     }
-
     if (!password) {
       newErrors.password = t('auth.validation.passwordRequired');
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const validateRegister = () => {
     const newErrors = {};
-
     if (!name.trim() || name.trim().length < 2) {
       newErrors.name = t('auth.validation.nameMinLength');
     }
-
     if (!email.trim()) {
       newErrors.email = t('auth.validation.emailRequired');
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       newErrors.email = t('auth.validation.emailInvalid');
     }
-
     if (!password) {
       newErrors.password = t('auth.validation.passwordRequired');
     } else if (password.length < 6) {
       newErrors.password = t('auth.validation.passwordMinLength');
     }
-
     if (!confirmPassword) {
       newErrors.confirmPassword = t('auth.validation.confirmRequired');
     } else if (password !== confirmPassword) {
       newErrors.confirmPassword = t('auth.validation.passwordsMismatch');
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleLogin = async () => {
     if (!validateLogin()) return;
-
     setLoading(true);
     try {
       const result = await login(email.trim(), password);
@@ -107,7 +106,6 @@ export default function AuthScreen() {
 
   const handleRegister = async () => {
     if (!validateRegister()) return;
-
     setLoading(true);
     try {
       const result = await register(name.trim(), email.trim(), password);
@@ -121,7 +119,6 @@ export default function AuthScreen() {
 
   const handleClearAllData = async () => {
     const confirmMessage = t('auth.clearAllConfirm');
-
     const confirmed = Platform.OS === 'web'
       ? window.confirm(confirmMessage)
       : await new Promise(resolve => {
@@ -138,24 +135,18 @@ export default function AuthScreen() {
     if (!confirmed) return;
 
     try {
-      console.log('[AuthScreen] Duke fshirë të gjitha të dhënat...');
       await AsyncStorage.clear();
-      console.log('[AuthScreen] Të gjitha të dhënat u fshinë!');
-
       const successMessage = t('auth.clearAllSuccess');
       if (Platform.OS === 'web') {
         alert(successMessage);
         window.location.reload();
       } else {
         Alert.alert(t('common.success'), successMessage, [
-          { text: 'OK', onPress: () => {
-            // Force reload the app state
-            clearForm();
-          }}
+          { text: 'OK', onPress: () => clearForm() }
         ]);
       }
     } catch (error) {
-      console.error('[AuthScreen] Gabim gjatë fshirjes:', error);
+      console.error('[AuthScreen] Error clearing data:', error);
       Alert.alert(t('common.error'), t('auth.clearAllError'));
     }
   };
@@ -170,39 +161,66 @@ export default function AuthScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Logo dhe Titulli */}
-        <View style={styles.logoSection}>
+        {/* Gradient Header */}
+        <LinearGradient
+          colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerGradient}
+        >
+          {/* Decorative circles */}
+          <View style={styles.decorCircle1} />
+          <View style={styles.decorCircle2} />
+
+          {/* Logo */}
           <View style={styles.logoContainer}>
-            <Text style={styles.logoEmoji}>📐</Text>
+            <View style={styles.logoOuter}>
+              <View style={styles.logoInner}>
+                <Ionicons name="calculator" size={36} color="#FFFFFF" />
+              </View>
+            </View>
           </View>
+
           <Text style={styles.appName}>MathHelper</Text>
           <Text style={styles.appTagline}>{t('auth.tagline')}</Text>
-        </View>
 
-        {/* Language Switcher */}
-        <View style={styles.languageSwitcherContainer}>
-          <LanguageSwitcher />
-        </View>
+          {/* Language Switcher */}
+          <View style={styles.languageSwitcherContainer}>
+            <LanguageSwitcher />
+          </View>
+        </LinearGradient>
 
-        {/* Karta e Formularit */}
+        {/* Form Card */}
         <View style={styles.formCard}>
-          {/* Tabela e ndërrimit Login/Register */}
+          {/* Tab Switcher */}
           <View style={styles.tabContainer}>
             <TouchableOpacity
               style={[styles.tab, isLogin && styles.activeTab]}
               onPress={() => { if (!isLogin) toggleMode(); }}
             >
+              <Ionicons
+                name="log-in-outline"
+                size={16}
+                color={isLogin ? COLORS.primary : COLORS.textMuted}
+                style={{ marginRight: 6 }}
+              />
               <Text style={[styles.tabText, isLogin && styles.activeTabText]}>{t('auth.login')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.tab, !isLogin && styles.activeTab]}
               onPress={() => { if (isLogin) toggleMode(); }}
             >
+              <Ionicons
+                name="person-add-outline"
+                size={16}
+                color={!isLogin ? COLORS.primary : COLORS.textMuted}
+                style={{ marginRight: 6 }}
+              />
               <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>{t('auth.register')}</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Formulari i Kyçjes */}
+          {/* Login Form */}
           {isLogin ? (
             <View style={styles.form}>
               <Text style={styles.formTitle}>{t('auth.welcomeBack')}</Text>
@@ -212,16 +230,13 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.email')}</Text>
                 <View style={[styles.inputWrapper, errors.email && styles.inputWrapperError]}>
-                  <Text style={styles.inputIcon}>✉️</Text>
+                  <Ionicons name="mail-outline" size={18} color={errors.email ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.emailPlaceholder')}
-                    placeholderTextColor="#B0B5C8"
+                    placeholderTextColor={COLORS.textPlaceholder}
                     value={email}
-                    onChangeText={(text) => {
-                      setEmail(text);
-                      if (errors.email) setErrors({ ...errors, email: null });
-                    }}
+                    onChangeText={(text) => { setEmail(text); if (errors.email) setErrors({ ...errors, email: null }); }}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -230,37 +245,47 @@ export default function AuthScreen() {
                 {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
               </View>
 
-              {/* Fjalëkalimi */}
+              {/* Password */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.password')}</Text>
                 <View style={[styles.inputWrapper, errors.password && styles.inputWrapperError]}>
-                  <Text style={styles.inputIcon}>🔒</Text>
+                  <Ionicons name="lock-closed-outline" size={18} color={errors.password ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.passwordPlaceholder')}
-                    placeholderTextColor="#B0B5C8"
+                    placeholderTextColor={COLORS.textPlaceholder}
                     value={password}
-                    onChangeText={(text) => {
-                      setPassword(text);
-                      if (errors.password) setErrors({ ...errors, password: null });
-                    }}
-                    secureTextEntry
+                    onChangeText={(text) => { setPassword(text); if (errors.password) setErrors({ ...errors, password: null }); }}
+                    secureTextEntry={!showPassword}
                   />
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+                    <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={COLORS.textMuted} />
+                  </TouchableOpacity>
                 </View>
                 {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
               </View>
 
-              {/* Butoni i Kyçjes */}
+              {/* Submit */}
               <TouchableOpacity
                 style={[styles.submitButton, loading && styles.submitButtonDisabled]}
                 onPress={handleLogin}
                 disabled={loading}
               >
-                {loading ? (
-                  <ActivityIndicator color="#FFFFFF" size="small" />
-                ) : (
-                  <Text style={styles.submitButtonText}>{t('auth.login')}</Text>
-                )}
+                <LinearGradient
+                  colors={[COLORS.primary, COLORS.primarySoft]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.submitGradient}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <>
+                      <Ionicons name="log-in-outline" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
+                      <Text style={styles.submitButtonText}>{t('auth.login')}</Text>
+                    </>
+                  )}
+                </LinearGradient>
               </TouchableOpacity>
             </View>
           ) : (
@@ -268,20 +293,17 @@ export default function AuthScreen() {
               <Text style={styles.formTitle}>{t('auth.createAccount')}</Text>
               <Text style={styles.formSubtitle}>{t('auth.registerSubtitle')}</Text>
 
-              {/* Emri */}
+              {/* Name */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.name')}</Text>
                 <View style={[styles.inputWrapper, errors.name && styles.inputWrapperError]}>
-                  <Text style={styles.inputIcon}>👤</Text>
+                  <Ionicons name="person-outline" size={18} color={errors.name ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.namePlaceholder')}
-                    placeholderTextColor="#B0B5C8"
+                    placeholderTextColor={COLORS.textPlaceholder}
                     value={name}
-                    onChangeText={(text) => {
-                      setName(text);
-                      if (errors.name) setErrors({ ...errors, name: null });
-                    }}
+                    onChangeText={(text) => { setName(text); if (errors.name) setErrors({ ...errors, name: null }); }}
                     autoCapitalize="words"
                   />
                 </View>
@@ -292,16 +314,13 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.email')}</Text>
                 <View style={[styles.inputWrapper, errors.email && styles.inputWrapperError]}>
-                  <Text style={styles.inputIcon}>✉️</Text>
+                  <Ionicons name="mail-outline" size={18} color={errors.email ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.emailPlaceholder')}
-                    placeholderTextColor="#B0B5C8"
+                    placeholderTextColor={COLORS.textPlaceholder}
                     value={email}
-                    onChangeText={(text) => {
-                      setEmail(text);
-                      if (errors.email) setErrors({ ...errors, email: null });
-                    }}
+                    onChangeText={(text) => { setEmail(text); if (errors.email) setErrors({ ...errors, email: null }); }}
                     keyboardType="email-address"
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -310,69 +329,79 @@ export default function AuthScreen() {
                 {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
               </View>
 
-              {/* Fjalëkalimi */}
+              {/* Password */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.password')}</Text>
                 <View style={[styles.inputWrapper, errors.password && styles.inputWrapperError]}>
-                  <Text style={styles.inputIcon}>🔒</Text>
+                  <Ionicons name="lock-closed-outline" size={18} color={errors.password ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.minChars')}
-                    placeholderTextColor="#B0B5C8"
+                    placeholderTextColor={COLORS.textPlaceholder}
                     value={password}
-                    onChangeText={(text) => {
-                      setPassword(text);
-                      if (errors.password) setErrors({ ...errors, password: null });
-                    }}
-                    secureTextEntry
+                    onChangeText={(text) => { setPassword(text); if (errors.password) setErrors({ ...errors, password: null }); }}
+                    secureTextEntry={!showPassword}
                   />
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+                    <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={COLORS.textMuted} />
+                  </TouchableOpacity>
                 </View>
                 {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
               </View>
 
-              {/* Konfirmo Fjalëkalimin */}
+              {/* Confirm Password */}
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.confirmPassword')}</Text>
                 <View style={[styles.inputWrapper, errors.confirmPassword && styles.inputWrapperError]}>
-                  <Text style={styles.inputIcon}>🔑</Text>
+                  <Ionicons name="shield-checkmark-outline" size={18} color={errors.confirmPassword ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.confirmPasswordPlaceholder')}
-                    placeholderTextColor="#B0B5C8"
+                    placeholderTextColor={COLORS.textPlaceholder}
                     value={confirmPassword}
-                    onChangeText={(text) => {
-                      setConfirmPassword(text);
-                      if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: null });
-                    }}
-                    secureTextEntry
+                    onChangeText={(text) => { setConfirmPassword(text); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: null }); }}
+                    secureTextEntry={!showConfirmPassword}
                   />
+                  <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeButton}>
+                    <Ionicons name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={COLORS.textMuted} />
+                  </TouchableOpacity>
                 </View>
                 {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
               </View>
 
-              {/* Butoni i Regjistrimit */}
+              {/* Submit */}
               <TouchableOpacity
                 style={[styles.submitButton, loading && styles.submitButtonDisabled]}
                 onPress={handleRegister}
                 disabled={loading}
               >
-                {loading ? (
-                  <ActivityIndicator color="#FFFFFF" size="small" />
-                ) : (
-                  <Text style={styles.submitButtonText}>{t('auth.register')}</Text>
-                )}
+                <LinearGradient
+                  colors={[COLORS.primary, COLORS.primarySoft]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={styles.submitGradient}
+                >
+                  {loading ? (
+                    <ActivityIndicator color="#FFFFFF" size="small" />
+                  ) : (
+                    <>
+                      <Ionicons name="person-add-outline" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
+                      <Text style={styles.submitButtonText}>{t('auth.register')}</Text>
+                    </>
+                  )}
+                </LinearGradient>
               </TouchableOpacity>
             </View>
           )}
 
-          {/* Ndarro */}
+          {/* Divider */}
           <View style={styles.dividerRow}>
             <View style={styles.dividerLine} />
             <Text style={styles.dividerText}>{t('common.or')}</Text>
             <View style={styles.dividerLine} />
           </View>
 
-          {/* Kalimi ndërmjet kyçjes dhe regjistrimit */}
+          {/* Switch mode */}
           <TouchableOpacity onPress={toggleMode} style={styles.switchModeButton}>
             <Text style={styles.switchModeText}>
               {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}
@@ -384,16 +413,18 @@ export default function AuthScreen() {
         </View>
 
         {/* Footer */}
-        <Text style={styles.footerText}>
-          {t('auth.footer')}
-        </Text>
+        <View style={styles.footerContainer}>
+          <Ionicons name="globe-outline" size={14} color={COLORS.textMuted} style={{ marginRight: 6 }} />
+          <Text style={styles.footerText}>{t('auth.footer')}</Text>
+        </View>
 
-        {/* Clear Data Button (Development/Testing) */}
+        {/* Clear Data Button (Testing) */}
         <TouchableOpacity
           style={styles.clearDataButton}
           onPress={handleClearAllData}
         >
-          <Text style={styles.clearDataText}>{`🗑️ ${t('auth.clearAllData')}`}</Text>
+          <Ionicons name="trash-outline" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
+          <Text style={styles.clearDataText}>{t('auth.clearAllData')}</Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -403,177 +434,206 @@ export default function AuthScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F7FF',
+    backgroundColor: COLORS.background,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 22,
-    paddingTop: 60,
     paddingBottom: 30,
   },
 
-  // Language Switcher
-  languageSwitcherContainer: {
-    marginBottom: 24,
-  },
-
-  // Logo dhe Titulli
-  logoSection: {
+  // Header Gradient
+  headerGradient: {
+    paddingTop: 60,
+    paddingBottom: 36,
     alignItems: 'center',
-    marginBottom: 20,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    overflow: 'hidden',
+  },
+  decorCircle1: {
+    position: 'absolute',
+    width: width * 0.7,
+    height: width * 0.7,
+    borderRadius: width * 0.35,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
+    top: -width * 0.15,
+    right: -width * 0.2,
+  },
+  decorCircle2: {
+    position: 'absolute',
+    width: width * 0.5,
+    height: width * 0.5,
+    borderRadius: width * 0.25,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
+    bottom: -width * 0.1,
+    left: -width * 0.15,
   },
   logoContainer: {
+    marginBottom: 16,
+  },
+  logoOuter: {
     width: 88,
     height: 88,
     borderRadius: 28,
-    backgroundColor: '#6C63FF',
+    backgroundColor: 'rgba(255,255,255,0.12)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.2)',
   },
-  logoEmoji: {
-    fontSize: 44,
+  logoInner: {
+    width: 66,
+    height: 66,
+    borderRadius: 22,
+    backgroundColor: 'rgba(255,255,255,0.18)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   appName: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1A1A2E',
+    fontSize: 30,
+    fontWeight: '900',
+    color: '#FFFFFF',
     marginBottom: 6,
+    letterSpacing: -0.5,
   },
   appTagline: {
     fontSize: 15,
-    color: '#8A8FA8',
-    fontWeight: '400',
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '500',
+    marginBottom: 20,
+  },
+  languageSwitcherContainer: {
+    marginTop: 4,
   },
 
-  // Karta e Formularit
+  // Form Card
   formCard: {
-    backgroundColor: '#FFFFFF',
+    marginHorizontal: 20,
+    marginTop: -16,
+    backgroundColor: COLORS.surface,
     borderRadius: 24,
     padding: 24,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 6,
+    ...SHADOWS.large,
   },
 
-  // Tabela
+  // Tabs
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: '#F0F1F8',
+    backgroundColor: COLORS.primaryBg,
     borderRadius: 14,
     padding: 4,
     marginBottom: 24,
   },
   tab: {
     flex: 1,
-    paddingVertical: 10,
+    flexDirection: 'row',
+    paddingVertical: 11,
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 11,
   },
   activeTab: {
-    backgroundColor: '#FFFFFF',
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
+    backgroundColor: COLORS.surface,
+    ...SHADOWS.small,
   },
   tabText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#8A8FA8',
+    color: COLORS.textMuted,
   },
   activeTabText: {
-    color: '#6C63FF',
+    color: COLORS.primary,
+    fontWeight: '700',
   },
 
-  // Formulari
+  // Form
   form: {
     marginBottom: 8,
   },
   formTitle: {
     fontSize: 22,
-    fontWeight: 'bold',
-    color: '#1A1A2E',
+    fontWeight: '800',
+    color: COLORS.text,
     marginBottom: 6,
+    letterSpacing: -0.3,
   },
   formSubtitle: {
     fontSize: 14,
-    color: '#8A8FA8',
+    color: COLORS.textSubtle,
     marginBottom: 24,
+    fontWeight: '500',
   },
 
-  // Fushat e hyrjes
+  // Inputs
   inputGroup: {
     marginBottom: 16,
   },
   inputLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#3D3D5C',
+    color: COLORS.textLabel,
     marginBottom: 8,
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F8F9FF',
+    backgroundColor: COLORS.inputBg,
     borderRadius: 14,
     borderWidth: 1.5,
-    borderColor: '#E8EBFF',
+    borderColor: COLORS.inputBorder,
     paddingHorizontal: 14,
-    paddingVertical: 2,
   },
   inputWrapperError: {
-    borderColor: '#FF6B6B',
-    backgroundColor: '#FFF5F5',
+    borderColor: COLORS.error,
+    backgroundColor: COLORS.errorLight,
   },
   inputIcon: {
-    fontSize: 18,
     marginRight: 10,
   },
   textInput: {
     flex: 1,
     fontSize: 15,
-    color: '#1A1A2E',
+    color: COLORS.text,
     paddingVertical: 14,
+  },
+  eyeButton: {
+    padding: 6,
   },
   errorText: {
     fontSize: 12,
-    color: '#FF6B6B',
+    color: COLORS.error,
     marginTop: 5,
     marginLeft: 4,
+    fontWeight: '500',
   },
 
-  // Butoni i Dorëzimit
+  // Submit Button
   submitButton: {
-    backgroundColor: '#6C63FF',
     borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center',
+    overflow: 'hidden',
     marginTop: 8,
-    shadowColor: '#6C63FF',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-    elevation: 5,
+    ...SHADOWS.primary,
   },
   submitButtonDisabled: {
     opacity: 0.7,
   },
+  submitGradient: {
+    flexDirection: 'row',
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 14,
+  },
   submitButtonText: {
     fontSize: 17,
-    fontWeight: 'bold',
+    fontWeight: '800',
     color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
 
-  // Ndarro
+  // Divider
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -582,50 +642,54 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E8EBFF',
+    backgroundColor: COLORS.inputBorder,
   },
   dividerText: {
     fontSize: 13,
-    color: '#B0B5C8',
+    color: COLORS.textMuted,
     marginHorizontal: 12,
+    fontWeight: '500',
   },
 
-  // Ndërrimi i modalitetit
+  // Switch mode
   switchModeButton: {
     alignItems: 'center',
     paddingVertical: 4,
   },
   switchModeText: {
     fontSize: 14,
-    color: '#8A8FA8',
+    color: COLORS.textSubtle,
   },
   switchModeLink: {
-    color: '#6C63FF',
+    color: COLORS.primary,
     fontWeight: '700',
   },
 
   // Footer
-  footerText: {
-    textAlign: 'center',
-    fontSize: 13,
-    color: '#B0B5C8',
+  footerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 24,
+  },
+  footerText: {
+    fontSize: 13,
+    color: COLORS.textMuted,
+    fontWeight: '500',
   },
 
   // Clear Data Button
   clearDataButton: {
-    backgroundColor: '#FF6B6B',
+    flexDirection: 'row',
+    backgroundColor: COLORS.error,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 20,
     alignItems: 'center',
+    justifyContent: 'center',
     marginTop: 20,
     alignSelf: 'center',
-    shadowColor: '#FF6B6B',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 6,
-    elevation: 3,
+    ...SHADOWS.small,
   },
   clearDataText: {
     fontSize: 13,

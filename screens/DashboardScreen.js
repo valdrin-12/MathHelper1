@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -8,19 +8,22 @@ import {
   Dimensions,
   Image,
   Alert,
-  TextInput,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as imageService from '../services/imageService';
 import * as geminiService from '../services/geminiService';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ResultsModal from '../components/ResultsModal';
+import MathKeyboard from '../components/MathKeyboard';
 import { useSavedItems } from '../context/SavedItemsContext';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
 import ProfileModal from '../components/ProfileModal';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
+import { COLORS, SHADOWS } from '../theme/constants';
 
 const { width } = Dimensions.get('window');
 
@@ -35,8 +38,15 @@ export default function DashboardScreen() {
   const { t } = useTranslation();
   const { addItem, savedItems } = useSavedItems();
   const { user } = useUser();
-  const { todayProblems, completedCoursesCount, completedQuizzesCount, streak, recordProblemSolved } = useStats();
-  const [inputMode, setInputMode] = useState('keyboard'); // 'keyboard' or 'camera'
+  const { todayProblems, completedCoursesCount, completedQuizzesCount, streak, recordProblemSolved, refresh } = useStats();
+
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
+
+  const [inputMode, setInputMode] = useState('keyboard');
   const [mathProblemText, setMathProblemText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
   const [lastBase64, setLastBase64] = useState(null);
@@ -116,7 +126,7 @@ export default function DashboardScreen() {
         setShowResultModal(true);
       }
     } catch (error) {
-      console.error('Gabim gjatë analizës:', error);
+      console.error('Gabim gjate analizes:', error);
       Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
     } finally {
       setIsAnalyzing(false);
@@ -138,7 +148,7 @@ export default function DashboardScreen() {
       await addItem(savedItem);
       await recordProblemSolved();
     } catch (error) {
-      console.error('Gabim gjatë ruajtjes:', error);
+      console.error('Gabim gjate ruajtjes:', error);
       throw error;
     }
   };
@@ -160,193 +170,305 @@ export default function DashboardScreen() {
   return (
     <>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Header */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Text style={styles.headerGreeting}>{greeting}, {displayName}! 👋</Text>
-            <Text style={styles.headerQuestion}>{t('dashboard.readyToLearn')}</Text>
-          </View>
-          <TouchableOpacity style={styles.avatarButton} onPress={() => setShowProfile(true)}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{user?.name ? user.name[0].toUpperCase() : '👤'}</Text>
+        {/* Header with Gradient */}
+        <LinearGradient
+          colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.headerGradient}
+        >
+          <View style={styles.header}>
+            <View style={styles.headerLeft}>
+              <Text style={styles.headerGreeting}>{greeting}, {displayName}!</Text>
+              <Text style={styles.headerQuestion}>{t('dashboard.readyToLearn')}</Text>
             </View>
-          </TouchableOpacity>
-        </View>
-
-        {/* Scan Card */}
-        <View style={styles.scanCard}>
-          {/* Tab Switcher */}
-          <View style={styles.tabContainer}>
-            <TouchableOpacity
-              style={[styles.tab, inputMode === 'keyboard' && styles.tabActive]}
-              onPress={() => setInputMode('keyboard')}
-            >
-              <Text style={[styles.tabText, inputMode === 'keyboard' && styles.tabTextActive]}>
-                {`⌨️ ${t('dashboard.keyboard')}`}
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.tab, inputMode === 'camera' && styles.tabActive]}
-              onPress={() => setInputMode('camera')}
-            >
-              <Text style={[styles.tabText, inputMode === 'camera' && styles.tabTextActive]}>
-                {`📷 ${t('dashboard.camera')}`}
-              </Text>
+            <TouchableOpacity style={styles.avatarButton} onPress={() => setShowProfile(true)}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>{user?.name ? user.name[0].toUpperCase() : '?'}</Text>
+              </View>
             </TouchableOpacity>
           </View>
 
-          {/* Keyboard Mode */}
-          {inputMode === 'keyboard' ? (
-            <View style={styles.keyboardMode}>
-              <TextInput
-                style={styles.mathInput}
-                placeholder={t('dashboard.inputPlaceholder')}
-                placeholderTextColor={COLORS.textMuted}
-                value={mathProblemText}
-                onChangeText={setMathProblemText}
-                multiline
-                textAlignVertical="top"
-              />
-              <TouchableOpacity
-                style={[styles.analyzeButtonFull, (!mathProblemText.trim() || isAnalyzing) && styles.analyzeButtonDisabled]}
-                onPress={handleAnalyzeProblem}
-                disabled={!mathProblemText.trim() || isAnalyzing}
-              >
-                <Text style={styles.analyzeButtonText}>
-                  {isAnalyzing ? `⏳ ${t('dashboard.analyzing')}` : `🤖 ${t('dashboard.analyzeAI')}`}
+          {/* Quick Stats inside header */}
+          <View style={styles.quickStats}>
+            <View style={styles.quickStatItem}>
+              <Ionicons name="checkmark-done" size={18} color="rgba(255,255,255,0.8)" />
+              <Text style={styles.quickStatNumber}>{savedItems.length}</Text>
+              <Text style={styles.quickStatLabel}>{t('dashboard.problemsSolved')}</Text>
+            </View>
+            <View style={styles.quickStatDivider} />
+            <View style={styles.quickStatItem}>
+              <Ionicons name="flame" size={18} color="rgba(255,255,255,0.8)" />
+              <Text style={styles.quickStatNumber}>{streak}</Text>
+              <Text style={styles.quickStatLabel}>{t('dashboard.dayStreak')}</Text>
+            </View>
+            <View style={styles.quickStatDivider} />
+            <View style={styles.quickStatItem}>
+              <Ionicons name="trophy" size={18} color="rgba(255,255,255,0.8)" />
+              <Text style={styles.quickStatNumber}>{completedQuizzesCount}</Text>
+              <Text style={styles.quickStatLabel}>{t('dashboard.quizzesCompleted')}</Text>
+            </View>
+          </View>
+        </LinearGradient>
+
+        {/* Main Content */}
+        <View style={styles.content}>
+          {/* Daily Goal Card */}
+          <View style={styles.goalCard}>
+            <View style={styles.goalHeader}>
+              <View style={styles.goalIconBox}>
+                <Ionicons name="flag" size={22} color="#F59E0B" />
+              </View>
+              <View style={styles.goalTextContainer}>
+                <Text style={styles.goalTitle}>{t('dashboard.dailyGoal')}</Text>
+                <Text style={styles.goalCount}>
+                  {t('dashboard.problemsProgress', { done: dailyProgress, total: dailyGoal })}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            /* Camera Mode */
-            <View style={styles.cameraMode}>
-              {selectedImage ? (
-                <View style={styles.imagePreviewWrapper}>
-                  <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
-                  <View style={styles.imageActions}>
-                    <TouchableOpacity
-                      style={[styles.actionBtn, styles.analyzeBtn]}
-                      onPress={handleAnalyzeProblem}
-                      disabled={isAnalyzing}
-                    >
-                      <Text style={styles.actionBtnText}>
-                        {isAnalyzing ? `⏳ ${t('dashboard.analyzing')}` : `🤖 ${t('dashboard.analyzeAI')}`}
-                      </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.actionBtn, styles.removeBtn]} onPress={removeImage}>
-                      <Text style={styles.actionBtnText}>{`✕ ${t('dashboard.remove')}`}</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              ) : (
-                <View style={styles.uploadRow}>
-                  <TouchableOpacity style={styles.uploadCard} onPress={pickImage}>
-                    <View style={[styles.uploadIconBox, { backgroundColor: COLORS.primaryBg }]}>
-                      <Text style={styles.uploadEmoji}>🖼️</Text>
-                    </View>
-                    <Text style={styles.uploadLabel}>{t('dashboard.uploadPhoto')}</Text>
-                    <Text style={styles.uploadSub}>{t('dashboard.fromGallery')}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.uploadCard} onPress={takePhoto}>
-                    <View style={[styles.uploadIconBox, { backgroundColor: COLORS.successLight }]}>
-                      <Text style={styles.uploadEmoji}>📸</Text>
-                    </View>
-                    <Text style={styles.uploadLabel}>{t('dashboard.takePhoto')}</Text>
-                    <Text style={styles.uploadSub}>{t('dashboard.useCamera')}</Text>
-                  </TouchableOpacity>
+              </View>
+              {progressPercent >= 100 && (
+                <View style={styles.goalCompleteBadge}>
+                  <Ionicons name="trophy" size={22} color="#10B981" />
                 </View>
               )}
             </View>
-          )}
-        </View>
-
-        {/* Daily Goal */}
-        <View style={styles.goalCard}>
-          <View style={styles.goalHeader}>
-            <Text style={styles.goalFlag}>🎯</Text>
-            <Text style={styles.goalTitle}>{t('dashboard.dailyGoal')}</Text>
-            <Text style={styles.goalCount}>{t('dashboard.problemsProgress', { done: dailyProgress, total: dailyGoal })}</Text>
-          </View>
-          <View style={styles.progressBarBg}>
-            <View
-              style={[styles.progressBarFill, { width: `${progressPercent}%` }]}
-            />
-          </View>
-          <Text style={styles.goalEncouragement}>
-            {progressPercent >= 100
-              ? `🎉 ${t('dashboard.goalReached')}`
-              : progressPercent >= 50
-              ? `💪 ${t('dashboard.keepGoing')}`
-              : `🚀 ${t('dashboard.startSolving')}`}
-          </Text>
-        </View>
-
-        {/* Statistics */}
-        <View style={styles.statsSection}>
-          <Text style={styles.sectionTitle}>{t('dashboard.yourStats')}</Text>
-          <View style={styles.statsGrid}>
-            <View style={[styles.statCard, { backgroundColor: COLORS.primaryBg }]}>
-              <View style={[styles.statIconBox, { backgroundColor: COLORS.primary }]}>
-                <Text style={styles.statIconEmoji}>✅</Text>
-              </View>
-              <Text style={styles.statNumber}>{savedItems.length}</Text>
-              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.problemsSolved')}</Text>
+            <View style={styles.progressBarBg}>
+              <LinearGradient
+                colors={progressPercent >= 100 ? ['#10B981', '#059669'] : [COLORS.primarySoft, COLORS.primaryLight]}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={[styles.progressBarFill, { width: `${Math.max(progressPercent, 2)}%` }]}
+              />
             </View>
-            <View style={[styles.statCard, { backgroundColor: COLORS.warningLight }]}>
-              <View style={[styles.statIconBox, { backgroundColor: COLORS.warning }]}>
-                <Text style={styles.statIconEmoji}>🔥</Text>
-              </View>
-              <Text style={styles.statNumber}>{streak}</Text>
-              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.dayStreak')}</Text>
-            </View>
-            <View style={[styles.statCard, { backgroundColor: COLORS.successLight }]}>
-              <View style={[styles.statIconBox, { backgroundColor: COLORS.success }]}>
-                <Text style={styles.statIconEmoji}>📚</Text>
-              </View>
-              <Text style={styles.statNumber}>{completedCoursesCount}</Text>
-              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.coursesCompleted')}</Text>
-            </View>
-            <View style={[styles.statCard, { backgroundColor: COLORS.purpleLight }]}>
-              <View style={[styles.statIconBox, { backgroundColor: COLORS.purple }]}>
-                <Text style={styles.statIconEmoji}>🎯</Text>
-              </View>
-              <Text style={styles.statNumber}>{completedQuizzesCount}</Text>
-              <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.quizzesCompleted')}</Text>
-            </View>
-          </View>
-        </View>
-
-        {/* Recent Activity */}
-        <View style={styles.activitySection}>
-          <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
-          {recentItems.length === 0 ? (
-            <View style={styles.emptyActivity}>
-              <Text style={styles.emptyActivityIcon}>📝</Text>
-              <Text style={styles.emptyActivityText}>
-                {t('dashboard.noActivity')}
+            <View style={styles.goalEncouragementRow}>
+              <Ionicons
+                name={progressPercent >= 100 ? 'sparkles' : progressPercent >= 50 ? 'fitness' : 'rocket'}
+                size={16}
+                color={COLORS.textSubtle}
+              />
+              <Text style={styles.goalEncouragement}>
+                {progressPercent >= 100
+                  ? t('dashboard.goalReached')
+                  : progressPercent >= 50
+                  ? t('dashboard.keepGoing')
+                  : t('dashboard.startSolving')}
               </Text>
             </View>
-          ) : (
-            recentItems.map((item, index) => (
-              <View key={item.id || index} style={styles.activityCard}>
-                {item.imageData && (
-                  <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.activityThumb} />
-                )}
-                <View style={styles.activityContent}>
-                  <Text style={styles.activityTitle} numberOfLines={1}>
-                    {item.answer ? item.answer : t('dashboard.mathProblem')}
-                  </Text>
-                  <Text style={styles.activityTime}>{formatTimeAgo(item.savedAt)}</Text>
-                </View>
-                <View style={styles.activityBadge}>
-                  <Text style={styles.activityBadgeText}>✓</Text>
-                </View>
-              </View>
-            ))
-          )}
-        </View>
+          </View>
 
-        <View style={{ height: 30 }} />
+          {/* Scan / Input Card */}
+          <View style={styles.scanCard}>
+            {/* Tab Switcher */}
+            <View style={styles.tabContainer}>
+              <TouchableOpacity
+                style={[styles.tab, inputMode === 'keyboard' && styles.tabActive]}
+                onPress={() => setInputMode('keyboard')}
+              >
+                <View style={styles.tabInner}>
+                  <Ionicons
+                    name="keypad"
+                    size={16}
+                    color={inputMode === 'keyboard' ? '#FFFFFF' : COLORS.textSubtle}
+                  />
+                  <Text style={[styles.tabText, inputMode === 'keyboard' && styles.tabTextActive]}>
+                    {t('dashboard.keyboard')}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.tab, inputMode === 'camera' && styles.tabActive]}
+                onPress={() => setInputMode('camera')}
+              >
+                <View style={styles.tabInner}>
+                  <Ionicons
+                    name="camera"
+                    size={16}
+                    color={inputMode === 'camera' ? '#FFFFFF' : COLORS.textSubtle}
+                  />
+                  <Text style={[styles.tabText, inputMode === 'camera' && styles.tabTextActive]}>
+                    {t('dashboard.camera')}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            {/* Keyboard Mode */}
+            {inputMode === 'keyboard' ? (
+              <View style={styles.keyboardMode}>
+                {/* Math Display Area */}
+                <View style={styles.mathDisplayArea}>
+                  <ScrollView style={styles.mathDisplayScroll} nestedScrollEnabled>
+                    {mathProblemText ? (
+                      <Text style={styles.mathDisplayText}>{mathProblemText}</Text>
+                    ) : (
+                      <Text style={styles.mathDisplayPlaceholder}>
+                        {t('dashboard.inputPlaceholder')}
+                      </Text>
+                    )}
+                  </ScrollView>
+                </View>
+
+                {/* Action Buttons Row */}
+                <View style={styles.mathActionRow}>
+                  <TouchableOpacity
+                    style={[styles.analyzeButtonFull, { flex: 1 }, (!mathProblemText.trim() || isAnalyzing) && styles.analyzeButtonDisabled]}
+                    onPress={handleAnalyzeProblem}
+                    disabled={!mathProblemText.trim() || isAnalyzing}
+                  >
+                    <LinearGradient
+                      colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : [COLORS.primarySoft, COLORS.primary]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.analyzeGradient}
+                    >
+                      <View style={styles.analyzeButtonInner}>
+                        <Ionicons
+                          name={isAnalyzing ? 'hourglass' : 'sparkles'}
+                          size={18}
+                          color="#FFFFFF"
+                        />
+                        <Text style={styles.analyzeButtonText}>
+                          {isAnalyzing ? t('dashboard.analyzing') : t('dashboard.analyzeAI')}
+                        </Text>
+                      </View>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+
+                {/* Math Keyboard */}
+                <MathKeyboard
+                  onKeyPress={(value) => setMathProblemText((prev) => prev + value)}
+                  onBackspace={() => setMathProblemText((prev) => prev.slice(0, -1))}
+                  onClear={() => setMathProblemText('')}
+                />
+              </View>
+            ) : (
+              /* Camera Mode */
+              <View style={styles.cameraMode}>
+                {selectedImage ? (
+                  <View style={styles.imagePreviewWrapper}>
+                    <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
+                    <View style={styles.imageActions}>
+                      <TouchableOpacity
+                        style={[styles.actionBtn, styles.analyzeBtn]}
+                        onPress={handleAnalyzeProblem}
+                        disabled={isAnalyzing}
+                      >
+                        <View style={styles.actionBtnInner}>
+                          <Ionicons name={isAnalyzing ? 'hourglass' : 'sparkles'} size={16} color="#FFFFFF" />
+                          <Text style={styles.actionBtnText}>
+                            {isAnalyzing ? t('dashboard.analyzing') : t('dashboard.analyzeAI')}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity style={[styles.actionBtn, styles.removeBtn]} onPress={removeImage}>
+                        <View style={styles.actionBtnInner}>
+                          <Ionicons name="close" size={16} color="#FFFFFF" />
+                          <Text style={styles.actionBtnText}>{t('dashboard.remove')}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                ) : (
+                  <View style={styles.uploadRow}>
+                    <TouchableOpacity style={styles.uploadCard} onPress={pickImage}>
+                      <View style={[styles.uploadIconBox, { backgroundColor: COLORS.primaryBg }]}>
+                        <Ionicons name="images" size={28} color={COLORS.primarySoft} />
+                      </View>
+                      <Text style={styles.uploadLabel}>{t('dashboard.uploadPhoto')}</Text>
+                      <Text style={styles.uploadSub}>{t('dashboard.fromGallery')}</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.uploadCard} onPress={takePhoto}>
+                      <View style={[styles.uploadIconBox, { backgroundColor: COLORS.successLight }]}>
+                        <Ionicons name="camera" size={28} color={COLORS.success} />
+                      </View>
+                      <Text style={styles.uploadLabel}>{t('dashboard.takePhoto')}</Text>
+                      <Text style={styles.uploadSub}>{t('dashboard.useCamera')}</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            )}
+          </View>
+
+          {/* Statistics Grid */}
+          <View style={styles.statsSection}>
+            <Text style={styles.sectionTitle}>{t('dashboard.yourStats')}</Text>
+            <View style={styles.statsGrid}>
+              <View style={[styles.statCard, { backgroundColor: COLORS.primaryBg }]}>
+                <View style={[styles.statIconBox, { backgroundColor: COLORS.primarySoft }]}>
+                  <Ionicons name="checkmark-done" size={20} color="#FFFFFF" />
+                </View>
+                <Text style={styles.statNumber}>{savedItems.length}</Text>
+                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.problemsSolved')}</Text>
+              </View>
+              <View style={[styles.statCard, { backgroundColor: '#FFF7ED' }]}>
+                <View style={[styles.statIconBox, { backgroundColor: '#F59E0B' }]}>
+                  <Ionicons name="flame" size={20} color="#FFFFFF" />
+                </View>
+                <Text style={styles.statNumber}>{streak}</Text>
+                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.dayStreak')}</Text>
+              </View>
+              <View style={[styles.statCard, { backgroundColor: COLORS.successLight }]}>
+                <View style={[styles.statIconBox, { backgroundColor: COLORS.success }]}>
+                  <Ionicons name="book" size={20} color="#FFFFFF" />
+                </View>
+                <Text style={styles.statNumber}>{completedCoursesCount}</Text>
+                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.coursesCompleted')}</Text>
+              </View>
+              <View style={[styles.statCard, { backgroundColor: COLORS.purpleLight }]}>
+                <View style={[styles.statIconBox, { backgroundColor: COLORS.purple }]}>
+                  <Ionicons name="trophy" size={20} color="#FFFFFF" />
+                </View>
+                <Text style={styles.statNumber}>{completedQuizzesCount}</Text>
+                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.quizzesCompleted')}</Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Recent Activity */}
+          <View style={styles.activitySection}>
+            <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
+            {recentItems.length === 0 ? (
+              <View style={styles.emptyActivity}>
+                <View style={styles.illustrationContainer}>
+                  <View style={styles.illustrationBgCircle}>
+                    <View style={styles.emptyIconBox}>
+                      <Ionicons name="document-text-outline" size={36} color={COLORS.primaryLight} />
+                    </View>
+                  </View>
+                  <View style={[styles.floatingBubble, styles.floatingTopRight]}>
+                    <Ionicons name="sparkles" size={16} color={COLORS.secondary} />
+                  </View>
+                  <View style={[styles.floatingBubble, styles.floatingBottomLeft]}>
+                    <Ionicons name="pencil" size={14} color={COLORS.primarySoft} />
+                  </View>
+                </View>
+                <Text style={styles.emptyActivityText}>
+                  {t('dashboard.noActivity')}
+                </Text>
+              </View>
+            ) : (
+              recentItems.map((item, index) => (
+                <View key={item.id || index} style={styles.activityCard}>
+                  {item.imageData && (
+                    <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.activityThumb} />
+                  )}
+                  <View style={styles.activityContent}>
+                    <Text style={styles.activityTitle} numberOfLines={1}>
+                      {item.answer ? item.answer : t('dashboard.mathProblem')}
+                    </Text>
+                    <Text style={styles.activityTime}>{formatTimeAgo(item.savedAt)}</Text>
+                  </View>
+                  <View style={styles.activityBadge}>
+                    <Ionicons name="checkmark" size={18} color={COLORS.success} />
+                  </View>
+                </View>
+              ))
+            )}
+          </View>
+
+          <View style={{ height: 30 }} />
+        </View>
       </ScrollView>
 
       <LoadingOverlay visible={isAnalyzing} />
@@ -373,158 +495,185 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
 
-  // Header
+  // Header Gradient
+  headerGradient: {
+    paddingTop: 56,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 22,
-    paddingTop: 56,
     paddingBottom: 20,
-    backgroundColor: COLORS.surface,
   },
   headerLeft: {
     flex: 1,
   },
   headerGreeting: {
-    fontSize: 16,
-    color: COLORS.primarySoft,
+    fontSize: 15,
+    color: 'rgba(255,255,255,0.85)',
     fontWeight: '600',
-    marginBottom: 2,
+    marginBottom: 4,
   },
   headerQuestion: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.text,
+    fontSize: 26,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: -0.5,
   },
   avatarButton: {
     marginLeft: 15,
   },
   avatar: {
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: COLORS.primaryBg,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    backgroundColor: 'rgba(255,255,255,0.2)',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.primarySoft,
+    borderWidth: 2.5,
+    borderColor: 'rgba(255,255,255,0.4)',
   },
   avatarText: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 'bold',
-    color: COLORS.primary,
+    color: '#FFFFFF',
+  },
+
+  // Quick Stats in Header
+  quickStats: {
+    flexDirection: 'row',
+    marginHorizontal: 22,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.2)',
+  },
+  quickStatItem: {
+    flex: 1,
+    alignItems: 'center',
+    gap: 2,
+  },
+  quickStatNumber: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  quickStatLabel: {
+    fontSize: 11,
+    color: 'rgba(255,255,255,0.75)',
+    fontWeight: '500',
+    textAlign: 'center',
+  },
+  quickStatDivider: {
+    width: 1,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    marginVertical: 4,
+  },
+
+  // Main Content
+  content: {
+    marginTop: -4,
   },
 
   // Scan Card
   scanCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 20,
+    borderRadius: 22,
     marginHorizontal: 18,
-    marginTop: 18,
+    marginTop: 16,
     padding: 20,
-    shadowColor: COLORS.primarySoft,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
-  },
-  scanCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 18,
-  },
-  scanIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
-    backgroundColor: COLORS.primaryBg,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  scanIconEmoji: {
-    fontSize: 24,
-  },
-  scanCardText: {
-    flex: 1,
-  },
-  scanCardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 3,
-  },
-  scanCardSubtitle: {
-    fontSize: 13,
-    color: COLORS.textSubtle,
+    ...SHADOWS.medium,
   },
   tabContainer: {
     flexDirection: 'row',
     backgroundColor: COLORS.tabBg,
-    borderRadius: 12,
+    borderRadius: 14,
     padding: 4,
     marginBottom: 18,
   },
   tab: {
     flex: 1,
-    paddingVertical: 10,
-    borderRadius: 8,
+    paddingVertical: 11,
+    borderRadius: 10,
     alignItems: 'center',
   },
   tabActive: {
     backgroundColor: COLORS.primarySoft,
-    shadowColor: COLORS.primarySoft,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 3,
+    ...SHADOWS.small,
+  },
+  tabInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   tabText: {
     fontSize: 13,
-    fontWeight: '600',
+    fontWeight: '700',
     color: COLORS.textSubtle,
   },
   tabTextActive: {
-    color: COLORS.surface,
+    color: '#FFFFFF',
   },
   keyboardMode: {
-    gap: 12,
+    gap: 0,
   },
-  cameraMode: {
-    // No extra styles needed, inherits from parent
-  },
-  mathInput: {
+  cameraMode: {},
+  mathDisplayArea: {
     backgroundColor: COLORS.inputBg,
     borderWidth: 1.5,
     borderColor: COLORS.inputBorder,
-    borderRadius: 14,
+    borderRadius: 16,
     padding: 16,
-    fontSize: 15,
+    minHeight: 100,
+    maxHeight: 160,
+  },
+  mathDisplayScroll: {
+    flex: 1,
+  },
+  mathDisplayText: {
+    fontSize: 20,
     color: COLORS.text,
-    minHeight: 140,
     fontFamily: 'System',
+    lineHeight: 28,
+  },
+  mathDisplayPlaceholder: {
+    fontSize: 15,
+    color: COLORS.textMuted,
+    lineHeight: 22,
+  },
+  mathActionRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginVertical: 12,
   },
   analyzeButtonFull: {
-    backgroundColor: COLORS.primarySoft,
-    borderRadius: 12,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  analyzeGradient: {
     paddingVertical: 16,
     alignItems: 'center',
-    shadowColor: COLORS.primarySoft,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+    borderRadius: 14,
   },
   analyzeButtonDisabled: {
-    backgroundColor: COLORS.disabled,
-    opacity: 0.6,
-    shadowOpacity: 0,
+    opacity: 0.5,
+  },
+  analyzeButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   analyzeButtonText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.surface,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
   uploadRow: {
     flexDirection: 'row',
@@ -533,22 +682,20 @@ const styles = StyleSheet.create({
   uploadCard: {
     flex: 1,
     backgroundColor: COLORS.inputBg,
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 20,
     alignItems: 'center',
     borderWidth: 1.5,
     borderColor: COLORS.inputBorder,
+    borderStyle: 'dashed',
   },
   uploadIconBox: {
     width: 56,
     height: 56,
-    borderRadius: 16,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 10,
-  },
-  uploadEmoji: {
-    fontSize: 28,
   },
   uploadLabel: {
     fontSize: 15,
@@ -561,14 +708,14 @@ const styles = StyleSheet.create({
     color: COLORS.textSubtle,
   },
   imagePreviewWrapper: {
-    borderRadius: 14,
+    borderRadius: 16,
     overflow: 'hidden',
   },
   imagePreview: {
     width: '100%',
     height: 220,
     backgroundColor: COLORS.borderLight,
-    borderRadius: 14,
+    borderRadius: 16,
     marginBottom: 12,
   },
   imageActions: {
@@ -578,7 +725,7 @@ const styles = StyleSheet.create({
   actionBtn: {
     flex: 1,
     paddingVertical: 14,
-    borderRadius: 12,
+    borderRadius: 14,
     alignItems: 'center',
   },
   analyzeBtn: {
@@ -589,8 +736,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.destructive,
   },
+  actionBtnInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   actionBtnText: {
-    color: COLORS.surface,
+    color: '#FFFFFF',
     fontSize: 15,
     fontWeight: 'bold',
   },
@@ -598,64 +750,81 @@ const styles = StyleSheet.create({
   // Daily Goal
   goalCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 20,
+    borderRadius: 22,
     marginHorizontal: 18,
     marginTop: 16,
     padding: 20,
-    shadowColor: COLORS.primarySoft,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.08,
-    shadowRadius: 12,
-    elevation: 4,
+    ...SHADOWS.medium,
   },
   goalHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 14,
+    marginBottom: 16,
   },
-  goalFlag: {
-    fontSize: 20,
-    marginRight: 10,
+  goalIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 14,
+    backgroundColor: '#FFF7ED',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
-  goalTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.text,
+  goalTextContainer: {
     flex: 1,
   },
+  goalTitle: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: COLORS.text,
+  },
   goalCount: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
     color: COLORS.primarySoft,
+    marginTop: 2,
+  },
+  goalCompleteBadge: {
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: '#ECFDF5',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   progressBarBg: {
     height: 10,
     backgroundColor: COLORS.primaryBg,
     borderRadius: 5,
     overflow: 'hidden',
-    marginBottom: 10,
+    marginBottom: 12,
   },
   progressBarFill: {
     height: '100%',
-    backgroundColor: COLORS.primarySoft,
     borderRadius: 5,
+  },
+  goalEncouragementRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
   },
   goalEncouragement: {
     fontSize: 13,
     color: COLORS.textSubtle,
-    fontWeight: '500',
+    fontWeight: '600',
   },
 
   // Statistics
   statsSection: {
     marginHorizontal: 18,
-    marginTop: 22,
+    marginTop: 24,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 19,
+    fontWeight: '800',
     color: COLORS.text,
     marginBottom: 14,
+    letterSpacing: -0.3,
   },
   statsGrid: {
     flexDirection: 'row',
@@ -664,25 +833,23 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: (width - 18 * 2 - 12) / 2,
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 18,
   },
   statIconBox: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
+    width: 42,
+    height: 42,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 12,
   },
-  statIconEmoji: {
-    fontSize: 20,
-  },
   statNumber: {
-    fontSize: 26,
-    fontWeight: 'bold',
+    fontSize: 28,
+    fontWeight: '800',
     color: COLORS.text,
     marginBottom: 4,
+    letterSpacing: -0.5,
   },
   statLabel: {
     fontSize: 12,
@@ -693,18 +860,58 @@ const styles = StyleSheet.create({
   // Recent Activity
   activitySection: {
     marginHorizontal: 18,
-    marginTop: 22,
+    marginTop: 24,
   },
   emptyActivity: {
     backgroundColor: COLORS.surface,
-    borderRadius: 18,
-    padding: 28,
+    borderRadius: 20,
+    padding: 32,
     alignItems: 'center',
     ...SHADOWS.soft,
   },
-  emptyActivityIcon: {
-    fontSize: 40,
-    marginBottom: 12,
+  illustrationContainer: {
+    width: 120,
+    height: 120,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  illustrationBgCircle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    backgroundColor: COLORS.primaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: COLORS.inputBorder,
+  },
+  emptyIconBox: {
+    width: 64,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: COLORS.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...SHADOWS.small,
+  },
+  floatingBubble: {
+    position: 'absolute',
+    width: 36,
+    height: 36,
+    borderRadius: 12,
+    backgroundColor: COLORS.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+    ...SHADOWS.small,
+  },
+  floatingTopRight: {
+    top: 2,
+    right: 0,
+  },
+  floatingBottomLeft: {
+    bottom: 2,
+    left: 0,
   },
   emptyActivityText: {
     fontSize: 14,
@@ -714,7 +921,7 @@ const styles = StyleSheet.create({
   },
   activityCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 16,
+    borderRadius: 18,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',
@@ -724,7 +931,7 @@ const styles = StyleSheet.create({
   activityThumb: {
     width: 52,
     height: 52,
-    borderRadius: 12,
+    borderRadius: 14,
     backgroundColor: COLORS.borderLight,
     marginRight: 14,
   },
@@ -739,20 +946,15 @@ const styles = StyleSheet.create({
   },
   activityTime: {
     fontSize: 12,
-    color: COLORS.textSubtle,
+    color: COLORS.textMuted,
   },
   activityBadge: {
-    width: 32,
-    height: 32,
-    borderRadius: 10,
+    width: 34,
+    height: 34,
+    borderRadius: 12,
     backgroundColor: COLORS.successLight,
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 10,
-  },
-  activityBadgeText: {
-    fontSize: 16,
-    color: COLORS.success,
-    fontWeight: 'bold',
   },
 });

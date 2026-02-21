@@ -121,7 +121,11 @@
     "lessons": "Lektionen",
     "viewDetails": "Details ansehen →",
     "noCourseFound": "Keine Kurse gefunden",
-    "tryDifferentFilters": "Versuchen Sie, Ihre Filter oder Suche zu ändern."
+    "tryDifferentFilters": "Versuchen Sie, Ihre Filter oder Suche zu ändern.",
+    "statusCompleted": "Abgeschlossen",
+    "statusLearning": "Am Lernen",
+    "statusStart": "Kurs starten",
+    "resumeMessage": "Hier waren Sie zuletzt, bitte setzen Sie den Kurs fort"
   },
   "quiz": {
     "title": "Quiz",
@@ -130,7 +134,10 @@
     "questions": "{{count}} Fragen",
     "startQuiz": "Quiz starten →",
     "quizCount_one": "{{count}} Quiz",
-    "quizCount_other": "{{count}} Quiz"
+    "quizCount_other": "{{count}} Quiz",
+    "challengeOfDay": "Herausforderung des Tages",
+    "daily": "Täglich",
+    "bestScore": "Beste: {{score}}%"
   },
   "saved": {
     "title": "Gespeichert",
@@ -258,7 +265,8 @@
     "yourAnswer": "Ihre Antwort: {{answer}}",
     "correctAnswer": "Richtige Antwort: {{answer}}",
     "retry": "Erneut versuchen",
-    "goBack": "Zurück"
+    "goBack": "Zurück",
+    "perfectScore": "PERFEKTE PUNKTZAHL!"
   },
   "profileModal": {
     "title": "Mein Profil",
@@ -272,7 +280,11 @@
     "editProfileSub": "Name, E-Mail ändern",
     "logoutAction": "Abmelden",
     "logoutSub": "Vom Konto abmelden",
-    "logoutConfirm": "Sind Sie sicher, dass Sie sich abmelden möchten?"
+    "logoutConfirm": "Sind Sie sicher, dass Sie sich abmelden möchten?",
+    "weeklyActivity": "Wöchentliche Aktivität",
+    "daysStreak": "{{count}} Tage in Folge",
+    "longestStreak": "Längste: {{count}} Tage",
+    "achievements": "Erfolge"
   },
   "editProfile": {
     "title": "Profil bearbeiten",
@@ -387,5 +399,32 @@
     "notMathImage": "Dieses Foto enthält kein eindeutiges Mathe-Problem",
     "unclearImage": "Das Foto ist zu unklar zum Analysieren. Bitte machen Sie ein klareres Foto",
     "notMathText": "Dies ist kein eindeutiges Mathe-Problem"
+  },
+  "mathKeyboard": {
+    "selectKeyboard": "Tastatur auswählen",
+    "basicMath": "Grundrechenarten-Tastatur",
+    "preAlgebra": "Vor-Algebra-Tastatur",
+    "algebra": "Algebra-Tastatur",
+    "trigonometry": "Trigonometrie-Tastatur",
+    "precalculus": "Vorkalkül-Tastatur",
+    "calculus": "Analysis-Tastatur",
+    "statistics": "Statistik-Tastatur",
+    "finiteMath": "Finite Mathematik-Tastatur",
+    "linearAlgebra": "Lineare Algebra-Tastatur",
+    "chemistry": "Chemie-Tastatur",
+    "physics": "Physik-Tastatur",
+    "graphing": "Grafik-Tastatur",
+    "clearAll": "Alles löschen"
+  },
+  "onboarding": {
+    "slide1Title": "Scannen & Sofort Losen",
+    "slide1Desc": "Fotografiere ein Mathe-Problem oder tippe es ein und erhalte schrittweise Losungen mit KI.",
+    "slide2Title": "Lerne in Deinem Tempo",
+    "slide2Desc": "Entdecke 50+ Kurse von Grundrechenarten bis Infinitesimalrechnung. Interaktive Lektionen machen Mathe zum Spass.",
+    "slide3Title": "Verfolge Deinen Fortschritt",
+    "slide3Desc": "Baue tagliche Streaks auf, verdiene Erfolge und beobachte wie deine Mathe-Fahigkeiten wachsen.",
+    "skip": "Uberspringen",
+    "next": "Weiter",
+    "getStarted": "Los geht's"
   }
 }

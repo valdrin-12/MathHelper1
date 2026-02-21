@@ -30,8 +30,10 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
       setShowExplanation(false);
       setAnswers([]);
       setShowQuitConfirm(false);
+      // Reset fade animation so content is visible for the new quiz
+      fadeAnim.setValue(1);
     }
-  }, [visible]);
+  }, [visible, fadeAnim]);
 
   if (!quizSet) return null;
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   View,
   Text,
@@ -12,51 +12,36 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
+import { useTheme } from '../context/ThemeContext';
 import InfoModal from '../components/InfoModal';
 import LanguageSwitcher from '../components/LanguageSwitcher';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const { user, logout } = useUser();
   const { completedCoursesCount, completedQuizzesCount, streak, achievements } = useStats();
+  const { isDark, toggleTheme, colors } = useTheme();
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
   const [soundEffects, setSoundEffects] = useState(true);
   const [infoModal, setInfoModal] = useState(null);
 
   const handleLogout = async () => {
-    console.log('[SettingsScreen] handleLogout thirret');
-
-    // Use window.confirm for web, Alert.alert for native
     if (Platform.OS === 'web') {
       const confirmed = window.confirm(t('settings.logoutConfirm'));
-      console.log('[SettingsScreen] Web confirm result:', confirmed);
-      if (confirmed) {
-        console.log('[SettingsScreen] User konfirmoi logout - duke thirrur logout()...');
-        await logout();
-        console.log('[SettingsScreen] logout() u krye!');
-      } else {
-        console.log('[SettingsScreen] User anuloi logout');
-      }
+      if (confirmed) await logout();
     } else {
       Alert.alert(
         t('settings.logoutConfirmTitle'),
         t('settings.logoutConfirm'),
         [
-          {
-            text: t('common.cancel'),
-            style: 'cancel',
-            onPress: () => console.log('[SettingsScreen] User anuloi logout')
-          },
+          { text: t('common.cancel'), style: 'cancel' },
           {
             text: t('settings.logout'),
             style: 'destructive',
-            onPress: async () => {
-              console.log('[SettingsScreen] User konfirmoi logout - duke thirrur logout()...');
-              await logout();
-              console.log('[SettingsScreen] logout() u krye!');
-            }
+            onPress: async () => await logout(),
           },
         ]
       );
@@ -67,163 +52,214 @@ export default function SettingsScreen() {
     ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
     : '?';
 
+  const SettingToggle = ({ icon, iconColor, iconBg, title, description, value, onValueChange }) => (
+    <View style={[styles.settingCard, { backgroundColor: colors.surface }]}>
+      <View style={[styles.settingIconBox, { backgroundColor: iconBg }]}>
+        <Ionicons name={icon} size={20} color={iconColor} />
+      </View>
+      <View style={styles.settingTextWrap}>
+        <Text style={[styles.settingTitle, { color: colors.text }]} numberOfLines={1}>{title}</Text>
+        {description && <Text style={[styles.settingDesc, { color: colors.textMuted }]} numberOfLines={2}>{description}</Text>}
+      </View>
+      <Switch
+        value={value}
+        onValueChange={onValueChange}
+        trackColor={{ false: colors.border, true: colors.primary + '60' }}
+        thumbColor={value ? colors.primary : colors.surface}
+        ios_backgroundColor={colors.border}
+      />
+    </View>
+  );
+
+  const MenuItem = ({ icon, iconColor, iconBg, title, subtitle, onPress }) => (
+    <TouchableOpacity
+      style={[styles.menuCard, { backgroundColor: colors.surface }]}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <View style={[styles.settingIconBox, { backgroundColor: iconBg }]}>
+        <Ionicons name={icon} size={20} color={iconColor} />
+      </View>
+      <View style={styles.menuTextWrap}>
+        <Text style={[styles.menuTitle, { color: colors.text }]}>{title}</Text>
+        {subtitle && <Text style={[styles.menuSubtitle, { color: colors.textMuted }]}>{subtitle}</Text>}
+      </View>
+      <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
+    </TouchableOpacity>
+  );
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
       {/* Header */}
-      <View style={styles.header}>
+      <LinearGradient
+        colors={[colors.primary || COLORS.primary, colors.primarySoft || COLORS.primarySoft, colors.primaryLight || COLORS.primaryLight]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.headerGradient}
+      >
         <Text style={styles.headerTitle}>{t('settings.title')}</Text>
         <Text style={styles.headerSubtitle}>{t('settings.subtitle')}</Text>
-      </View>
 
-      {/* Profili */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.profile')}</Text>
-        <View style={styles.profileCard}>
-          <View style={styles.profileAvatar}>
+        {/* Profile Card inside header */}
+        <View style={styles.glassProfileCard}>
+          <LinearGradient
+            colors={['rgba(255,255,255,0.25)', 'rgba(255,255,255,0.1)']}
+            style={styles.profileAvatar}
+          >
             <Text style={styles.profileAvatarText}>{initials}</Text>
-          </View>
+          </LinearGradient>
           <View style={styles.profileInfo}>
             <Text style={styles.profileName}>{user?.name || t('settings.user')}</Text>
             <Text style={styles.profileEmail}>{user?.email || ''}</Text>
           </View>
+          <View style={styles.profileStats}>
+            <View style={styles.profileStatItem}>
+              <Ionicons name="flame" size={14} color="rgba(255,255,255,0.8)" />
+              <Text style={styles.profileStatText}>{streak}</Text>
+            </View>
+          </View>
         </View>
-      </View>
+      </LinearGradient>
 
-      {/* Preferencat */}
+      {/* Preferences Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.preferences')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.preferences')}</Text>
 
-        <View style={styles.settingItem}>
-          <View style={styles.settingLeft}>
-            <Text style={styles.settingIcon}>🔔</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.notifications')}</Text>
-              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.notificationsDesc')}</Text>
-            </View>
+        <SettingToggle
+          icon="notifications"
+          iconColor="#3B82F6"
+          iconBg={colors.primaryBg}
+          title={t('settings.notifications')}
+          description={t('settings.notificationsDesc')}
+          value={notifications}
+          onValueChange={setNotifications}
+        />
+
+        <SettingToggle
+          icon="moon"
+          iconColor="#8B5CF6"
+          iconBg={colors.purpleLight}
+          title={t('settings.darkMode')}
+          description={t('settings.darkModeDesc')}
+          value={isDark}
+          onValueChange={toggleTheme}
+        />
+
+        <SettingToggle
+          icon="volume-high"
+          iconColor="#F59E0B"
+          iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+          title={t('settings.soundEffects')}
+          description={t('settings.soundEffectsDesc')}
+          value={soundEffects}
+          onValueChange={setSoundEffects}
+        />
+
+        <View style={[styles.settingCard, { backgroundColor: colors.surface }]}>
+          <View style={[styles.settingIconBox, { backgroundColor: isDark ? 'rgba(6,182,212,0.12)' : '#ECFEFF' }]}>
+            <Ionicons name="globe" size={20} color="#06B6D4" />
           </View>
-          <Switch value={notifications} onValueChange={setNotifications}
-            trackColor={{ false: COLORS.border, true: COLORS.primary }} thumbColor={COLORS.surface} />
-        </View>
-
-        <View style={styles.settingItem}>
-          <View style={styles.settingLeft}>
-            <Text style={styles.settingIcon}>🌙</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.darkMode')}</Text>
-              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.darkModeDesc')}</Text>
-            </View>
-          </View>
-          <Switch value={darkMode} onValueChange={setDarkMode}
-            trackColor={{ false: COLORS.border, true: COLORS.primary }} thumbColor={COLORS.surface} />
-        </View>
-
-        <View style={styles.settingItem}>
-          <View style={styles.settingLeft}>
-            <Text style={styles.settingIcon}>🔊</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.soundEffects')}</Text>
-              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.soundEffectsDesc')}</Text>
-            </View>
-          </View>
-          <Switch value={soundEffects} onValueChange={setSoundEffects}
-            trackColor={{ false: COLORS.border, true: COLORS.primary }} thumbColor={COLORS.surface} />
-        </View>
-
-        <View style={styles.settingItem}>
-          <View style={styles.settingLeft}>
-            <Text style={styles.settingIcon}>🌐</Text>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.settingTitle} numberOfLines={1}>{t('settings.language')}</Text>
-              <Text style={styles.settingDescription} numberOfLines={2}>{t('settings.languageDesc')}</Text>
-            </View>
+          <View style={styles.settingTextWrap}>
+            <Text style={[styles.settingTitle, { color: colors.text }]} numberOfLines={1}>{t('settings.language')}</Text>
+            <Text style={[styles.settingDesc, { color: colors.textMuted }]} numberOfLines={2}>{t('settings.languageDesc')}</Text>
           </View>
         </View>
-        <View style={styles.languageSwitcherRow}>
+        <View style={[styles.languageRow, { backgroundColor: colors.primary || COLORS.primary }]}>
           <LanguageSwitcher />
         </View>
       </View>
 
-      {/* Mësimi */}
+      {/* Learning Section */}
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.learning')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.learning')}</Text>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => setInfoModal('goals')}>
-          <Text style={styles.menuIcon}>🎯</Text>
-          <View style={styles.menuTextWrap}>
-            <Text style={styles.menuText}>{t('settings.dailyGoals')}</Text>
-            <Text style={styles.menuSubtext}>{streak > 0 ? t('settings.todayStreak', { streak }) : t('settings.startToday')}</Text>
-          </View>
-          <Text style={styles.menuArrow}>→</Text>
-        </TouchableOpacity>
+        <MenuItem
+          icon="flag"
+          iconColor="#F59E0B"
+          iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+          title={t('settings.dailyGoals')}
+          subtitle={streak > 0 ? t('settings.todayStreak', { streak }) : t('settings.startToday')}
+          onPress={() => setInfoModal('goals')}
+        />
+        <MenuItem
+          icon="bar-chart"
+          iconColor="#3B82F6"
+          iconBg={colors.primaryBg}
+          title={t('settings.progressStats')}
+          subtitle={t('settings.coursesQuizzes', { courses: completedCoursesCount, quizzes: completedQuizzesCount })}
+          onPress={() => setInfoModal('stats')}
+        />
+        <MenuItem
+          icon="trophy"
+          iconColor="#F59E0B"
+          iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+          title={t('settings.achievements')}
+          subtitle={t('settings.achievementsCount', { count: achievements.length })}
+          onPress={() => setInfoModal('achievements')}
+        />
+      </View>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => setInfoModal('stats')}>
-          <Text style={styles.menuIcon}>📊</Text>
-          <View style={styles.menuTextWrap}>
-            <Text style={styles.menuText}>{t('settings.progressStats')}</Text>
-            <Text style={styles.menuSubtext}>{t('settings.coursesQuizzes', { courses: completedCoursesCount, quizzes: completedQuizzesCount })}</Text>
-          </View>
-          <Text style={styles.menuArrow}>→</Text>
-        </TouchableOpacity>
+      {/* Other Section */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.other')}</Text>
 
-        <TouchableOpacity style={styles.menuItem} onPress={() => setInfoModal('achievements')}>
-          <Text style={styles.menuIcon}>🏆</Text>
-          <View style={styles.menuTextWrap}>
-            <Text style={styles.menuText}>{t('settings.achievements')}</Text>
-            <Text style={styles.menuSubtext}>{t('settings.achievementsCount', { count: achievements.length })}</Text>
-          </View>
-          <Text style={styles.menuArrow}>→</Text>
+        <MenuItem
+          icon="help-circle"
+          iconColor="#10B981"
+          iconBg={isDark ? 'rgba(16,185,129,0.12)' : '#ECFDF5'}
+          title={t('settings.helpSupport')}
+          onPress={() => setInfoModal('help')}
+        />
+        <MenuItem
+          icon="document-text"
+          iconColor="#64748B"
+          iconBg={isDark ? 'rgba(100,116,139,0.12)' : '#F1F5F9'}
+          title={t('settings.termsOfService')}
+          onPress={() => setInfoModal('terms')}
+        />
+        <MenuItem
+          icon="shield-checkmark"
+          iconColor="#8B5CF6"
+          iconBg={colors.purpleLight}
+          title={t('settings.privacyPolicy')}
+          onPress={() => setInfoModal('privacy')}
+        />
+        <MenuItem
+          icon="information-circle"
+          iconColor="#3B82F6"
+          iconBg={colors.primaryBg}
+          title={t('settings.aboutApp')}
+          onPress={() => setInfoModal('about')}
+        />
+      </View>
+
+      {/* Logout */}
+      <View style={styles.section}>
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
+          <Text style={styles.logoutText}>{t('settings.logout')}</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Të Tjera */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t('settings.other')}</Text>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => setInfoModal('help')}>
-          <Text style={styles.menuIcon}>❓</Text>
-          <Text style={styles.menuText}>{t('settings.helpSupport')}</Text>
-          <Text style={styles.menuArrow}>→</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => setInfoModal('terms')}>
-          <Text style={styles.menuIcon}>📄</Text>
-          <Text style={styles.menuText}>{t('settings.termsOfService')}</Text>
-          <Text style={styles.menuArrow}>→</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => setInfoModal('privacy')}>
-          <Text style={styles.menuIcon}>🔒</Text>
-          <Text style={styles.menuText}>{t('settings.privacyPolicy')}</Text>
-          <Text style={styles.menuArrow}>→</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.menuItem} onPress={() => setInfoModal('about')}>
-          <Text style={styles.menuIcon}>ℹ️</Text>
-          <Text style={styles.menuText}>{t('settings.aboutApp')}</Text>
-          <Text style={styles.menuArrow}>→</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Dalja */}
-      <View style={styles.section}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>🚪 {t('settings.logout')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Versioni */}
+      {/* Version */}
       <View style={styles.versionContainer}>
-        <Text style={styles.versionText}>{t('settings.version')}</Text>
+        <Text style={[styles.versionText, { color: colors.textMuted }]}>{t('settings.version')}</Text>
       </View>
+
+      <View style={{ height: 100 }} />
 
       {/* Info Modals */}
       <InfoModal
         visible={infoModal === 'help'}
         title={t('infoContent.help.title')}
         content={[
-          { heading: `📧 ${t('infoContent.help.contact.heading')}`, text: t('infoContent.help.contact.text') },
-          { heading: `❓ ${t('infoContent.help.faq.heading')}`, text: t('infoContent.help.faq.text') },
-          { heading: `🐛 ${t('infoContent.help.bug.heading')}`, text: t('infoContent.help.bug.text') },
+          { heading: t('infoContent.help.contact.heading'), text: t('infoContent.help.contact.text') },
+          { heading: t('infoContent.help.faq.heading'), text: t('infoContent.help.faq.text') },
+          { heading: t('infoContent.help.bug.heading'), text: t('infoContent.help.bug.text') },
         ]}
         onClose={() => setInfoModal(null)}
       />
@@ -256,10 +292,10 @@ export default function SettingsScreen() {
         visible={infoModal === 'about'}
         title={t('infoContent.about.title')}
         content={[
-          { heading: `📱 ${t('infoContent.about.app.heading')}`, text: t('infoContent.about.app.text') },
-          { heading: `🎯 ${t('infoContent.about.mission.heading')}`, text: t('infoContent.about.mission.text') },
-          { heading: `✨ ${t('infoContent.about.features.heading')}`, text: t('infoContent.about.features.text') },
-          { heading: `👩‍💻 ${t('infoContent.about.developer.heading')}`, text: t('infoContent.about.developer.text') },
+          { heading: t('infoContent.about.app.heading'), text: t('infoContent.about.app.text') },
+          { heading: t('infoContent.about.mission.heading'), text: t('infoContent.about.mission.text') },
+          { heading: t('infoContent.about.features.heading'), text: t('infoContent.about.features.text') },
+          { heading: t('infoContent.about.developer.heading'), text: t('infoContent.about.developer.text') },
         ]}
         onClose={() => setInfoModal(null)}
       />
@@ -267,8 +303,8 @@ export default function SettingsScreen() {
         visible={infoModal === 'goals'}
         title={t('infoContent.goals.title')}
         content={[
-          { heading: `🎯 ${t('infoContent.goals.dailyGoal.heading')}`, text: t('infoContent.goals.dailyGoal.text') },
-          { heading: '🔥 Streak', text: t('infoContent.goals.currentStreak', { streak }) },
+          { heading: t('infoContent.goals.dailyGoal.heading'), text: t('infoContent.goals.dailyGoal.text') },
+          { heading: 'Streak', text: t('infoContent.goals.currentStreak', { streak }) },
         ]}
         onClose={() => setInfoModal(null)}
       />
@@ -276,7 +312,7 @@ export default function SettingsScreen() {
         visible={infoModal === 'stats'}
         title={t('infoContent.stats.title')}
         content={[
-          { heading: `📊 ${t('dashboard.yourStats')}`, text: t('infoContent.stats.yourStats', { courses: completedCoursesCount, quizzes: completedQuizzesCount, streak }) },
+          { heading: t('dashboard.yourStats'), text: t('infoContent.stats.yourStats', { courses: completedCoursesCount, quizzes: completedQuizzesCount, streak }) },
         ]}
         onClose={() => setInfoModal(null)}
       />
@@ -285,7 +321,7 @@ export default function SettingsScreen() {
         title={t('settings.achievements')}
         content={achievements.length > 0
           ? achievements.map(a => ({ heading: `${a.emoji} ${t(`achievements.${a.id}.title`)}`, text: t(`achievements.${a.id}.desc`) }))
-          : [{ heading: `🎯 ${t('achievements.startEarning')}`, text: t('achievements.startEarningDesc') }]
+          : [{ heading: t('achievements.startEarning'), text: t('achievements.startEarningDesc') }]
         }
         onClose={() => setInfoModal(null)}
       />
@@ -294,55 +330,185 @@ export default function SettingsScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.backgroundAlt },
-  header: { padding: SPACING.xl, paddingTop: 60, backgroundColor: COLORS.primary },
-  headerTitle: { ...TYPOGRAPHY.h1, color: COLORS.textOnPrimary, marginBottom: SPACING.xs + 1 },
-  headerSubtitle: { fontSize: 14, color: COLORS.textOnPrimary, opacity: 0.9 },
-  section: { padding: SPACING.xl },
-  sectionTitle: { ...TYPOGRAPHY.h3, color: COLORS.textDark, marginBottom: 15 },
-  profileCard: {
-    backgroundColor: COLORS.surface, borderRadius: BORDER_RADIUS.lg, padding: SPACING.xl,
-    flexDirection: 'row', alignItems: 'center',
-    ...SHADOWS.medium,
+  container: {
+    flex: 1,
+  },
+
+  // Header
+  headerGradient: {
+    paddingHorizontal: SPACING.xl,
+    paddingTop: 60,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 28,
+    borderBottomRightRadius: 28,
+  },
+  headerTitle: {
+    fontSize: 30,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    marginBottom: 4,
+    letterSpacing: -0.5,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.8)',
+    fontWeight: '500',
+    marginBottom: 20,
+  },
+
+  // Glass Profile Card
+  glassProfileCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    borderRadius: 18,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.25)',
   },
   profileAvatar: {
-    width: 60, height: 60, borderRadius: 30, backgroundColor: COLORS.primary,
-    justifyContent: 'center', alignItems: 'center', marginRight: 15,
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
   },
-  profileAvatarText: { fontSize: 24, fontWeight: 'bold', color: COLORS.textOnPrimary },
-  profileInfo: { flex: 1 },
-  profileName: { ...TYPOGRAPHY.h3, color: COLORS.textDark, marginBottom: SPACING.xs + 1 },
-  profileEmail: { fontSize: 14, color: COLORS.textSecondary },
-  settingItem: {
-    backgroundColor: COLORS.surface, borderRadius: BORDER_RADIUS.lg, padding: SPACING.xl,
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
+  profileAvatarText: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  profileInfo: {
+    flex: 1,
+  },
+  profileName: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 2,
+  },
+  profileEmail: {
+    fontSize: 13,
+    color: 'rgba(255,255,255,0.7)',
+    fontWeight: '500',
+  },
+  profileStats: {
+    flexDirection: 'row',
+    gap: 8,
+  },
+  profileStatItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(255,255,255,0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 10,
+  },
+  profileStatText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+
+  // Sections
+  section: {
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.xl,
+  },
+  sectionTitle: {
+    fontSize: 17,
+    fontWeight: '800',
+    letterSpacing: -0.3,
+    marginBottom: 14,
+  },
+
+  // Setting Toggle Card
+  settingCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 18,
+    padding: 16,
     marginBottom: 10,
+    ...SHADOWS.soft,
+  },
+  settingIconBox: {
+    width: 42,
+    height: 42,
+    borderRadius: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+  },
+  settingTextWrap: {
+    flex: 1,
+    marginRight: 10,
+  },
+  settingTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  settingDesc: {
+    fontSize: 12,
+    lineHeight: 16,
+  },
+
+  // Language
+  languageRow: {
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 10,
+    alignItems: 'center',
     ...SHADOWS.medium,
   },
-  settingLeft: { flexDirection: 'row', alignItems: 'center', flex: 1 },
-  settingIcon: { fontSize: 24, marginRight: 15 },
-  settingTitle: { fontSize: 16, fontWeight: '600', color: COLORS.textDark, marginBottom: 3 },
-  settingDescription: { ...TYPOGRAPHY.caption, color: COLORS.textMuted },
-  languageSwitcherRow: {
-    backgroundColor: COLORS.primary, borderRadius: BORDER_RADIUS.lg, padding: 14,
-    marginBottom: 10, alignItems: 'center',
-    ...SHADOWS.medium,
+
+  // Menu Item
+  menuCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 18,
+    padding: 16,
+    marginBottom: 10,
+    ...SHADOWS.soft,
   },
-  menuItem: {
-    backgroundColor: COLORS.surface, borderRadius: BORDER_RADIUS.lg, padding: SPACING.xl,
-    flexDirection: 'row', alignItems: 'center', marginBottom: 10,
-    ...SHADOWS.medium,
+  menuTextWrap: {
+    flex: 1,
+    marginRight: 10,
   },
-  menuIcon: { fontSize: 24, marginRight: 15 },
-  menuTextWrap: { flex: 1 },
-  menuText: { fontSize: 16, fontWeight: '500', color: COLORS.textDark },
-  menuSubtext: { fontSize: 12, color: COLORS.textMuted, marginTop: 2 },
-  menuArrow: { fontSize: 20, color: COLORS.primary },
+  menuTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  menuSubtitle: {
+    fontSize: 12,
+  },
+
+  // Logout
   logoutButton: {
-    backgroundColor: COLORS.destructive, borderRadius: BORDER_RADIUS.lg, padding: 18, alignItems: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EF4444',
+    borderRadius: 18,
+    padding: 18,
+    gap: 8,
     ...SHADOWS.medium,
   },
-  logoutText: { fontSize: 16, fontWeight: 'bold', color: COLORS.textLight },
-  versionContainer: { alignItems: 'center', paddingVertical: SPACING.xl },
-  versionText: { ...TYPOGRAPHY.caption, color: COLORS.textMuted },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
+
+  // Version
+  versionContainer: {
+    alignItems: 'center',
+    paddingVertical: SPACING.xl,
+  },
+  versionText: {
+    fontSize: 13,
+  },
 });
