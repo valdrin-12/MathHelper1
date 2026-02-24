@@ -8,6 +8,7 @@ import {
   Dimensions,
   Image,
   Alert,
+  Modal,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect } from '@react-navigation/native';
@@ -21,6 +22,7 @@ import { useSavedItems } from '../context/SavedItemsContext';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
 import ProfileModal from '../components/ProfileModal';
+import PremiumModal from '../components/PremiumModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../theme/constants';
@@ -54,6 +56,8 @@ export default function DashboardScreen() {
   const [analysisResult, setAnalysisResult] = useState(null);
   const [showResultModal, setShowResultModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [showLimitModal, setShowLimitModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   const greeting = getGreeting(t);
   const displayName = user?.name ? user.name.split(' ')[0] : t('common.friend');
@@ -127,7 +131,11 @@ export default function DashboardScreen() {
       }
     } catch (error) {
       console.error('Gabim gjate analizes:', error);
-      Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
+      if (error.message === 'DAILY_LIMIT_REACHED') {
+        setShowLimitModal(true);
+      } else {
+        Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
+      }
     } finally {
       setIsAnalyzing(false);
     }
@@ -484,6 +492,65 @@ export default function DashboardScreen() {
       <ProfileModal
         visible={showProfile}
         onClose={() => setShowProfile(false)}
+        onUpgrade={() => setShowPremiumModal(true)}
+      />
+
+      {/* Daily Limit Modal */}
+      <Modal
+        visible={showLimitModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLimitModal(false)}
+      >
+        <View style={styles.limitOverlay}>
+          <View style={styles.limitModal}>
+            <View style={styles.limitIconBox}>
+              <Ionicons name="lock-closed" size={36} color="#F59E0B" />
+            </View>
+            <Text style={styles.limitTitle}>{t('rateLimit.title')}</Text>
+            <Text style={styles.limitMessage}>{t('rateLimit.message')}</Text>
+
+            <View style={styles.limitDivider} />
+
+            <View style={styles.limitPremiumBox}>
+              <View style={styles.limitPremiumHeader}>
+                <Ionicons name="star" size={20} color="#F59E0B" />
+                <Text style={styles.limitPremiumTitle}>{t('rateLimit.premiumTitle')}</Text>
+              </View>
+              <Text style={styles.limitPremiumDesc}>{t('rateLimit.premiumDesc')}</Text>
+            </View>
+
+            <TouchableOpacity
+              style={styles.limitPremiumButton}
+              onPress={() => {
+                setShowLimitModal(false);
+                setTimeout(() => setShowPremiumModal(true), 300);
+              }}
+            >
+              <LinearGradient
+                colors={['#F59E0B', '#D97706']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={styles.limitPremiumGradient}
+              >
+                <Ionicons name="star" size={18} color="#FFFFFF" />
+                <Text style={styles.limitPremiumButtonText}>{t('rateLimit.upgradePremium')}</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.limitCloseButton}
+              onPress={() => setShowLimitModal(false)}
+            >
+              <Text style={styles.limitCloseText}>{t('rateLimit.tryTomorrow')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <PremiumModal
+        visible={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
       />
     </>
   );
@@ -956,5 +1023,104 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 10,
+  },
+
+  // Daily Limit Modal
+  limitOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  limitModal: {
+    backgroundColor: COLORS.surface,
+    borderRadius: 24,
+    padding: 28,
+    width: '100%',
+    maxWidth: 360,
+    alignItems: 'center',
+    ...SHADOWS.large,
+  },
+  limitIconBox: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: '#FFF7ED',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  limitTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: COLORS.text,
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  limitMessage: {
+    fontSize: 14,
+    color: COLORS.textSubtle,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 20,
+  },
+  limitDivider: {
+    height: 1,
+    backgroundColor: COLORS.borderLight,
+    width: '100%',
+    marginBottom: 20,
+  },
+  limitPremiumBox: {
+    backgroundColor: '#FFFBEB',
+    borderRadius: 16,
+    padding: 16,
+    width: '100%',
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#FDE68A',
+  },
+  limitPremiumHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 6,
+  },
+  limitPremiumTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#92400E',
+  },
+  limitPremiumDesc: {
+    fontSize: 13,
+    color: '#A16207',
+    lineHeight: 18,
+  },
+  limitPremiumButton: {
+    width: '100%',
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginBottom: 12,
+  },
+  limitPremiumGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 15,
+    gap: 8,
+    borderRadius: 14,
+  },
+  limitPremiumButtonText: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#FFFFFF',
+  },
+  limitCloseButton: {
+    paddingVertical: 10,
+  },
+  limitCloseText: {
+    fontSize: 14,
+    color: COLORS.textSubtle,
+    fontWeight: '600',
   },
 });

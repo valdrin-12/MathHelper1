@@ -1,7 +1,8 @@
 const userModel = require('../models/userModel');
 const { generateAccessToken, generateRefreshToken, verifyToken, getRefreshTokenExpiry } = require('../utils/tokens');
 const pool = require('../config/database');
-const { sendWelcomeEmail } = require('../services/emailService');
+const { sendWelcomeEmail, sendPasswordResetEmail } = require('../services/emailService');
+const crypto = require('crypto');
 
 async function register(req, res) {
   try {
@@ -181,4 +182,78 @@ async function refreshTokens(req, res) {
   }
 }
 
-module.exports = { register, login, logout, getMe, updateProfile, refreshTokens };
+async function forgotPassword(req, res) {
+  try {
+    const { email } = req.body;
+
+    // Always return success to prevent email enumeration
+    const genericResponse = {
+      success: true,
+      message: 'If an account exists with that email, a reset code has been sent.',
+    };
+
+    const user = await userModel.findByEmail(email);
+    if (!user) {
+      return res.json(genericResponse);
+    }
+
+    // Generate 6-digit code
+    const code = crypto.randomInt(100000, 999999).toString();
+
+    // Delete any existing reset tokens for this user
+    await pool.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [user.id]);
+
+    // Insert new token with 15-min expiry
+    await pool.query(
+      `INSERT INTO password_reset_tokens (user_id, code, expires_at)
+       VALUES ($1, $2, NOW() + INTERVAL '15 minutes')`,
+      [user.id, code]
+    );
+
+    // Send email
+    await sendPasswordResetEmail(email, code);
+
+    res.json(genericResponse);
+  } catch (err) {
+    console.error('ForgotPassword error:', err);
+    res.status(500).json({ success: false, error: 'Failed to process request' });
+  }
+}
+
+async function resetPassword(req, res) {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    const user = await userModel.findByEmail(email);
+    if (!user) {
+      return res.status(400).json({ success: false, error: 'Invalid code' });
+    }
+
+    // Find valid token
+    const { rows } = await pool.query(
+      `SELECT id FROM password_reset_tokens
+       WHERE user_id = $1 AND code = $2 AND used = FALSE AND expires_at > NOW()`,
+      [user.id, code]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).json({ success: false, error: 'Invalid or expired code' });
+    }
+
+    // Update password
+    await userModel.updateUser(user.id, { password: newPassword });
+
+    // Mark token as used
+    await pool.query(
+      'UPDATE password_reset_tokens SET used = TRUE WHERE id = $1',
+      [rows[0].id]
+    );
+
+    res.json({ success: true, message: 'Password reset successfully' });
+  } catch (err) {
+    console.error('ResetPassword error:', err);
+    res.status(500).json({ success: false, error: 'Failed to reset password' });
+  }
+}
+
+module.exports = { register, login, logout, getMe, updateProfile, refreshTokens, forgotPassword, resetPassword };

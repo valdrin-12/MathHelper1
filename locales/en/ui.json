@@ -284,7 +284,9 @@
     "weeklyActivity": "Weekly Activity",
     "daysStreak": "{{count}} days streak",
     "longestStreak": "Longest: {{count}} days",
-    "achievements": "Achievements"
+    "achievements": "Achievements",
+    "upgradePremium": "Upgrade to Premium",
+    "upgradePremiumDesc": "10 analyses/day - Solve more problems!"
   },
   "editProfile": {
     "title": "Edit Profile",
@@ -387,6 +389,16 @@
       "yourStats": "Courses completed: {{courses}}\nQuizzes completed: {{quizzes}}\nDay streak: {{streak}}"
     }
   },
+  "rateLimit": {
+    "title": "Daily Limit Reached",
+    "message": "You have used all your free analyses for today. Try again tomorrow or upgrade to Premium for more.",
+    "premiumTitle": "Premium",
+    "premiumDesc": "Get 10 analyses per day with a Premium account. Solve more problems every day!",
+    "upgradePremium": "Upgrade to Premium",
+    "tryTomorrow": "Try again tomorrow",
+    "comingSoon": "Coming Soon",
+    "comingSoonDesc": "Premium will be available soon. Thank you for your patience!"
+  },
   "gemini": {
     "apiKeyInvalid": "The API key is invalid. Check the configuration.",
     "quotaExceeded": "You have reached the request limit. Please try again later.",
@@ -415,6 +427,45 @@
     "physics": "Physics keyboard",
     "graphing": "Graphing keyboard",
     "clearAll": "Clear all"
+  },
+  "premium": {
+    "title": "MathHelper Premium",
+    "subtitle": "Unlock the full potential of math learning",
+    "freePlan": "Free",
+    "premiumPlan": "Premium",
+    "freeAnalyses": "4 analyses per day",
+    "freeCourses": "Basic courses",
+    "freeQuizzes": "Basic quizzes",
+    "premiumAnalyses": "10 analyses per day",
+    "premiumCourses": "All courses",
+    "premiumQuizzes": "All quizzes",
+    "premiumPriority": "Priority support",
+    "oneTimePurchase": "One-time purchase",
+    "priceNote": "No subscription, no hidden fees",
+    "purchaseButton": "Upgrade to Premium",
+    "restorePurchases": "Restore Purchases",
+    "purchaseSuccess": "Purchase Successful!",
+    "purchaseSuccessDesc": "You are now a Premium user! Enjoy 10 analyses per day.",
+    "purchaseError": "Purchase failed. Please try again.",
+    "restoreSuccess": "Purchase restored successfully! You are Premium again.",
+    "restoreNone": "No previous purchases found."
+  },
+  "forgotPassword": {
+    "link": "Forgot Password?",
+    "title": "Reset Password",
+    "emailPlaceholder": "Enter your email",
+    "sendCode": "Send Code",
+    "codeSent": "Code sent! Check your email",
+    "codePlaceholder": "Enter 6-digit code",
+    "verifyCode": "Verify Code",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "resetButton": "Reset Password",
+    "success": "Password reset successfully!",
+    "backToLogin": "Back to Login",
+    "codeExpired": "Code expired. Please request a new one.",
+    "invalidCode": "Invalid code. Please try again.",
+    "passwordMismatch": "Passwords don't match"
   },
   "onboarding": {
     "slide1Title": "Scan & Solve Instantly",

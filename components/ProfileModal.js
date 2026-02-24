@@ -157,7 +157,7 @@ function AchievementBadge({ achievement, earned }) {
   );
 }
 
-export default function ProfileModal({ visible, onClose }) {
+export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const { user, logout, updateProfile } = useUser();
   const { completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, stats } = useStats();
   const { savedItems } = useSavedItems();
@@ -349,7 +349,15 @@ export default function ProfileModal({ visible, onClose }) {
               <Text style={styles.avatarInitials}>{initials}</Text>
             </View>
           </View>
-          <Text style={styles.userName}>{user.name}</Text>
+          <View style={styles.userNameRow}>
+            <Text style={styles.userName}>{user.name}</Text>
+            <View style={[styles.tierBadge, user.tier === 'premium' ? styles.tierPremium : styles.tierFree]}>
+              <Ionicons name={user.tier === 'premium' ? 'star' : 'person'} size={10} color={user.tier === 'premium' ? '#92400E' : '#FFFFFF'} />
+              <Text style={[styles.tierBadgeText, user.tier === 'premium' && styles.tierPremiumText]}>
+                {user.tier === 'premium' ? 'Premium' : 'Free'}
+              </Text>
+            </View>
+          </View>
           <Text style={styles.userEmail}>{user.email}</Text>
           <View style={styles.memberBadge}>
             <Ionicons name="calendar-outline" size={12} color="rgba(255,255,255,0.8)" />
@@ -393,6 +401,33 @@ export default function ProfileModal({ visible, onClose }) {
             <Text style={styles.streakBest}>{t('profileModal.longestStreak', { count: longestStreak })}</Text>
           </View>
         </View>
+
+        {/* Premium Upgrade Card (only for free users) */}
+        {user.tier !== 'premium' && (
+          <TouchableOpacity
+            style={styles.premiumCard}
+            onPress={() => { onClose(); setTimeout(() => onUpgrade?.(), 400); }}
+            activeOpacity={0.8}
+          >
+            <LinearGradient
+              colors={['#F59E0B', '#D97706']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={styles.premiumGradient}
+            >
+              <View style={styles.premiumLeft}>
+                <View style={styles.premiumIconBox}>
+                  <Ionicons name="star" size={24} color="#F59E0B" />
+                </View>
+                <View style={styles.premiumTextBox}>
+                  <Text style={styles.premiumTitle}>{t('profileModal.upgradePremium')}</Text>
+                  <Text style={styles.premiumDesc}>{t('profileModal.upgradePremiumDesc')}</Text>
+                </View>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.8)" />
+            </LinearGradient>
+          </TouchableOpacity>
+        )}
 
         {/* Weekly Activity Chart */}
         <WeeklyChart dailyActivity={stats?.dailyActivity} />
@@ -525,8 +560,27 @@ const styles = StyleSheet.create({
   avatarInitials: {
     fontSize: 36, fontWeight: '800', color: '#FFFFFF',
   },
+  userNameRow: {
+    flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4,
+  },
   userName: {
-    fontSize: 24, fontWeight: '800', color: '#FFFFFF', marginBottom: 4,
+    fontSize: 24, fontWeight: '800', color: '#FFFFFF',
+  },
+  tierBadge: {
+    flexDirection: 'row', alignItems: 'center', gap: 4,
+    paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12,
+  },
+  tierFree: {
+    backgroundColor: 'rgba(255,255,255,0.25)',
+  },
+  tierPremium: {
+    backgroundColor: '#FDE68A',
+  },
+  tierBadgeText: {
+    fontSize: 11, fontWeight: '700', color: '#FFFFFF',
+  },
+  tierPremiumText: {
+    color: '#92400E',
   },
   userEmail: {
     fontSize: 14, color: 'rgba(255,255,255,0.8)', fontWeight: '500', marginBottom: 12,
@@ -587,6 +641,31 @@ const styles = StyleSheet.create({
   },
   streakBest: {
     fontSize: 13, color: COLORS.textSubtle, fontWeight: '500',
+  },
+
+  // Premium Card
+  premiumCard: {
+    marginHorizontal: 18, marginTop: 16, borderRadius: 18, overflow: 'hidden',
+    ...SHADOWS.medium,
+  },
+  premiumGradient: {
+    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    padding: 18, borderRadius: 18,
+  },
+  premiumLeft: {
+    flexDirection: 'row', alignItems: 'center', gap: 14, flex: 1,
+  },
+  premiumIconBox: {
+    width: 48, height: 48, borderRadius: 14,
+    backgroundColor: 'rgba(255,255,255,0.25)',
+    justifyContent: 'center', alignItems: 'center',
+  },
+  premiumTextBox: { flex: 1 },
+  premiumTitle: {
+    fontSize: 16, fontWeight: '800', color: '#FFFFFF', marginBottom: 2,
+  },
+  premiumDesc: {
+    fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: '500',
   },
 
   // Achievements

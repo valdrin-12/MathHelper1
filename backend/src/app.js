@@ -8,6 +8,7 @@ const authRoutes = require('./routes/auth');
 const savedItemsRoutes = require('./routes/savedItems');
 const statsRoutes = require('./routes/stats');
 const analyzeRoutes = require('./routes/analyze');
+const purchaseRoutes = require('./routes/purchases');
 
 const app = express();
 
@@ -27,6 +28,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/saved-items', savedItemsRoutes);
 app.use('/api/stats', statsRoutes);
 app.use('/api/analyze', analyzeRoutes);
+app.use('/api/purchases', purchaseRoutes);
 
 // Error handler (must be last)
 app.use(errorHandler);

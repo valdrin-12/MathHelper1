@@ -284,7 +284,9 @@
     "weeklyActivity": "Aktiviteti Javor",
     "daysStreak": "{{count}} ditë radhazi",
     "longestStreak": "Më e gjata: {{count}} ditë",
-    "achievements": "Arritjet"
+    "achievements": "Arritjet",
+    "upgradePremium": "Kalo në Premium",
+    "upgradePremiumDesc": "10 analiza/ditë - Zgjidh më shumë probleme!"
   },
   "editProfile": {
     "title": "Edito Profilin",
@@ -480,6 +482,16 @@
       "yourStats": "Kurse të kompletuara: {{courses}}\nKuize të kryera: {{quizzes}}\nDitë rresht: {{streak}}"
     }
   },
+  "rateLimit": {
+    "title": "Limiti Ditor i Arritur",
+    "message": "Ke përdorur të gjitha analizat falas për sot. Provo përsëri nesër ose kalo në Premium për më shumë analiza.",
+    "premiumTitle": "Premium",
+    "premiumDesc": "Merr 10 analiza në ditë me llogarinë Premium. Zgjidh më shumë probleme çdo ditë!",
+    "upgradePremium": "Kalo në Premium",
+    "tryTomorrow": "Provo përsëri nesër",
+    "comingSoon": "Së Shpejti",
+    "comingSoonDesc": "Premium do të jetë i disponueshëm së shpejti. Faleminderit për durimin!"
+  },
   "gemini": {
     "apiKeyInvalid": "Çelësi i API-së është i pavlefshëm. Kontrolloni konfigurimin.",
     "quotaExceeded": "Keni arritur limitin e kërkesave. Ju lutemi provoni më vonë.",
@@ -508,6 +520,45 @@
     "physics": "Tastiera e Fizikës",
     "graphing": "Tastiera e Grafikëve",
     "clearAll": "Pastro të gjitha"
+  },
+  "premium": {
+    "title": "MathHelper Premium",
+    "subtitle": "Zhblloko potencialin e plotë të mësimit matematikor",
+    "freePlan": "Falas",
+    "premiumPlan": "Premium",
+    "freeAnalyses": "4 analiza në ditë",
+    "freeCourses": "Kurse bazë",
+    "freeQuizzes": "Kuize bazë",
+    "premiumAnalyses": "10 analiza në ditë",
+    "premiumCourses": "Të gjitha kurset",
+    "premiumQuizzes": "Të gjitha kuizet",
+    "premiumPriority": "Mbështetje prioritare",
+    "oneTimePurchase": "Blerje një herë",
+    "priceNote": "Pa abonim, pa tarifa të fshehura",
+    "purchaseButton": "Kalo në Premium",
+    "restorePurchases": "Rikthe Blerjet",
+    "purchaseSuccess": "Blerje e Suksesshme!",
+    "purchaseSuccessDesc": "Tani jeni përdorues Premium! Shijoni 10 analiza në ditë.",
+    "purchaseError": "Blerja dështoi. Ju lutemi provoni përsëri.",
+    "restoreSuccess": "Blerja u rikthye me sukses! Jeni përsëri Premium.",
+    "restoreNone": "Nuk u gjet asnjë blerje e mëparshme."
+  },
+  "forgotPassword": {
+    "link": "Keni harruar fjalëkalimin?",
+    "title": "Rivendos Fjalëkalimin",
+    "emailPlaceholder": "Shkruani emailin tuaj",
+    "sendCode": "Dërgo Kodin",
+    "codeSent": "Kodi u dërgua! Kontrolloni emailin",
+    "codePlaceholder": "Shkruani kodin 6-shifror",
+    "verifyCode": "Verifiko Kodin",
+    "newPassword": "Fjalëkalimi i Ri",
+    "confirmPassword": "Konfirmo Fjalëkalimin",
+    "resetButton": "Rivendos Fjalëkalimin",
+    "success": "Fjalëkalimi u rivendos me sukses!",
+    "backToLogin": "Kthehu te Kyçja",
+    "codeExpired": "Kodi ka skaduar. Kërkoni një të ri.",
+    "invalidCode": "Kod i pavlefshëm. Provoni përsëri.",
+    "passwordMismatch": "Fjalëkalimet nuk përputhen"
   },
   "onboarding": {
     "slide1Title": "Skano & Zgjidh Menjehere",

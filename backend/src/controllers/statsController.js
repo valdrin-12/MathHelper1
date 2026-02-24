@@ -1,4 +1,7 @@
 const statsModel = require('../models/statsModel');
+const pool = require('../config/database');
+
+const DAILY_LIMITS = { free: 4, premium: 10 };
 
 async function getStats(req, res) {
   try {
@@ -48,4 +51,32 @@ async function quizCompleted(req, res) {
   }
 }
 
-module.exports = { getStats, problemSolved, courseCompleted, quizCompleted };
+async function getUsage(req, res) {
+  try {
+    const { rows: userRows } = await pool.query(
+      'SELECT tier FROM users WHERE id = $1',
+      [req.userId]
+    );
+    const tier = userRows[0]?.tier || 'free';
+    const dailyLimit = DAILY_LIMITS[tier] || DAILY_LIMITS.free;
+
+    const { rows: countRows } = await pool.query(
+      'SELECT COUNT(*)::int as count FROM api_requests WHERE user_id = $1 AND request_date = CURRENT_DATE',
+      [req.userId]
+    );
+    const used = countRows[0].count;
+
+    res.json({
+      success: true,
+      tier,
+      dailyLimit,
+      used,
+      remaining: Math.max(0, dailyLimit - used),
+    });
+  } catch (err) {
+    console.error('GetUsage error:', err);
+    res.status(500).json({ success: false, error: 'Failed to get usage' });
+  }
+}
+
+module.exports = { getStats, getUsage, problemSolved, courseCompleted, quizCompleted };

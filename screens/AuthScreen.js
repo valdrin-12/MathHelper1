@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
+import api from '../services/apiClient';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
 
@@ -35,6 +36,15 @@ export default function AuthScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Forgot password state
+  const [forgotMode, setForgotMode] = useState(false); // false | 'email' | 'code' | 'newPassword' | 'success'
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetCode, setResetCode] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState('');
 
   const [errors, setErrors] = useState({});
 
@@ -114,6 +124,78 @@ export default function AuthScreen() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openForgotPassword = () => {
+    setForgotMode('email');
+    setResetEmail(email || '');
+    setResetCode('');
+    setNewPassword('');
+    setConfirmNewPassword('');
+    setForgotError('');
+  };
+
+  const closeForgotPassword = () => {
+    setForgotMode(false);
+    setForgotError('');
+  };
+
+  const handleSendCode = async () => {
+    if (!resetEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(resetEmail.trim())) {
+      setForgotError(t('auth.validation.emailInvalid'));
+      return;
+    }
+    setForgotLoading(true);
+    setForgotError('');
+    try {
+      await api.post('/api/auth/forgot-password', { email: resetEmail.trim() });
+      setForgotMode('code');
+    } catch (err) {
+      setForgotError(err.message || t('common.error'));
+    } finally {
+      setForgotLoading(false);
+    }
+  };
+
+  const handleVerifyCode = () => {
+    if (!resetCode || resetCode.length !== 6) {
+      setForgotError(t('forgotPassword.invalidCode'));
+      return;
+    }
+    setForgotError('');
+    setForgotMode('newPassword');
+  };
+
+  const handleResetPassword = async () => {
+    if (!newPassword || newPassword.length < 6) {
+      setForgotError(t('auth.validation.passwordMinLength'));
+      return;
+    }
+    if (newPassword !== confirmNewPassword) {
+      setForgotError(t('forgotPassword.passwordMismatch'));
+      return;
+    }
+    setForgotLoading(true);
+    setForgotError('');
+    try {
+      await api.post('/api/auth/reset-password', {
+        email: resetEmail.trim(),
+        code: resetCode,
+        newPassword,
+      });
+      setForgotMode('success');
+    } catch (err) {
+      const msg = err.data?.error || err.message;
+      if (msg.includes('expired')) {
+        setForgotError(t('forgotPassword.codeExpired'));
+      } else if (msg.includes('Invalid')) {
+        setForgotError(t('forgotPassword.invalidCode'));
+      } else {
+        setForgotError(msg || t('common.error'));
+      }
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -287,6 +369,11 @@ export default function AuthScreen() {
                   )}
                 </LinearGradient>
               </TouchableOpacity>
+
+              {/* Forgot Password Link */}
+              <TouchableOpacity onPress={openForgotPassword} style={styles.forgotPasswordLink}>
+                <Text style={styles.forgotPasswordText}>{t('forgotPassword.link')}</Text>
+              </TouchableOpacity>
             </View>
           ) : (
             <View style={styles.form}>
@@ -426,6 +513,180 @@ export default function AuthScreen() {
           <Ionicons name="trash-outline" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
           <Text style={styles.clearDataText}>{t('auth.clearAllData')}</Text>
         </TouchableOpacity>
+
+        {/* Forgot Password Overlay */}
+        {forgotMode && (
+          <View style={styles.forgotOverlay}>
+            <View style={styles.forgotCard}>
+              {/* Header */}
+              <View style={styles.forgotHeader}>
+                <TouchableOpacity onPress={closeForgotPassword} style={styles.forgotBackButton}>
+                  <Ionicons name="arrow-back" size={22} color={COLORS.text} />
+                </TouchableOpacity>
+                <Text style={styles.forgotTitle}>{t('forgotPassword.title')}</Text>
+                <View style={{ width: 34 }} />
+              </View>
+
+              {forgotError ? (
+                <View style={styles.forgotErrorContainer}>
+                  <Ionicons name="alert-circle" size={16} color={COLORS.error} style={{ marginRight: 6 }} />
+                  <Text style={styles.forgotErrorText}>{forgotError}</Text>
+                </View>
+              ) : null}
+
+              {/* Step 1: Email */}
+              {forgotMode === 'email' && (
+                <View>
+                  <Text style={styles.forgotStepText}>{t('forgotPassword.codeSent').split('!')[0]}</Text>
+                  <View style={styles.inputGroup}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="mail-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder={t('forgotPassword.emailPlaceholder')}
+                        placeholderTextColor={COLORS.textPlaceholder}
+                        value={resetEmail}
+                        onChangeText={(text) => { setResetEmail(text); setForgotError(''); }}
+                        keyboardType="email-address"
+                        autoCapitalize="none"
+                        autoFocus
+                      />
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    style={[styles.submitButton, forgotLoading && styles.submitButtonDisabled]}
+                    onPress={handleSendCode}
+                    disabled={forgotLoading}
+                  >
+                    <LinearGradient
+                      colors={[COLORS.primary, COLORS.primarySoft]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.submitGradient}
+                    >
+                      {forgotLoading ? (
+                        <ActivityIndicator color="#FFFFFF" size="small" />
+                      ) : (
+                        <Text style={styles.submitButtonText}>{t('forgotPassword.sendCode')}</Text>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {/* Step 2: Code */}
+              {forgotMode === 'code' && (
+                <View>
+                  <Text style={styles.forgotStepText}>{t('forgotPassword.codeSent')}</Text>
+                  <View style={styles.inputGroup}>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="keypad-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <TextInput
+                        style={[styles.textInput, { letterSpacing: 4, fontSize: 20, textAlign: 'center' }]}
+                        placeholder={t('forgotPassword.codePlaceholder')}
+                        placeholderTextColor={COLORS.textPlaceholder}
+                        value={resetCode}
+                        onChangeText={(text) => { setResetCode(text.replace(/[^0-9]/g, '').slice(0, 6)); setForgotError(''); }}
+                        keyboardType="number-pad"
+                        maxLength={6}
+                        autoFocus
+                      />
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={handleVerifyCode}
+                  >
+                    <LinearGradient
+                      colors={[COLORS.primary, COLORS.primarySoft]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.submitGradient}
+                    >
+                      <Text style={styles.submitButtonText}>{t('forgotPassword.verifyCode')}</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {/* Step 3: New Password */}
+              {forgotMode === 'newPassword' && (
+                <View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.inputLabel}>{t('forgotPassword.newPassword')}</Text>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="lock-closed-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder={t('auth.minChars')}
+                        placeholderTextColor={COLORS.textPlaceholder}
+                        value={newPassword}
+                        onChangeText={(text) => { setNewPassword(text); setForgotError(''); }}
+                        secureTextEntry
+                        autoFocus
+                      />
+                    </View>
+                  </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={styles.inputLabel}>{t('forgotPassword.confirmPassword')}</Text>
+                    <View style={styles.inputWrapper}>
+                      <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <TextInput
+                        style={styles.textInput}
+                        placeholder={t('forgotPassword.confirmPassword')}
+                        placeholderTextColor={COLORS.textPlaceholder}
+                        value={confirmNewPassword}
+                        onChangeText={(text) => { setConfirmNewPassword(text); setForgotError(''); }}
+                        secureTextEntry
+                      />
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    style={[styles.submitButton, forgotLoading && styles.submitButtonDisabled]}
+                    onPress={handleResetPassword}
+                    disabled={forgotLoading}
+                  >
+                    <LinearGradient
+                      colors={[COLORS.primary, COLORS.primarySoft]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.submitGradient}
+                    >
+                      {forgotLoading ? (
+                        <ActivityIndicator color="#FFFFFF" size="small" />
+                      ) : (
+                        <Text style={styles.submitButtonText}>{t('forgotPassword.resetButton')}</Text>
+                      )}
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              )}
+
+              {/* Success */}
+              {forgotMode === 'success' && (
+                <View style={styles.forgotSuccessContainer}>
+                  <View style={styles.forgotSuccessIcon}>
+                    <Ionicons name="checkmark-circle" size={56} color={COLORS.success} />
+                  </View>
+                  <Text style={styles.forgotSuccessText}>{t('forgotPassword.success')}</Text>
+                  <TouchableOpacity
+                    style={styles.submitButton}
+                    onPress={() => { closeForgotPassword(); clearForm(); }}
+                  >
+                    <LinearGradient
+                      colors={[COLORS.primary, COLORS.primarySoft]}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.submitGradient}
+                    >
+                      <Text style={styles.submitButtonText}>{t('forgotPassword.backToLogin')}</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </View>
+        )}
       </ScrollView>
     </KeyboardAvoidingView>
   );
@@ -695,5 +956,84 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
     color: '#FFFFFF',
+  },
+
+  // Forgot Password
+  forgotPasswordLink: {
+    alignItems: 'center',
+    marginTop: 14,
+  },
+  forgotPasswordText: {
+    fontSize: 14,
+    color: COLORS.primary,
+    fontWeight: '600',
+  },
+  forgotOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  forgotCard: {
+    backgroundColor: COLORS.surface,
+    borderRadius: 24,
+    padding: 24,
+    width: '100%',
+    maxWidth: 400,
+    ...SHADOWS.large,
+  },
+  forgotHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  forgotBackButton: {
+    padding: 6,
+  },
+  forgotTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: COLORS.text,
+    letterSpacing: -0.3,
+  },
+  forgotStepText: {
+    fontSize: 14,
+    color: COLORS.textSubtle,
+    marginBottom: 16,
+    lineHeight: 20,
+  },
+  forgotErrorContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.errorLight,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+  },
+  forgotErrorText: {
+    fontSize: 13,
+    color: COLORS.error,
+    fontWeight: '500',
+    flex: 1,
+  },
+  forgotSuccessContainer: {
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  forgotSuccessIcon: {
+    marginBottom: 16,
+  },
+  forgotSuccessText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: COLORS.success,
+    marginBottom: 24,
+    textAlign: 'center',
   },
 });

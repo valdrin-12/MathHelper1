@@ -31,4 +31,16 @@ router.put('/profile', authMiddleware, [
 
 router.post('/refresh', authController.refreshTokens);
 
+router.post('/forgot-password', [
+  body('email').isEmail().withMessage('Valid email is required'),
+  validate,
+], authController.forgotPassword);
+
+router.post('/reset-password', [
+  body('email').isEmail().withMessage('Valid email is required'),
+  body('code').isLength({ min: 6, max: 6 }).withMessage('6-digit code is required'),
+  body('newPassword').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  validate,
+], authController.resetPassword);
+
 module.exports = router;

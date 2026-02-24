@@ -103,7 +103,16 @@ async function request(method, path, body = null) {
     }
   }
 
-  const data = await response.json();
+  const text = await response.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    const error = new Error('Server error. Please try again later.');
+    error.status = response.status;
+    throw error;
+  }
+
   if (!response.ok) {
     const error = new Error(data.error || 'Request failed');
     error.status = response.status;

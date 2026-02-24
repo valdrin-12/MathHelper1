@@ -284,7 +284,9 @@
     "weeklyActivity": "Wöchentliche Aktivität",
     "daysStreak": "{{count}} Tage in Folge",
     "longestStreak": "Längste: {{count}} Tage",
-    "achievements": "Erfolge"
+    "achievements": "Erfolge",
+    "upgradePremium": "Auf Premium upgraden",
+    "upgradePremiumDesc": "10 Analysen/Tag - Löse mehr Aufgaben!"
   },
   "editProfile": {
     "title": "Profil bearbeiten",
@@ -387,6 +389,16 @@
       "yourStats": "Abgeschlossene Kurse: {{courses}}\nAbgeschlossene Quiz: {{quizzes}}\nTage-Serie: {{streak}}"
     }
   },
+  "rateLimit": {
+    "title": "Tageslimit erreicht",
+    "message": "Sie haben alle kostenlosen Analysen für heute verbraucht. Versuchen Sie es morgen erneut oder wechseln Sie zu Premium.",
+    "premiumTitle": "Premium",
+    "premiumDesc": "Erhalten Sie 10 Analysen pro Tag mit einem Premium-Konto. Lösen Sie jeden Tag mehr Aufgaben!",
+    "upgradePremium": "Auf Premium upgraden",
+    "tryTomorrow": "Morgen erneut versuchen",
+    "comingSoon": "Demnächst verfügbar",
+    "comingSoonDesc": "Premium wird bald verfügbar sein. Vielen Dank für Ihre Geduld!"
+  },
   "gemini": {
     "apiKeyInvalid": "Der API-Schlüssel ist ungültig. Überprüfen Sie die Konfiguration.",
     "quotaExceeded": "Sie haben das Anfragelimit erreicht. Bitte versuchen Sie es später erneut.",
@@ -415,6 +427,45 @@
     "physics": "Physik-Tastatur",
     "graphing": "Grafik-Tastatur",
     "clearAll": "Alles löschen"
+  },
+  "premium": {
+    "title": "MathHelper Premium",
+    "subtitle": "Entfalten Sie das volle Potenzial des Mathe-Lernens",
+    "freePlan": "Kostenlos",
+    "premiumPlan": "Premium",
+    "freeAnalyses": "4 Analysen pro Tag",
+    "freeCourses": "Grundkurse",
+    "freeQuizzes": "Grundquiz",
+    "premiumAnalyses": "10 Analysen pro Tag",
+    "premiumCourses": "Alle Kurse",
+    "premiumQuizzes": "Alle Quiz",
+    "premiumPriority": "Prioritäts-Support",
+    "oneTimePurchase": "Einmaliger Kauf",
+    "priceNote": "Kein Abo, keine versteckten Gebühren",
+    "purchaseButton": "Auf Premium upgraden",
+    "restorePurchases": "Käufe wiederherstellen",
+    "purchaseSuccess": "Kauf erfolgreich!",
+    "purchaseSuccessDesc": "Sie sind jetzt Premium-Nutzer! Genießen Sie 10 Analysen pro Tag.",
+    "purchaseError": "Kauf fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "restoreSuccess": "Kauf erfolgreich wiederhergestellt! Sie sind wieder Premium.",
+    "restoreNone": "Keine früheren Käufe gefunden."
+  },
+  "forgotPassword": {
+    "link": "Passwort vergessen?",
+    "title": "Passwort zurücksetzen",
+    "emailPlaceholder": "Geben Sie Ihre E-Mail ein",
+    "sendCode": "Code senden",
+    "codeSent": "Code gesendet! Überprüfen Sie Ihre E-Mail",
+    "codePlaceholder": "6-stelligen Code eingeben",
+    "verifyCode": "Code überprüfen",
+    "newPassword": "Neues Passwort",
+    "confirmPassword": "Passwort bestätigen",
+    "resetButton": "Passwort zurücksetzen",
+    "success": "Passwort erfolgreich zurückgesetzt!",
+    "backToLogin": "Zurück zur Anmeldung",
+    "codeExpired": "Code abgelaufen. Bitte fordern Sie einen neuen an.",
+    "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
+    "passwordMismatch": "Passwörter stimmen nicht überein"
   },
   "onboarding": {
     "slide1Title": "Scannen & Sofort Losen",

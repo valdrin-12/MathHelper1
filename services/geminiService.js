@@ -21,6 +21,12 @@ export const analyzeMathProblem = async (imageBase64, mimeType) => {
     };
   } catch (error) {
     console.error('Analysis error:', error);
+    if (error.status === 429 || error.data?.error === 'DAILY_LIMIT_REACHED') {
+      const err = new Error('DAILY_LIMIT_REACHED');
+      err.tier = error.data?.tier;
+      err.dailyLimit = error.data?.dailyLimit;
+      throw err;
+    }
     throw new Error(error.message || i18n.t('gemini.analysisError'));
   }
 };
@@ -43,6 +49,12 @@ export const analyzeMathProblemFromText = async (problemText) => {
     };
   } catch (error) {
     console.error('Text analysis error:', error);
+    if (error.status === 429 || error.data?.error === 'DAILY_LIMIT_REACHED') {
+      const err = new Error('DAILY_LIMIT_REACHED');
+      err.tier = error.data?.tier;
+      err.dailyLimit = error.data?.dailyLimit;
+      throw err;
+    }
     throw new Error(error.message || i18n.t('gemini.analysisError'));
   }
 };
