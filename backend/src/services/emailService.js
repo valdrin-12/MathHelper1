@@ -1,8 +1,10 @@
-const { Resend } = require('resend');
+const sgMail = require('@sendgrid/mail');
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+if (process.env.SENDGRID_API_KEY) {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+}
 
-const FROM_EMAIL = process.env.FROM_EMAIL || 'MathHelper <onboarding@resend.dev>';
+const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SMTP_USER;
 
 function getWelcomeEmailHtml(userName) {
   return `
@@ -104,22 +106,21 @@ function getWelcomeEmailHtml(userName) {
 }
 
 async function sendWelcomeEmail(toEmail, userName) {
-  if (!resend) {
-    console.log('[Email] RESEND_API_KEY not configured, skipping welcome email for', toEmail);
+  if (!process.env.SENDGRID_API_KEY || !FROM_EMAIL) {
+    console.log('[Email] SendGrid not configured, skipping welcome email for', toEmail);
     return;
   }
 
   try {
-    await resend.emails.send({
-      from: FROM_EMAIL,
+    await sgMail.send({
       to: toEmail,
+      from: { email: FROM_EMAIL, name: 'MathHelper' },
       subject: `Mire se vjen ne MathHelper, ${userName}!`,
       html: getWelcomeEmailHtml(userName),
     });
     console.log('[Email] Welcome email sent to', toEmail);
   } catch (error) {
-    // Don't fail registration if email fails
-    console.error('[Email] Failed to send welcome email:', error.message);
+    console.error('[Email] Failed to send welcome email:', error.response?.body || error.message);
   }
 }
 
@@ -187,21 +188,21 @@ function getPasswordResetEmailHtml(code) {
 }
 
 async function sendPasswordResetEmail(toEmail, code) {
-  if (!resend) {
-    console.log('[Email] RESEND_API_KEY not configured, skipping reset email. Code:', code);
+  if (!process.env.SENDGRID_API_KEY || !FROM_EMAIL) {
+    console.log('[Email] SendGrid not configured, skipping reset email. Code:', code);
     return;
   }
 
   try {
-    await resend.emails.send({
-      from: FROM_EMAIL,
+    await sgMail.send({
       to: toEmail,
+      from: { email: FROM_EMAIL, name: 'MathHelper' },
       subject: 'MathHelper - Password Reset Code',
       html: getPasswordResetEmailHtml(code),
     });
     console.log('[Email] Password reset email sent to', toEmail);
   } catch (error) {
-    console.error('[Email] Failed to send reset email:', error.message);
+    console.error('[Email] Failed to send reset email:', error.response?.body || error.message);
   }
 }
 
