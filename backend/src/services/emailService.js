@@ -1,35 +1,12 @@
-const FROM_EMAIL = process.env.BREVO_FROM_EMAIL || process.env.SMTP_USER;
-const FROM_NAME = 'MathHelper';
+const nodemailer = require('nodemailer');
 
-async function sendEmail(to, subject, html) {
-  const apiKey = process.env.BREVO_API_KEY;
-  if (!apiKey || !FROM_EMAIL) {
-    console.log('[Email] Brevo not configured, skipping email to', to);
-    return;
-  }
-
-  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-    method: 'POST',
-    headers: {
-      'accept': 'application/json',
-      'content-type': 'application/json',
-      'api-key': apiKey,
-    },
-    body: JSON.stringify({
-      sender: { name: FROM_NAME, email: FROM_EMAIL },
-      to: [{ email: to }],
-      subject,
-      htmlContent: html,
-    }),
-  });
-
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Brevo API error ${response.status}: ${error}`);
-  }
-
-  return response.json();
-}
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
 
 function getWelcomeEmailHtml(userName) {
   return `
@@ -48,7 +25,7 @@ function getWelcomeEmailHtml(userName) {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px 40px 30px;text-align:center;">
-              <div style="font-size:48px;margin-bottom:12px;">&#x1F9EE;</div>
+              <div style="font-size:48px;margin-bottom:12px;">🧮</div>
               <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:bold;">MathHelper</h1>
               <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Asistenti yt personal i matematikes</p>
             </td>
@@ -57,7 +34,7 @@ function getWelcomeEmailHtml(userName) {
           <!-- Body -->
           <tr>
             <td style="padding:40px;">
-              <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Mire se vjen, ${userName}! &#x1F44B;</h2>
+              <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Mire se vjen, ${userName}! 👋</h2>
               <p style="margin:0 0 24px;color:#6b7280;font-size:15px;line-height:24px;">
                 Regjistrimi yt ne MathHelper u krye me sukses. Tani ke akses te plote ne te gjitha funksionalitetet tona.
               </p>
@@ -68,7 +45,7 @@ function getWelcomeEmailHtml(userName) {
                   <td style="padding:12px 16px;background-color:#f0f4ff;border-radius:12px;margin-bottom:8px;">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">&#x1F4F8;</td>
+                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">📸</td>
                         <td>
                           <div style="color:#1a1a2e;font-weight:600;font-size:14px;">Analizo probleme me kamer</div>
                           <div style="color:#6b7280;font-size:13px;">Fotografo problemin dhe merr zgjidhjen menjehere</div>
@@ -82,7 +59,7 @@ function getWelcomeEmailHtml(userName) {
                   <td style="padding:12px 16px;background-color:#f0fff4;border-radius:12px;">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">&#x1F4DA;</td>
+                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">📚</td>
                         <td>
                           <div style="color:#1a1a2e;font-weight:600;font-size:14px;">Kurse te plota matematike</div>
                           <div style="color:#6b7280;font-size:13px;">Meso nga fillestari deri ne avancuar</div>
@@ -96,7 +73,7 @@ function getWelcomeEmailHtml(userName) {
                   <td style="padding:12px 16px;background-color:#fff8f0;border-radius:12px;">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">&#x1F3AF;</td>
+                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">🎯</td>
                         <td>
                           <div style="color:#1a1a2e;font-weight:600;font-size:14px;">Kuize interaktive</div>
                           <div style="color:#6b7280;font-size:13px;">Testo njohurite e tua me kuize te ndryshme</div>
@@ -131,12 +108,18 @@ function getWelcomeEmailHtml(userName) {
 }
 
 async function sendWelcomeEmail(toEmail, userName) {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log('[Email] SMTP not configured, skipping welcome email for', toEmail);
+    return;
+  }
+
   try {
-    await sendEmail(
-      toEmail,
-      `Mire se vjen ne MathHelper, ${userName}!`,
-      getWelcomeEmailHtml(userName)
-    );
+    await transporter.sendMail({
+      from: `"MathHelper" <${process.env.SMTP_USER}>`,
+      to: toEmail,
+      subject: `Mire se vjen ne MathHelper, ${userName}! 🧮`,
+      html: getWelcomeEmailHtml(userName),
+    });
     console.log('[Email] Welcome email sent to', toEmail);
   } catch (error) {
     console.error('[Email] Failed to send welcome email:', error.message);
@@ -160,7 +143,7 @@ function getPasswordResetEmailHtml(code) {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px 40px 30px;text-align:center;">
-              <div style="font-size:48px;margin-bottom:12px;">&#x1F510;</div>
+              <div style="font-size:48px;margin-bottom:12px;">🔐</div>
               <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:bold;">MathHelper</h1>
               <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Password Reset</p>
             </td>
@@ -207,16 +190,22 @@ function getPasswordResetEmailHtml(code) {
 }
 
 async function sendPasswordResetEmail(toEmail, code) {
-  try {
-    await sendEmail(
-      toEmail,
-      'MathHelper - Password Reset Code',
-      getPasswordResetEmailHtml(code)
-    );
-    console.log('[Email] Password reset email sent to', toEmail);
-  } catch (error) {
-    console.error('[Email] Failed to send reset email:', error.message);
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.log('[Email] SMTP not configured, skipping reset email. Code:', code);
+    return;
   }
+
+  // Fire-and-forget: don't await, so the API response is instant
+  transporter.sendMail({
+    from: `"MathHelper" <${process.env.SMTP_USER}>`,
+    to: toEmail,
+    subject: 'MathHelper - Password Reset Code',
+    html: getPasswordResetEmailHtml(code),
+  }).then(() => {
+    console.log('[Email] Password reset email sent to', toEmail);
+  }).catch((error) => {
+    console.error('[Email] Failed to send reset email:', error.message);
+  });
 }
 
 module.exports = { sendWelcomeEmail, sendPasswordResetEmail };
