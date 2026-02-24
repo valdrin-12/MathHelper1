@@ -1,12 +1,60 @@
-const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-});
+const OAuth2 = google.auth.OAuth2;
+
+function getOAuth2Client() {
+  const clientId = process.env.GMAIL_CLIENT_ID;
+  const clientSecret = process.env.GMAIL_CLIENT_SECRET;
+  const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
+
+  if (!clientId || !clientSecret || !refreshToken) {
+    return null;
+  }
+
+  const oauth2Client = new OAuth2(clientId, clientSecret, 'https://developers.google.com/oauthplayground');
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
+  return oauth2Client;
+}
+
+function buildRawEmail(from, to, subject, html) {
+  const boundary = 'boundary_' + Date.now();
+  const lines = [
+    `From: "MathHelper" <${from}>`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
+    'MIME-Version: 1.0',
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
+    '',
+    `--${boundary}`,
+    'Content-Type: text/html; charset=UTF-8',
+    'Content-Transfer-Encoding: 7bit',
+    '',
+    html,
+    '',
+    `--${boundary}--`,
+  ];
+
+  const rawMessage = lines.join('\r\n');
+  return Buffer.from(rawMessage).toString('base64url');
+}
+
+async function sendEmail(to, subject, html) {
+  const oauth2Client = getOAuth2Client();
+  const fromEmail = process.env.GMAIL_FROM || process.env.SMTP_USER;
+
+  if (!oauth2Client || !fromEmail) {
+    console.log('[Email] Gmail API not configured, skipping email to', to);
+    return;
+  }
+
+  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
+  const raw = buildRawEmail(fromEmail, to, subject, html);
+
+  await gmail.users.messages.send({
+    userId: 'me',
+    requestBody: { raw },
+  });
+}
 
 function getWelcomeEmailHtml(userName) {
   return `
@@ -108,20 +156,15 @@ function getWelcomeEmailHtml(userName) {
 }
 
 async function sendWelcomeEmail(toEmail, userName) {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log('[Email] SMTP not configured, skipping welcome email for', toEmail);
-    return;
-  }
-
   try {
-    await transporter.sendMail({
-      from: `"MathHelper" <${process.env.SMTP_USER}>`,
-      to: toEmail,
-      subject: `Mire se vjen ne MathHelper, ${userName}! 🧮`,
-      html: getWelcomeEmailHtml(userName),
-    });
+    await sendEmail(
+      toEmail,
+      `Mire se vjen ne MathHelper, ${userName}! 🧮`,
+      getWelcomeEmailHtml(userName)
+    );
     console.log('[Email] Welcome email sent to', toEmail);
   } catch (error) {
+    // Don't fail registration if email fails
     console.error('[Email] Failed to send welcome email:', error.message);
   }
 }
@@ -190,18 +233,12 @@ function getPasswordResetEmailHtml(code) {
 }
 
 async function sendPasswordResetEmail(toEmail, code) {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log('[Email] SMTP not configured, skipping reset email. Code:', code);
-    return;
-  }
-
   try {
-    await transporter.sendMail({
-      from: `"MathHelper" <${process.env.SMTP_USER}>`,
-      to: toEmail,
-      subject: 'MathHelper - Password Reset Code',
-      html: getPasswordResetEmailHtml(code),
-    });
+    await sendEmail(
+      toEmail,
+      'MathHelper - Password Reset Code',
+      getPasswordResetEmailHtml(code)
+    );
     console.log('[Email] Password reset email sent to', toEmail);
   } catch (error) {
     console.error('[Email] Failed to send reset email:', error.message);
