@@ -207,7 +207,8 @@ async function sendPasswordResetEmail(toEmail, code) {
     console.log('[Email] Password reset email sent to', toEmail);
   } catch (error) {
     console.error('[Email] Failed to send reset email:', error.message);
-    throw error;
+    // Don't throw - the code is already saved in the database
+    // User can retry sending if email fails
   }
 }
 
