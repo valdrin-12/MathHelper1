@@ -1,10 +1,35 @@
-const sgMail = require('@sendgrid/mail');
+const FROM_EMAIL = process.env.BREVO_FROM_EMAIL || process.env.SMTP_USER;
+const FROM_NAME = 'MathHelper';
 
-if (process.env.SENDGRID_API_KEY) {
-  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+async function sendEmail(to, subject, html) {
+  const apiKey = process.env.BREVO_API_KEY;
+  if (!apiKey || !FROM_EMAIL) {
+    console.log('[Email] Brevo not configured, skipping email to', to);
+    return;
+  }
+
+  const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: {
+      'accept': 'application/json',
+      'content-type': 'application/json',
+      'api-key': apiKey,
+    },
+    body: JSON.stringify({
+      sender: { name: FROM_NAME, email: FROM_EMAIL },
+      to: [{ email: to }],
+      subject,
+      htmlContent: html,
+    }),
+  });
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(`Brevo API error ${response.status}: ${error}`);
+  }
+
+  return response.json();
 }
-
-const FROM_EMAIL = process.env.SENDGRID_FROM_EMAIL || process.env.SMTP_USER;
 
 function getWelcomeEmailHtml(userName) {
   return `
@@ -106,21 +131,15 @@ function getWelcomeEmailHtml(userName) {
 }
 
 async function sendWelcomeEmail(toEmail, userName) {
-  if (!process.env.SENDGRID_API_KEY || !FROM_EMAIL) {
-    console.log('[Email] SendGrid not configured, skipping welcome email for', toEmail);
-    return;
-  }
-
   try {
-    await sgMail.send({
-      to: toEmail,
-      from: { email: FROM_EMAIL, name: 'MathHelper' },
-      subject: `Mire se vjen ne MathHelper, ${userName}!`,
-      html: getWelcomeEmailHtml(userName),
-    });
+    await sendEmail(
+      toEmail,
+      `Mire se vjen ne MathHelper, ${userName}!`,
+      getWelcomeEmailHtml(userName)
+    );
     console.log('[Email] Welcome email sent to', toEmail);
   } catch (error) {
-    console.error('[Email] Failed to send welcome email:', error.response?.body || error.message);
+    console.error('[Email] Failed to send welcome email:', error.message);
   }
 }
 
@@ -188,21 +207,15 @@ function getPasswordResetEmailHtml(code) {
 }
 
 async function sendPasswordResetEmail(toEmail, code) {
-  if (!process.env.SENDGRID_API_KEY || !FROM_EMAIL) {
-    console.log('[Email] SendGrid not configured, skipping reset email. Code:', code);
-    return;
-  }
-
   try {
-    await sgMail.send({
-      to: toEmail,
-      from: { email: FROM_EMAIL, name: 'MathHelper' },
-      subject: 'MathHelper - Password Reset Code',
-      html: getPasswordResetEmailHtml(code),
-    });
+    await sendEmail(
+      toEmail,
+      'MathHelper - Password Reset Code',
+      getPasswordResetEmailHtml(code)
+    );
     console.log('[Email] Password reset email sent to', toEmail);
   } catch (error) {
-    console.error('[Email] Failed to send reset email:', error.response?.body || error.message);
+    console.error('[Email] Failed to send reset email:', error.message);
   }
 }
 
