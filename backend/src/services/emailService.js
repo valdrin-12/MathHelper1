@@ -1,17 +1,8 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-const transporter = nodemailer.createTransport({
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-  connectionTimeout: 10000,
-  greetingTimeout: 10000,
-  socketTimeout: 15000,
-});
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
+
+const FROM_EMAIL = process.env.FROM_EMAIL || 'MathHelper <onboarding@resend.dev>';
 
 function getWelcomeEmailHtml(userName) {
   return `
@@ -30,7 +21,7 @@ function getWelcomeEmailHtml(userName) {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px 40px 30px;text-align:center;">
-              <div style="font-size:48px;margin-bottom:12px;">🧮</div>
+              <div style="font-size:48px;margin-bottom:12px;">&#x1F9EE;</div>
               <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:bold;">MathHelper</h1>
               <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Asistenti yt personal i matematikes</p>
             </td>
@@ -39,7 +30,7 @@ function getWelcomeEmailHtml(userName) {
           <!-- Body -->
           <tr>
             <td style="padding:40px;">
-              <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Mire se vjen, ${userName}! 👋</h2>
+              <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">Mire se vjen, ${userName}! &#x1F44B;</h2>
               <p style="margin:0 0 24px;color:#6b7280;font-size:15px;line-height:24px;">
                 Regjistrimi yt ne MathHelper u krye me sukses. Tani ke akses te plote ne te gjitha funksionalitetet tona.
               </p>
@@ -50,7 +41,7 @@ function getWelcomeEmailHtml(userName) {
                   <td style="padding:12px 16px;background-color:#f0f4ff;border-radius:12px;margin-bottom:8px;">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">📸</td>
+                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">&#x1F4F8;</td>
                         <td>
                           <div style="color:#1a1a2e;font-weight:600;font-size:14px;">Analizo probleme me kamer</div>
                           <div style="color:#6b7280;font-size:13px;">Fotografo problemin dhe merr zgjidhjen menjehere</div>
@@ -64,7 +55,7 @@ function getWelcomeEmailHtml(userName) {
                   <td style="padding:12px 16px;background-color:#f0fff4;border-radius:12px;">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">📚</td>
+                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">&#x1F4DA;</td>
                         <td>
                           <div style="color:#1a1a2e;font-weight:600;font-size:14px;">Kurse te plota matematike</div>
                           <div style="color:#6b7280;font-size:13px;">Meso nga fillestari deri ne avancuar</div>
@@ -78,7 +69,7 @@ function getWelcomeEmailHtml(userName) {
                   <td style="padding:12px 16px;background-color:#fff8f0;border-radius:12px;">
                     <table cellpadding="0" cellspacing="0">
                       <tr>
-                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">🎯</td>
+                        <td style="padding-right:12px;font-size:24px;vertical-align:middle;">&#x1F3AF;</td>
                         <td>
                           <div style="color:#1a1a2e;font-weight:600;font-size:14px;">Kuize interaktive</div>
                           <div style="color:#6b7280;font-size:13px;">Testo njohurite e tua me kuize te ndryshme</div>
@@ -113,17 +104,16 @@ function getWelcomeEmailHtml(userName) {
 }
 
 async function sendWelcomeEmail(toEmail, userName) {
-  // Skip if SMTP is not configured
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log('[Email] SMTP not configured, skipping welcome email for', toEmail);
+  if (!resend) {
+    console.log('[Email] RESEND_API_KEY not configured, skipping welcome email for', toEmail);
     return;
   }
 
   try {
-    await transporter.sendMail({
-      from: `"MathHelper" <${process.env.SMTP_USER}>`,
+    await resend.emails.send({
+      from: FROM_EMAIL,
       to: toEmail,
-      subject: `Mire se vjen ne MathHelper, ${userName}! 🧮`,
+      subject: `Mire se vjen ne MathHelper, ${userName}!`,
       html: getWelcomeEmailHtml(userName),
     });
     console.log('[Email] Welcome email sent to', toEmail);
@@ -150,7 +140,7 @@ function getPasswordResetEmailHtml(code) {
           <!-- Header -->
           <tr>
             <td style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:40px 40px 30px;text-align:center;">
-              <div style="font-size:48px;margin-bottom:12px;">🔐</div>
+              <div style="font-size:48px;margin-bottom:12px;">&#x1F510;</div>
               <h1 style="margin:0;color:#ffffff;font-size:28px;font-weight:bold;">MathHelper</h1>
               <p style="margin:8px 0 0;color:rgba(255,255,255,0.85);font-size:14px;">Password Reset</p>
             </td>
@@ -197,14 +187,14 @@ function getPasswordResetEmailHtml(code) {
 }
 
 async function sendPasswordResetEmail(toEmail, code) {
-  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
-    console.log('[Email] SMTP not configured, skipping reset email. Code:', code);
+  if (!resend) {
+    console.log('[Email] RESEND_API_KEY not configured, skipping reset email. Code:', code);
     return;
   }
 
   try {
-    await transporter.sendMail({
-      from: `"MathHelper" <${process.env.SMTP_USER}>`,
+    await resend.emails.send({
+      from: FROM_EMAIL,
       to: toEmail,
       subject: 'MathHelper - Password Reset Code',
       html: getPasswordResetEmailHtml(code),
@@ -212,8 +202,6 @@ async function sendPasswordResetEmail(toEmail, code) {
     console.log('[Email] Password reset email sent to', toEmail);
   } catch (error) {
     console.error('[Email] Failed to send reset email:', error.message);
-    // Don't throw - the code is already saved in the database
-    // User can retry sending if email fails
   }
 }
 
