@@ -195,17 +195,17 @@ async function sendPasswordResetEmail(toEmail, code) {
     return;
   }
 
-  // Fire-and-forget: don't await, so the API response is instant
-  transporter.sendMail({
-    from: `"MathHelper" <${process.env.SMTP_USER}>`,
-    to: toEmail,
-    subject: 'MathHelper - Password Reset Code',
-    html: getPasswordResetEmailHtml(code),
-  }).then(() => {
+  try {
+    await transporter.sendMail({
+      from: `"MathHelper" <${process.env.SMTP_USER}>`,
+      to: toEmail,
+      subject: 'MathHelper - Password Reset Code',
+      html: getPasswordResetEmailHtml(code),
+    });
     console.log('[Email] Password reset email sent to', toEmail);
-  }).catch((error) => {
+  } catch (error) {
     console.error('[Email] Failed to send reset email:', error.message);
-  });
+  }
 }
 
 module.exports = { sendWelcomeEmail, sendPasswordResetEmail };
