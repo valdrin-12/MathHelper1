@@ -1,58 +1,25 @@
-const { google } = require('googleapis');
+const { Resend } = require('resend');
 
-const OAuth2 = google.auth.OAuth2;
-
-function getOAuth2Client() {
-  const clientId = process.env.GMAIL_CLIENT_ID;
-  const clientSecret = process.env.GMAIL_CLIENT_SECRET;
-  const refreshToken = process.env.GMAIL_REFRESH_TOKEN;
-
-  if (!clientId || !clientSecret || !refreshToken) {
-    return null;
-  }
-
-  const oauth2Client = new OAuth2(clientId, clientSecret, 'https://developers.google.com/oauthplayground');
-  oauth2Client.setCredentials({ refresh_token: refreshToken });
-  return oauth2Client;
-}
-
-function buildRawEmail(from, to, subject, html) {
-  const boundary = 'boundary_' + Date.now();
-  const lines = [
-    `From: "MathHelper" <${from}>`,
-    `To: ${to}`,
-    `Subject: ${subject}`,
-    'MIME-Version: 1.0',
-    `Content-Type: multipart/alternative; boundary="${boundary}"`,
-    '',
-    `--${boundary}`,
-    'Content-Type: text/html; charset=UTF-8',
-    'Content-Transfer-Encoding: 7bit',
-    '',
-    html,
-    '',
-    `--${boundary}--`,
-  ];
-
-  const rawMessage = lines.join('\r\n');
-  return Buffer.from(rawMessage).toString('base64url');
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY;
+  if (!apiKey) return null;
+  return new Resend(apiKey);
 }
 
 async function sendEmail(to, subject, html) {
-  const oauth2Client = getOAuth2Client();
-  const fromEmail = process.env.GMAIL_FROM || process.env.SMTP_USER;
-
-  if (!oauth2Client || !fromEmail) {
-    console.log('[Email] Gmail API not configured, skipping email to', to);
+  const resend = getResendClient();
+  if (!resend) {
+    console.log('[Email] Resend not configured, skipping email to', to);
     return;
   }
 
-  const gmail = google.gmail({ version: 'v1', auth: oauth2Client });
-  const raw = buildRawEmail(fromEmail, to, subject, html);
+  const fromEmail = process.env.EMAIL_FROM || 'MathHelper <onboarding@resend.dev>';
 
-  await gmail.users.messages.send({
-    userId: 'me',
-    requestBody: { raw },
+  await resend.emails.send({
+    from: fromEmail,
+    to,
+    subject,
+    html,
   });
 }
 
@@ -164,7 +131,6 @@ async function sendWelcomeEmail(toEmail, userName) {
     );
     console.log('[Email] Welcome email sent to', toEmail);
   } catch (error) {
-    // Don't fail registration if email fails
     console.error('[Email] Failed to send welcome email:', error.message);
   }
 }
