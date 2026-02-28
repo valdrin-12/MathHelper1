@@ -35,9 +35,7 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "experiments": {
-      "baseUrl": "/MathHelper1"
-    },
+    "experiments": {},
     "extra": {
       "eas": {
         "projectId": "3aea0943-960a-4945-bb9a-477f14dc717f"
