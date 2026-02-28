@@ -15,10 +15,14 @@ import CourseDetailModal from '../components/CourseDetailModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import WebContainer from '../components/WebContainer';
+import PressableCard from '../components/PressableCard';
+import { useResponsive } from '../utils/responsive';
 
 const COURSE_PROGRESS_KEY = '@mathhelper_course_progress';
 
 export default function LearnScreen() {
+  const { isWeb, isDesktop } = useResponsive();
   const { t } = useTranslation();
   const { courses, categories, difficultyLevels, search } = useLocalizedCourses();
   const { stats } = useStats();
@@ -92,7 +96,7 @@ export default function LearnScreen() {
         colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerGradient}
+        style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
       >
         <View style={styles.headerRow}>
           <View>
@@ -188,6 +192,7 @@ export default function LearnScreen() {
 
       {/* Courses List */}
       <ScrollView style={styles.coursesContainer} showsVerticalScrollIndicator={false}>
+        <WebContainer>
         {filteredCourses.length === 0 ? (
           <View style={styles.emptyContainer}>
             <View style={styles.illustrationContainer}>
@@ -209,18 +214,17 @@ export default function LearnScreen() {
             </Text>
           </View>
         ) : (
-          <View style={styles.coursesGrid}>
+          <View style={[styles.coursesGrid, isDesktop && { flexDirection: 'row', flexWrap: 'wrap', gap: 16 }]}>
             {filteredCourses.map((course) => {
               const category = getCategoryInfo(course.category);
               const difficulty = getDifficultyInfo(course.difficulty);
               const status = getCourseStatus(course.id);
 
               return (
-                <TouchableOpacity
+                <PressableCard
                   key={course.id}
-                  style={styles.glassCourseCard}
+                  style={[styles.glassCourseCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }]}
                   onPress={() => handleCoursePress(course)}
-                  activeOpacity={0.85}
                 >
                   {/* Glass layer */}
                   <View style={styles.glassLayer} />
@@ -292,13 +296,14 @@ export default function LearnScreen() {
                       <Ionicons name="arrow-forward" size={16} color={COLORS.primarySoft} />
                     </TouchableOpacity>
                   </View>
-                </TouchableOpacity>
+                </PressableCard>
               );
             })}
           </View>
         )}
 
-        <View style={{ height: 20 }} />
+        <View style={{ height: isWeb ? 20 : 100 }} />
+        </WebContainer>
       </ScrollView>
 
       {/* Course Detail Modal */}

@@ -235,4 +235,11 @@ export const SHADOWS = {
   },
 };
 
-export default { COLORS, DARK_COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS };
+export const BREAKPOINTS = {
+  mobile: 768,
+  tablet: 1024,
+};
+
+export const WEB_CONTENT_MAX_WIDTH = 900;
+
+export default { COLORS, DARK_COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS, BREAKPOINTS, WEB_CONTENT_MAX_WIDTH };

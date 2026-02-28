@@ -18,8 +18,12 @@ import SavedItemDetailModal from '../components/SavedItemDetailModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import WebContainer from '../components/WebContainer';
+import PressableCard from '../components/PressableCard';
+import { useResponsive } from '../utils/responsive';
 
 export default function SavedScreen() {
+  const { isWeb, isDesktop } = useResponsive();
   const { t } = useTranslation();
   const navigation = useNavigation();
   const { language } = useLanguage();
@@ -86,7 +90,7 @@ export default function SavedScreen() {
         colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerGradient}
+        style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
       >
         <View style={styles.headerRow}>
           <View>
@@ -127,6 +131,7 @@ export default function SavedScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }
       >
+        <WebContainer>
         {savedItems.length === 0 ? (
           <View style={styles.emptyContainer}>
             <View style={styles.illustrationContainer}>
@@ -154,13 +159,12 @@ export default function SavedScreen() {
             </TouchableOpacity>
           </View>
         ) : (
-          <View style={styles.itemsList}>
+          <View style={[styles.itemsList, isDesktop && { flexDirection: 'row', flexWrap: 'wrap', gap: 16 }]}>
             {savedItems.map((item) => (
-              <TouchableOpacity
+              <PressableCard
                 key={item.id}
-                style={styles.glassItemCard}
+                style={[styles.glassItemCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }]}
                 onPress={() => handleViewItem(item)}
-                activeOpacity={0.85}
               >
                 {/* Glass layer */}
                 <View style={styles.glassLayer} />
@@ -219,12 +223,13 @@ export default function SavedScreen() {
                     <Ionicons name="arrow-forward" size={16} color={COLORS.primarySoft} />
                   </View>
                 </View>
-              </TouchableOpacity>
+              </PressableCard>
             ))}
 
             <View style={{ height: SPACING.xl }} />
           </View>
         )}
+        </WebContainer>
       </ScrollView>
 
       {/* Detail Modal */}

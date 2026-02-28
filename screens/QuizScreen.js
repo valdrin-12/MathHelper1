@@ -15,6 +15,9 @@ import { useStats } from '../context/StatsContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import WebContainer from '../components/WebContainer';
+import PressableCard from '../components/PressableCard';
+import { useResponsive } from '../utils/responsive';
 
 // Mini circular progress for quiz cards
 function MiniProgressRing({ progress, size = 44, strokeWidth = 3, color }) {
@@ -59,6 +62,7 @@ function DifficultyIcon({ difficulty, size = 16 }) {
 }
 
 export default function QuizScreen() {
+  const { isWeb, isDesktop } = useResponsive();
   const { t } = useTranslation();
   const { quizSets, getDifficultyLabel, getDifficultyColor } = useLocalizedQuizzes();
   const { recordQuizCompleted, streak, stats } = useStats();
@@ -175,7 +179,7 @@ export default function QuizScreen() {
         colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerGradient}
+        style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
       >
         {/* Title Row with Streak Badge */}
         <View style={styles.headerTitleRow}>
@@ -216,6 +220,7 @@ export default function QuizScreen() {
       </LinearGradient>
 
       <ScrollView showsVerticalScrollIndicator={false}>
+        <WebContainer>
         {/* Challenge of the Day */}
         {dailyChallenge && (
           <Animated.View style={[
@@ -301,17 +306,16 @@ export default function QuizScreen() {
 
         {/* Quiz Cards - Glassmorphism */}
         <View style={styles.quizList}>
-          <Text style={styles.sectionTitle}>
+          <Text style={[styles.sectionTitle, isDesktop && { width: '100%' }]}>
             {t('quiz.quizCount', { count: filteredQuizzes.length })}
           </Text>
           {filteredQuizzes.map((quizSet) => {
             const bestScore = getBestScore(quizSet.id);
             return (
-              <TouchableOpacity
+              <PressableCard
                 key={quizSet.id}
-                style={styles.glassQuizCard}
+                style={[styles.glassQuizCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }]}
                 onPress={() => handleStartQuiz(quizSet)}
-                activeOpacity={0.85}
               >
                 {/* Glass background layer */}
                 <View style={styles.glassLayer} />
@@ -392,12 +396,13 @@ export default function QuizScreen() {
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>
-              </TouchableOpacity>
+              </PressableCard>
             );
           })}
         </View>
 
-        <View style={{ height: 100 }} />
+        <View style={{ height: isWeb ? 20 : 100 }} />
+        </WebContainer>
       </ScrollView>
 
       {/* Active Quiz Modal */}
@@ -642,6 +647,9 @@ const styles = StyleSheet.create({
   quizList: {
     paddingHorizontal: SPACING.xl,
     paddingTop: SPACING.md,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 16,
   },
   sectionTitle: {
     fontSize: 17,

@@ -18,8 +18,11 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import WebContainer from '../components/WebContainer';
+import { useResponsive } from '../utils/responsive';
 
 export default function SettingsScreen() {
+  const { isWeb } = useResponsive();
   const { t } = useTranslation();
   const { user, logout } = useUser();
   const { completedCoursesCount, completedQuizzesCount, streak, achievements } = useStats();
@@ -95,7 +98,7 @@ export default function SettingsScreen() {
         colors={[colors.primary || COLORS.primary, colors.primarySoft || COLORS.primarySoft, colors.primaryLight || COLORS.primaryLight]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
-        style={styles.headerGradient}
+        style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
       >
         <Text style={styles.headerTitle}>{t('settings.title')}</Text>
         <Text style={styles.headerSubtitle}>{t('settings.subtitle')}</Text>
@@ -121,6 +124,7 @@ export default function SettingsScreen() {
         </View>
       </LinearGradient>
 
+      <WebContainer maxWidth={600}>
       {/* Preferences Section */}
       <View style={styles.section}>
         <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.preferences')}</Text>
@@ -250,7 +254,8 @@ export default function SettingsScreen() {
         <Text style={[styles.versionText, { color: colors.textMuted }]}>{t('settings.version')}</Text>
       </View>
 
-      <View style={{ height: 100 }} />
+      <View style={{ height: isWeb ? 20 : 100 }} />
+      </WebContainer>
 
       {/* Info Modals */}
       <InfoModal

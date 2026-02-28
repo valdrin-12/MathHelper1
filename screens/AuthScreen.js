@@ -20,6 +20,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../services/apiClient';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import WebContainer from '../components/WebContainer';
 
 const { width } = Dimensions.get('window');
 
@@ -250,9 +251,9 @@ export default function AuthScreen() {
           end={{ x: 1, y: 1 }}
           style={styles.headerGradient}
         >
-          {/* Decorative circles */}
-          <View style={styles.decorCircle1} />
-          <View style={styles.decorCircle2} />
+          {/* Decorative circles - hidden on web */}
+          {Platform.OS !== 'web' && <View style={styles.decorCircle1} />}
+          {Platform.OS !== 'web' && <View style={styles.decorCircle2} />}
 
           {/* Logo */}
           <View style={styles.logoContainer}>
@@ -273,6 +274,7 @@ export default function AuthScreen() {
         </LinearGradient>
 
         {/* Form Card */}
+        <WebContainer maxWidth={480}>
         <View style={styles.formCard}>
           {/* Tab Switcher */}
           <View style={styles.tabContainer}>
@@ -513,6 +515,8 @@ export default function AuthScreen() {
           <Ionicons name="trash-outline" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
           <Text style={styles.clearDataText}>{t('auth.clearAllData')}</Text>
         </TouchableOpacity>
+
+        </WebContainer>
 
         {/* Forgot Password Overlay */}
         {forgotMode && (

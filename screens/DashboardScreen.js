@@ -26,6 +26,8 @@ import PremiumModal from '../components/PremiumModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../theme/constants';
+import WebContainer from '../components/WebContainer';
+import { useResponsive } from '../utils/responsive';
 
 const { width } = Dimensions.get('window');
 
@@ -175,6 +177,8 @@ export default function DashboardScreen() {
     return t('dashboard.timeDays', { count: diffDays });
   };
 
+  const { isWeb, isDesktop } = useResponsive();
+
   return (
     <>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -183,7 +187,7 @@ export default function DashboardScreen() {
           colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={styles.headerGradient}
+          style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
         >
           <View style={styles.header}>
             <View style={styles.headerLeft}>
@@ -220,6 +224,7 @@ export default function DashboardScreen() {
         </LinearGradient>
 
         {/* Main Content */}
+        <WebContainer>
         <View style={styles.content}>
           {/* Daily Goal Card */}
           <View style={styles.goalCard}>
@@ -401,29 +406,29 @@ export default function DashboardScreen() {
           {/* Statistics Grid */}
           <View style={styles.statsSection}>
             <Text style={styles.sectionTitle}>{t('dashboard.yourStats')}</Text>
-            <View style={styles.statsGrid}>
-              <View style={[styles.statCard, { backgroundColor: COLORS.primaryBg }]}>
+            <View style={[styles.statsGrid, isDesktop && { gap: 14 }]}>
+              <View style={[styles.statCard, { backgroundColor: COLORS.primaryBg }, isDesktop && styles.statCardDesktop]}>
                 <View style={[styles.statIconBox, { backgroundColor: COLORS.primarySoft }]}>
                   <Ionicons name="checkmark-done" size={20} color="#FFFFFF" />
                 </View>
                 <Text style={styles.statNumber}>{savedItems.length}</Text>
                 <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.problemsSolved')}</Text>
               </View>
-              <View style={[styles.statCard, { backgroundColor: '#FFF7ED' }]}>
+              <View style={[styles.statCard, { backgroundColor: '#FFF7ED' }, isDesktop && styles.statCardDesktop]}>
                 <View style={[styles.statIconBox, { backgroundColor: '#F59E0B' }]}>
                   <Ionicons name="flame" size={20} color="#FFFFFF" />
                 </View>
                 <Text style={styles.statNumber}>{streak}</Text>
                 <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.dayStreak')}</Text>
               </View>
-              <View style={[styles.statCard, { backgroundColor: COLORS.successLight }]}>
+              <View style={[styles.statCard, { backgroundColor: COLORS.successLight }, isDesktop && styles.statCardDesktop]}>
                 <View style={[styles.statIconBox, { backgroundColor: COLORS.success }]}>
                   <Ionicons name="book" size={20} color="#FFFFFF" />
                 </View>
                 <Text style={styles.statNumber}>{completedCoursesCount}</Text>
                 <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.coursesCompleted')}</Text>
               </View>
-              <View style={[styles.statCard, { backgroundColor: COLORS.purpleLight }]}>
+              <View style={[styles.statCard, { backgroundColor: COLORS.purpleLight }, isDesktop && styles.statCardDesktop]}>
                 <View style={[styles.statIconBox, { backgroundColor: COLORS.purple }]}>
                   <Ionicons name="trophy" size={20} color="#FFFFFF" />
                 </View>
@@ -475,8 +480,9 @@ export default function DashboardScreen() {
             )}
           </View>
 
-          <View style={{ height: 30 }} />
+          <View style={{ height: isWeb ? 30 : 100 }} />
         </View>
+        </WebContainer>
       </ScrollView>
 
       <LoadingOverlay visible={isAnalyzing} />
@@ -902,6 +908,11 @@ const styles = StyleSheet.create({
     width: (width - 18 * 2 - 12) / 2,
     borderRadius: 20,
     padding: 18,
+  },
+  statCardDesktop: {
+    width: 'auto',
+    flexBasis: '22%',
+    flexGrow: 1,
   },
   statIconBox: {
     width: 42,
