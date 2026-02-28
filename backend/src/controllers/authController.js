@@ -184,7 +184,7 @@ async function refreshTokens(req, res) {
 
 async function forgotPassword(req, res) {
   try {
-    const { email } = req.body;
+    const { email, language } = req.body;
 
     // Always return success to prevent email enumeration
     const genericResponse = {
@@ -210,8 +210,9 @@ async function forgotPassword(req, res) {
       [user.id, code]
     );
 
-    // Send email in user's language
-    await sendPasswordResetEmail(email, code, user.language || 'al');
+    // Use language from request (current UI), fallback to user's stored language
+    const emailLang = language || user.language || 'al';
+    await sendPasswordResetEmail(email, code, emailLang);
 
     res.json(genericResponse);
   } catch (err) {

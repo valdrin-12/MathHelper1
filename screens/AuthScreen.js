@@ -149,7 +149,7 @@ export default function AuthScreen() {
     setForgotLoading(true);
     setForgotError('');
     try {
-      await api.post('/api/auth/forgot-password', { email: resetEmail.trim() });
+      await api.post('/api/auth/forgot-password', { email: resetEmail.trim(), language: i18n.language });
       setForgotMode('code');
     } catch (err) {
       setForgotError(err.message || t('common.error'));
