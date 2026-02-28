@@ -21,7 +21,6 @@ import LearnScreen from './screens/LearnScreen';
 import QuizScreen from './screens/QuizScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import AuthScreen from './screens/AuthScreen';
-import OnboardingScreen from './screens/OnboardingScreen';
 import SplashScreen from './screens/SplashScreen';
 import LoadingOverlay from './components/LoadingOverlay';
 
@@ -34,8 +33,6 @@ const TAB_ICONS = {
   Quiz: { active: 'help-circle', inactive: 'help-circle-outline' },
   Settings: { active: 'settings', inactive: 'settings-outline' },
 };
-
-const ONBOARDING_KEY = '@mathhelper_onboarding_done';
 
 function TabBarBackground() {
   const { isDark } = useTheme();
@@ -89,7 +86,6 @@ function MainApp() {
   const { user, loading } = useUser();
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
-  const [showOnboarding, setShowOnboarding] = useState(null);
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
@@ -103,30 +99,18 @@ function MainApp() {
     };
     forceLogoutOnce();
 
-    AsyncStorage.getItem(ONBOARDING_KEY).then((value) => {
-      setShowOnboarding(value !== 'true');
-    });
   }, []);
-
-  const handleOnboardingComplete = async () => {
-    await AsyncStorage.setItem(ONBOARDING_KEY, 'true');
-    setShowOnboarding(false);
-  };
 
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
-  if (loading || showOnboarding === null) {
+  if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
         <LoadingOverlay visible={true} />
       </View>
     );
-  }
-
-  if (showOnboarding && !user) {
-    return <OnboardingScreen onComplete={handleOnboardingComplete} />;
   }
 
   if (!user) {
