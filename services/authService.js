@@ -5,9 +5,9 @@ import api from './apiClient';
  * @param {Object} params - { name, email, password }
  * @returns {Promise<{ success: boolean, user: Object|null, error: string|null }>}
  */
-export const registerUser = async ({ name, email, password }) => {
+export const registerUser = async ({ name, email, password, language }) => {
   try {
-    const data = await api.post('/api/auth/register', { name, email, password });
+    const data = await api.post('/api/auth/register', { name, email, password, language });
     await api.storeTokens(data.accessToken, data.refreshToken);
     return { success: true, user: data.user, error: null };
   } catch (error) {

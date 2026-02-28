@@ -6,7 +6,7 @@ const crypto = require('crypto');
 
 async function register(req, res) {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, language } = req.body;
 
     // Check if email already exists
     const existing = await userModel.findByEmail(email);
@@ -14,7 +14,7 @@ async function register(req, res) {
       return res.status(409).json({ success: false, error: 'Email already registered' });
     }
 
-    const user = await userModel.createUser({ name: name.trim(), email, password });
+    const user = await userModel.createUser({ name: name.trim(), email, password, language: language || 'al' });
 
     const accessToken = generateAccessToken(user.id);
     const refreshToken = generateRefreshToken(user.id);
@@ -26,8 +26,8 @@ async function register(req, res) {
       [user.id, refreshToken, expiresAt]
     );
 
-    // Send welcome email (non-blocking)
-    sendWelcomeEmail(email, name.trim());
+    // Send welcome email in user's language (non-blocking)
+    sendWelcomeEmail(email, name.trim(), language || 'al');
 
     res.status(201).json({
       success: true,
@@ -210,8 +210,8 @@ async function forgotPassword(req, res) {
       [user.id, code]
     );
 
-    // Send email
-    await sendPasswordResetEmail(email, code);
+    // Send email in user's language
+    await sendPasswordResetEmail(email, code, user.language || 'al');
 
     res.json(genericResponse);
   } catch (err) {

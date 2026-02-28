@@ -3,13 +3,13 @@ const bcrypt = require('bcrypt');
 
 const SALT_ROUNDS = 12;
 
-async function createUser({ name, email, password }) {
+async function createUser({ name, email, password, language = 'al' }) {
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
   const { rows } = await pool.query(
-    `INSERT INTO users (name, email, password_hash)
-     VALUES ($1, $2, $3)
+    `INSERT INTO users (name, email, password_hash, language)
+     VALUES ($1, $2, $3, $4)
      RETURNING id, name, email, language, tier, created_at, updated_at`,
-    [name, email.toLowerCase(), passwordHash]
+    [name, email.toLowerCase(), passwordHash, language]
   );
   return rows[0];
 }

@@ -25,7 +25,7 @@ const { width } = Dimensions.get('window');
 
 export default function AuthScreen() {
   const { login, register } = useUser();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -118,7 +118,7 @@ export default function AuthScreen() {
     if (!validateRegister()) return;
     setLoading(true);
     try {
-      const result = await register(name.trim(), email.trim(), password);
+      const result = await register(name.trim(), email.trim(), password, i18n.language);
       if (!result.success) {
         Alert.alert(t('common.error'), result.error || t('auth.registerFailed'));
       }

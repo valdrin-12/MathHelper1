@@ -60,9 +60,9 @@ export const UserProvider = ({ children }) => {
    * @param {string} password
    * @returns {Promise<{ success: boolean, error: string|null }>}
    */
-  const register = async (name, email, password) => {
+  const register = async (name, email, password, language) => {
     try {
-      const result = await authService.registerUser({ name, email, password });
+      const result = await authService.registerUser({ name, email, password, language });
       if (result.success) {
         setUser(result.user);
       }
