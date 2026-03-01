@@ -37,7 +37,7 @@
       overflow-x: hidden;
     }
 
-    /* ─── NAV ─── */
+    /* NAV */
     nav {
       position: fixed; top: 0; left: 0; right: 0; z-index: 100;
       background: rgba(255,255,255,0.85);
@@ -62,7 +62,7 @@
       font-size: 20px; color: #fff;
     }
     .nav-logo span { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
     .nav-links a {
       text-decoration: none; color: var(--text-secondary);
       font-weight: 600; font-size: 15px; transition: color 0.2s;
@@ -75,12 +75,45 @@
     }
     .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,58,138,0.25); }
 
-    /* ─── HERO ─── */
+    /* Language Switcher */
+    .lang-switcher {
+      display: flex; gap: 4px; background: var(--primary-bg);
+      border-radius: 10px; padding: 3px; border: 1px solid var(--border);
+    }
+    .lang-btn {
+      border: none; background: transparent; cursor: pointer;
+      padding: 6px 10px; border-radius: 8px; font-size: 15px;
+      transition: all 0.2s; line-height: 1;
+    }
+    .lang-btn.active {
+      background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .lang-btn:hover { background: rgba(255,255,255,0.6); }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none; background: none; border: none;
+      font-size: 28px; cursor: pointer; color: var(--text);
+      padding: 4px;
+    }
+    .mobile-menu {
+      display: none; position: fixed; top: 73px; left: 0; right: 0;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 20px 24px; z-index: 99;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    }
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 16px; }
+    .mobile-menu a {
+      text-decoration: none; color: var(--text); font-weight: 600;
+      font-size: 16px; padding: 8px 0;
+    }
+    .mobile-lang-row { display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+    /* HERO */
     .hero {
-      padding: 160px 32px 100px;
+      padding: 160px 32px 80px;
       text-align: center;
-      position: relative;
-      overflow: hidden;
+      position: relative; overflow: hidden;
     }
     .hero::before {
       content: '';
@@ -129,7 +162,75 @@
     }
     .btn-secondary:hover { border-color: var(--primary-light); color: var(--primary); }
 
-    /* ─── HOW IT WORKS ─── */
+    /* APP PREVIEW */
+    .preview-section {
+      padding: 40px 32px 100px;
+      position: relative;
+    }
+    .preview-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .phones-container {
+      display: flex; justify-content: center; align-items: flex-end;
+      gap: 24px; max-width: 900px; margin: 0 auto;
+      position: relative;
+    }
+    .phone-frame {
+      width: 240px; height: 480px;
+      background: #1a1a2e;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: 0 30px 80px rgba(30,58,138,0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
+      position: relative;
+      transition: transform 0.4s ease;
+    }
+    .phone-frame:hover { transform: translateY(-8px); }
+    .phone-frame.featured {
+      width: 270px; height: 540px;
+      box-shadow: 0 40px 100px rgba(30,58,138,0.3), 0 0 0 1px rgba(255,255,255,0.1) inset;
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 24px; background: #1a1a2e;
+      border-radius: 0 0 16px 16px; z-index: 2;
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      border-radius: 24px; overflow: hidden;
+      position: relative;
+    }
+    .phone-screen img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top;
+    }
+    .phone-screen-placeholder {
+      width: 100%; height: 100%;
+      border-radius: 24px; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: #fff; text-align: center; padding: 20px;
+    }
+    .phone-screen-placeholder.dashboard-bg {
+      background: linear-gradient(180deg, #3B6AE6 0%, #4B7BF5 35%, #F0F4FF 35%, #F0F4FF 100%);
+    }
+    .phone-screen-placeholder.learn-bg {
+      background: linear-gradient(180deg, #3B6AE6 0%, #4B7BF5 30%, #F0F4FF 30%, #F0F4FF 100%);
+    }
+    .phone-screen-placeholder.quiz-bg {
+      background: linear-gradient(180deg, #3B6AE6 0%, #4B7BF5 25%, #F0F4FF 25%, #F0F4FF 100%);
+    }
+    .phone-label {
+      position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
+      font-size: 14px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    /* HOW IT WORKS */
     .how-section {
       padding: 100px 32px;
       max-width: 1200px; margin: 0 auto;
@@ -181,7 +282,7 @@
     .step-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
     .step-card p { color: var(--text-secondary); font-size: 16px; line-height: 1.7; }
 
-    /* ─── FEATURES ─── */
+    /* FEATURES */
     .features-section {
       padding: 100px 32px;
       background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
@@ -216,7 +317,7 @@
     .feature-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
     .feature-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
 
-    /* ─── SUBJECTS ─── */
+    /* SUBJECTS */
     .subjects-section {
       padding: 100px 32px;
       max-width: 1200px; margin: 0 auto;
@@ -236,7 +337,7 @@
       color: var(--primary);
     }
 
-    /* ─── LANGUAGES ─── */
+    /* LANGUAGES */
     .languages-section {
       padding: 80px 32px;
       background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 50%, var(--primary-light) 100%);
@@ -265,7 +366,7 @@
     .lang-flag:hover { transform: scale(1.05); background: rgba(255,255,255,0.22); }
     .lang-flag .flag { font-size: 28px; }
 
-    /* ─── CTA ─── */
+    /* CTA */
     .cta-section {
       padding: 120px 32px; text-align: center;
     }
@@ -278,7 +379,7 @@
       max-width: 520px; margin: 0 auto 40px;
     }
 
-    /* ─── FOOTER ─── */
+    /* FOOTER */
     footer {
       background: var(--text);
       color: rgba(255,255,255,0.6); padding: 48px 32px;
@@ -305,20 +406,32 @@
     }
     .footer-links a:hover { color: #fff; }
 
-    /* ─── ANIMATIONS ─── */
+    /* ANIMATIONS */
     .fade-up {
       opacity: 0; transform: translateY(30px);
       transition: opacity 0.7s ease, transform 0.7s ease;
     }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
 
-    /* ─── RESPONSIVE ─── */
+    /* RESPONSIVE */
     @media (max-width: 768px) {
       .nav-links { display: none; }
-      .hero { padding: 130px 20px 80px; }
+      .mobile-menu-btn { display: block; }
+      .hero { padding: 130px 20px 60px; }
       .how-section, .features-section, .subjects-section, .cta-section { padding: 60px 20px; }
       .steps-grid, .features-grid { grid-template-columns: 1fr; }
       .lang-flag { padding: 16px 24px; font-size: 16px; }
+      .phones-container { gap: 12px; }
+      .phone-frame { width: 140px; height: 280px; border-radius: 24px; padding: 8px; }
+      .phone-frame.featured { width: 160px; height: 320px; }
+      .phone-frame::before { width: 50px; height: 16px; top: 8px; border-radius: 0 0 10px 10px; }
+      .phone-screen { border-radius: 16px; }
+      .phone-label { font-size: 11px; bottom: -28px; }
+      .preview-section { padding: 20px 16px 70px; }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-menu-btn { display: none; }
     }
   </style>
 </head>
@@ -332,42 +445,100 @@
         <span>MathHelper</span>
       </a>
       <div class="nav-links">
-        <a href="#how">Si funksionon</a>
-        <a href="#features">Karakteristikat</a>
-        <a href="#subjects">Lendet</a>
-        <a href="/" class="nav-cta">Hap aplikacionin</a>
+        <a href="#how" data-i18n="nav.how">Si funksionon</a>
+        <a href="#features" data-i18n="nav.features">Karakteristikat</a>
+        <a href="#subjects" data-i18n="nav.subjects">Lendet</a>
+        <div class="lang-switcher">
+          <button class="lang-btn active" data-lang="sq" title="Shqip">&#x1F1E6;&#x1F1F1;</button>
+          <button class="lang-btn" data-lang="en" title="English">&#x1F1EC;&#x1F1E7;</button>
+          <button class="lang-btn" data-lang="de" title="Deutsch">&#x1F1E9;&#x1F1EA;</button>
+        </div>
+        <a href="/app" class="nav-cta" data-i18n="nav.openApp">Hap aplikacionin</a>
       </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">&#9776;</button>
     </div>
   </nav>
 
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#how" data-i18n="nav.how">Si funksionon</a>
+    <a href="#features" data-i18n="nav.features">Karakteristikat</a>
+    <a href="#subjects" data-i18n="nav.subjects">Lendet</a>
+    <a href="/app" data-i18n="nav.openApp">Hap aplikacionin</a>
+    <div class="mobile-lang-row">
+      <button class="lang-btn active" data-lang="sq">&#x1F1E6;&#x1F1F1;</button>
+      <button class="lang-btn" data-lang="en">&#x1F1EC;&#x1F1E7;</button>
+      <button class="lang-btn" data-lang="de">&#x1F1E9;&#x1F1EA;</button>
+    </div>
+  </div>
+
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-badge">&#x2728; Falas per te gjithe</div>
-    <h1>Ke nevoje per ndihme<br>ne matematike?</h1>
-    <p>
+    <div class="hero-badge">&#x2728; <span data-i18n="hero.badge">Falas per te gjithe</span></div>
+    <h1 data-i18n="hero.title">Ke nevoje per ndihme<br>ne matematike?</h1>
+    <p data-i18n="hero.subtitle">
       Mos u stresohu&mdash;jo te gjithe e kuptojne matematiken qe ne provimin e pare.
       MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive
       qe te mesosh duke praktikuar.
     </p>
     <div class="hero-buttons">
-      <a href="/" class="btn-primary">&#x1F680; Fillo tani</a>
-      <a href="#how" class="btn-secondary">&#x2139;&#xFE0F; Si funksionon?</a>
+      <a href="/app" class="btn-primary">&#x1F680; <span data-i18n="hero.cta">Fillo tani</span></a>
+      <a href="#how" class="btn-secondary">&#x2139;&#xFE0F; <span data-i18n="hero.secondary">Si funksionon?</span></a>
+    </div>
+  </section>
+
+  <!-- APP PREVIEW -->
+  <section class="preview-section fade-up">
+    <div class="phones-container">
+      <div class="phone-frame" style="transform: rotate(-4deg);">
+        <div class="phone-screen">
+          <img src="/screenshots/dashboard.png" alt="Dashboard"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="phone-screen-placeholder dashboard-bg" style="display:none;">
+            <div style="font-size:32px; margin-bottom:8px;">&#x1F3E0;</div>
+            <div style="font-size:13px; font-weight:700;">Dashboard</div>
+          </div>
+        </div>
+        <div class="phone-label" data-i18n="preview.dashboard">Paneli kryesor</div>
+      </div>
+      <div class="phone-frame featured">
+        <div class="phone-screen">
+          <img src="/screenshots/learn.png" alt="Learn"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="phone-screen-placeholder learn-bg" style="display:none;">
+            <div style="font-size:32px; margin-bottom:8px;">&#x1F4DA;</div>
+            <div style="font-size:13px; font-weight:700;">Learn</div>
+          </div>
+        </div>
+        <div class="phone-label" data-i18n="preview.learn">Kurset</div>
+      </div>
+      <div class="phone-frame" style="transform: rotate(4deg);">
+        <div class="phone-screen">
+          <img src="/screenshots/quiz.png" alt="Quiz"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="phone-screen-placeholder quiz-bg" style="display:none;">
+            <div style="font-size:32px; margin-bottom:8px;">&#x1F3AF;</div>
+            <div style="font-size:13px; font-weight:700;">Quiz</div>
+          </div>
+        </div>
+        <div class="phone-label" data-i18n="preview.quiz">Kuizet</div>
+      </div>
     </div>
   </section>
 
   <!-- HOW IT WORKS -->
   <section class="how-section" id="how">
-    <div class="section-label">Si funksionon</div>
-    <h2 class="section-title">Tri hapa te thjeshta</h2>
-    <p class="section-subtitle">
+    <div class="section-label" data-i18n="how.label">Si funksionon</div>
+    <h2 class="section-title" data-i18n="how.title">Tri hapa te thjeshta</h2>
+    <p class="section-subtitle" data-i18n="how.subtitle">
       Skenoj, shkruaj ose fotografo problemin tend dhe MathHelper do te te ndihmoje menjehere.
     </p>
     <div class="steps-grid">
       <div class="step-card fade-up">
         <div class="step-number">1</div>
         <div class="step-icon">&#x1F4F7;</div>
-        <h3>Skenoj ose shkruaj</h3>
-        <p>
+        <h3 data-i18n="how.step1.title">Skenoj ose shkruaj</h3>
+        <p data-i18n="how.step1.desc">
           Ke problem ne detyra? Fotografoje me kamere ose shkruaje me tastieren matematikore.
           MathHelper e lexon problemin ne cast&mdash;edhe problemet me tekst.
         </p>
@@ -375,8 +546,8 @@
       <div class="step-card fade-up">
         <div class="step-number">2</div>
         <div class="step-icon">&#x1F9E0;</div>
-        <h3>Merr zgjidhjen</h3>
-        <p>
+        <h3 data-i18n="how.step2.title">Merr zgjidhjen</h3>
+        <p data-i18n="how.step2.desc">
           AI-ja jone (Gemini) analizon problemin dhe te jep zgjidhjen e plote me
           te gjitha hapat e shpjeguara. Asnje hap nuk mungon.
         </p>
@@ -384,8 +555,8 @@
       <div class="step-card fade-up">
         <div class="step-number">3</div>
         <div class="step-icon">&#x1F4DA;</div>
-        <h3>Meso dhe praktiko</h3>
-        <p>
+        <h3 data-i18n="how.step3.title">Meso dhe praktiko</h3>
+        <p data-i18n="how.step3.desc">
           Shiko cdo hap per te kuptuar zgjidhjen. Pastaj testoje veten me
           kuize interaktive dhe kurse te plota per cdo teme.
         </p>
@@ -396,41 +567,41 @@
   <!-- FEATURES -->
   <section class="features-section" id="features">
     <div class="features-inner">
-      <div class="section-label">Karakteristikat</div>
-      <h2 class="section-title">Gjithcka qe te duhet per matematike</h2>
-      <p class="section-subtitle">
+      <div class="section-label" data-i18n="features.label">Karakteristikat</div>
+      <h2 class="section-title" data-i18n="features.title">Gjithcka qe te duhet per matematike</h2>
+      <p class="section-subtitle" data-i18n="features.subtitle">
         MathHelper kombinon inteligjencen artificiale me metoda mesimore per te te ndihmuar te kuptosh matematiken ne thelb.
       </p>
       <div class="features-grid">
         <div class="feature-card fade-up">
           <div class="feature-icon">&#x1F4F8;</div>
-          <h3>Zgjidhje me kamere</h3>
-          <p>Fotografo cdo problem matematikor dhe merr zgjidhjen e plote me shpjegime hap-pas-hapi brenda sekondave. Perdor Gemini AI.</p>
+          <h3 data-i18n="features.camera.title">Zgjidhje me kamere</h3>
+          <p data-i18n="features.camera.desc">Fotografo cdo problem matematikor dhe merr zgjidhjen e plote me shpjegime hap-pas-hapi brenda sekondave. Perdor Gemini AI.</p>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-icon">&#x2328;&#xFE0F;</div>
-          <h3>Tastiere matematikore</h3>
-          <p>Shkruaj problemet me tastieren tone te vecante matematikore qe ka te gjitha simbolet dhe operatoret qe te duhen.</p>
+          <h3 data-i18n="features.keyboard.title">Tastiere matematikore</h3>
+          <p data-i18n="features.keyboard.desc">Shkruaj problemet me tastieren tone te vecante matematikore qe ka te gjitha simbolet dhe operatoret qe te duhen.</p>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-icon">&#x1F393;</div>
-          <h3>Kurse te plota</h3>
-          <p>Meso matematike nga fillimi me kurse te strukturuara: Aritmetike, Algjeber, Gjeometri, Trigonometri, Statistike dhe Kalkulus.</p>
+          <h3 data-i18n="features.courses.title">Kurse te plota</h3>
+          <p data-i18n="features.courses.desc">Meso matematike nga fillimi me kurse te strukturuara: Aritmetike, Algjeber, Gjeometri, Trigonometri, Statistike dhe Kalkulus.</p>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-icon">&#x1F3AF;</div>
-          <h3>Kuize interaktive</h3>
-          <p>23 kuize ne nivele te ndryshme: Fillestar, Mesatar dhe i Avancuar. Testoje veten dhe shiko progresin tend.</p>
+          <h3 data-i18n="features.quizzes.title">Kuize interaktive</h3>
+          <p data-i18n="features.quizzes.desc">23 kuize ne nivele te ndryshme: Fillestar, Mesatar dhe i Avancuar. Testoje veten dhe shiko progresin tend.</p>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-icon">&#x1F516;</div>
-          <h3>Ruaj problemet</h3>
-          <p>Ruaj zgjidhjet per me vone dhe rishikoji kurdo qe te duash. Asnje problem i zgjidhur nuk humbet.</p>
+          <h3 data-i18n="features.saved.title">Ruaj problemet</h3>
+          <p data-i18n="features.saved.desc">Ruaj zgjidhjet per me vone dhe rishikoji kurdo qe te duash. Asnje problem i zgjidhur nuk humbet.</p>
         </div>
         <div class="feature-card fade-up">
           <div class="feature-icon">&#x1F310;</div>
-          <h3>Shumegjiuheshe</h3>
-          <p>Perdore MathHelper ne gjuhen tende: Shqip, Anglisht ose Gjermanisht. Meso matematike ne gjuhen qe te pershtatet me shume.</p>
+          <h3 data-i18n="features.multilang.title">Shumegjiuheshe</h3>
+          <p data-i18n="features.multilang.desc">Perdore MathHelper ne gjuhen tende: Shqip, Anglisht ose Gjermanisht. Meso matematike ne gjuhen qe te pershtatet me shume.</p>
         </div>
       </div>
     </div>
@@ -438,31 +609,31 @@
 
   <!-- SUBJECTS -->
   <section class="subjects-section" id="subjects">
-    <div class="section-label">Lendet</div>
-    <h2 class="section-title">Matematike e shpjeguar.<br>Nga fillestari deri ne avancuar.</h2>
-    <p class="section-subtitle">
+    <div class="section-label" data-i18n="subjects.label">Lendet</div>
+    <h2 class="section-title" data-i18n="subjects.title">Matematike e shpjeguar.<br>Nga fillestari deri ne avancuar.</h2>
+    <p class="section-subtitle" data-i18n="subjects.subtitle">
       MathHelper mbulon te gjitha temat kryesore te matematikes qe mesoni ne shkolle dhe universitet.
     </p>
     <div class="subjects-grid">
-      <div class="subject-pill">&#x2795; Aritmetike baze</div>
-      <div class="subject-pill">&#x1F4CA; Algjeber</div>
-      <div class="subject-pill">&#x1F4D0; Gjeometri</div>
-      <div class="subject-pill">&#x1F4D0; Trigonometri</div>
-      <div class="subject-pill">&#x1F4C8; Statistike & Probabilitet</div>
-      <div class="subject-pill">&#x221E; Kalkulus</div>
-      <div class="subject-pill">&#x1F522; Thyesa & Perqindje</div>
-      <div class="subject-pill">&#x1F4D0; Ekuacione lineare</div>
-      <div class="subject-pill">&#x1F4D0; Ekuacione kuadratike</div>
-      <div class="subject-pill">&#x1F4CA; Funksione</div>
-      <div class="subject-pill">&#x1F4CA; Matrica</div>
-      <div class="subject-pill">&#x1F4D0; Numra kompleks</div>
+      <div class="subject-pill" data-i18n="subjects.arithmetic">&#x2795; Aritmetike baze</div>
+      <div class="subject-pill" data-i18n="subjects.algebra">&#x1F4CA; Algjeber</div>
+      <div class="subject-pill" data-i18n="subjects.geometry">&#x1F4D0; Gjeometri</div>
+      <div class="subject-pill" data-i18n="subjects.trigonometry">&#x1F4D0; Trigonometri</div>
+      <div class="subject-pill" data-i18n="subjects.statistics">&#x1F4C8; Statistike &amp; Probabilitet</div>
+      <div class="subject-pill" data-i18n="subjects.calculus">&#x221E; Kalkulus</div>
+      <div class="subject-pill" data-i18n="subjects.fractions">&#x1F522; Thyesa &amp; Perqindje</div>
+      <div class="subject-pill" data-i18n="subjects.linear">&#x1F4D0; Ekuacione lineare</div>
+      <div class="subject-pill" data-i18n="subjects.quadratic">&#x1F4D0; Ekuacione kuadratike</div>
+      <div class="subject-pill" data-i18n="subjects.functions">&#x1F4CA; Funksione</div>
+      <div class="subject-pill" data-i18n="subjects.matrices">&#x1F4CA; Matrica</div>
+      <div class="subject-pill" data-i18n="subjects.complex">&#x1F4D0; Numra kompleks</div>
     </div>
   </section>
 
   <!-- LANGUAGES -->
   <section class="languages-section">
-    <h2>Meso ne gjuhen tende</h2>
-    <p>MathHelper eshte i disponueshem ne tri gjuhe per te mesuar matematiken ashtu sic te pershtatet me mire.</p>
+    <h2 data-i18n="lang.title">Meso ne gjuhen tende</h2>
+    <p data-i18n="lang.subtitle">MathHelper eshte i disponueshem ne tri gjuhe per te mesuar matematiken ashtu sic te pershtatet me mire.</p>
     <div class="lang-flags">
       <div class="lang-flag"><span class="flag">&#x1F1E6;&#x1F1F1;</span> Shqip</div>
       <div class="lang-flag"><span class="flag">&#x1F1EC;&#x1F1E7;</span> English</div>
@@ -472,10 +643,10 @@
 
   <!-- CTA -->
   <section class="cta-section">
-    <h2>Gati per te mesuar<br>matematike?</h2>
-    <p>Bashkohu me mijera perdorues qe cdo dite perdorin MathHelper per te kuptuar matematiken me mire.</p>
+    <h2 data-i18n="cta.title">Gati per te mesuar<br>matematike?</h2>
+    <p data-i18n="cta.subtitle">Bashkohu me mijera perdorues qe cdo dite perdorin MathHelper per te kuptuar matematiken me mire.</p>
     <div class="hero-buttons">
-      <a href="/" class="btn-primary">&#x1F4F1; Hap aplikacionin</a>
+      <a href="/app" class="btn-primary">&#x1F4F1; <span data-i18n="cta.button">Hap aplikacionin</span></a>
     </div>
   </section>
 
@@ -487,21 +658,263 @@
         MathHelper
       </div>
       <div class="footer-links">
-        <a href="/about">Rreth nesh</a>
-        <a href="/">Aplikacioni</a>
-        <a href="mailto:support@mathhelper.online">Kontakt</a>
+        <a href="/about" data-i18n="footer.about">Rreth nesh</a>
+        <a href="/app" data-i18n="footer.app">Aplikacioni</a>
+        <a href="mailto:support@mathhelper.online" data-i18n="footer.contact">Kontakt</a>
       </div>
-      <div style="font-size: 14px;">
+      <div style="font-size: 14px;" data-i18n="footer.copy">
         &copy; 2026 MathHelper. Te gjitha te drejtat e rezervuara.
       </div>
     </div>
   </footer>
 
   <script>
+    // ─── TRANSLATIONS ───
+    const T = {
+      sq: {
+        'nav.how': 'Si funksionon',
+        'nav.features': 'Karakteristikat',
+        'nav.subjects': 'Lendet',
+        'nav.openApp': 'Hap aplikacionin',
+        'hero.badge': 'Falas per te gjithe',
+        'hero.title': 'Ke nevoje per ndihme<br>ne matematike?',
+        'hero.subtitle': 'Mos u stresohu\u2014jo te gjithe e kuptojne matematiken qe ne provimin e pare. MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive qe te mesosh duke praktikuar.',
+        'hero.cta': 'Fillo tani',
+        'hero.secondary': 'Si funksionon?',
+        'preview.dashboard': 'Paneli kryesor',
+        'preview.learn': 'Kurset',
+        'preview.quiz': 'Kuizet',
+        'how.label': 'Si funksionon',
+        'how.title': 'Tri hapa te thjeshta',
+        'how.subtitle': 'Skenoj, shkruaj ose fotografo problemin tend dhe MathHelper do te te ndihmoje menjehere.',
+        'how.step1.title': 'Skenoj ose shkruaj',
+        'how.step1.desc': 'Ke problem ne detyra? Fotografoje me kamere ose shkruaje me tastieren matematikore. MathHelper e lexon problemin ne cast\u2014edhe problemet me tekst.',
+        'how.step2.title': 'Merr zgjidhjen',
+        'how.step2.desc': 'AI-ja jone (Gemini) analizon problemin dhe te jep zgjidhjen e plote me te gjitha hapat e shpjeguara. Asnje hap nuk mungon.',
+        'how.step3.title': 'Meso dhe praktiko',
+        'how.step3.desc': 'Shiko cdo hap per te kuptuar zgjidhjen. Pastaj testoje veten me kuize interaktive dhe kurse te plota per cdo teme.',
+        'features.label': 'Karakteristikat',
+        'features.title': 'Gjithcka qe te duhet per matematike',
+        'features.subtitle': 'MathHelper kombinon inteligjencen artificiale me metoda mesimore per te te ndihmuar te kuptosh matematiken ne thelb.',
+        'features.camera.title': 'Zgjidhje me kamere',
+        'features.camera.desc': 'Fotografo cdo problem matematikor dhe merr zgjidhjen e plote me shpjegime hap-pas-hapi brenda sekondave. Perdor Gemini AI.',
+        'features.keyboard.title': 'Tastiere matematikore',
+        'features.keyboard.desc': 'Shkruaj problemet me tastieren tone te vecante matematikore qe ka te gjitha simbolet dhe operatoret qe te duhen.',
+        'features.courses.title': 'Kurse te plota',
+        'features.courses.desc': 'Meso matematike nga fillimi me kurse te strukturuara: Aritmetike, Algjeber, Gjeometri, Trigonometri, Statistike dhe Kalkulus.',
+        'features.quizzes.title': 'Kuize interaktive',
+        'features.quizzes.desc': '23 kuize ne nivele te ndryshme: Fillestar, Mesatar dhe i Avancuar. Testoje veten dhe shiko progresin tend.',
+        'features.saved.title': 'Ruaj problemet',
+        'features.saved.desc': 'Ruaj zgjidhjet per me vone dhe rishikoji kurdo qe te duash. Asnje problem i zgjidhur nuk humbet.',
+        'features.multilang.title': 'Shumegjiuheshe',
+        'features.multilang.desc': 'Perdore MathHelper ne gjuhen tende: Shqip, Anglisht ose Gjermanisht. Meso matematike ne gjuhen qe te pershtatet me shume.',
+        'subjects.label': 'Lendet',
+        'subjects.title': 'Matematike e shpjeguar.<br>Nga fillestari deri ne avancuar.',
+        'subjects.subtitle': 'MathHelper mbulon te gjitha temat kryesore te matematikes qe mesoni ne shkolle dhe universitet.',
+        'subjects.arithmetic': '\u2795 Aritmetike baze',
+        'subjects.algebra': '\uD83D\uDCCA Algjeber',
+        'subjects.geometry': '\uD83D\uDCD0 Gjeometri',
+        'subjects.trigonometry': '\uD83D\uDCD0 Trigonometri',
+        'subjects.statistics': '\uD83D\uDCC8 Statistike & Probabilitet',
+        'subjects.calculus': '\u221E Kalkulus',
+        'subjects.fractions': '\uD83D\uDD22 Thyesa & Perqindje',
+        'subjects.linear': '\uD83D\uDCD0 Ekuacione lineare',
+        'subjects.quadratic': '\uD83D\uDCD0 Ekuacione kuadratike',
+        'subjects.functions': '\uD83D\uDCCA Funksione',
+        'subjects.matrices': '\uD83D\uDCCA Matrica',
+        'subjects.complex': '\uD83D\uDCD0 Numra kompleks',
+        'lang.title': 'Meso ne gjuhen tende',
+        'lang.subtitle': 'MathHelper eshte i disponueshem ne tri gjuhe per te mesuar matematiken ashtu sic te pershtatet me mire.',
+        'cta.title': 'Gati per te mesuar<br>matematike?',
+        'cta.subtitle': 'Bashkohu me mijera perdorues qe cdo dite perdorin MathHelper per te kuptuar matematiken me mire.',
+        'cta.button': 'Hap aplikacionin',
+        'footer.about': 'Rreth nesh',
+        'footer.app': 'Aplikacioni',
+        'footer.contact': 'Kontakt',
+        'footer.copy': '\u00A9 2026 MathHelper. Te gjitha te drejtat e rezervuara.',
+      },
+      en: {
+        'nav.how': 'How it works',
+        'nav.features': 'Features',
+        'nav.subjects': 'Subjects',
+        'nav.openApp': 'Open app',
+        'hero.badge': 'Free for everyone',
+        'hero.title': 'Need help<br>with math?',
+        'hero.subtitle': 'Don\'t stress\u2014not everyone understands math on the first try. MathHelper helps you with step-by-step explanations, full courses, and interactive quizzes to learn by practicing.',
+        'hero.cta': 'Start now',
+        'hero.secondary': 'How it works?',
+        'preview.dashboard': 'Dashboard',
+        'preview.learn': 'Courses',
+        'preview.quiz': 'Quizzes',
+        'how.label': 'How it works',
+        'how.title': 'Three simple steps',
+        'how.subtitle': 'Scan, type, or photograph your problem and MathHelper will help you right away.',
+        'how.step1.title': 'Scan or type',
+        'how.step1.desc': 'Having trouble with homework? Take a photo with the camera or type it with the math keyboard. MathHelper reads the problem instantly\u2014even text problems.',
+        'how.step2.title': 'Get the solution',
+        'how.step2.desc': 'Our AI (Gemini) analyzes the problem and gives you the full solution with all steps explained. No step is missing.',
+        'how.step3.title': 'Learn and practice',
+        'how.step3.desc': 'Review each step to understand the solution. Then test yourself with interactive quizzes and full courses for every topic.',
+        'features.label': 'Features',
+        'features.title': 'Everything you need for math',
+        'features.subtitle': 'MathHelper combines artificial intelligence with teaching methods to help you understand math at its core.',
+        'features.camera.title': 'Camera solving',
+        'features.camera.desc': 'Photograph any math problem and get the full solution with step-by-step explanations within seconds. Powered by Gemini AI.',
+        'features.keyboard.title': 'Math keyboard',
+        'features.keyboard.desc': 'Type problems using our special math keyboard that has all the symbols and operators you need.',
+        'features.courses.title': 'Full courses',
+        'features.courses.desc': 'Learn math from scratch with structured courses: Arithmetic, Algebra, Geometry, Trigonometry, Statistics, and Calculus.',
+        'features.quizzes.title': 'Interactive quizzes',
+        'features.quizzes.desc': '23 quizzes at different levels: Beginner, Intermediate, and Advanced. Test yourself and track your progress.',
+        'features.saved.title': 'Save problems',
+        'features.saved.desc': 'Save solutions for later and review them whenever you want. No solved problem is ever lost.',
+        'features.multilang.title': 'Multilingual',
+        'features.multilang.desc': 'Use MathHelper in your language: Albanian, English, or German. Learn math in the language that suits you best.',
+        'subjects.label': 'Subjects',
+        'subjects.title': 'Math explained.<br>From beginner to advanced.',
+        'subjects.subtitle': 'MathHelper covers all major math topics taught in school and university.',
+        'subjects.arithmetic': '\u2795 Basic arithmetic',
+        'subjects.algebra': '\uD83D\uDCCA Algebra',
+        'subjects.geometry': '\uD83D\uDCD0 Geometry',
+        'subjects.trigonometry': '\uD83D\uDCD0 Trigonometry',
+        'subjects.statistics': '\uD83D\uDCC8 Statistics & Probability',
+        'subjects.calculus': '\u221E Calculus',
+        'subjects.fractions': '\uD83D\uDD22 Fractions & Percentages',
+        'subjects.linear': '\uD83D\uDCD0 Linear equations',
+        'subjects.quadratic': '\uD83D\uDCD0 Quadratic equations',
+        'subjects.functions': '\uD83D\uDCCA Functions',
+        'subjects.matrices': '\uD83D\uDCCA Matrices',
+        'subjects.complex': '\uD83D\uDCD0 Complex numbers',
+        'lang.title': 'Learn in your language',
+        'lang.subtitle': 'MathHelper is available in three languages to learn math the way that suits you best.',
+        'cta.title': 'Ready to learn<br>math?',
+        'cta.subtitle': 'Join thousands of users who use MathHelper every day to understand math better.',
+        'cta.button': 'Open app',
+        'footer.about': 'About us',
+        'footer.app': 'App',
+        'footer.contact': 'Contact',
+        'footer.copy': '\u00A9 2026 MathHelper. All rights reserved.',
+      },
+      de: {
+        'nav.how': 'Wie es funktioniert',
+        'nav.features': 'Funktionen',
+        'nav.subjects': 'F\u00E4cher',
+        'nav.openApp': 'App \u00F6ffnen',
+        'hero.badge': 'Kostenlos f\u00FCr alle',
+        'hero.title': 'Brauchst du Hilfe<br>in Mathematik?',
+        'hero.subtitle': 'Keine Sorge\u2014nicht jeder versteht Mathe beim ersten Mal. MathHelper hilft dir mit Schritt-f\u00FCr-Schritt-Erkl\u00E4rungen, vollst\u00E4ndigen Kursen und interaktiven Quizzen zum Lernen durch \u00DCben.',
+        'hero.cta': 'Jetzt starten',
+        'hero.secondary': 'Wie es funktioniert?',
+        'preview.dashboard': '\u00DCbersicht',
+        'preview.learn': 'Kurse',
+        'preview.quiz': 'Quizze',
+        'how.label': 'Wie es funktioniert',
+        'how.title': 'Drei einfache Schritte',
+        'how.subtitle': 'Scanne, tippe oder fotografiere dein Problem und MathHelper hilft dir sofort.',
+        'how.step1.title': 'Scannen oder tippen',
+        'how.step1.desc': 'Probleme mit den Hausaufgaben? Fotografiere sie mit der Kamera oder tippe sie mit der Mathe-Tastatur. MathHelper liest das Problem sofort\u2014auch Textaufgaben.',
+        'how.step2.title': 'L\u00F6sung erhalten',
+        'how.step2.desc': 'Unsere KI (Gemini) analysiert das Problem und gibt dir die vollst\u00E4ndige L\u00F6sung mit allen erkl\u00E4rten Schritten. Kein Schritt fehlt.',
+        'how.step3.title': 'Lernen und \u00FCben',
+        'how.step3.desc': 'Sieh dir jeden Schritt an, um die L\u00F6sung zu verstehen. Dann teste dich mit interaktiven Quizzen und vollst\u00E4ndigen Kursen zu jedem Thema.',
+        'features.label': 'Funktionen',
+        'features.title': 'Alles was du f\u00FCr Mathe brauchst',
+        'features.subtitle': 'MathHelper kombiniert k\u00FCnstliche Intelligenz mit Lehrmethoden, um dir zu helfen, Mathematik im Kern zu verstehen.',
+        'features.camera.title': 'Kamera-L\u00F6sung',
+        'features.camera.desc': 'Fotografiere jedes Matheproblem und erhalte die vollst\u00E4ndige L\u00F6sung mit Schritt-f\u00FCr-Schritt-Erkl\u00E4rungen in Sekunden. Mit Gemini AI.',
+        'features.keyboard.title': 'Mathe-Tastatur',
+        'features.keyboard.desc': 'Tippe Aufgaben mit unserer speziellen Mathe-Tastatur, die alle Symbole und Operatoren enth\u00E4lt, die du brauchst.',
+        'features.courses.title': 'Vollst\u00E4ndige Kurse',
+        'features.courses.desc': 'Lerne Mathe von Grund auf mit strukturierten Kursen: Arithmetik, Algebra, Geometrie, Trigonometrie, Statistik und Analysis.',
+        'features.quizzes.title': 'Interaktive Quizze',
+        'features.quizzes.desc': '23 Quizze auf verschiedenen Niveaus: Anf\u00E4nger, Mittelstufe und Fortgeschritten. Teste dich selbst und verfolge deinen Fortschritt.',
+        'features.saved.title': 'Aufgaben speichern',
+        'features.saved.desc': 'Speichere L\u00F6sungen f\u00FCr sp\u00E4ter und sieh sie dir an, wann immer du willst. Keine gel\u00F6ste Aufgabe geht verloren.',
+        'features.multilang.title': 'Mehrsprachig',
+        'features.multilang.desc': 'Nutze MathHelper in deiner Sprache: Albanisch, Englisch oder Deutsch. Lerne Mathe in der Sprache, die dir am besten passt.',
+        'subjects.label': 'F\u00E4cher',
+        'subjects.title': 'Mathe erkl\u00E4rt.<br>Vom Anf\u00E4nger bis Fortgeschritten.',
+        'subjects.subtitle': 'MathHelper deckt alle wichtigen Mathethemen ab, die in Schule und Universit\u00E4t unterrichtet werden.',
+        'subjects.arithmetic': '\u2795 Grundrechenarten',
+        'subjects.algebra': '\uD83D\uDCCA Algebra',
+        'subjects.geometry': '\uD83D\uDCD0 Geometrie',
+        'subjects.trigonometry': '\uD83D\uDCD0 Trigonometrie',
+        'subjects.statistics': '\uD83D\uDCC8 Statistik & Wahrscheinlichkeit',
+        'subjects.calculus': '\u221E Analysis',
+        'subjects.fractions': '\uD83D\uDD22 Br\u00FCche & Prozent',
+        'subjects.linear': '\uD83D\uDCD0 Lineare Gleichungen',
+        'subjects.quadratic': '\uD83D\uDCD0 Quadratische Gleichungen',
+        'subjects.functions': '\uD83D\uDCCA Funktionen',
+        'subjects.matrices': '\uD83D\uDCCA Matrizen',
+        'subjects.complex': '\uD83D\uDCD0 Komplexe Zahlen',
+        'lang.title': 'Lerne in deiner Sprache',
+        'lang.subtitle': 'MathHelper ist in drei Sprachen verf\u00FCgbar, damit du Mathe so lernen kannst, wie es dir am besten passt.',
+        'cta.title': 'Bereit Mathe<br>zu lernen?',
+        'cta.subtitle': 'Schlie\u00DFe dich Tausenden von Nutzern an, die MathHelper t\u00E4glich nutzen, um Mathe besser zu verstehen.',
+        'cta.button': 'App \u00F6ffnen',
+        'footer.about': '\u00DCber uns',
+        'footer.app': 'App',
+        'footer.contact': 'Kontakt',
+        'footer.copy': '\u00A9 2026 MathHelper. Alle Rechte vorbehalten.',
+      }
+    };
+
+    let currentLang = localStorage.getItem('mathhelper-lang') || 'sq';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('mathhelper-lang', lang);
+      document.documentElement.lang = lang === 'sq' ? 'sq' : lang;
+
+      // Update all translatable elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (T[lang] && T[lang][key]) {
+          el.innerHTML = T[lang][key];
+        }
+      });
+
+      // Update page title
+      const titles = {
+        sq: 'MathHelper - Asistenti yt personal i matematikes',
+        en: 'MathHelper - Your personal math assistant',
+        de: 'MathHelper - Dein pers\u00F6nlicher Mathe-Assistent'
+      };
+      document.title = titles[lang] || titles.sq;
+
+      // Update active states on all lang buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+    }
+
+    // Language button clicks
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+    });
+
+    // Apply saved language on load
+    if (currentLang !== 'sq') setLanguage(currentLang);
+
     // Scroll nav shadow
     const nav = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? '\u2715' : '\u2630';
+    });
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        mobileMenuBtn.textContent = '\u2630';
+      });
     });
 
     // Fade-in on scroll
@@ -513,7 +926,6 @@
         }
       });
     }, { threshold: 0.15 });
-
     document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
     // Smooth scroll

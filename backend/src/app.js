@@ -34,16 +34,22 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/analyze', analyzeRoutes);
 app.use('/api/purchases', purchaseRoutes);
 
-// About page
+// Landing page (About)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
+});
 app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
 });
 
-// Serve Expo web build
+// Screenshots static files
+app.use('/screenshots', express.static(path.join(__dirname, '..', 'pages', 'screenshots')));
+
+// Serve Expo web build assets
 const publicDir = path.join(__dirname, '..', 'public');
 app.use(express.static(publicDir));
 
-// SPA fallback - serve index.html for non-API routes
+// App route + SPA fallback for non-API routes
 app.use((req, res, next) => {
   if (req.path.startsWith('/api/')) {
     return next();

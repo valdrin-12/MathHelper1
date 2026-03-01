@@ -20,6 +20,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 import WebContainer from '../components/WebContainer';
 import { useResponsive } from '../utils/responsive';
+import { Linking } from 'react-native';
 
 export default function SettingsScreen() {
   const { isWeb } = useResponsive();
@@ -233,7 +234,13 @@ export default function SettingsScreen() {
           iconColor="#3B82F6"
           iconBg={colors.primaryBg}
           title={t('settings.aboutApp')}
-          onPress={() => setInfoModal('about')}
+          onPress={() => {
+            if (Platform.OS === 'web') {
+              window.open('/about', '_blank');
+            } else {
+              setInfoModal('about');
+            }
+          }}
         />
       </View>
 
