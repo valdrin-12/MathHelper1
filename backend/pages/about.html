@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathHelper - Asistenti yt personal i matematikes</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #1E3A8A;
+      --primary-light: #3B82F6;
+      --primary-soft: #2563EB;
+      --primary-bg: #EFF6FF;
+      --accent: #F59E0B;
+      --accent-dark: #D97706;
+      --success: #10B981;
+      --error: #EF4444;
+      --text: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --bg: #F0F4FF;
+      --surface: #FFFFFF;
+      --border: #E2E8F0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 30px rgba(30,58,138,0.08); }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--primary); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 20px; color: #fff;
+    }
+    .nav-logo span { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary);
+      font-weight: 600; font-size: 15px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-cta {
+      background: var(--primary) !important; color: #fff !important;
+      padding: 10px 24px; border-radius: 12px;
+      font-weight: 700 !important; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,58,138,0.25); }
+
+    /* ─── HERO ─── */
+    .hero {
+      padding: 160px 32px 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -40%; left: -20%; right: -20%; bottom: 20%;
+      background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--primary-bg); border: 1px solid rgba(59,130,246,0.2);
+      padding: 8px 20px; border-radius: 100px;
+      font-size: 14px; font-weight: 600; color: var(--primary-soft);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 900; letter-spacing: -2px;
+      line-height: 1.08; margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: clamp(17px, 2vw, 21px);
+      color: var(--text-secondary); max-width: 640px;
+      margin: 0 auto 44px; line-height: 1.7;
+    }
+    .hero-buttons {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
+      color: #fff; padding: 16px 36px; border-radius: 16px;
+      font-size: 17px; font-weight: 700; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 16px rgba(30,58,138,0.2);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(30,58,138,0.3); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface); color: var(--text);
+      padding: 16px 36px; border-radius: 16px;
+      font-size: 17px; font-weight: 700; text-decoration: none;
+      border: 2px solid var(--border); transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--primary-light); color: var(--primary); }
+
+    /* ─── HOW IT WORKS ─── */
+    .how-section {
+      padding: 100px 32px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .section-label {
+      font-size: 14px; font-weight: 700; color: var(--primary-soft);
+      text-transform: uppercase; letter-spacing: 2px;
+      text-align: center; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 900; text-align: center;
+      letter-spacing: -1.5px; margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 18px; color: var(--text-secondary);
+      text-align: center; max-width: 560px;
+      margin: 0 auto 64px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+    .step-card {
+      background: var(--surface);
+      border-radius: 24px; padding: 40px 32px;
+      border: 1px solid var(--border);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .step-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(30,58,138,0.1);
+    }
+    .step-number {
+      position: absolute; top: 20px; right: 24px;
+      font-size: 80px; font-weight: 900;
+      color: rgba(59,130,246,0.06); line-height: 1;
+    }
+    .step-icon {
+      width: 64px; height: 64px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin-bottom: 24px;
+    }
+    .step-card:nth-child(1) .step-icon { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); }
+    .step-card:nth-child(2) .step-icon { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
+    .step-card:nth-child(3) .step-icon { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+    .step-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+    .step-card p { color: var(--text-secondary); font-size: 16px; line-height: 1.7; }
+
+    /* ─── FEATURES ─── */
+    .features-section {
+      padding: 100px 32px;
+      background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    }
+    .features-inner { max-width: 1200px; margin: 0 auto; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(30,58,138,0.08);
+    }
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+    }
+    .feature-card:nth-child(1) .feature-icon { background: #EFF6FF; }
+    .feature-card:nth-child(2) .feature-icon { background: #FEF3C7; }
+    .feature-card:nth-child(3) .feature-icon { background: #ECFDF5; }
+    .feature-card:nth-child(4) .feature-icon { background: #F5F3FF; }
+    .feature-card:nth-child(5) .feature-icon { background: #FEF2F2; }
+    .feature-card:nth-child(6) .feature-icon { background: #F0F9FF; }
+    .feature-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
+    .feature-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+
+    /* ─── SUBJECTS ─── */
+    .subjects-section {
+      padding: 100px 32px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .subjects-grid {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center;
+    }
+    .subject-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 14px 28px; border-radius: 100px;
+      font-size: 16px; font-weight: 600; color: var(--text);
+      transition: all 0.2s; cursor: default;
+    }
+    .subject-pill:hover {
+      background: var(--primary-bg); border-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* ─── LANGUAGES ─── */
+    .languages-section {
+      padding: 80px 32px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 50%, var(--primary-light) 100%);
+      text-align: center; color: #fff;
+    }
+    .languages-section h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900; letter-spacing: -1px; margin-bottom: 16px;
+    }
+    .languages-section p {
+      font-size: 18px; opacity: 0.85; margin-bottom: 40px;
+      max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .lang-flags {
+      display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+    }
+    .lang-flag {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px; padding: 20px 36px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 18px; font-weight: 700;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .lang-flag:hover { transform: scale(1.05); background: rgba(255,255,255,0.22); }
+    .lang-flag .flag { font-size: 28px; }
+
+    /* ─── CTA ─── */
+    .cta-section {
+      padding: 120px 32px; text-align: center;
+    }
+    .cta-section h2 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900; letter-spacing: -1.5px; margin-bottom: 20px;
+    }
+    .cta-section p {
+      font-size: 19px; color: var(--text-secondary);
+      max-width: 520px; margin: 0 auto 40px;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.6); padding: 48px 32px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 24px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px;
+      color: #fff; font-size: 18px; font-weight: 800;
+    }
+    .footer-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--primary-light); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 18px; color: #fff;
+    }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a {
+      color: rgba(255,255,255,0.5); text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+
+    /* ─── ANIMATIONS ─── */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { padding: 130px 20px 80px; }
+      .how-section, .features-section, .subjects-section, .cta-section { padding: 60px 20px; }
+      .steps-grid, .features-grid { grid-template-columns: 1fr; }
+      .lang-flag { padding: 16px 24px; font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-icon">&#x1F4D0;</div>
+        <span>MathHelper</span>
+      </a>
+      <div class="nav-links">
+        <a href="#how">Si funksionon</a>
+        <a href="#features">Karakteristikat</a>
+        <a href="#subjects">Lendet</a>
+        <a href="/" class="nav-cta">Hap aplikacionin</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">&#x2728; Falas per te gjithe</div>
+    <h1>Ke nevoje per ndihme<br>ne matematike?</h1>
+    <p>
+      Mos u stresohu&mdash;jo te gjithe e kuptojne matematiken qe ne provimin e pare.
+      MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive
+      qe te mesosh duke praktikuar.
+    </p>
+    <div class="hero-buttons">
+      <a href="/" class="btn-primary">&#x1F680; Fillo tani</a>
+      <a href="#how" class="btn-secondary">&#x2139;&#xFE0F; Si funksionon?</a>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how">
+    <div class="section-label">Si funksionon</div>
+    <h2 class="section-title">Tri hapa te thjeshta</h2>
+    <p class="section-subtitle">
+      Skenoj, shkruaj ose fotografo problemin tend dhe MathHelper do te te ndihmoje menjehere.
+    </p>
+    <div class="steps-grid">
+      <div class="step-card fade-up">
+        <div class="step-number">1</div>
+        <div class="step-icon">&#x1F4F7;</div>
+        <h3>Skenoj ose shkruaj</h3>
+        <p>
+          Ke problem ne detyra? Fotografoje me kamere ose shkruaje me tastieren matematikore.
+          MathHelper e lexon problemin ne cast&mdash;edhe problemet me tekst.
+        </p>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-number">2</div>
+        <div class="step-icon">&#x1F9E0;</div>
+        <h3>Merr zgjidhjen</h3>
+        <p>
+          AI-ja jone (Gemini) analizon problemin dhe te jep zgjidhjen e plote me
+          te gjitha hapat e shpjeguara. Asnje hap nuk mungon.
+        </p>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-number">3</div>
+        <div class="step-icon">&#x1F4DA;</div>
+        <h3>Meso dhe praktiko</h3>
+        <p>
+          Shiko cdo hap per te kuptuar zgjidhjen. Pastaj testoje veten me
+          kuize interaktive dhe kurse te plota per cdo teme.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="features-inner">
+      <div class="section-label">Karakteristikat</div>
+      <h2 class="section-title">Gjithcka qe te duhet per matematike</h2>
+      <p class="section-subtitle">
+        MathHelper kombinon inteligjencen artificiale me metoda mesimore per te te ndihmuar te kuptosh matematiken ne thelb.
+      </p>
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F4F8;</div>
+          <h3>Zgjidhje me kamere</h3>
+          <p>Fotografo cdo problem matematikor dhe merr zgjidhjen e plote me shpjegime hap-pas-hapi brenda sekondave. Perdor Gemini AI.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x2328;&#xFE0F;</div>
+          <h3>Tastiere matematikore</h3>
+          <p>Shkruaj problemet me tastieren tone te vecante matematikore qe ka te gjitha simbolet dhe operatoret qe te duhen.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F393;</div>
+          <h3>Kurse te plota</h3>
+          <p>Meso matematike nga fillimi me kurse te strukturuara: Aritmetike, Algjeber, Gjeometri, Trigonometri, Statistike dhe Kalkulus.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F3AF;</div>
+          <h3>Kuize interaktive</h3>
+          <p>23 kuize ne nivele te ndryshme: Fillestar, Mesatar dhe i Avancuar. Testoje veten dhe shiko progresin tend.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F516;</div>
+          <h3>Ruaj problemet</h3>
+          <p>Ruaj zgjidhjet per me vone dhe rishikoji kurdo qe te duash. Asnje problem i zgjidhur nuk humbet.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F310;</div>
+          <h3>Shumegjiuheshe</h3>
+          <p>Perdore MathHelper ne gjuhen tende: Shqip, Anglisht ose Gjermanisht. Meso matematike ne gjuhen qe te pershtatet me shume.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBJECTS -->
+  <section class="subjects-section" id="subjects">
+    <div class="section-label">Lendet</div>
+    <h2 class="section-title">Matematike e shpjeguar.<br>Nga fillestari deri ne avancuar.</h2>
+    <p class="section-subtitle">
+      MathHelper mbulon te gjitha temat kryesore te matematikes qe mesoni ne shkolle dhe universitet.
+    </p>
+    <div class="subjects-grid">
+      <div class="subject-pill">&#x2795; Aritmetike baze</div>
+      <div class="subject-pill">&#x1F4CA; Algjeber</div>
+      <div class="subject-pill">&#x1F4D0; Gjeometri</div>
+      <div class="subject-pill">&#x1F4D0; Trigonometri</div>
+      <div class="subject-pill">&#x1F4C8; Statistike & Probabilitet</div>
+      <div class="subject-pill">&#x221E; Kalkulus</div>
+      <div class="subject-pill">&#x1F522; Thyesa & Perqindje</div>
+      <div class="subject-pill">&#x1F4D0; Ekuacione lineare</div>
+      <div class="subject-pill">&#x1F4D0; Ekuacione kuadratike</div>
+      <div class="subject-pill">&#x1F4CA; Funksione</div>
+      <div class="subject-pill">&#x1F4CA; Matrica</div>
+      <div class="subject-pill">&#x1F4D0; Numra kompleks</div>
+    </div>
+  </section>
+
+  <!-- LANGUAGES -->
+  <section class="languages-section">
+    <h2>Meso ne gjuhen tende</h2>
+    <p>MathHelper eshte i disponueshem ne tri gjuhe per te mesuar matematiken ashtu sic te pershtatet me mire.</p>
+    <div class="lang-flags">
+      <div class="lang-flag"><span class="flag">&#x1F1E6;&#x1F1F1;</span> Shqip</div>
+      <div class="lang-flag"><span class="flag">&#x1F1EC;&#x1F1E7;</span> English</div>
+      <div class="lang-flag"><span class="flag">&#x1F1E9;&#x1F1EA;</span> Deutsch</div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2>Gati per te mesuar<br>matematike?</h2>
+    <p>Bashkohu me mijera perdorues qe cdo dite perdorin MathHelper per te kuptuar matematiken me mire.</p>
+    <div class="hero-buttons">
+      <a href="/" class="btn-primary">&#x1F4F1; Hap aplikacionin</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">&#x1F4D0;</div>
+        MathHelper
+      </div>
+      <div class="footer-links">
+        <a href="/about">Rreth nesh</a>
+        <a href="/">Aplikacioni</a>
+        <a href="mailto:support@mathhelper.online">Kontakt</a>
+      </div>
+      <div style="font-size: 14px;">
+        &copy; 2026 MathHelper. Te gjitha te drejtat e rezervuara.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll nav shadow
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -34,6 +34,11 @@ app.use('/api/stats', statsRoutes);
 app.use('/api/analyze', analyzeRoutes);
 app.use('/api/purchases', purchaseRoutes);
 
+// About page
+app.get('/about', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
+});
+
 // Serve Expo web build
 const publicDir = path.join(__dirname, '..', 'public');
 app.use(express.static(publicDir));
