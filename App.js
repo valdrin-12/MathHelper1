@@ -261,12 +261,14 @@ function MainApp() {
   // Desktop web: sidebar navigation
   if (showSidebar) {
     return (
+      <NavigationContainer>
       <StatsProvider>
       <SavedItemsProvider>
         <StatusBar style={isDark ? 'light' : 'light'} />
         <DesktopLayout colors={colors} isDark={isDark} t={t} />
       </SavedItemsProvider>
       </StatsProvider>
+      </NavigationContainer>
     );
   }
 
