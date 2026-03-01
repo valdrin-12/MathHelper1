@@ -65,10 +65,10 @@ async function login(req, res) {
       [user.id, refreshToken, expiresAt]
     );
 
-    const { password_hash, ...userWithoutPassword } = user;
+    const { password_hash, created_at, updated_at, ...rest } = user;
     res.json({
       success: true,
-      user: userWithoutPassword,
+      user: { ...rest, createdAt: created_at, updatedAt: updated_at },
       accessToken,
       refreshToken,
     });

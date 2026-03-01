@@ -3,6 +3,12 @@ const bcrypt = require('bcrypt');
 
 const SALT_ROUNDS = 12;
 
+function toCamelCase(user) {
+  if (!user) return null;
+  const { created_at, updated_at, ...rest } = user;
+  return { ...rest, createdAt: created_at, updatedAt: updated_at };
+}
+
 async function createUser({ name, email, password, language = 'al' }) {
   const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
   const { rows } = await pool.query(
@@ -11,7 +17,7 @@ async function createUser({ name, email, password, language = 'al' }) {
      RETURNING id, name, email, language, tier, created_at, updated_at`,
     [name, email.toLowerCase(), passwordHash, language]
   );
-  return rows[0];
+  return toCamelCase(rows[0]);
 }
 
 async function findByEmail(email) {
@@ -27,7 +33,7 @@ async function findById(id) {
     'SELECT id, name, email, language, tier, created_at, updated_at FROM users WHERE id = $1',
     [id]
   );
-  return rows[0] || null;
+  return toCamelCase(rows[0]);
 }
 
 async function updateUser(id, updates) {
@@ -63,7 +69,7 @@ async function updateUser(id, updates) {
      RETURNING id, name, email, language, tier, created_at, updated_at`,
     values
   );
-  return rows[0] || null;
+  return toCamelCase(rows[0]);
 }
 
 async function comparePassword(plainPassword, hashedPassword) {

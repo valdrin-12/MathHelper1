@@ -305,7 +305,7 @@ export default function QuizScreen() {
         </View>
 
         {/* Quiz Cards - Glassmorphism */}
-        <View style={styles.quizList}>
+        <View style={[styles.quizList, isDesktop && { flexDirection: 'row', flexWrap: 'wrap', gap: 16 }]}>
           <Text style={[styles.sectionTitle, isDesktop && { width: '100%' }]}>
             {t('quiz.quizCount', { count: filteredQuizzes.length })}
           </Text>
@@ -647,9 +647,6 @@ const styles = StyleSheet.create({
   quizList: {
     paddingHorizontal: SPACING.xl,
     paddingTop: SPACING.md,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 16,
   },
   sectionTitle: {
     fontSize: 17,
