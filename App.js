@@ -7,6 +7,7 @@ import { View, Text, Platform, Animated, Pressable, useWindowDimensions } from '
 import { BlurView } from 'expo-blur';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Font from 'expo-font';
 import { SavedItemsProvider } from './context/SavedItemsContext';
 import { UserProvider, useUser } from './context/UserContext';
 import { StatsProvider } from './context/StatsContext';
@@ -317,6 +318,19 @@ function MainApp() {
 }
 
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
+  useEffect(() => {
+    Font.loadAsync({
+      ...Ionicons.font,
+    }).then(() => setFontsLoaded(true))
+      .catch(() => setFontsLoaded(true));
+  }, []);
+
+  if (!fontsLoaded) {
+    return <View style={{ flex: 1 }} />;
+  }
+
   return (
     <LanguageProvider>
       <ThemeProvider>
