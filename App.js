@@ -37,6 +37,38 @@ const TAB_ICONS = {
 
 const SIDEBAR_WIDTH = 220;
 
+// URL <-> Tab mapping for web deep linking
+const TAB_PATHS = {
+  Dashboard: '/dashboard',
+  Saved: '/saved',
+  Learn: '/learn',
+  Quiz: '/quiz',
+  Settings: '/settings',
+};
+
+function getTabFromPath(pathname) {
+  const path = pathname.toLowerCase().replace(/\/+$/, '');
+  for (const [tab, tabPath] of Object.entries(TAB_PATHS)) {
+    if (path === tabPath) return tab;
+  }
+  // /app or unknown paths default to Dashboard
+  return 'Dashboard';
+}
+
+// React Navigation linking config for mobile web
+const linking = {
+  prefixes: [],
+  config: {
+    screens: {
+      Dashboard: 'dashboard',
+      Saved: 'saved',
+      Learn: 'learn',
+      Quiz: 'quiz',
+      Settings: 'settings',
+    },
+  },
+};
+
 function TabBarBackground() {
   const { isDark } = useTheme();
   return (
@@ -197,9 +229,38 @@ function SidebarItem({ isActive, iconName, label, onPress, isDark }) {
   );
 }
 
-// Desktop layout: sidebar + content
+// Desktop layout: sidebar + content with URL sync
 function DesktopLayout({ colors, isDark, t }) {
-  const [activeTab, setActiveTab] = useState('Dashboard');
+  const [activeTab, setActiveTab] = useState(() => {
+    if (Platform.OS === 'web') {
+      return getTabFromPath(window.location.pathname);
+    }
+    return 'Dashboard';
+  });
+
+  // Update URL when tab changes
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+    if (Platform.OS === 'web') {
+      const newPath = TAB_PATHS[tab] || '/dashboard';
+      if (window.location.pathname !== newPath) {
+        window.history.pushState({ tab }, '', newPath);
+      }
+    }
+  };
+
+  // Listen for browser back/forward
+  useEffect(() => {
+    if (Platform.OS !== 'web') return;
+    const onPopState = (e) => {
+      const tab = e.state?.tab || getTabFromPath(window.location.pathname);
+      setActiveTab(tab);
+    };
+    window.addEventListener('popstate', onPopState);
+    // Set initial history state
+    window.history.replaceState({ tab: activeTab }, '', TAB_PATHS[activeTab] || '/dashboard');
+    return () => window.removeEventListener('popstate', onPopState);
+  }, []);
 
   const screens = {
     Dashboard: DashboardScreen,
@@ -213,7 +274,7 @@ function DesktopLayout({ colors, isDark, t }) {
 
   return (
     <View style={{ flex: 1, flexDirection: 'row', backgroundColor: colors.background }}>
-      <SidebarNav activeTab={activeTab} setActiveTab={setActiveTab} isDark={isDark} t={t} />
+      <SidebarNav activeTab={activeTab} setActiveTab={handleTabChange} isDark={isDark} t={t} />
       <View style={{ flex: 1, marginLeft: SIDEBAR_WIDTH }}>
         <ActiveScreen />
       </View>
@@ -277,7 +338,7 @@ function MainApp() {
   return (
     <StatsProvider>
     <SavedItemsProvider>
-      <NavigationContainer>
+      <NavigationContainer linking={isWeb ? linking : undefined}>
         <StatusBar style={isDark ? 'light' : 'light'} />
         <Tab.Navigator
           screenOptions={({ route }) => ({
