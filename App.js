@@ -318,13 +318,14 @@ function MainApp() {
 }
 
 export default function App() {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+  const [fontsLoaded, setFontsLoaded] = useState(Platform.OS === 'web');
 
   useEffect(() => {
-    Font.loadAsync({
-      ...Ionicons.font,
-    }).then(() => setFontsLoaded(true))
-      .catch(() => setFontsLoaded(true));
+    if (Platform.OS !== 'web') {
+      Font.loadAsync({ ...Ionicons.font })
+        .then(() => setFontsLoaded(true))
+        .catch(() => setFontsLoaded(true));
+    }
   }, []);
 
   if (!fontsLoaded) {
