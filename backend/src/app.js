@@ -15,10 +15,10 @@ const purchaseController = require('./controllers/purchaseController');
 
 const app = express();
 
-// Stripe webhook needs raw body BEFORE json parsing
-app.post('/api/purchases/stripe-webhook',
-  express.raw({ type: 'application/json' }),
-  purchaseController.stripeWebhook
+// Paysera callback needs urlencoded body BEFORE json parsing
+app.post('/api/purchases/paysera-callback',
+  express.urlencoded({ extended: true }),
+  purchaseController.payseraCallback
 );
 
 // Middleware
@@ -50,7 +50,7 @@ app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
 });
 
-// Stripe payment success page
+// Paysera payment success page
 app.get('/premium/success', (req, res) => {
   const appUrl = process.env.APP_URL || 'https://mathhelper.online';
   res.send(`<!DOCTYPE html>
@@ -83,11 +83,11 @@ app.get('/premium/success', (req, res) => {
     <a href="${appUrl}/dashboard" class="btn hidden" id="btn">Open MathHelper</a>
   </div>
   <script>
-    const sessionId = new URLSearchParams(window.location.search).get('session_id');
+    const orderId = new URLSearchParams(window.location.search).get('orderid');
     const token = localStorage.getItem('@math_helper_access_token');
 
     async function checkPayment() {
-      if (!sessionId) {
+      if (!orderId) {
         document.getElementById('title').textContent = 'Payment Successful!';
         document.getElementById('desc').textContent = 'You are now a Premium member.';
         document.getElementById('status').classList.add('hidden');
@@ -96,7 +96,7 @@ app.get('/premium/success', (req, res) => {
       }
 
       try {
-        const res = await fetch('/api/purchases/check-session?session_id=' + sessionId, {
+        const res = await fetch('/api/purchases/check-payment?orderid=' + orderId, {
           headers: token ? { 'Authorization': 'Bearer ' + token } : {}
         });
         const data = await res.json();

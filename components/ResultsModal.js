@@ -20,7 +20,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
 
   if (!result) return null;
 
-  const { answer, steps, explanation } = result;
+  const { answer, steps, explanation, solverType } = result;
 
   const handleSave = async () => {
     if (!onSave) return;
@@ -55,6 +55,22 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
               <Ionicons name="close" size={24} color={COLORS.textSecondary} />
             </TouchableOpacity>
           </View>
+
+          {/* Solver Type Badge */}
+          {solverType && (
+            <View style={styles.badgeContainer}>
+              <View style={[styles.badge, solverType === 'local' ? styles.badgeLocal : styles.badgeAI]}>
+                <Ionicons
+                  name={solverType === 'local' ? 'calculator' : 'sparkles'}
+                  size={14}
+                  color={solverType === 'local' ? '#2563EB' : COLORS.primary}
+                />
+                <Text style={[styles.badgeText, solverType === 'local' ? styles.badgeTextLocal : styles.badgeTextAI]}>
+                  {solverType === 'local' ? t('dashboard.calculatedLocally') : t('dashboard.analyzedWithAI')}
+                </Text>
+              </View>
+            </View>
+          )}
 
           <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
             {/* Answer */}
@@ -159,6 +175,36 @@ const styles = StyleSheet.create({
   headerTitle: {
     ...TYPOGRAPHY.h2,
     color: COLORS.textDark,
+  },
+  badgeContainer: {
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.md,
+    backgroundColor: COLORS.surface,
+  },
+  badge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: BORDER_RADIUS.md,
+    gap: 6,
+  },
+  badgeLocal: {
+    backgroundColor: '#EFF6FF',
+  },
+  badgeAI: {
+    backgroundColor: COLORS.primaryBg,
+  },
+  badgeText: {
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  badgeTextLocal: {
+    color: '#2563EB',
+  },
+  badgeTextAI: {
+    color: COLORS.primary,
   },
   closeButton: {
     width: 36,

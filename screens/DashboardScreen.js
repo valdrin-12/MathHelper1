@@ -15,6 +15,7 @@ import { useFocusEffect } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as imageService from '../services/imageService';
 import * as geminiService from '../services/geminiService';
+import * as mathCalculatorService from '../services/mathCalculatorService';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ResultsModal from '../components/ResultsModal';
 import MathKeyboard from '../components/MathKeyboard';
@@ -108,27 +109,58 @@ export default function DashboardScreen() {
     setLastBase64(null);
   };
 
-  const handleAnalyzeProblem = async () => {
+  // Calculate locally (try calculator first, fallback to AI if needed)
+  const handleCalculate = async () => {
     try {
+      let problemText = mathProblemText;
+
+      // Get input (keyboard or image)
       if (inputMode === 'keyboard') {
-        if (!mathProblemText.trim()) {
+        if (!problemText.trim()) {
           Alert.alert(t('common.attention'), t('dashboard.enterProblem'));
           return;
         }
-        setIsAnalyzing(true);
-        const result = await geminiService.analyzeMathProblemFromText(mathProblemText);
-        setAnalysisResult(result);
-        setShowResultModal(true);
       } else {
         if (!selectedImage) {
           Alert.alert(t('common.attention'), t('dashboard.selectPhoto'));
           return;
         }
+        // For images, extract text using AI OCR (still needed)
         setIsAnalyzing(true);
         const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
         setLastBase64(base64);
-        const result = await geminiService.analyzeMathProblem(base64, mimeType);
-        setAnalysisResult(result);
+        // Use AI to extract text from image
+        const ocrResult = await geminiService.analyzeMathProblem(base64, mimeType);
+        // Try to extract just the problem text from AI response
+        problemText = ocrResult.answer || mathProblemText;
+      }
+
+      setIsAnalyzing(true);
+
+      // Try local calculator first
+      const localResult = await mathCalculatorService.solveMathProblem(
+        problemText,
+        t('common.locale')
+      );
+
+      if (localResult.success) {
+        // Success! Show local result
+        setAnalysisResult({
+          ...localResult,
+          solverType: 'local'
+        });
+        setShowResultModal(true);
+      } else {
+        // Fallback to AI
+        console.log('[Calculator] Local solver failed, using AI:', localResult.reason);
+        const aiResult = inputMode === 'keyboard'
+          ? await geminiService.analyzeMathProblemFromText(problemText)
+          : await geminiService.analyzeMathProblem(lastBase64, 'image/jpeg');
+
+        setAnalysisResult({
+          ...aiResult,
+          solverType: 'ai'
+        });
         setShowResultModal(true);
       }
     } catch (error) {
@@ -142,6 +174,45 @@ export default function DashboardScreen() {
       setIsAnalyzing(false);
     }
   };
+
+  // Analyze with AI (always use AI, no local calculator)
+  const handleAnalyzeWithAI = async () => {
+    try {
+      if (inputMode === 'keyboard') {
+        if (!mathProblemText.trim()) {
+          Alert.alert(t('common.attention'), t('dashboard.enterProblem'));
+          return;
+        }
+        setIsAnalyzing(true);
+        const result = await geminiService.analyzeMathProblemFromText(mathProblemText);
+        setAnalysisResult({ ...result, solverType: 'ai' });
+        setShowResultModal(true);
+      } else {
+        if (!selectedImage) {
+          Alert.alert(t('common.attention'), t('dashboard.selectPhoto'));
+          return;
+        }
+        setIsAnalyzing(true);
+        const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
+        setLastBase64(base64);
+        const result = await geminiService.analyzeMathProblem(base64, mimeType);
+        setAnalysisResult({ ...result, solverType: 'ai' });
+        setShowResultModal(true);
+      }
+    } catch (error) {
+      console.error('Gabim gjate analizes:', error);
+      if (error.message === 'DAILY_LIMIT_REACHED') {
+        setShowLimitModal(true);
+      } else {
+        Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
+      }
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  // Keep old function name for backward compatibility (redirect to AI)
+  const handleAnalyzeProblem = handleAnalyzeWithAI;
 
   const handleSaveResult = async () => {
     try {
@@ -320,27 +391,53 @@ export default function DashboardScreen() {
                   </ScrollView>
                 </View>
 
-                {/* Action Buttons Row */}
+                {/* Action Buttons Row - Two Buttons */}
                 <View style={styles.mathActionRow}>
+                  {/* Calculate Button (Local) */}
                   <TouchableOpacity
-                    style={[styles.analyzeButtonFull, { flex: 1 }, (!mathProblemText.trim() || isAnalyzing) && styles.analyzeButtonDisabled]}
-                    onPress={handleAnalyzeProblem}
+                    style={[styles.halfButton, (!mathProblemText.trim() || isAnalyzing) && styles.halfButtonDisabled]}
+                    onPress={handleCalculate}
+                    disabled={!mathProblemText.trim() || isAnalyzing}
+                  >
+                    <LinearGradient
+                      colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : ['#3B82F6', '#2563EB']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.buttonGradient}
+                    >
+                      <View style={styles.buttonInner}>
+                        <Ionicons
+                          name={isAnalyzing ? 'hourglass' : 'calculator'}
+                          size={16}
+                          color="#FFFFFF"
+                        />
+                        <Text style={styles.buttonText}>
+                          {t('dashboard.calculate')}
+                        </Text>
+                      </View>
+                    </LinearGradient>
+                  </TouchableOpacity>
+
+                  {/* Analyze with AI Button */}
+                  <TouchableOpacity
+                    style={[styles.halfButton, (!mathProblemText.trim() || isAnalyzing) && styles.halfButtonDisabled]}
+                    onPress={handleAnalyzeWithAI}
                     disabled={!mathProblemText.trim() || isAnalyzing}
                   >
                     <LinearGradient
                       colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : [COLORS.primarySoft, COLORS.primary]}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
-                      style={styles.analyzeGradient}
+                      style={styles.buttonGradient}
                     >
-                      <View style={styles.analyzeButtonInner}>
+                      <View style={styles.buttonInner}>
                         <Ionicons
                           name={isAnalyzing ? 'hourglass' : 'sparkles'}
-                          size={18}
+                          size={16}
                           color="#FFFFFF"
                         />
-                        <Text style={styles.analyzeButtonText}>
-                          {isAnalyzing ? t('dashboard.analyzing') : t('dashboard.analyzeAI')}
+                        <Text style={styles.buttonText}>
+                          {t('dashboard.analyzeAI')}
                         </Text>
                       </View>
                     </LinearGradient>
@@ -362,14 +459,26 @@ export default function DashboardScreen() {
                     <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
                     <View style={styles.imageActions}>
                       <TouchableOpacity
+                        style={[styles.actionBtn, styles.calculateBtn]}
+                        onPress={handleCalculate}
+                        disabled={isAnalyzing}
+                      >
+                        <View style={styles.actionBtnInner}>
+                          <Ionicons name={isAnalyzing ? 'hourglass' : 'calculator'} size={16} color="#FFFFFF" />
+                          <Text style={styles.actionBtnText}>
+                            {t('dashboard.calculate')}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                      <TouchableOpacity
                         style={[styles.actionBtn, styles.analyzeBtn]}
-                        onPress={handleAnalyzeProblem}
+                        onPress={handleAnalyzeWithAI}
                         disabled={isAnalyzing}
                       >
                         <View style={styles.actionBtnInner}>
                           <Ionicons name={isAnalyzing ? 'hourglass' : 'sparkles'} size={16} color="#FFFFFF" />
                           <Text style={styles.actionBtnText}>
-                            {isAnalyzing ? t('dashboard.analyzing') : t('dashboard.analyzeAI')}
+                            {t('dashboard.analyzeAI')}
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -725,6 +834,29 @@ const styles = StyleSheet.create({
     gap: 10,
     marginVertical: 12,
   },
+  halfButton: {
+    flex: 1,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  halfButtonDisabled: {
+    opacity: 0.5,
+  },
+  buttonGradient: {
+    paddingVertical: 14,
+    alignItems: 'center',
+    borderRadius: 14,
+  },
+  buttonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  buttonText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#FFFFFF',
+  },
   analyzeButtonFull: {
     borderRadius: 14,
     overflow: 'hidden',
@@ -801,8 +933,12 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     alignItems: 'center',
   },
+  calculateBtn: {
+    flex: 1,
+    backgroundColor: '#3B82F6',
+  },
   analyzeBtn: {
-    flex: 2,
+    flex: 1,
     backgroundColor: COLORS.primarySoft,
   },
   removeBtn: {

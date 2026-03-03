@@ -1,13 +1,21 @@
 const pool = require('../config/database');
 const { validateAppleReceipt, validateGoogleReceipt } = require('../services/receiptValidator');
 
-// Stripe (lazy init — only when keys are configured)
-let stripe = null;
-function getStripe() {
-  if (!stripe && process.env.STRIPE_SECRET_KEY) {
-    stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+// Paysera (lazy init — only when keys are configured)
+let paysera = null;
+function getPaysera() {
+  if (!paysera && process.env.PAYSERA_PROJECT_ID && process.env.PAYSERA_SIGN_PASSWORD) {
+    const Paysera = require('paysera-nodejs');
+    const appUrl = process.env.APP_URL || 'https://mathhelper.online';
+    paysera = new Paysera({
+      projectid: process.env.PAYSERA_PROJECT_ID,
+      sign_password: process.env.PAYSERA_SIGN_PASSWORD,
+      accepturl: `${appUrl}/premium/success`,
+      cancelurl: `${appUrl}/learn`,
+      callbackurl: `${appUrl}/api/purchases/paysera-callback`,
+    });
   }
-  return stripe;
+  return paysera;
 }
 
 async function verifyPurchase(req, res) {
@@ -109,17 +117,16 @@ async function restorePurchase(req, res) {
   }
 }
 
-// --- Stripe Web Payment ---
+// --- Paysera Web Payment ---
 
 async function createCheckout(req, res) {
   try {
-    const s = getStripe();
-    if (!s || !process.env.STRIPE_PRICE_ID) {
-      return res.status(503).json({ success: false, error: 'Stripe not configured' });
+    const p = getPaysera();
+    if (!p) {
+      return res.status(503).json({ success: false, error: 'Paysera not configured' });
     }
 
     const userId = req.userId;
-    const appUrl = process.env.APP_URL || 'https://mathhelper.online';
 
     // Check if user is already premium
     const { rows: userRows } = await pool.query('SELECT tier FROM users WHERE id = $1', [userId]);
@@ -127,126 +134,112 @@ async function createCheckout(req, res) {
       return res.json({ success: false, error: 'Already premium' });
     }
 
-    const session = await s.checkout.sessions.create({
-      mode: 'payment',
-      line_items: [{ price: process.env.STRIPE_PRICE_ID, quantity: 1 }],
-      success_url: `${appUrl}/premium/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${appUrl}/learn`,
-      client_reference_id: userId,
-      metadata: { userId },
+    // Generate unique order ID
+    const orderId = `premium-${userId}-${Date.now()}`;
+
+    // Build Paysera payment URL
+    const paymentUrl = p.buildRequestUrl({
+      orderid: orderId,
+      amount: 199, // €1.99 in cents
+      currency: 'EUR',
+      test: 1, // Remove this for production
     });
 
-    res.json({ success: true, url: session.url });
+    res.json({ success: true, url: paymentUrl });
   } catch (err) {
     console.error('CreateCheckout error:', err);
     res.status(500).json({ success: false, error: 'Failed to create checkout session' });
   }
 }
 
-async function stripeWebhook(req, res) {
+async function payseraCallback(req, res) {
   try {
-    const s = getStripe();
-    if (!s) {
-      return res.status(503).send('Stripe not configured');
+    const p = getPaysera();
+    if (!p) {
+      return res.status(503).send('FAILED');
     }
 
-    const sig = req.headers['stripe-signature'];
-    let event;
-
-    try {
-      event = s.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
-    } catch (err) {
-      console.error('Webhook signature verification failed:', err.message);
-      return res.status(400).send(`Webhook Error: ${err.message}`);
+    // Verify callback signature
+    if (!p.checkCallback(req)) {
+      console.error('[Paysera] Invalid callback signature');
+      return res.status(400).send('FAILED');
     }
 
-    if (event.type === 'checkout.session.completed') {
-      const session = event.data.object;
-      const userId = session.client_reference_id;
-      const transactionId = session.id;
+    // Decode payment data
+    const paymentData = p.decode(req.body.data);
+    const { orderid, status } = paymentData;
 
-      if (!userId) {
-        console.error('Webhook: No userId in session');
-        return res.status(400).send('Missing userId');
-      }
+    console.log('[Paysera] Callback received:', { orderid, status });
 
-      // Idempotency check
-      const { rows: existing } = await pool.query(
-        'SELECT id FROM purchases WHERE transaction_id = $1',
-        [transactionId]
+    // Extract userId from orderid (format: premium-{userId}-{timestamp})
+    const parts = orderid.split('-');
+    if (parts.length < 3 || parts[0] !== 'premium') {
+      console.error('[Paysera] Invalid orderid format:', orderid);
+      return res.status(400).send('FAILED');
+    }
+    const userId = parts[1];
+
+    // Idempotency check
+    const { rows: existing } = await pool.query(
+      'SELECT id FROM purchases WHERE transaction_id = $1',
+      [orderid]
+    );
+
+    if (existing.length === 0 && status === 1) {
+      // Store purchase
+      await pool.query(
+        `INSERT INTO purchases (user_id, product_id, platform, transaction_id, receipt_data)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [userId, 'com.valdrin.mathhelper.premium', 'web', orderid, JSON.stringify(paymentData)]
       );
 
-      if (existing.length === 0) {
-        // Store purchase
-        await pool.query(
-          `INSERT INTO purchases (user_id, product_id, platform, transaction_id, receipt_data)
-           VALUES ($1, $2, $3, $4, $5)`,
-          [userId, 'com.valdrin.mathhelper.premium', 'web', transactionId, JSON.stringify(session)]
-        );
+      // Upgrade to premium
+      await pool.query(
+        "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
+        [userId]
+      );
 
-        // Upgrade to premium
-        await pool.query(
-          "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
-          [userId]
-        );
-
-        console.log(`[Stripe] User ${userId} upgraded to premium via web payment`);
-      }
+      console.log(`[Paysera] User ${userId} upgraded to premium via web payment`);
     }
 
-    res.json({ received: true });
+    // CRITICAL: Must respond with "OK" for Paysera to not retry
+    res.send('OK');
   } catch (err) {
-    console.error('StripeWebhook error:', err);
-    res.status(500).send('Webhook handler failed');
+    console.error('PayseraCallback error:', err);
+    res.status(500).send('ERROR');
   }
 }
 
-async function checkSession(req, res) {
+async function checkPayment(req, res) {
   try {
-    const s = getStripe();
-    if (!s) {
-      return res.status(503).json({ success: false, error: 'Stripe not configured' });
+    const { orderid } = req.query;
+    if (!orderid) {
+      return res.status(400).json({ success: false, error: 'orderid required' });
     }
 
-    const { session_id } = req.query;
-    if (!session_id) {
-      return res.status(400).json({ success: false, error: 'session_id required' });
-    }
+    // Check if purchase exists
+    const { rows } = await pool.query(
+      'SELECT user_id FROM purchases WHERE transaction_id = $1',
+      [orderid]
+    );
 
-    const session = await s.checkout.sessions.retrieve(session_id);
+    if (rows.length > 0) {
+      const userId = rows[0].user_id;
 
-    if (session.payment_status === 'paid') {
-      const userId = session.client_reference_id;
-
-      // Ensure tier is updated (webhook might not have fired yet)
-      if (userId) {
-        await pool.query(
-          "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
-          [userId]
-        );
-
-        // Also ensure purchase record exists
-        const { rows: existing } = await pool.query(
-          'SELECT id FROM purchases WHERE transaction_id = $1',
-          [session.id]
-        );
-        if (existing.length === 0) {
-          await pool.query(
-            `INSERT INTO purchases (user_id, product_id, platform, transaction_id, receipt_data)
-             VALUES ($1, $2, $3, $4, $5)`,
-            [userId, 'com.valdrin.mathhelper.premium', 'web', session.id, JSON.stringify(session)]
-          );
-        }
-      }
+      // Ensure tier is updated (callback might not have fired yet)
+      await pool.query(
+        "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
+        [userId]
+      );
 
       return res.json({ success: true, tier: 'premium', paid: true });
     }
 
     res.json({ success: true, paid: false });
   } catch (err) {
-    console.error('CheckSession error:', err);
-    res.status(500).json({ success: false, error: 'Failed to check session' });
+    console.error('CheckPayment error:', err);
+    res.status(500).json({ success: false, error: 'Failed to check payment' });
   }
 }
 
-module.exports = { verifyPurchase, restorePurchase, createCheckout, stripeWebhook, checkSession };
+module.exports = { verifyPurchase, restorePurchase, createCheckout, payseraCallback, checkPayment };

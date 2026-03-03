@@ -11,8 +11,8 @@ router.use(authMiddleware);
 router.post('/verify', purchaseController.verifyPurchase);
 router.post('/restore', purchaseController.restorePurchase);
 
-// Stripe Web
+// Paysera Web
 router.post('/create-checkout', purchaseController.createCheckout);
-router.get('/check-session', purchaseController.checkSession);
+router.get('/check-payment', purchaseController.checkPayment);
 
 module.exports = router;
