@@ -11,7 +11,10 @@ import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalizedCourses } from '../hooks/useLocalizedData';
 import { useStats } from '../context/StatsContext';
+import { useUser } from '../context/UserContext';
+import { FREE_COURSE_IDS } from '../data/coursesData';
 import CourseDetailModal from '../components/CourseDetailModal';
+import PremiumModal from '../components/PremiumModal';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
@@ -26,11 +29,14 @@ export default function LearnScreen() {
   const { t } = useTranslation();
   const { courses, categories, difficultyLevels, search } = useLocalizedCourses();
   const { stats } = useStats();
+  const { user } = useUser();
+  const isPremium = user?.tier === 'premium';
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [showCourseModal, setShowCourseModal] = useState(false);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [courseProgress, setCourseProgress] = useState({});
 
   // Load course progress from AsyncStorage
@@ -76,7 +82,13 @@ export default function LearnScreen() {
     return result;
   }, [selectedCategory, selectedDifficulty, searchQuery, courses]);
 
+  const isCourseLocked = (courseId) => !isPremium && !FREE_COURSE_IDS.includes(courseId);
+
   const handleCoursePress = (course) => {
+    if (isCourseLocked(course.id)) {
+      setShowPremiumModal(true);
+      return;
+    }
     setSelectedCourse(course);
     setShowCourseModal(true);
   };
@@ -219,11 +231,16 @@ export default function LearnScreen() {
               const category = getCategoryInfo(course.category);
               const difficulty = getDifficultyInfo(course.difficulty);
               const status = getCourseStatus(course.id);
+              const locked = isCourseLocked(course.id);
 
               return (
                 <PressableCard
                   key={course.id}
-                  style={[styles.glassCourseCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }]}
+                  style={[
+                    styles.glassCourseCard,
+                    isDesktop && { flexBasis: '48%', flexGrow: 0 },
+                    locked && { opacity: 0.75 },
+                  ]}
                   onPress={() => handleCoursePress(course)}
                 >
                   {/* Glass layer */}
@@ -238,27 +255,36 @@ export default function LearnScreen() {
                   >
                     <Text style={styles.courseIcon}>{category?.icon || '📚'}</Text>
                     <View style={{ alignItems: 'flex-end', gap: 6 }}>
+                      {/* PRO badge for locked courses */}
+                      {locked && (
+                        <View style={styles.proBadge}>
+                          <Ionicons name="lock-closed" size={11} color="#FFFFFF" />
+                          <Text style={styles.proBadgeText}>PRO</Text>
+                        </View>
+                      )}
                       <View style={styles.difficultyBadge}>
                         <Text style={styles.difficultyBadgeText}>
                           {difficulty?.emoji} {difficulty?.name}
                         </Text>
                       </View>
-                      {/* Course Status Badge */}
-                      <View style={[
-                        styles.statusBadge,
-                        status === 'completed' && styles.statusBadgeCompleted,
-                        status === 'learning' && styles.statusBadgeLearning,
-                        status === 'start' && styles.statusBadgeStart,
-                      ]}>
-                        <Ionicons
-                          name={status === 'completed' ? 'checkmark-circle' : status === 'learning' ? 'play-circle' : 'arrow-forward-circle'}
-                          size={12}
-                          color="#FFFFFF"
-                        />
-                        <Text style={styles.statusBadgeText}>
-                          {status === 'completed' ? t('learn.statusCompleted') : status === 'learning' ? t('learn.statusLearning') : t('learn.statusStart')}
-                        </Text>
-                      </View>
+                      {/* Course Status Badge - only show for unlocked */}
+                      {!locked && (
+                        <View style={[
+                          styles.statusBadge,
+                          status === 'completed' && styles.statusBadgeCompleted,
+                          status === 'learning' && styles.statusBadgeLearning,
+                          status === 'start' && styles.statusBadgeStart,
+                        ]}>
+                          <Ionicons
+                            name={status === 'completed' ? 'checkmark-circle' : status === 'learning' ? 'play-circle' : 'arrow-forward-circle'}
+                            size={12}
+                            color="#FFFFFF"
+                          />
+                          <Text style={styles.statusBadgeText}>
+                            {status === 'completed' ? t('learn.statusCompleted') : status === 'learning' ? t('learn.statusLearning') : t('learn.statusStart')}
+                          </Text>
+                        </View>
+                      )}
                     </View>
                   </LinearGradient>
 
@@ -291,9 +317,13 @@ export default function LearnScreen() {
                       onPress={() => handleCoursePress(course)}
                     >
                       <Text style={styles.viewCourseButtonText}>
-                        {t('learn.viewDetails')}
+                        {locked ? t('premium.unlockPro') : t('learn.viewDetails')}
                       </Text>
-                      <Ionicons name="arrow-forward" size={16} color={COLORS.primarySoft} />
+                      <Ionicons
+                        name={locked ? 'lock-closed' : 'arrow-forward'}
+                        size={16}
+                        color={locked ? '#F59E0B' : COLORS.primarySoft}
+                      />
                     </TouchableOpacity>
                   </View>
                 </PressableCard>
@@ -311,6 +341,12 @@ export default function LearnScreen() {
         visible={showCourseModal}
         course={selectedCourse}
         onClose={handleCloseModal}
+      />
+
+      {/* Premium Upsell Modal */}
+      <PremiumModal
+        visible={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
       />
     </View>
   );
@@ -524,6 +560,23 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: '700',
     color: COLORS.primarySoft,
+  },
+
+  // PRO Badge for locked courses
+  proBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245, 158, 11, 0.9)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BORDER_RADIUS.round,
+    gap: 4,
+  },
+  proBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 
   // Status Badge

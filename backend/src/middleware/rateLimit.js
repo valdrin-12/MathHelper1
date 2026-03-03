@@ -1,8 +1,8 @@
 const pool = require('../config/database');
 
 const DAILY_LIMITS = {
-  free: 4,
-  premium: 10,
+  free: 2,
+  premium: 15,
 };
 
 async function rateLimitMiddleware(req, res, next) {

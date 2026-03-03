@@ -56,6 +56,9 @@ const difficultyNames = {
   de: { beginner: 'Anfänger', intermediate: 'Mittelstufe', advanced: 'Fortgeschritten' },
 };
 
+// Free tier course IDs (available without premium)
+export const FREE_COURSE_IDS = ['arith-001', 'arith-002'];
+
 // Structural course data (language-independent)
 const coursesStructure = [
   // ARITHMETIC

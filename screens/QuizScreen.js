@@ -8,10 +8,13 @@ import {
   Animated,
 } from 'react-native';
 import { useLocalizedQuizzes } from '../hooks/useLocalizedData';
+import { FREE_QUIZ_IDS } from '../data/quizData';
 import ActiveQuizModal from '../components/ActiveQuizModal';
 import QuizResultModal from '../components/QuizResultModal';
+import PremiumModal from '../components/PremiumModal';
 import { useTranslation } from 'react-i18next';
 import { useStats } from '../context/StatsContext';
+import { useUser } from '../context/UserContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
@@ -66,6 +69,8 @@ export default function QuizScreen() {
   const { t } = useTranslation();
   const { quizSets, getDifficultyLabel, getDifficultyColor } = useLocalizedQuizzes();
   const { recordQuizCompleted, streak, stats } = useStats();
+  const { user } = useUser();
+  const isPremium = user?.tier === 'premium';
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -73,6 +78,7 @@ export default function QuizScreen() {
   const [showResult, setShowResult] = useState(false);
   const [completedQuizSet, setCompletedQuizSet] = useState(null);
   const [lastScore, setLastScore] = useState(null);
+  const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   // Animations
   const streakPulse = useRef(new Animated.Value(1)).current;
@@ -111,17 +117,25 @@ export default function QuizScreen() {
   };
 
   // Get daily challenge quiz (deterministic based on date)
+  // Free users only get challenges from free quizzes
   const getDailyChallenge = () => {
-    if (quizSets.length === 0) return null;
+    const pool = isPremium ? quizSets : quizSets.filter(q => FREE_QUIZ_IDS.includes(q.id));
+    if (pool.length === 0) return null;
     const today = new Date();
     const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-    const index = dayOfYear % quizSets.length;
-    return quizSets[index];
+    const index = dayOfYear % pool.length;
+    return pool[index];
   };
 
   const dailyChallenge = getDailyChallenge();
 
+  const isQuizLocked = (quizId) => !isPremium && !FREE_QUIZ_IDS.includes(quizId);
+
   const handleStartQuiz = (quizSet) => {
+    if (isQuizLocked(quizSet.id)) {
+      setShowPremiumModal(true);
+      return;
+    }
     setActiveQuiz(quizSet);
     setShowQuiz(true);
   };
@@ -311,10 +325,15 @@ export default function QuizScreen() {
           </Text>
           {filteredQuizzes.map((quizSet) => {
             const bestScore = getBestScore(quizSet.id);
+            const locked = isQuizLocked(quizSet.id);
             return (
               <PressableCard
                 key={quizSet.id}
-                style={[styles.glassQuizCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }]}
+                style={[
+                  styles.glassQuizCard,
+                  isDesktop && { flexBasis: '48%', flexGrow: 0 },
+                  locked && { opacity: 0.75 },
+                ]}
                 onPress={() => handleStartQuiz(quizSet)}
               >
                 {/* Glass background layer */}
@@ -327,19 +346,28 @@ export default function QuizScreen() {
                   {/* Icon + Title + Progress Ring */}
                   <View style={styles.quizCardHeader}>
                     <View style={[styles.glassIconContainer, { backgroundColor: quizSet.color + '18' }]}>
-                      <DifficultyIcon difficulty={quizSet.difficulty} size={26} />
+                      {locked ? (
+                        <Ionicons name="lock-closed" size={26} color={quizSet.color} />
+                      ) : (
+                        <DifficultyIcon difficulty={quizSet.difficulty} size={26} />
+                      )}
                     </View>
                     <View style={styles.quizTitleContainer}>
                       <Text style={styles.quizTitle} numberOfLines={2}>{quizSet.title}</Text>
                       <Text style={styles.quizCategory} numberOfLines={1}>{quizSet.category}</Text>
                     </View>
-                    {/* Best Score Progress Ring */}
-                    {bestScore !== null && (
+                    {/* PRO badge for locked quizzes */}
+                    {locked ? (
+                      <View style={styles.proBadge}>
+                        <Ionicons name="lock-closed" size={11} color="#FFFFFF" />
+                        <Text style={styles.proBadgeText}>PRO</Text>
+                      </View>
+                    ) : bestScore !== null ? (
                       <MiniProgressRing
                         progress={bestScore / 100}
                         color={bestScore >= 80 ? COLORS.success : bestScore >= 50 ? COLORS.warning : COLORS.error}
                       />
-                    )}
+                    ) : null}
                   </View>
 
                   {/* Difficulty Badge */}
@@ -350,7 +378,7 @@ export default function QuizScreen() {
                         {getDifficultyLabel(quizSet.difficulty)}
                       </Text>
                     </View>
-                    {bestScore !== null && (
+                    {!locked && bestScore !== null && (
                       <View style={[styles.bestScoreBadge, {
                         backgroundColor: bestScore === 100 ? COLORS.success + '15' : COLORS.primary + '10',
                       }]}>
@@ -380,19 +408,24 @@ export default function QuizScreen() {
                     </View>
                   </View>
 
-                  {/* Start Button */}
+                  {/* Start / Unlock Button */}
                   <TouchableOpacity
                     style={styles.glassStartButton}
                     onPress={() => handleStartQuiz(quizSet)}
                     activeOpacity={0.85}
                   >
                     <LinearGradient
-                      colors={[quizSet.color, quizSet.color + 'CC']}
+                      colors={locked ? ['#F59E0B', '#D97706'] : [quizSet.color, quizSet.color + 'CC']}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={styles.startGradient}
                     >
-                      <Text style={styles.startButtonText}>{t('quiz.startQuiz')}</Text>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+                        {locked && <Ionicons name="lock-closed" size={16} color="#FFFFFF" />}
+                        <Text style={styles.startButtonText}>
+                          {locked ? t('premium.unlockPro') : t('quiz.startQuiz')}
+                        </Text>
+                      </View>
                     </LinearGradient>
                   </TouchableOpacity>
                 </View>
@@ -421,6 +454,12 @@ export default function QuizScreen() {
         onClose={handleCloseResult}
         onRetry={handleRetryQuiz}
         isPerfectScore={lastScore === 100}
+      />
+
+      {/* Premium Upsell Modal */}
+      <PremiumModal
+        visible={showPremiumModal}
+        onClose={() => setShowPremiumModal(false)}
       />
     </View>
   );
@@ -705,6 +744,23 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: COLORS.textMuted,
     fontWeight: '500',
+  },
+
+  // PRO Badge for locked quizzes
+  proBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(245, 158, 11, 0.9)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: BORDER_RADIUS.round,
+    gap: 4,
+  },
+  proBadgeText: {
+    fontSize: 11,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    letterSpacing: 0.5,
   },
 
   // Badge

@@ -9,6 +9,9 @@ const quizzesTranslationsMap = {
   de: quizzesTranslations_de,
 };
 
+// Free tier quiz IDs (available without premium)
+export const FREE_QUIZ_IDS = ['arith-easy'];
+
 export const quizSets = [
   // ===== ARITMETIKË =====
   {
