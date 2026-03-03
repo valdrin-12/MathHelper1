@@ -17,6 +17,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SHADOWS } from '../theme/constants';
 import { useUser } from '../context/UserContext';
 import * as purchaseService from '../services/purchaseService';
+import api from '../services/apiClient';
 
 export default function PremiumModal({ visible, onClose }) {
   const { t } = useTranslation();
@@ -25,12 +26,14 @@ export default function PremiumModal({ visible, onClose }) {
   const [loading, setLoading] = useState(false);
   const [restoring, setRestoring] = useState(false);
 
+  const isWeb = Platform.OS === 'web';
+
   useEffect(() => {
-    if (visible) {
+    if (visible && !isWeb) {
       initStore();
     }
     return () => {
-      purchaseService.removePurchaseListeners();
+      if (!isWeb) purchaseService.removePurchaseListeners();
     };
   }, [visible]);
 
@@ -70,6 +73,25 @@ export default function PremiumModal({ visible, onClose }) {
   };
 
   const handleBuyPremium = async () => {
+    if (isWeb) {
+      // Web: redirect to Stripe Checkout
+      try {
+        setLoading(true);
+        const response = await api.post('/api/purchases/create-checkout');
+        if (response.data?.url) {
+          window.location.href = response.data.url;
+        } else {
+          setLoading(false);
+          Alert.alert(t('common.error'), response.data?.error || t('premium.purchaseError'));
+        }
+      } catch (error) {
+        setLoading(false);
+        Alert.alert(t('common.error'), t('premium.purchaseError'));
+      }
+      return;
+    }
+
+    // Mobile: native IAP
     try {
       setLoading(true);
       await purchaseService.purchasePremium();
@@ -217,18 +239,20 @@ export default function PremiumModal({ visible, onClose }) {
             </LinearGradient>
           </TouchableOpacity>
 
-          {/* Restore */}
-          <TouchableOpacity
-            style={styles.restoreButton}
-            onPress={handleRestore}
-            disabled={restoring}
-          >
-            {restoring ? (
-              <ActivityIndicator size="small" color={COLORS.textSubtle} />
-            ) : (
-              <Text style={styles.restoreText}>{t('premium.restorePurchases')}</Text>
-            )}
-          </TouchableOpacity>
+          {/* Restore - mobile only */}
+          {!isWeb && (
+            <TouchableOpacity
+              style={styles.restoreButton}
+              onPress={handleRestore}
+              disabled={restoring}
+            >
+              {restoring ? (
+                <ActivityIndicator size="small" color={COLORS.textSubtle} />
+              ) : (
+                <Text style={styles.restoreText}>{t('premium.restorePurchases')}</Text>
+              )}
+            </TouchableOpacity>
+          )}
 
           <View style={{ height: 40 }} />
         </ScrollView>
