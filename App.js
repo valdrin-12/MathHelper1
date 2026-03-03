@@ -310,9 +310,7 @@ function MainApp() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
-        <LoadingOverlay visible={true} />
-      </View>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }} />
     );
   }
 
