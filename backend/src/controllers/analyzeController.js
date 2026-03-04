@@ -218,12 +218,22 @@ async function extractTextFromImage(req, res) {
       },
     };
 
-    // Simple OCR prompt - just extract text, don't solve
-    const ocrPrompt = `Extract ONLY the mathematical expression or equation from this image.
-Return just the math text exactly as written, without solving it.
-If there are multiple expressions, separate them with newlines.
-If the image doesn't contain math, return "NO_MATH_FOUND".
-Do not add explanations, do not solve, just extract the text.`;
+    // Simple OCR prompt - just extract the ORIGINAL problem, not the solution steps
+    const ocrPrompt = `You are extracting a math problem from an image.
+
+IMPORTANT RULES:
+1. Extract ONLY the ORIGINAL problem/equation (the first line or main question)
+2. DO NOT include solution steps, working, or intermediate calculations
+3. DO NOT include equals signs that show steps (like "= 14" or "= x + 5")
+4. Return ONLY the problem as it was given, before solving
+5. If you see multiple lines of work, return ONLY the first/original problem
+
+Examples:
+- Image shows: "2x + 5 = 13\n2x = 8\nx = 4" → Return: "2x + 5 = 13"
+- Image shows: "5 + 9\n= 14" → Return: "5 + 9"
+- Image shows: "3(2x+3)+14-2(4^2) = (6x+9)+14-2(16) = 6x-9" → Return: "3(2x+3)+14-2(4^2) = 6x-9"
+
+If no math problem found, return "NO_MATH_FOUND".`;
 
     const result = await model.generateContent([ocrPrompt, imagePart]);
     const response = await result.response;
