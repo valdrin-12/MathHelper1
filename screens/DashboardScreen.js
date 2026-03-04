@@ -115,6 +115,8 @@ export default function DashboardScreen() {
   const handleCalculate = async () => {
     try {
       let problemText = mathProblemText;
+      let imageBase64 = null; // Store base64 for AI fallback
+      let imageMimeType = 'image/jpeg';
 
       console.log('🔵 [Calculate] Starting calculation...');
       console.log('🔵 [Calculate] Input mode:', inputMode);
@@ -135,6 +137,10 @@ export default function DashboardScreen() {
         setIsAnalyzing(true);
         const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
         setLastBase64(base64);
+
+        // Store for AI fallback (don't rely on state which is async)
+        imageBase64 = base64;
+        imageMimeType = mimeType;
 
         try {
           // Use OCR-only endpoint - just extracts text, doesn't solve
@@ -173,7 +179,7 @@ export default function DashboardScreen() {
         console.log('🤖 [AI] Falling back to Gemini AI...');
         const aiResult = inputMode === 'keyboard'
           ? await geminiService.analyzeMathProblemFromText(problemText)
-          : await geminiService.analyzeMathProblem(lastBase64, 'image/jpeg');
+          : await geminiService.analyzeMathProblem(imageBase64, imageMimeType);
 
         console.log('✅ [AI] Analysis complete:', aiResult.answer);
         setAnalysisResult({
