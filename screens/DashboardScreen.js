@@ -9,6 +9,8 @@ import {
   Image,
   Alert,
   Modal,
+  TextInput,
+  Platform,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect } from '@react-navigation/native';
@@ -380,15 +382,16 @@ export default function DashboardScreen() {
               <View style={styles.keyboardMode}>
                 {/* Math Display Area */}
                 <View style={styles.mathDisplayArea}>
-                  <ScrollView style={styles.mathDisplayScroll} nestedScrollEnabled>
-                    {mathProblemText ? (
-                      <Text style={styles.mathDisplayText}>{mathProblemText}</Text>
-                    ) : (
-                      <Text style={styles.mathDisplayPlaceholder}>
-                        {t('dashboard.inputPlaceholder')}
-                      </Text>
-                    )}
-                  </ScrollView>
+                  <TextInput
+                    style={styles.mathTextInput}
+                    value={mathProblemText}
+                    onChangeText={setMathProblemText}
+                    placeholder={t('dashboard.inputPlaceholder')}
+                    placeholderTextColor={COLORS.textMuted}
+                    multiline
+                    numberOfLines={4}
+                    textAlignVertical="top"
+                  />
                 </View>
 
                 {/* Action Buttons Row - Two Buttons */}
@@ -811,9 +814,18 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: COLORS.inputBorder,
     borderRadius: 16,
-    padding: 16,
-    minHeight: 100,
+    minHeight: 120,
     maxHeight: 160,
+  },
+  mathTextInput: {
+    fontSize: 18,
+    color: COLORS.text,
+    fontFamily: 'System',
+    lineHeight: 26,
+    padding: 16,
+    minHeight: 120,
+    maxHeight: 160,
+    outlineStyle: 'none', // Remove focus outline on web
   },
   mathDisplayScroll: {
     flex: 1,
