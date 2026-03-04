@@ -380,11 +380,13 @@ export default function App() {
   const [fontsLoaded, setFontsLoaded] = useState(Platform.OS === 'web');
 
   useEffect(() => {
-    if (Platform.OS !== 'web') {
-      Font.loadAsync({ ...Ionicons.font })
-        .then(() => setFontsLoaded(true))
-        .catch(() => setFontsLoaded(true));
-    }
+    // Load Ionicons font for all platforms including web
+    Font.loadAsync({ ...Ionicons.font })
+      .then(() => setFontsLoaded(true))
+      .catch((err) => {
+        console.error('Font loading error:', err);
+        setFontsLoaded(true); // Continue anyway
+      });
   }, []);
 
   if (!fontsLoaded) {
