@@ -52,6 +52,7 @@ const isEquation = (text) => {
 
 /**
  * Solve simple linear equation: ax + b = c
+ * Manual solving without math.solve() which doesn't work reliably
  */
 const solveLinearEquation = (equation, lang) => {
   try {
@@ -61,25 +62,83 @@ const solveLinearEquation = (equation, lang) => {
     // Parse equation
     const [left, right] = equation.split('=').map(s => s.trim());
 
-    // Try to solve using mathjs
-    const solutions = math.solve(equation, 'x');
+    steps.push(`${t('step')} 1: ${equation}`);
 
-    if (typeof solutions === 'number' || (Array.isArray(solutions) && solutions.length > 0)) {
-      const answer = Array.isArray(solutions) ? solutions[0] : solutions;
+    // Try to solve manually for simple cases: x + b = c or ax = c
+    try {
+      // Replace x with a placeholder value to test
+      const testValue = 1;
+      const leftWithTest = left.replace(/x/g, `(${testValue})`);
+      const rightValue = math.evaluate(right);
 
-      steps.push(`${t('step')} 1: ${equation}`);
-      steps.push(`${t('step')} 2: ${t('solve')} ${left} = ${right}`);
-      steps.push(`${t('step')} 3: x = ${math.format(answer, { precision: 14 })}`);
+      // For simple linear equations like "x + 5 = 10" or "2x = 10"
+      // We can solve by trying different approaches
 
-      return {
-        success: true,
-        answer: `x = ${math.format(answer, { precision: 4 })}`,
-        steps,
-        explanation: `${t('solution')}: x = ${math.format(answer, { precision: 4 })}`,
-      };
+      // Approach 1: Try to isolate x algebraically
+      // If equation is like "x + b = c", then x = c - b
+      // If equation is like "ax = c", then x = c / a
+
+      // Simplify both sides first
+      let leftSimplified;
+      try {
+        leftSimplified = math.simplify(left);
+      } catch {
+        leftSimplified = left;
+      }
+
+      // Check if it's a simple "x + number = number" or "x - number = number"
+      const simplePattern = /^x\s*([+\-])\s*(\d+\.?\d*)$/;
+      const simpleMatch = leftSimplified.toString().match(simplePattern);
+
+      if (simpleMatch) {
+        const operator = simpleMatch[1];
+        const value = parseFloat(simpleMatch[2]);
+        const rightValue = math.evaluate(right);
+
+        let solution;
+        if (operator === '+') {
+          solution = rightValue - value;
+          steps.push(`${t('step')} 2: x = ${rightValue} - ${value}`);
+        } else {
+          solution = rightValue + value;
+          steps.push(`${t('step')} 2: x = ${rightValue} + ${value}`);
+        }
+
+        steps.push(`${t('step')} 3: x = ${solution}`);
+
+        return {
+          success: true,
+          answer: `x = ${math.format(solution, { precision: 4 })}`,
+          steps,
+          explanation: `${t('solution')}: x = ${math.format(solution, { precision: 4 })}`,
+        };
+      }
+
+      // Check if it's "number * x = number"
+      const multiplyPattern = /^(\d+\.?\d*)\s*\*?\s*x$/;
+      const multiplyMatch = leftSimplified.toString().match(multiplyPattern);
+
+      if (multiplyMatch) {
+        const coefficient = parseFloat(multiplyMatch[1]);
+        const rightValue = math.evaluate(right);
+        const solution = rightValue / coefficient;
+
+        steps.push(`${t('step')} 2: x = ${rightValue} / ${coefficient}`);
+        steps.push(`${t('step')} 3: x = ${solution}`);
+
+        return {
+          success: true,
+          answer: `x = ${math.format(solution, { precision: 4 })}`,
+          steps,
+          explanation: `${t('solution')}: x = ${math.format(solution, { precision: 4 })}`,
+        };
+      }
+
+      // If we can't solve it with simple pattern matching, fail gracefully
+      return { success: false, reason: 'Equation too complex for local solver' };
+    } catch (error) {
+      return { success: false, reason: 'Could not parse equation: ' + error.message };
     }
-
-    return { success: false, reason: 'Could not solve equation' };
   } catch (error) {
     return { success: false, reason: error.message };
   }
@@ -87,34 +146,16 @@ const solveLinearEquation = (equation, lang) => {
 
 /**
  * Solve quadratic equation: ax² + bx + c = 0
+ * NOTE: Quadratic equations are complex - let AI handle them for now
+ * TODO: Implement quadratic formula if needed
  */
 const solveQuadraticEquation = (equation, lang) => {
-  try {
-    const steps = [];
-    const t = (key) => getTranslation(lang, key);
-
-    // Try to solve using mathjs
-    const solutions = math.solve(equation, 'x');
-
-    if (Array.isArray(solutions) && solutions.length > 0) {
-      steps.push(`${t('step')} 1: ${equation}`);
-      steps.push(`${t('step')} 2: ${t('solve')} ${equation}`);
-
-      const formattedSolutions = solutions.map(s => math.format(s, { precision: 4 }));
-      steps.push(`${t('step')} 3: x = ${formattedSolutions.join(', ')}`);
-
-      return {
-        success: true,
-        answer: `x = ${formattedSolutions.join(', ')}`,
-        steps,
-        explanation: `${t('solution')}: ${formattedSolutions.length} zgjidhje`,
-      };
-    }
-
-    return { success: false, reason: 'Could not solve quadratic' };
-  } catch (error) {
-    return { success: false, reason: error.message };
-  }
+  // Quadratic equations are too complex for simple local solving
+  // Let AI handle these for better explanations
+  return {
+    success: false,
+    reason: 'Quadratic equations not supported by local solver - use AI'
+  };
 };
 
 /**
