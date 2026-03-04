@@ -377,20 +377,23 @@ function MainApp() {
 }
 
 export default function App() {
-  const [fontsLoaded, setFontsLoaded] = useState(Platform.OS === 'web');
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     // Load Ionicons font for all platforms including web
     Font.loadAsync({ ...Ionicons.font })
-      .then(() => setFontsLoaded(true))
+      .then(() => {
+        console.log('Fonts loaded successfully');
+        setFontsLoaded(true);
+      })
       .catch((err) => {
         console.error('Font loading error:', err);
-        setFontsLoaded(true); // Continue anyway
+        setFontsLoaded(true); // Continue anyway to avoid blocking
       });
   }, []);
 
   if (!fontsLoaded) {
-    return <View style={{ flex: 1 }} />;
+    return <View style={{ flex: 1, backgroundColor: '#0F172A' }} />; // Show loading with dark bg
   }
 
   return (
