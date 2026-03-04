@@ -201,4 +201,55 @@ async function analyzeText(req, res) {
   }
 }
 
-module.exports = { analyzeImage, analyzeText };
+// OCR-only: Extract text from image without solving
+async function extractTextFromImage(req, res) {
+  try {
+    const { imageBase64, mimeType } = req.body;
+
+    if (!imageBase64) {
+      return res.status(400).json({ success: false, error: 'imageBase64 is required' });
+    }
+
+    const model = getModel();
+    const imagePart = {
+      inlineData: {
+        data: imageBase64,
+        mimeType: mimeType || 'image/jpeg',
+      },
+    };
+
+    // Simple OCR prompt - just extract text, don't solve
+    const ocrPrompt = `Extract ONLY the mathematical expression or equation from this image.
+Return just the math text exactly as written, without solving it.
+If there are multiple expressions, separate them with newlines.
+If the image doesn't contain math, return "NO_MATH_FOUND".
+Do not add explanations, do not solve, just extract the text.`;
+
+    const result = await model.generateContent([ocrPrompt, imagePart]);
+    const response = await result.response;
+    const extractedText = response.text().trim();
+
+    // Check if no math was found
+    if (extractedText === 'NO_MATH_FOUND' || !extractedText) {
+      return res.status(400).json({
+        success: false,
+        error: 'No mathematical expression found in image'
+      });
+    }
+
+    res.json({ success: true, text: extractedText });
+  } catch (error) {
+    console.error('OCR extraction error:', error);
+
+    if (error.message?.includes('API key')) {
+      return res.status(500).json({ success: false, error: 'API key invalid' });
+    }
+    if (error.message?.includes('quota') || error.message?.includes('limit')) {
+      return res.status(429).json({ success: false, error: 'API quota exceeded' });
+    }
+
+    res.status(500).json({ success: false, error: 'Text extraction failed' });
+  }
+}
+
+module.exports = { analyzeImage, analyzeText, extractTextFromImage };

@@ -127,14 +127,20 @@ export default function DashboardScreen() {
           Alert.alert(t('common.attention'), t('dashboard.selectPhoto'));
           return;
         }
-        // For images, extract text using AI OCR (still needed)
+        // For images, use OCR-only to extract text (doesn't count against daily limit!)
         setIsAnalyzing(true);
         const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
         setLastBase64(base64);
-        // Use AI to extract text from image
-        const ocrResult = await geminiService.analyzeMathProblem(base64, mimeType);
-        // Try to extract just the problem text from AI response
-        problemText = ocrResult.answer || mathProblemText;
+
+        try {
+          // Use OCR-only endpoint - just extracts text, doesn't solve
+          problemText = await geminiService.extractTextFromImage(base64, mimeType);
+          console.log('[OCR] Extracted text:', problemText);
+        } catch (ocrError) {
+          console.error('[OCR] Failed to extract text:', ocrError);
+          // If OCR fails, show error and don't continue
+          throw new Error(t('dashboard.ocrFailed'));
+        }
       }
 
       setIsAnalyzing(true);
@@ -153,7 +159,7 @@ export default function DashboardScreen() {
         });
         setShowResultModal(true);
       } else {
-        // Fallback to AI
+        // Fallback to AI (this WILL count against daily limit)
         console.log('[Calculator] Local solver failed, using AI:', localResult.reason);
         const aiResult = inputMode === 'keyboard'
           ? await geminiService.analyzeMathProblemFromText(problemText)

@@ -111,6 +111,7 @@
     "enterProblem": "Please enter the math problem.",
     "selectPhoto": "Please select a photo first.",
     "analysisError": "Something went wrong. Please try again.",
+    "ocrFailed": "Could not read text from photo. Try a clearer image.",
     "noResultsToSave": "No results to save."
   },
   "learn": {

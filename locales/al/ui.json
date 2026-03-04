@@ -111,6 +111,7 @@
     "enterProblem": "Ju lutemi shkruani problemin matematikor.",
     "selectPhoto": "Ju lutemi zgjidhni një fotografi së pari.",
     "analysisError": "Dicka shkoi gabim. Ju lutemi provoni përsëri.",
+    "ocrFailed": "Nuk mund të lexohet teksti nga fotografia. Provoni me foto më të qartë.",
     "noResultsToSave": "Nuk ka rezultate për të ruajtur."
   },
   "learn": {

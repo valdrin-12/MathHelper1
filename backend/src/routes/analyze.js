@@ -5,9 +5,15 @@ const analyzeController = require('../controllers/analyzeController');
 
 const router = express.Router();
 
+// All routes require authentication
 router.use(authMiddleware);
-router.use(rateLimitMiddleware);
 
+// OCR-only endpoint (does NOT count against daily limit)
+// Just extracts text, doesn't solve the problem
+router.post('/ocr', analyzeController.extractTextFromImage);
+
+// Analysis endpoints (count against daily limit)
+router.use(rateLimitMiddleware);
 router.post('/image', analyzeController.analyzeImage);
 router.post('/text', analyzeController.analyzeText);
 

@@ -59,7 +59,27 @@ export const analyzeMathProblemFromText = async (problemText) => {
   }
 };
 
+/**
+ * Extract text from image (OCR only - does NOT count against daily limit)
+ * @param {string} imageBase64 - Image in base64 format
+ * @param {string} mimeType - MIME type of the image
+ * @returns {Promise<string>} - Extracted text
+ */
+export const extractTextFromImage = async (imageBase64, mimeType) => {
+  try {
+    const data = await api.post('/api/analyze/ocr', {
+      imageBase64,
+      mimeType,
+    });
+    return data.text;
+  } catch (error) {
+    console.error('OCR extraction error:', error);
+    throw new Error(error.message || i18n.t('gemini.ocrError'));
+  }
+};
+
 export default {
   analyzeMathProblem,
   analyzeMathProblemFromText,
+  extractTextFromImage,
 };

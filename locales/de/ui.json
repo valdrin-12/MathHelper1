@@ -111,6 +111,7 @@
     "enterProblem": "Bitte geben Sie das Mathe-Problem ein.",
     "selectPhoto": "Bitte wählen Sie zuerst ein Foto aus.",
     "analysisError": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "ocrFailed": "Text konnte nicht vom Foto gelesen werden. Versuchen Sie ein klareres Bild.",
     "noResultsToSave": "Keine Ergebnisse zum Speichern."
   },
   "learn": {
