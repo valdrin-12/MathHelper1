@@ -116,12 +116,16 @@ export default function DashboardScreen() {
     try {
       let problemText = mathProblemText;
 
+      console.log('🔵 [Calculate] Starting calculation...');
+      console.log('🔵 [Calculate] Input mode:', inputMode);
+
       // Get input (keyboard or image)
       if (inputMode === 'keyboard') {
         if (!problemText.trim()) {
           Alert.alert(t('common.attention'), t('dashboard.enterProblem'));
           return;
         }
+        console.log('⌨️  [Keyboard] Problem text:', problemText);
       } else {
         if (!selectedImage) {
           Alert.alert(t('common.attention'), t('dashboard.selectPhoto'));
@@ -134,10 +138,11 @@ export default function DashboardScreen() {
 
         try {
           // Use OCR-only endpoint - just extracts text, doesn't solve
+          console.log('📷 [Camera] Extracting text from image...');
           problemText = await geminiService.extractTextFromImage(base64, mimeType);
-          console.log('[OCR] Extracted text:', problemText);
+          console.log('✅ [OCR] Extracted text:', problemText);
         } catch (ocrError) {
-          console.error('[OCR] Failed to extract text:', ocrError);
+          console.error('❌ [OCR] Failed to extract text:', ocrError);
           // If OCR fails, show error and don't continue
           throw new Error(t('dashboard.ocrFailed'));
         }
@@ -146,6 +151,7 @@ export default function DashboardScreen() {
       setIsAnalyzing(true);
 
       // Try local calculator first
+      console.log('🧮 [Calculator] Trying local solver for:', problemText);
       const localResult = await mathCalculatorService.solveMathProblem(
         problemText,
         t('common.locale')
@@ -153,6 +159,9 @@ export default function DashboardScreen() {
 
       if (localResult.success) {
         // Success! Show local result
+        console.log('✅ [Calculator] Local solver succeeded!');
+        console.log('✅ [Calculator] Answer:', localResult.answer);
+        console.log('✅ [Calculator] Steps:', localResult.steps);
         setAnalysisResult({
           ...localResult,
           solverType: 'local'
@@ -160,11 +169,13 @@ export default function DashboardScreen() {
         setShowResultModal(true);
       } else {
         // Fallback to AI (this WILL count against daily limit)
-        console.log('[Calculator] Local solver failed, using AI:', localResult.reason);
+        console.log('⚠️  [Calculator] Local solver failed:', localResult.reason);
+        console.log('🤖 [AI] Falling back to Gemini AI...');
         const aiResult = inputMode === 'keyboard'
           ? await geminiService.analyzeMathProblemFromText(problemText)
           : await geminiService.analyzeMathProblem(lastBase64, 'image/jpeg');
 
+        console.log('✅ [AI] Analysis complete:', aiResult.answer);
         setAnalysisResult({
           ...aiResult,
           solverType: 'ai'
