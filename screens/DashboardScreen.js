@@ -164,29 +164,38 @@ export default function DashboardScreen() {
       );
 
       if (localResult.success) {
-        // Success! Show local result
+        // ✅ Local calculator succeeded - 0 API calls!
         console.log('✅ [Calculator] Local solver succeeded!');
         console.log('✅ [Calculator] Answer:', localResult.answer);
-        console.log('✅ [Calculator] Steps:', localResult.steps);
-        setAnalysisResult({
-          ...localResult,
-          solverType: 'local'
-        });
+        setAnalysisResult({ ...localResult, solverType: 'local' });
         setShowResultModal(true);
       } else {
-        // Fallback to AI (this WILL count against daily limit)
+        // Try Wolfram Alpha (does NOT count against Gemini daily limit)
         console.log('⚠️  [Calculator] Local solver failed:', localResult.reason);
-        console.log('🤖 [AI] Falling back to Gemini AI...');
-        const aiResult = inputMode === 'keyboard'
-          ? await geminiService.analyzeMathProblemFromText(problemText)
-          : await geminiService.analyzeMathProblem(imageBase64, imageMimeType);
+        console.log('🐺 [Wolfram] Trying Wolfram Alpha...');
 
-        console.log('✅ [AI] Analysis complete:', aiResult.answer);
-        setAnalysisResult({
-          ...aiResult,
-          solverType: 'ai'
-        });
-        setShowResultModal(true);
+        let wolframSucceeded = false;
+        try {
+          const wolframResult = await geminiService.analyzeWithWolfram(problemText);
+          console.log('✅ [Wolfram] Answer:', wolframResult.answer);
+          setAnalysisResult({ ...wolframResult, solverType: 'wolfram' });
+          setShowResultModal(true);
+          wolframSucceeded = true;
+        } catch (wolframError) {
+          console.log('⚠️  [Wolfram] Failed:', wolframError.message);
+          console.log('🤖 [AI] Falling back to Gemini AI...');
+        }
+
+        if (!wolframSucceeded) {
+          // Last resort: Gemini AI (counts against daily limit)
+          const aiResult = inputMode === 'keyboard'
+            ? await geminiService.analyzeMathProblemFromText(problemText)
+            : await geminiService.analyzeMathProblem(imageBase64, imageMimeType);
+
+          console.log('✅ [AI] Analysis complete:', aiResult.answer);
+          setAnalysisResult({ ...aiResult, solverType: 'ai' });
+          setShowResultModal(true);
+        }
       }
     } catch (error) {
       console.error('Gabim gjate analizes:', error);

@@ -9,10 +9,12 @@ const router = express.Router();
 router.use(authMiddleware);
 
 // OCR-only endpoint (does NOT count against daily limit)
-// Just extracts text, doesn't solve the problem
 router.post('/ocr', analyzeController.extractTextFromImage);
 
-// Analysis endpoints (count against daily limit)
+// Wolfram Alpha endpoint (does NOT count against Gemini daily limit)
+router.post('/wolfram', analyzeController.analyzeWithWolfram);
+
+// Gemini AI endpoints (count against daily limit)
 router.use(rateLimitMiddleware);
 router.post('/image', analyzeController.analyzeImage);
 router.post('/text', analyzeController.analyzeText);

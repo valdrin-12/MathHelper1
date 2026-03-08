@@ -60,6 +60,27 @@ export const analyzeMathProblemFromText = async (problemText) => {
 };
 
 /**
+ * Solve math problem using Wolfram Alpha (does NOT count against Gemini daily limit)
+ * @param {string} problemText - The math problem text
+ * @returns {Promise<{answer: string, steps: string[], explanation: string, source: string}>}
+ */
+export const analyzeWithWolfram = async (problemText) => {
+  try {
+    const data = await api.post('/api/analyze/wolfram', { problemText });
+    return {
+      answer: data.answer,
+      steps: data.steps,
+      explanation: data.explanation,
+      source: 'wolfram',
+    };
+  } catch (error) {
+    console.error('Wolfram analysis error:', error);
+    // Throw so caller can fallback to Gemini
+    throw new Error(error.message || 'Wolfram could not solve this problem');
+  }
+};
+
+/**
  * Extract text from image (OCR only - does NOT count against daily limit)
  * @param {string} imageBase64 - Image in base64 format
  * @param {string} mimeType - MIME type of the image
@@ -81,5 +102,6 @@ export const extractTextFromImage = async (imageBase64, mimeType) => {
 export default {
   analyzeMathProblem,
   analyzeMathProblemFromText,
+  analyzeWithWolfram,
   extractTextFromImage,
 };

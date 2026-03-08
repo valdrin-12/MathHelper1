@@ -1,4 +1,5 @@
 const { getModel } = require('../config/gemini');
+const { solveWithWolfram } = require('../services/wolframService');
 
 const LANGUAGE_NAMES = {
   al: 'Albanian (Shqip)',
@@ -262,4 +263,32 @@ If no math problem found, return "NO_MATH_FOUND".`;
   }
 }
 
-module.exports = { analyzeImage, analyzeText, extractTextFromImage };
+// Wolfram Alpha solver endpoint (does NOT count against Gemini daily limit)
+async function analyzeWithWolfram(req, res) {
+  try {
+    const { problemText } = req.body;
+
+    if (!problemText) {
+      return res.status(400).json({ success: false, error: 'problemText is required' });
+    }
+
+    const result = await solveWithWolfram(problemText);
+
+    if (!result.success) {
+      return res.status(422).json({ success: false, error: result.reason || 'Wolfram could not solve this problem' });
+    }
+
+    res.json({
+      success: true,
+      answer: result.answer,
+      steps: result.steps,
+      explanation: result.explanation,
+      source: 'wolfram',
+    });
+  } catch (error) {
+    console.error('Wolfram analysis error:', error);
+    res.status(500).json({ success: false, error: 'Wolfram analysis failed' });
+  }
+}
+
+module.exports = { analyzeImage, analyzeText, extractTextFromImage, analyzeWithWolfram };
