@@ -59,14 +59,26 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
           {/* Solver Type Badge */}
           {solverType && (
             <View style={styles.badgeContainer}>
-              <View style={[styles.badge, solverType === 'local' ? styles.badgeLocal : styles.badgeAI]}>
+              <View style={[
+                styles.badge,
+                solverType === 'local' ? styles.badgeLocal :
+                solverType === 'wolfram' ? styles.badgeWolfram :
+                styles.badgeAI
+              ]}>
                 <Ionicons
-                  name={solverType === 'local' ? 'calculator' : 'sparkles'}
+                  name={solverType === 'local' ? 'calculator' : solverType === 'wolfram' ? 'globe-outline' : 'sparkles'}
                   size={14}
-                  color={solverType === 'local' ? '#2563EB' : COLORS.primary}
+                  color={solverType === 'local' ? '#2563EB' : solverType === 'wolfram' ? '#D97706' : COLORS.primary}
                 />
-                <Text style={[styles.badgeText, solverType === 'local' ? styles.badgeTextLocal : styles.badgeTextAI]}>
-                  {solverType === 'local' ? t('dashboard.calculatedLocally') : t('dashboard.analyzedWithAI')}
+                <Text style={[
+                  styles.badgeText,
+                  solverType === 'local' ? styles.badgeTextLocal :
+                  solverType === 'wolfram' ? styles.badgeTextWolfram :
+                  styles.badgeTextAI
+                ]}>
+                  {solverType === 'local' ? t('dashboard.calculatedLocally') :
+                   solverType === 'wolfram' ? t('dashboard.calculatedWithWolfram') :
+                   t('dashboard.analyzedWithAI')}
                 </Text>
               </View>
             </View>
@@ -196,6 +208,9 @@ const styles = StyleSheet.create({
   badgeAI: {
     backgroundColor: COLORS.primaryBg,
   },
+  badgeWolfram: {
+    backgroundColor: '#FEF3C7',
+  },
   badgeText: {
     fontSize: 12,
     fontWeight: '600',
@@ -205,6 +220,9 @@ const styles = StyleSheet.create({
   },
   badgeTextAI: {
     color: COLORS.primary,
+  },
+  badgeTextWolfram: {
+    color: '#D97706',
   },
   closeButton: {
     width: 36,
