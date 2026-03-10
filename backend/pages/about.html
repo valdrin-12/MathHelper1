@@ -74,6 +74,13 @@
       font-weight: 700 !important; transition: transform 0.2s, box-shadow 0.2s;
     }
     .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,58,138,0.25); }
+    .nav-qr {
+      background: var(--primary-bg) !important; color: var(--primary-soft) !important;
+      padding: 10px 18px; border-radius: 12px;
+      font-weight: 700 !important; border: 1.5px solid rgba(59,130,246,0.2);
+      transition: all 0.2s;
+    }
+    .nav-qr:hover { background: #dbeafe !important; border-color: var(--primary-soft); }
 
     /* Language Switcher */
     .lang-switcher {
@@ -523,6 +530,7 @@
           <button class="lang-btn" data-lang="en" title="English">&#x1F1EC;&#x1F1E7;</button>
           <button class="lang-btn" data-lang="de" title="Deutsch">&#x1F1E9;&#x1F1EA;</button>
         </div>
+        <a href="/qr" class="nav-qr" data-i18n="nav.qr">&#x1F4F1; QR Code</a>
         <a href="/dashboard" class="nav-cta" data-i18n="nav.openApp">Hap aplikacionin</a>
       </div>
       <button class="mobile-menu-btn" id="mobileMenuBtn">&#9776;</button>
@@ -534,6 +542,7 @@
     <a href="#how" data-i18n="nav.how">Si funksionon</a>
     <a href="#features" data-i18n="nav.features">Karakteristikat</a>
     <a href="#subjects" data-i18n="nav.subjects">Lendet</a>
+    <a href="/qr" data-i18n="nav.qr">&#x1F4F1; QR Code</a>
     <a href="/dashboard" data-i18n="nav.openApp">Hap aplikacionin</a>
     <div class="mobile-lang-row">
       <button class="lang-btn active" data-lang="sq">&#x1F1E6;&#x1F1F1;</button>
@@ -771,6 +780,7 @@
         'nav.how': 'Si funksionon',
         'nav.features': 'Karakteristikat',
         'nav.subjects': 'Lendet',
+        'nav.qr': '📱 QR Code',
         'nav.openApp': 'Hap aplikacionin',
         'hero.badge': 'Falas per te gjithe',
         'hero.title': 'Ke nevoje per ndihme<br>ne matematike?',
@@ -833,6 +843,7 @@
         'nav.how': 'How it works',
         'nav.features': 'Features',
         'nav.subjects': 'Subjects',
+        'nav.qr': '📱 QR Code',
         'nav.openApp': 'Open app',
         'hero.badge': 'Free for everyone',
         'hero.title': 'Need help<br>with math?',
@@ -895,6 +906,7 @@
         'nav.how': 'Wie es funktioniert',
         'nav.features': 'Funktionen',
         'nav.subjects': 'F\u00E4cher',
+        'nav.qr': '📱 QR-Code',
         'nav.openApp': 'App \u00F6ffnen',
         'hero.badge': 'Kostenlos f\u00FCr alle',
         'hero.title': 'Brauchst du Hilfe<br>in Mathematik?',
