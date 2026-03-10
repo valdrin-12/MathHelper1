@@ -8,6 +8,7 @@ import {
   Switch,
   Alert,
   Platform,
+  Linking,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../context/UserContext';
@@ -20,7 +21,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 import WebContainer from '../components/WebContainer';
 import { useResponsive } from '../utils/responsive';
-import { Linking } from 'react-native';
 
 export default function SettingsScreen() {
   const { isWeb } = useResponsive();
@@ -227,7 +227,13 @@ export default function SettingsScreen() {
           iconColor="#8B5CF6"
           iconBg={colors.purpleLight}
           title={t('settings.privacyPolicy')}
-          onPress={() => setInfoModal('privacy')}
+          onPress={() => {
+            if (Platform.OS === 'web') {
+              window.open('/privacy', '_blank');
+            } else {
+              Linking.openURL('https://mathhelper.online/privacy');
+            }
+          }}
         />
         <MenuItem
           icon="information-circle"
