@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathHelper - Privacy Policy</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #1E3A8A;
+      --primary-light: #3B82F6;
+      --primary-bg: #EFF6FF;
+      --text: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --bg: #F0F4FF;
+      --surface: #FFFFFF;
+      --border: #E2E8F0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+      font-size: 18px; font-weight: 800;
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .lang-row {
+      display: flex; gap: 8px;
+    }
+    .lang-btn {
+      padding: 6px 16px; border-radius: 100px;
+      border: 2px solid var(--border); background: #fff;
+      font-size: 13px; font-weight: 700; cursor: pointer;
+      color: var(--text-secondary); transition: all 0.2s;
+      font-family: inherit;
+    }
+    .lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    /* CONTENT */
+    .container {
+      max-width: 780px; margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-bg); border: 1px solid rgba(59,130,246,0.2);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; color: var(--primary-light);
+      margin-bottom: 20px;
+    }
+    h1 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900; color: var(--text);
+      letter-spacing: -1px; margin-bottom: 12px; line-height: 1.15;
+    }
+    .last-updated {
+      font-size: 14px; color: var(--text-muted);
+      margin-bottom: 48px;
+    }
+    .section {
+      background: var(--surface);
+      border-radius: 16px; padding: 28px 32px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+    }
+    .section h2 {
+      font-size: 18px; font-weight: 800;
+      color: var(--text); margin-bottom: 12px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .section h2 .icon { font-size: 20px; }
+    .section p {
+      font-size: 15px; color: var(--text-secondary);
+      margin-bottom: 10px; line-height: 1.7;
+    }
+    .section p:last-child { margin-bottom: 0; }
+    .section ul {
+      list-style: none; margin: 10px 0;
+    }
+    .section ul li {
+      font-size: 15px; color: var(--text-secondary);
+      padding: 4px 0 4px 20px; position: relative;
+    }
+    .section ul li::before {
+      content: '•'; color: var(--primary-light);
+      position: absolute; left: 0; font-weight: 700;
+    }
+    .highlight-box {
+      background: var(--primary-bg);
+      border-left: 4px solid var(--primary-light);
+      border-radius: 0 12px 12px 0;
+      padding: 16px 20px; margin-top: 12px;
+      font-size: 14px; color: var(--primary);
+      font-weight: 600;
+    }
+    .contact-box {
+      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+      border-radius: 16px; padding: 28px 32px;
+      color: #fff; margin-top: 32px;
+    }
+    .contact-box h2 { color: #fff; font-size: 18px; margin-bottom: 10px; }
+    .contact-box p { color: rgba(255,255,255,0.85); font-size: 15px; }
+    .contact-box a { color: #fff; font-weight: 700; }
+    @media (max-width: 600px) {
+      .container { padding: 40px 20px 80px; }
+      .section { padding: 20px; }
+      nav { padding: 14px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">&#x1F4D0;</div>
+    MathHelper
+  </a>
+  <div class="lang-row">
+    <button class="lang-btn active" data-lang="sq">Shqip</button>
+    <button class="lang-btn" data-lang="en">English</button>
+    <button class="lang-btn" data-lang="de">Deutsch</button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-badge">&#x1F512; <span id="badgeText">Politika e Privatësisë</span></div>
+  <h1 id="pageTitle">Politika e Privatësisë</h1>
+  <p class="last-updated" id="lastUpdated">Përditësuar: Mars 2026</p>
+  <div id="content"></div>
+</div>
+
+<script>
+const T = {
+  sq: {
+    badge: 'Politika e Privatësisë',
+    title: 'Politika e Privatësisë',
+    updated: 'Përditësuar: Mars 2026',
+    sections: [
+      {
+        icon: '📋',
+        title: 'Hyrje',
+        body: `MathHelper ("ne", "aplikacioni") respekton privatësinë tuaj. Kjo politikë shpjegon se çfarë të dhënash mbledhim, si i përdorim dhe si i mbrojmë ato kur përdorni aplikacionin tonë.`
+      },
+      {
+        icon: '📦',
+        title: 'Të dhënat që mbledhim',
+        body: `Mbledhim këto kategori të dhënash:`,
+        list: [
+          'Email-i juaj dhe emri (gjatë regjistrimit)',
+          'Statistikat e përdorimit: numri i problemeve të zgjidhura, kuizeve të kryera, kurseve të nisura',
+          'Problemet matematikore që i dërgoni për zgjidhje (foto ose tekst)',
+          'Informacion teknik: versioni i OS, lloji i pajisjes (vetëm për debug)'
+        ],
+        note: 'Nuk mbledhim të dhëna të ndjeshme personale si numri i kartës, adresa ose vendndodhja.'
+      },
+      {
+        icon: '📷',
+        title: 'Kamera dhe Foto',
+        body: `Aplikacioni kërkon akses në kamerë vetëm kur ju klikoni "Kamera" për të fotografuar një problem matematikor. Fotot dërgohen te serverët tanë për analizë me AI dhe pastaj fshihen. Nuk ruajmë foto në pajisjen tuaj pa lejen tuaj.`
+      },
+      {
+        icon: '🤖',
+        title: 'Inteligjenca Artificiale (AI)',
+        body: `Për zgjidhjen e problemeve matematikore, përdorim:`,
+        list: [
+          'Google Gemini AI - për analizë të imazheve dhe tekstit',
+          'Wolfram Alpha - për llogaritje matematikore',
+          'Llogaritës lokal - për probleme të thjeshta (pa dërguar të dhëna jashtë)'
+        ],
+        note: 'Të dhënat tuaja i dërgojmë te këto shërbime vetëm për të zgjidhur problemin. Nuk i shesim të dhënat tuaja.'
+      },
+      {
+        icon: '💳',
+        title: 'Pagesat',
+        body: `Pagesat për MathHelper Premium procesohen nga Paysera dhe Google Play. Ne nuk ruajmë informacion të kartës suaj bankare. Ruajmë vetëm konfirmimin e pagesës dhe tierin e llogarisë (free/premium).`
+      },
+      {
+        icon: '🔒',
+        title: 'Si i mbrojmë të dhënat',
+        list: [
+          'Të gjitha komunikimet janë të enkriptuara (HTTPS/TLS)',
+          'Fjalëkalimet ruhen të hashura (bcrypt)',
+          'Tokenat JWT skadojnë automatikisht',
+          'Baza e të dhënave është e mbrojtur me akses të kufizuar'
+        ]
+      },
+      {
+        icon: '🗑️',
+        title: 'Fshirja e të dhënave',
+        body: `Keni të drejtë të kërkoni fshirjen e llogarisë dhe të gjitha të dhënave tuaja. Dërgoni email te support@mathhelper.online dhe do t'i fshijmë brenda 30 ditëve.`
+      },
+      {
+        icon: '👶',
+        title: 'Fëmijët',
+        body: `MathHelper është i hapur për të gjitha moshat. Nëse jeni nën 13 vjeç, nevojitet leja e prindërve/kujdestarëve ligjorë për t'u regjistruar.`
+      },
+      {
+        icon: '🔄',
+        title: 'Ndryshimet e kësaj politike',
+        body: `Mund të ndryshojmë këtë politikë herë pas here. Do t'ju njoftojmë me email nëse ndryshimet janë të rëndësishme. Vazhdimi i përdorimit pas ndryshimeve nënkupton pranimin e tyre.`
+      }
+    ],
+    contact: {
+      title: 'Keni pyetje?',
+      body: 'Për çdo pyetje lidhur me privatësinë, na kontaktoni:',
+      email: 'support@mathhelper.online'
+    }
+  },
+  en: {
+    badge: 'Privacy Policy',
+    title: 'Privacy Policy',
+    updated: 'Last updated: March 2026',
+    sections: [
+      {
+        icon: '📋',
+        title: 'Introduction',
+        body: `MathHelper ("we", "the app") respects your privacy. This policy explains what data we collect, how we use it, and how we protect it when you use our application.`
+      },
+      {
+        icon: '📦',
+        title: 'Data we collect',
+        body: `We collect the following categories of data:`,
+        list: [
+          'Your email and name (during registration)',
+          'Usage statistics: number of problems solved, quizzes completed, courses started',
+          'Math problems you submit for solving (photos or text)',
+          'Technical info: OS version, device type (for debugging only)'
+        ],
+        note: 'We do not collect sensitive personal data such as card numbers, addresses, or location.'
+      },
+      {
+        icon: '📷',
+        title: 'Camera and Photos',
+        body: `The app requests camera access only when you click "Camera" to photograph a math problem. Photos are sent to our servers for AI analysis and then deleted. We do not store photos on your device without your permission.`
+      },
+      {
+        icon: '🤖',
+        title: 'Artificial Intelligence (AI)',
+        body: `To solve math problems, we use:`,
+        list: [
+          'Google Gemini AI - for image and text analysis',
+          'Wolfram Alpha - for mathematical computations',
+          'Local calculator - for simple problems (no data sent externally)'
+        ],
+        note: 'Your data is sent to these services only to solve the problem. We do not sell your data.'
+      },
+      {
+        icon: '💳',
+        title: 'Payments',
+        body: `Payments for MathHelper Premium are processed by Paysera and Google Play. We do not store your bank card information. We only store payment confirmation and account tier (free/premium).`
+      },
+      {
+        icon: '🔒',
+        title: 'How we protect your data',
+        list: [
+          'All communications are encrypted (HTTPS/TLS)',
+          'Passwords are stored hashed (bcrypt)',
+          'JWT tokens expire automatically',
+          'Database is protected with restricted access'
+        ]
+      },
+      {
+        icon: '🗑️',
+        title: 'Data deletion',
+        body: `You have the right to request deletion of your account and all your data. Send an email to support@mathhelper.online and we will delete it within 30 days.`
+      },
+      {
+        icon: '👶',
+        title: 'Children',
+        body: `MathHelper is open to all ages. If you are under 13, parental or legal guardian consent is required to register.`
+      },
+      {
+        icon: '🔄',
+        title: 'Changes to this policy',
+        body: `We may update this policy from time to time. We will notify you by email if the changes are significant. Continued use after changes implies acceptance.`
+      }
+    ],
+    contact: {
+      title: 'Have questions?',
+      body: 'For any privacy-related questions, contact us:',
+      email: 'support@mathhelper.online'
+    }
+  },
+  de: {
+    badge: 'Datenschutzrichtlinie',
+    title: 'Datenschutzrichtlinie',
+    updated: 'Zuletzt aktualisiert: Maerz 2026',
+    sections: [
+      {
+        icon: '📋',
+        title: 'Einfuehrung',
+        body: `MathHelper ("wir", "die App") respektiert Ihre Privatsphaere. Diese Richtlinie erklaert, welche Daten wir erheben, wie wir sie verwenden und wie wir sie schuetzen, wenn Sie unsere Anwendung nutzen.`
+      },
+      {
+        icon: '📦',
+        title: 'Daten, die wir erheben',
+        body: `Wir erheben folgende Datenkategorien:`,
+        list: [
+          'Ihre E-Mail und Ihr Name (bei der Registrierung)',
+          'Nutzungsstatistiken: Anzahl geloester Aufgaben, absolvierter Quiz, gestarteter Kurse',
+          'Mathematikaufgaben, die Sie zur Loesung einreichen (Fotos oder Text)',
+          'Technische Informationen: OS-Version, Geraetetyp (nur zur Fehlersuche)'
+        ],
+        note: 'Wir erheben keine sensiblen persoenlichen Daten wie Kartennummern, Adressen oder Standort.'
+      },
+      {
+        icon: '📷',
+        title: 'Kamera und Fotos',
+        body: `Die App fordert Kamerazugriff nur an, wenn Sie auf "Kamera" klicken, um eine Mathematikaufgabe zu fotografieren. Fotos werden zur KI-Analyse an unsere Server gesendet und danach geloescht. Wir speichern keine Fotos auf Ihrem Geraet ohne Ihre Erlaubnis.`
+      },
+      {
+        icon: '🤖',
+        title: 'Kuenstliche Intelligenz (KI)',
+        body: `Zur Loesung von Mathematikaufgaben verwenden wir:`,
+        list: [
+          'Google Gemini AI - fuer Bild- und Textanalyse',
+          'Wolfram Alpha - fuer mathematische Berechnungen',
+          'Lokaler Rechner - fuer einfache Aufgaben (keine externe Datenuebertragung)'
+        ],
+        note: 'Ihre Daten werden nur zur Loesung der Aufgabe an diese Dienste gesendet. Wir verkaufen Ihre Daten nicht.'
+      },
+      {
+        icon: '💳',
+        title: 'Zahlungen',
+        body: `Zahlungen fuer MathHelper Premium werden von Paysera und Google Play verarbeitet. Wir speichern keine Bankkartendaten. Wir speichern nur die Zahlungsbestaetigung und das Kontotier (Kostenlos/Premium).`
+      },
+      {
+        icon: '🔒',
+        title: 'Wie wir Ihre Daten schuetzen',
+        list: [
+          'Alle Kommunikationen sind verschluesselt (HTTPS/TLS)',
+          'Passwoerter werden gehasht gespeichert (bcrypt)',
+          'JWT-Token laufen automatisch ab',
+          'Datenbank ist mit eingeschraenktem Zugriff geschuetzt'
+        ]
+      },
+      {
+        icon: '🗑️',
+        title: 'Datenloesch­ung',
+        body: `Sie haben das Recht, die Loeschung Ihres Kontos und aller Ihrer Daten zu beantragen. Senden Sie eine E-Mail an support@mathhelper.online und wir loeschen sie innerhalb von 30 Tagen.`
+      },
+      {
+        icon: '👶',
+        title: 'Kinder',
+        body: `MathHelper ist fuer alle Altersgruppen offen. Wenn Sie unter 13 Jahre alt sind, ist die Zustimmung der Eltern oder des gesetzlichen Vormunds zur Registrierung erforderlich.`
+      },
+      {
+        icon: '🔄',
+        title: 'Aenderungen dieser Richtlinie',
+        body: `Wir koennen diese Richtlinie von Zeit zu Zeit aktualisieren. Wir benachrichtigen Sie per E-Mail, wenn die Aenderungen wesentlich sind. Die weitere Nutzung nach Aenderungen impliziert deren Akzeptanz.`
+      }
+    ],
+    contact: {
+      title: 'Haben Sie Fragen?',
+      body: 'Fuer datenschutzbezogene Fragen kontaktieren Sie uns:',
+      email: 'support@mathhelper.online'
+    }
+  }
+};
+
+function render(lang) {
+  const t = T[lang];
+  document.getElementById('badgeText').textContent = t.badge;
+  document.getElementById('pageTitle').textContent = t.title;
+  document.getElementById('lastUpdated').textContent = t.updated;
+  document.documentElement.lang = lang === 'sq' ? 'sq' : lang === 'de' ? 'de' : 'en';
+
+  const content = document.getElementById('content');
+  content.innerHTML = t.sections.map(s => `
+    <div class="section">
+      <h2><span class="icon">${s.icon}</span> ${s.title}</h2>
+      ${s.body ? `<p>${s.body}</p>` : ''}
+      ${s.list ? `<ul>${s.list.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+      ${s.note ? `<div class="highlight-box">&#x2139;&#xFE0F; ${s.note}</div>` : ''}
+    </div>
+  `).join('') + `
+    <div class="contact-box">
+      <h2>${t.contact.title}</h2>
+      <p>${t.contact.body}<br><a href="mailto:${t.contact.email}">${t.contact.email}</a></p>
+    </div>
+  `;
+
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+}
+
+document.querySelectorAll('.lang-btn').forEach(b => {
+  b.addEventListener('click', () => render(b.dataset.lang));
+});
+
+render('sq');
+</script>
+</body>
+</html>

@@ -55,6 +55,11 @@ app.get('/qr', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'qr.html'));
 });
 
+// Privacy Policy page
+app.get('/privacy', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'privacy.html'));
+});
+
 // Paysera payment success page
 app.get('/premium/success', (req, res) => {
   const appUrl = process.env.APP_URL || 'https://mathhelper.online';
