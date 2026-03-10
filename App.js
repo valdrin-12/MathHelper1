@@ -336,7 +336,10 @@ function MainApp() {
   return (
     <StatsProvider>
     <SavedItemsProvider>
-      <NavigationContainer linking={isWeb ? linking : undefined}>
+      <NavigationContainer
+        linking={isWeb ? linking : undefined}
+        documentTitle={{ formatter: () => 'MathHelper' }}
+      >
         <StatusBar style={isDark ? 'light' : 'light'} />
         <Tab.Navigator
           screenOptions={({ route }) => ({

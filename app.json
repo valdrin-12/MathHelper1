@@ -33,7 +33,10 @@
       ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/icon.png",
+      "name": "MathHelper",
+      "shortName": "MathHelper",
+      "description": "Math problem solver with step-by-step solutions"
     },
     "experiments": {},
     "extra": {
