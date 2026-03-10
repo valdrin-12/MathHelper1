@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MathHelper - QR Code për Printim</title>
+  <title>MathHelper - QR Code</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <style>
@@ -15,28 +15,51 @@
       padding: 40px 20px;
     }
 
+    /* HEADER */
     .page-header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
     .page-header h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
-    .page-header p { color: #475569; font-size: 15px; }
+    .page-header p { color: #475569; font-size: 15px; margin-bottom: 20px; }
 
+    /* LANG SWITCHER */
+    .lang-row {
+      display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;
+    }
+    .lang-btn {
+      padding: 8px 20px; border-radius: 100px; border: 2px solid #e2e8f0;
+      background: #fff; font-size: 14px; font-weight: 700; cursor: pointer;
+      color: #475569; transition: all 0.2s;
+    }
+    .lang-btn.active { background: #1E3A8A; color: #fff; border-color: #1E3A8A; }
+    .lang-btn:hover:not(.active) { border-color: #1E3A8A; color: #1E3A8A; }
+
+    /* BUTTONS */
+    .action-row { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
     .print-btn {
       display: inline-flex; align-items: center; gap: 8px;
       background: #1E3A8A; color: #fff;
       padding: 12px 28px; border-radius: 12px;
       font-size: 15px; font-weight: 700; border: none;
-      cursor: pointer; margin-top: 16px;
-      text-decoration: none; transition: background 0.2s;
+      cursor: pointer; text-decoration: none; transition: background 0.2s;
     }
     .print-btn:hover { background: #1d4ed8; }
+    .back-link { color: #1E3A8A; font-size: 14px; font-weight: 600; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+
+    /* SECTION TITLE */
+    .section-title {
+      text-align: center; font-size: 16px; font-weight: 700;
+      color: #64748b; margin: 28px 0 16px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
 
     /* STICKER GRID */
     .stickers-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 20px;
       max-width: 960px;
       margin: 0 auto;
     }
@@ -45,35 +68,33 @@
     .sticker {
       background: #fff;
       border-radius: 20px;
-      padding: 24px 20px;
+      padding: 22px 18px;
       box-shadow: 0 4px 20px rgba(30,58,138,0.1);
       display: flex; flex-direction: column; align-items: center;
-      gap: 12px; text-align: center;
+      gap: 10px; text-align: center;
       border: 2px solid #e2e8f0;
     }
     .sticker-logo {
-      display: flex; align-items: center; gap: 8px;
-      font-size: 17px; font-weight: 900; color: #1E3A8A;
+      display: flex; align-items: center; gap: 7px;
+      font-size: 16px; font-weight: 900; color: #1E3A8A;
     }
     .sticker-logo-icon {
-      width: 32px; height: 32px; border-radius: 8px;
+      width: 30px; height: 30px; border-radius: 8px;
       background: #1E3A8A; color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-size: 16px;
+      font-size: 15px;
     }
     .sticker img {
-      width: 160px; height: 160px;
+      width: 150px; height: 150px;
       border-radius: 8px; display: block;
     }
     .sticker-tagline {
-      font-size: 13px; font-weight: 700; color: #1E3A8A;
+      font-size: 12px; font-weight: 700; color: #1E3A8A;
       text-transform: uppercase; letter-spacing: 0.5px;
     }
-    .sticker-desc {
-      font-size: 12px; color: #64748b; line-height: 1.5;
-    }
+    .sticker-desc { font-size: 11px; color: #64748b; line-height: 1.5; }
     .sticker-url {
-      font-size: 13px; font-weight: 800; color: #1E3A8A;
+      font-size: 12px; font-weight: 800; color: #1E3A8A;
       background: #eff6ff; padding: 4px 12px; border-radius: 100px;
     }
 
@@ -81,127 +102,206 @@
     .sticker.large {
       grid-column: span 2;
       flex-direction: row;
-      padding: 28px 32px;
-      gap: 28px;
+      padding: 26px 28px;
+      gap: 24px;
       text-align: left;
     }
-    .sticker.large img { width: 180px; height: 180px; flex-shrink: 0; }
+    .sticker.large img { width: 160px; height: 160px; flex-shrink: 0; }
     .sticker.large .sticker-content { flex: 1; }
-    .sticker.large .sticker-tagline { font-size: 14px; margin-bottom: 8px; }
-    .sticker.large .sticker-desc { font-size: 14px; margin-bottom: 12px; }
+    .sticker.large .sticker-logo { margin-bottom: 8px; }
     .sticker.large h2 {
-      font-size: 22px; font-weight: 900; color: #0f172a;
-      margin-bottom: 8px; line-height: 1.2;
+      font-size: 20px; font-weight: 900; color: #0f172a;
+      margin-bottom: 6px; line-height: 1.2;
     }
+    .sticker.large .sticker-desc { font-size: 13px; margin-bottom: 10px; }
+    .sticker.large .sticker-url { font-size: 13px; }
 
     @media (max-width: 600px) {
       .sticker.large { grid-column: span 1; flex-direction: column; text-align: center; }
+      .sticker.large img { width: 140px; height: 140px; }
     }
 
     @media print {
       body { background: #fff; padding: 0; }
-      .page-header, .no-print { display: none !important; }
+      .no-print { display: none !important; }
       .stickers-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        padding: 16px;
+        gap: 14px;
+        padding: 14px;
       }
       .sticker { box-shadow: none; border: 2px dashed #cbd5e1; break-inside: avoid; }
       .sticker.large { grid-column: span 3; }
+      .section-title { display: none; }
     }
   </style>
 </head>
 <body>
 
+  <!-- HEADER (no print) -->
   <div class="page-header no-print">
-    <h1>🖨️ QR Code për Printim Stikera</h1>
-    <p>Printo këtë faqe dhe prit stikerët. Ngjiti afër shkollave, autobusëve, trenave!</p>
-    <button class="print-btn" onclick="window.print()">🖨️ Printo tani</button>
-    <br><br>
-    <a href="/" style="color:#1E3A8A; font-size:14px; font-weight:600;">← Kthehu te faqja kryesore</a>
+    <h1 id="pageTitle">QR Code per Printim Stikera</h1>
+    <p id="pageDesc">Printo kete faqe dhe prit stikerat. Ngji afer shkollave, autobuseve, trenave!</p>
+    <div class="lang-row">
+      <button class="lang-btn active" data-lang="sq">Shqip</button>
+      <button class="lang-btn" data-lang="en">English</button>
+      <button class="lang-btn" data-lang="de">Deutsch</button>
+    </div>
+    <div class="action-row">
+      <button class="print-btn" onclick="window.print()">Printo tani</button>
+      <a href="/" class="back-link">Kthehu te faqja kryesore</a>
+    </div>
   </div>
 
-  <div class="stickers-grid">
+  <!-- STICKERS CONTAINER -->
+  <div id="stickersContainer"></div>
 
-    <!-- LARGE BANNER STICKER -->
-    <div class="sticker large">
-      <img
-        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
-        alt="QR Code MathHelper"
-      />
-      <div class="sticker-content">
-        <div class="sticker-logo">
-          <div class="sticker-logo-icon">📐</div>
-          MathHelper
+  <script>
+    const QR_IMG = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2';
+
+    const TRANSLATIONS = {
+      sq: {
+        pageTitle: 'QR Code per Printim Stikera',
+        pageDesc: 'Printo kete faqe dhe prit stikarat. Ngji afer shkollave, autobuseve, trenave!',
+        printBtn: 'Printo tani',
+        backLink: 'Kthehu te faqja kryesore',
+        sectionLabel: 'Stikera ne Shqip',
+        large: {
+          headline: 'Ke problem ne matematike?',
+          desc: 'Skeno kodin QR dhe merr zgjidhjen e plote me shpjegime hap-pas-hapi. Falas per te gjithe!',
+        },
+        s1: { tag: 'Skeno dhe Zgjidh', desc: 'Matematike me AI - zgjidhje te plota falas' },
+        s2: { tag: 'Per nxenesit dhe studentet', desc: 'Fotografo problemin dhe merr zgjidhjen menjehere' },
+        s3: { tag: 'Falas per te gjithe', desc: 'Algjeber, Gjeometri, Kalkulus - te gjitha lendet' },
+        s4: { tag: 'Fotografo problemin', desc: 'Hap kameran, skeno, merr zgjidhjen' },
+      },
+      en: {
+        pageTitle: 'QR Code - Printable Stickers',
+        pageDesc: 'Print this page and cut the stickers. Place them near schools, buses, trains!',
+        printBtn: 'Print now',
+        backLink: 'Back to homepage',
+        sectionLabel: 'Stickers in English',
+        large: {
+          headline: 'Struggling with math?',
+          desc: 'Scan the QR code and get a full step-by-step solution instantly. Free for everyone!',
+        },
+        s1: { tag: 'Scan and Solve', desc: 'AI-powered math solver - free full solutions' },
+        s2: { tag: 'For students', desc: 'Photo your problem and get the solution instantly' },
+        s3: { tag: 'Free for everyone', desc: 'Algebra, Geometry, Calculus - all subjects covered' },
+        s4: { tag: 'Photo your problem', desc: 'Open camera, scan, get the solution' },
+      },
+      de: {
+        pageTitle: 'QR-Code - Aufkleber zum Drucken',
+        pageDesc: 'Drucke diese Seite und schneide die Aufkleber aus. Klebe sie in der Naehe von Schulen, Bussen, Zuegen!',
+        printBtn: 'Jetzt drucken',
+        backLink: 'Zurueck zur Startseite',
+        sectionLabel: 'Aufkleber auf Deutsch',
+        large: {
+          headline: 'Probleme mit Mathematik?',
+          desc: 'Scanne den QR-Code und erhalte sofort eine vollstaendige Loesung Schritt fuer Schritt. Kostenlos fuer alle!',
+        },
+        s1: { tag: 'Scannen und Loesen', desc: 'KI-gestuetzter Mathe-Loeser - kostenlos' },
+        s2: { tag: 'Fuer Schueler und Studenten', desc: 'Fotografiere die Aufgabe und erhalte die Loesung sofort' },
+        s3: { tag: 'Kostenlos fuer alle', desc: 'Algebra, Geometrie, Kalkulus - alle Faecher' },
+        s4: { tag: 'Aufgabe fotografieren', desc: 'Kamera oeffnen, scannen, Loesung erhalten' },
+      },
+    };
+
+    let currentLang = 'sq';
+
+    function buildSticker(lang) {
+      const t = TRANSLATIONS[lang];
+      return `
+        <div class="stickers-grid">
+          <!-- LARGE -->
+          <div class="sticker large">
+            <img src="${QR_IMG}" alt="QR Code MathHelper" />
+            <div class="sticker-content">
+              <div class="sticker-logo">
+                <div class="sticker-logo-icon">&#x1F4D0;</div>
+                MathHelper
+              </div>
+              <h2>${t.large.headline}</h2>
+              <div class="sticker-desc">${t.large.desc}</div>
+              <div class="sticker-url">mathhelper.online</div>
+            </div>
+          </div>
+
+          <!-- SMALL 1 -->
+          <div class="sticker">
+            <div class="sticker-logo">
+              <div class="sticker-logo-icon">&#x1F4D0;</div>
+              MathHelper
+            </div>
+            <img src="${QR_IMG}" alt="QR Code" />
+            <div class="sticker-tagline">${t.s1.tag}</div>
+            <div class="sticker-desc">${t.s1.desc}</div>
+            <div class="sticker-url">mathhelper.online</div>
+          </div>
+
+          <!-- SMALL 2 -->
+          <div class="sticker">
+            <div class="sticker-logo">
+              <div class="sticker-logo-icon">&#x1F4D0;</div>
+              MathHelper
+            </div>
+            <img src="${QR_IMG}" alt="QR Code" />
+            <div class="sticker-tagline">${t.s2.tag}</div>
+            <div class="sticker-desc">${t.s2.desc}</div>
+            <div class="sticker-url">mathhelper.online</div>
+          </div>
+
+          <!-- SMALL 3 -->
+          <div class="sticker">
+            <div class="sticker-logo">
+              <div class="sticker-logo-icon">&#x1F4D0;</div>
+              MathHelper
+            </div>
+            <img src="${QR_IMG}" alt="QR Code" />
+            <div class="sticker-tagline">${t.s3.tag}</div>
+            <div class="sticker-desc">${t.s3.desc}</div>
+            <div class="sticker-url">mathhelper.online</div>
+          </div>
+
+          <!-- SMALL 4 -->
+          <div class="sticker">
+            <div class="sticker-logo">
+              <div class="sticker-logo-icon">&#x1F4D0;</div>
+              MathHelper
+            </div>
+            <img src="${QR_IMG}" alt="QR Code" />
+            <div class="sticker-tagline">${t.s4.tag}</div>
+            <div class="sticker-desc">${t.s4.desc}</div>
+            <div class="sticker-url">mathhelper.online</div>
+          </div>
         </div>
-        <h2>Ke problem<br>në matematikë?</h2>
-        <div class="sticker-desc">Skeno kodin QR dhe merr zgjidhjen e plotë me shpjegime hap-pas-hapi. Falas!</div>
-        <div class="sticker-url">mathhelper.online</div>
-      </div>
-    </div>
+      `;
+    }
 
-    <!-- SMALL STICKER 1 -->
-    <div class="sticker">
-      <div class="sticker-logo">
-        <div class="sticker-logo-icon">📐</div>
-        MathHelper
-      </div>
-      <img
-        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
-        alt="QR Code"
-      />
-      <div class="sticker-tagline">📷 Skeno &amp; Zgjidh</div>
-      <div class="sticker-desc">Matematikë me AI — zgjidhje të plota falas</div>
-      <div class="sticker-url">mathhelper.online</div>
-    </div>
+    function applyLang(lang) {
+      currentLang = lang;
+      const t = TRANSLATIONS[lang];
 
-    <!-- SMALL STICKER 2 -->
-    <div class="sticker">
-      <div class="sticker-logo">
-        <div class="sticker-logo-icon">📐</div>
-        MathHelper
-      </div>
-      <img
-        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
-        alt="QR Code"
-      />
-      <div class="sticker-tagline">🎓 Për nxënës &amp; studentë</div>
-      <div class="sticker-desc">Fotografo problemin dhe merr zgjidhjen menjëherë</div>
-      <div class="sticker-url">mathhelper.online</div>
-    </div>
+      document.getElementById('pageTitle').textContent = t.pageTitle;
+      document.getElementById('pageDesc').textContent = t.pageDesc;
+      document.querySelector('.print-btn').textContent = t.printBtn;
+      document.querySelector('.back-link').textContent = t.backLink;
+      document.getElementById('stickersContainer').innerHTML = buildSticker(lang);
 
-    <!-- SMALL STICKER 3 -->
-    <div class="sticker">
-      <div class="sticker-logo">
-        <div class="sticker-logo-icon">📐</div>
-        MathHelper
-      </div>
-      <img
-        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
-        alt="QR Code"
-      />
-      <div class="sticker-tagline">✨ Falas për të gjithë</div>
-      <div class="sticker-desc">Algjebër, Gjeometri, Kalkulus — të gjitha lendet</div>
-      <div class="sticker-url">mathhelper.online</div>
-    </div>
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.lang === lang);
+      });
 
-    <!-- SMALL STICKER 4 -->
-    <div class="sticker">
-      <div class="sticker-logo">
-        <div class="sticker-logo-icon">📐</div>
-        MathHelper
-      </div>
-      <img
-        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
-        alt="QR Code"
-      />
-      <div class="sticker-tagline">📸 Fotografo problemin</div>
-      <div class="sticker-desc">Hap kamerën → skeno → merr zgjidhjen</div>
-      <div class="sticker-url">mathhelper.online</div>
-    </div>
+      document.documentElement.lang = lang === 'sq' ? 'sq' : lang === 'de' ? 'de' : 'en';
+    }
 
-  </div>
+    // Lang buttons
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => applyLang(btn.dataset.lang));
+    });
 
+    // Init
+    applyLang('sq');
+  </script>
 </body>
 </html>
