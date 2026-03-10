@@ -1,0 +1,9 @@
+node_modules/
+.expo/
+dist/
+web-build/
+backend/node_modules/
+backend/public/
+.git/
+*.log
+.DS_Store
