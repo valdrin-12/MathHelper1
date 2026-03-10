@@ -433,6 +433,76 @@
     @media (min-width: 769px) {
       .mobile-menu-btn { display: none; }
     }
+
+    /* QR CODE SECTION */
+    .qr-section {
+      padding: 80px 32px;
+      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+      position: relative; overflow: hidden;
+    }
+    .qr-section::before {
+      content: '';
+      position: absolute; top: -60%; left: -10%; right: -10%; bottom: -60%;
+      background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .qr-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      gap: 64px; flex-wrap: wrap;
+    }
+    .qr-text { flex: 1; min-width: 260px; color: #fff; }
+    .qr-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9);
+      margin-bottom: 20px;
+    }
+    .qr-text h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 900; letter-spacing: -1px;
+      line-height: 1.15; margin-bottom: 16px; color: #fff;
+    }
+    .qr-text p { font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.7; margin-bottom: 28px; }
+    .qr-steps { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .qr-steps li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; color: rgba(255,255,255,0.9); font-weight: 500;
+    }
+    .qr-steps li span.step-dot {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); display: flex; align-items: center;
+      justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .qr-download-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+      color: #fff; padding: 12px 24px; border-radius: 12px;
+      font-size: 14px; font-weight: 700; text-decoration: none;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .qr-download-btn:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+    .qr-card {
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      background: #fff; border-radius: 24px; padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    .qr-card img { width: 200px; height: 200px; display: block; border-radius: 8px; }
+    .qr-url {
+      font-size: 13px; font-weight: 700; color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+    .qr-scan-hint {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-muted); font-weight: 500;
+    }
+    @media (max-width: 768px) {
+      .qr-inner { flex-direction: column; gap: 40px; text-align: center; }
+      .qr-steps li { justify-content: center; }
+      .qr-section { padding: 60px 24px; }
+    }
   </style>
 </head>
 <body>
@@ -638,6 +708,32 @@
       <div class="lang-flag"><span class="flag">&#x1F1E6;&#x1F1F1;</span> Shqip</div>
       <div class="lang-flag"><span class="flag">&#x1F1EC;&#x1F1E7;</span> English</div>
       <div class="lang-flag"><span class="flag">&#x1F1E9;&#x1F1EA;</span> Deutsch</div>
+    </div>
+  </section>
+
+  <!-- QR CODE -->
+  <section class="qr-section">
+    <div class="qr-inner">
+      <div class="qr-text">
+        <div class="qr-badge">📱 Skeno &amp; Fillo</div>
+        <h2>Hape MathHelper<br>me nje skenim!</h2>
+        <p>Skeno kodin QR me kamerën e telefonit dhe fillo të zgjidhësh probleme matematikore falas — pa nevojë për regjistrim.</p>
+        <ul class="qr-steps">
+          <li><span class="step-dot">1</span> Hap kamerën e telefonit</li>
+          <li><span class="step-dot">2</span> Drejtoje te kodi QR</li>
+          <li><span class="step-dot">3</span> Kliko linkun dhe fillo!</li>
+        </ul>
+        <a href="/qr" class="qr-download-btn" target="_blank">🖨️ Shkarko për printim stikera</a>
+      </div>
+      <div class="qr-card">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2&margin=0"
+          alt="QR Code - mathhelper.online"
+          onerror="this.src='https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=https%3A%2F%2Fmathhelper.online'"
+        />
+        <div class="qr-url">mathhelper.online</div>
+        <div class="qr-scan-hint">📷 Skeno me kamerë</div>
+      </div>
     </div>
   </section>
 

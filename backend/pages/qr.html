@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathHelper - QR Code për Printim</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f0f4ff;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .page-header h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .page-header p { color: #475569; font-size: 15px; }
+
+    .print-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #1E3A8A; color: #fff;
+      padding: 12px 28px; border-radius: 12px;
+      font-size: 15px; font-weight: 700; border: none;
+      cursor: pointer; margin-top: 16px;
+      text-decoration: none; transition: background 0.2s;
+    }
+    .print-btn:hover { background: #1d4ed8; }
+
+    /* STICKER GRID */
+    .stickers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 24px;
+      max-width: 960px;
+      margin: 0 auto;
+    }
+
+    /* SINGLE STICKER */
+    .sticker {
+      background: #fff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 20px rgba(30,58,138,0.1);
+      display: flex; flex-direction: column; align-items: center;
+      gap: 12px; text-align: center;
+      border: 2px solid #e2e8f0;
+    }
+    .sticker-logo {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 17px; font-weight: 900; color: #1E3A8A;
+    }
+    .sticker-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: #1E3A8A; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .sticker img {
+      width: 160px; height: 160px;
+      border-radius: 8px; display: block;
+    }
+    .sticker-tagline {
+      font-size: 13px; font-weight: 700; color: #1E3A8A;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .sticker-desc {
+      font-size: 12px; color: #64748b; line-height: 1.5;
+    }
+    .sticker-url {
+      font-size: 13px; font-weight: 800; color: #1E3A8A;
+      background: #eff6ff; padding: 4px 12px; border-radius: 100px;
+    }
+
+    /* LARGE STICKER */
+    .sticker.large {
+      grid-column: span 2;
+      flex-direction: row;
+      padding: 28px 32px;
+      gap: 28px;
+      text-align: left;
+    }
+    .sticker.large img { width: 180px; height: 180px; flex-shrink: 0; }
+    .sticker.large .sticker-content { flex: 1; }
+    .sticker.large .sticker-tagline { font-size: 14px; margin-bottom: 8px; }
+    .sticker.large .sticker-desc { font-size: 14px; margin-bottom: 12px; }
+    .sticker.large h2 {
+      font-size: 22px; font-weight: 900; color: #0f172a;
+      margin-bottom: 8px; line-height: 1.2;
+    }
+
+    @media (max-width: 600px) {
+      .sticker.large { grid-column: span 1; flex-direction: column; text-align: center; }
+    }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .page-header, .no-print { display: none !important; }
+      .stickers-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding: 16px;
+      }
+      .sticker { box-shadow: none; border: 2px dashed #cbd5e1; break-inside: avoid; }
+      .sticker.large { grid-column: span 3; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-header no-print">
+    <h1>🖨️ QR Code për Printim Stikera</h1>
+    <p>Printo këtë faqe dhe prit stikerët. Ngjiti afër shkollave, autobusëve, trenave!</p>
+    <button class="print-btn" onclick="window.print()">🖨️ Printo tani</button>
+    <br><br>
+    <a href="/" style="color:#1E3A8A; font-size:14px; font-weight:600;">← Kthehu te faqja kryesore</a>
+  </div>
+
+  <div class="stickers-grid">
+
+    <!-- LARGE BANNER STICKER -->
+    <div class="sticker large">
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
+        alt="QR Code MathHelper"
+      />
+      <div class="sticker-content">
+        <div class="sticker-logo">
+          <div class="sticker-logo-icon">📐</div>
+          MathHelper
+        </div>
+        <h2>Ke problem<br>në matematikë?</h2>
+        <div class="sticker-desc">Skeno kodin QR dhe merr zgjidhjen e plotë me shpjegime hap-pas-hapi. Falas!</div>
+        <div class="sticker-url">mathhelper.online</div>
+      </div>
+    </div>
+
+    <!-- SMALL STICKER 1 -->
+    <div class="sticker">
+      <div class="sticker-logo">
+        <div class="sticker-logo-icon">📐</div>
+        MathHelper
+      </div>
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
+        alt="QR Code"
+      />
+      <div class="sticker-tagline">📷 Skeno &amp; Zgjidh</div>
+      <div class="sticker-desc">Matematikë me AI — zgjidhje të plota falas</div>
+      <div class="sticker-url">mathhelper.online</div>
+    </div>
+
+    <!-- SMALL STICKER 2 -->
+    <div class="sticker">
+      <div class="sticker-logo">
+        <div class="sticker-logo-icon">📐</div>
+        MathHelper
+      </div>
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
+        alt="QR Code"
+      />
+      <div class="sticker-tagline">🎓 Për nxënës &amp; studentë</div>
+      <div class="sticker-desc">Fotografo problemin dhe merr zgjidhjen menjëherë</div>
+      <div class="sticker-url">mathhelper.online</div>
+    </div>
+
+    <!-- SMALL STICKER 3 -->
+    <div class="sticker">
+      <div class="sticker-logo">
+        <div class="sticker-logo-icon">📐</div>
+        MathHelper
+      </div>
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
+        alt="QR Code"
+      />
+      <div class="sticker-tagline">✨ Falas për të gjithë</div>
+      <div class="sticker-desc">Algjebër, Gjeometri, Kalkulus — të gjitha lendet</div>
+      <div class="sticker-url">mathhelper.online</div>
+    </div>
+
+    <!-- SMALL STICKER 4 -->
+    <div class="sticker">
+      <div class="sticker-logo">
+        <div class="sticker-logo-icon">📐</div>
+        MathHelper
+      </div>
+      <img
+        src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2"
+        alt="QR Code"
+      />
+      <div class="sticker-tagline">📸 Fotografo problemin</div>
+      <div class="sticker-desc">Hap kamerën → skeno → merr zgjidhjen</div>
+      <div class="sticker-url">mathhelper.online</div>
+    </div>
+
+  </div>
+
+</body>
+</html>

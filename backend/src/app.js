@@ -50,6 +50,11 @@ app.get('/about', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
 });
 
+// QR Code printable sticker page
+app.get('/qr', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'qr.html'));
+});
+
 // Paysera payment success page
 app.get('/premium/success', (req, res) => {
   const appUrl = process.env.APP_URL || 'https://mathhelper.online';
