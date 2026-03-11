@@ -356,7 +356,7 @@
   "infoContent": {
     "help": {
       "title": "Hilfe & Support",
-      "contact": { "heading": "Kontaktieren Sie uns", "text": "E-Mail: support@mathhelper.al\nWir antworten innerhalb von 24 Stunden an Werktagen." },
+      "contact": { "heading": "Kontaktieren Sie uns", "text": "E-Mail: EnoDevSupport@proton.me\nWir antworten innerhalb von 24 Stunden an Werktagen." },
       "faq": { "heading": "Häufig gestellte Fragen", "text": "Wie starte ich einen Kurs?\nGehen Sie zum Tab \"Lernen\", wählen Sie einen Kurs und klicken Sie auf \"Kurs starten\".\n\nWie mache ich ein Quiz?\nGehen Sie zum Tab \"Quiz\", wählen Sie ein Quiz und klicken Sie auf \"Quiz starten\".\n\nWie speichere ich eine Aufgabe?\nKlicken Sie nach der KI-Analyse auf \"Aufgabe speichern\"." },
       "bug": { "heading": "Problem melden", "text": "Wenn Sie Fehler finden, senden Sie uns bitte eine E-Mail mit der Problembeschreibung und App-Version." }
     },
@@ -375,7 +375,7 @@
       "dataCollected": { "heading": "1. Erhobene Daten", "text": "Wir erfassen: Name, E-Mail und Lernaktivität (abgeschlossene Kurse, absolvierte Quiz, gelöste Aufgaben)." },
       "dataUsage": { "heading": "2. Datennutzung", "text": "Daten werden ausschließlich verwendet, um Ihnen den Dienst bereitzustellen und die Anwendung zu verbessern." },
       "security": { "heading": "3. Sicherheit", "text": "Daten werden lokal auf Ihrem Gerät gespeichert. Wir geben sie nicht an Dritte weiter." },
-      "deletion": { "heading": "4. Löschung", "text": "Sie können Ihr Konto und alle Daten löschen, indem Sie support@mathhelper.al kontaktieren." }
+      "deletion": { "heading": "4. Löschung", "text": "Sie können Ihr Konto und alle Daten löschen, indem Sie EnoDevSupport@proton.me kontaktieren." }
     },
     "about": {
       "title": "Über die App",

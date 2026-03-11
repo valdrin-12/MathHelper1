@@ -356,7 +356,7 @@
   "infoContent": {
     "help": {
       "title": "Help & Support",
-      "contact": { "heading": "Contact Us", "text": "Email: support@mathhelper.al\nWe respond within 24 hours on business days." },
+      "contact": { "heading": "Contact Us", "text": "Email: EnoDevSupport@proton.me\nWe respond within 24 hours on business days." },
       "faq": { "heading": "Frequently Asked Questions", "text": "How to start a course?\nGo to the \"Learn\" tab, choose a course and click \"Start Course\".\n\nHow to take a quiz?\nGo to the \"Quiz\" tab, choose a quiz and click \"Start Quiz\".\n\nHow to save a problem?\nAfter AI analysis, click \"Save Problem\" to save it." },
       "bug": { "heading": "Report a Problem", "text": "If you find any bugs, please send us an email with the problem description and app version." }
     },
@@ -375,7 +375,7 @@
       "dataCollected": { "heading": "1. Data Collected", "text": "We collect: name, email, and learning activity (courses completed, quizzes taken, problems solved)." },
       "dataUsage": { "heading": "2. Data Usage", "text": "Data is used solely to provide you the service and to improve the application." },
       "security": { "heading": "3. Security", "text": "Data is stored locally on your device. We do not share it with third parties." },
-      "deletion": { "heading": "4. Deletion", "text": "You can delete your account and all data by contacting support@mathhelper.al" }
+      "deletion": { "heading": "4. Deletion", "text": "You can delete your account and all data by contacting EnoDevSupport@proton.me" }
     },
     "about": {
       "title": "About the App",
