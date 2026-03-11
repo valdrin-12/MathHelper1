@@ -118,16 +118,12 @@ export default function DashboardScreen() {
       let imageBase64 = null; // Store base64 for AI fallback
       let imageMimeType = 'image/jpeg';
 
-      console.log('🔵 [Calculate] Starting calculation...');
-      console.log('🔵 [Calculate] Input mode:', inputMode);
-
       // Get input (keyboard or image)
       if (inputMode === 'keyboard') {
         if (!problemText.trim()) {
           Alert.alert(t('common.attention'), t('dashboard.enterProblem'));
           return;
         }
-        console.log('⌨️  [Keyboard] Problem text:', problemText);
       } else {
         if (!selectedImage) {
           Alert.alert(t('common.attention'), t('dashboard.selectPhoto'));
@@ -143,62 +139,43 @@ export default function DashboardScreen() {
         imageMimeType = mimeType;
 
         try {
-          // Use OCR-only endpoint - just extracts text, doesn't solve
-          console.log('📷 [Camera] Extracting text from image...');
           problemText = await geminiService.extractTextFromImage(base64, mimeType);
-          console.log('✅ [OCR] Extracted text:', problemText);
         } catch (ocrError) {
-          console.error('❌ [OCR] Failed to extract text:', ocrError);
-          // If OCR fails, show error and don't continue
           throw new Error(t('dashboard.ocrFailed'));
         }
       }
 
       setIsAnalyzing(true);
 
-      // Try local calculator first
-      console.log('🧮 [Calculator] Trying local solver for:', problemText);
       const localResult = await mathCalculatorService.solveMathProblem(
         problemText,
         t('common.locale')
       );
 
       if (localResult.success) {
-        // ✅ Local calculator succeeded - 0 API calls!
-        console.log('✅ [Calculator] Local solver succeeded!');
-        console.log('✅ [Calculator] Answer:', localResult.answer);
         setAnalysisResult({ ...localResult, solverType: 'local' });
         setShowResultModal(true);
       } else {
-        // Try Wolfram Alpha (does NOT count against Gemini daily limit)
-        console.log('⚠️  [Calculator] Local solver failed:', localResult.reason);
-        console.log('🐺 [Wolfram] Trying Wolfram Alpha...');
-
         let wolframSucceeded = false;
         try {
           const wolframResult = await geminiService.analyzeWithWolfram(problemText);
-          console.log('✅ [Wolfram] Answer:', wolframResult.answer);
           setAnalysisResult({ ...wolframResult, solverType: 'wolfram' });
           setShowResultModal(true);
           wolframSucceeded = true;
         } catch (wolframError) {
-          console.log('⚠️  [Wolfram] Failed:', wolframError.message);
-          console.log('🤖 [AI] Falling back to Gemini AI...');
+          // Wolfram failed, fall back to Gemini
         }
 
         if (!wolframSucceeded) {
-          // Last resort: Gemini AI (counts against daily limit)
           const aiResult = inputMode === 'keyboard'
             ? await geminiService.analyzeMathProblemFromText(problemText)
             : await geminiService.analyzeMathProblem(imageBase64, imageMimeType);
 
-          console.log('✅ [AI] Analysis complete:', aiResult.answer);
           setAnalysisResult({ ...aiResult, solverType: 'ai' });
           setShowResultModal(true);
         }
       }
     } catch (error) {
-      console.error('Gabim gjate analizes:', error);
       if (error.message === 'DAILY_LIMIT_REACHED') {
         setShowLimitModal(true);
       } else {
