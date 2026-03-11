@@ -30,7 +30,9 @@ export default function LearnScreen() {
   const { courses, categories, difficultyLevels, search } = useLocalizedCourses();
   const { stats } = useStats();
   const { user } = useUser();
-  const isPremium = user?.tier === 'premium';
+  const isPremium = user?.tier === 'premium' &&
+    user?.premiumExpiresAt &&
+    new Date(user.premiumExpiresAt) > new Date();
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');

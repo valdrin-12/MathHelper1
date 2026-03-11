@@ -8,14 +8,13 @@ const router = express.Router();
 // All routes require authentication
 router.use(authMiddleware);
 
-// OCR-only endpoint (does NOT count against daily limit)
+// OCR-only endpoint (never counts against any limit)
 router.post('/ocr', analyzeController.extractTextFromImage);
 
-// Wolfram Alpha endpoint (does NOT count against Gemini daily limit)
-router.post('/wolfram', analyzeController.analyzeWithWolfram);
-
-// Gemini AI endpoints (count against daily limit)
+// All solve endpoints count against limits (free: 2 lifetime, premium: 10/day)
 router.use(rateLimitMiddleware);
+router.post('/record', analyzeController.recordAnalysis);    // local solve
+router.post('/wolfram', analyzeController.analyzeWithWolfram);
 router.post('/image', analyzeController.analyzeImage);
 router.post('/text', analyzeController.analyzeText);
 

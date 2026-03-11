@@ -79,7 +79,7 @@ async function verifyPurchase(req, res) {
 
     // Upgrade user to premium
     await pool.query(
-      "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
+      "UPDATE users SET tier = 'premium', premium_expires_at = NOW() + INTERVAL '1 month', updated_at = NOW() WHERE id = $1",
       [userId]
     );
 
@@ -106,7 +106,7 @@ async function restorePurchase(req, res) {
 
     // Re-activate premium
     await pool.query(
-      "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
+      "UPDATE users SET tier = 'premium', premium_expires_at = NOW() + INTERVAL '1 month', updated_at = NOW() WHERE id = $1",
       [userId]
     );
 
@@ -195,7 +195,7 @@ async function payseraCallback(req, res) {
 
       // Upgrade to premium
       await pool.query(
-        "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
+        "UPDATE users SET tier = 'premium', premium_expires_at = NOW() + INTERVAL '1 month', updated_at = NOW() WHERE id = $1",
         [userId]
       );
 
@@ -228,7 +228,7 @@ async function checkPayment(req, res) {
 
       // Ensure tier is updated (callback might not have fired yet)
       await pool.query(
-        "UPDATE users SET tier = 'premium', updated_at = NOW() WHERE id = $1",
+        "UPDATE users SET tier = 'premium', premium_expires_at = NOW() + INTERVAL '1 month', updated_at = NOW() WHERE id = $1",
         [userId]
       );
 

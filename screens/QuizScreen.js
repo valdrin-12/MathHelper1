@@ -70,7 +70,9 @@ export default function QuizScreen() {
   const { quizSets, getDifficultyLabel, getDifficultyColor } = useLocalizedQuizzes();
   const { recordQuizCompleted, streak, stats } = useStats();
   const { user } = useUser();
-  const isPremium = user?.tier === 'premium';
+  const isPremium = user?.tier === 'premium' &&
+    user?.premiumExpiresAt &&
+    new Date(user.premiumExpiresAt) > new Date();
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [showQuiz, setShowQuiz] = useState(false);

@@ -153,6 +153,8 @@ export default function DashboardScreen() {
       );
 
       if (localResult.success) {
+        // Record the local solve against the user's limit
+        await geminiService.recordAnalysis();
         setAnalysisResult({ ...localResult, solverType: 'local' });
         setShowResultModal(true);
       } else {
@@ -163,7 +165,10 @@ export default function DashboardScreen() {
           setShowResultModal(true);
           wolframSucceeded = true;
         } catch (wolframError) {
-          // Wolfram failed, fall back to Gemini
+          if (wolframError.message === 'FREE_LIMIT_REACHED' || wolframError.message === 'DAILY_LIMIT_REACHED') {
+            throw wolframError;
+          }
+          // Wolfram failed for other reason, fall back to Gemini
         }
 
         if (!wolframSucceeded) {
@@ -176,7 +181,7 @@ export default function DashboardScreen() {
         }
       }
     } catch (error) {
-      if (error.message === 'DAILY_LIMIT_REACHED') {
+      if (error.message === 'DAILY_LIMIT_REACHED' || error.message === 'FREE_LIMIT_REACHED') {
         setShowLimitModal(true);
       } else {
         Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));

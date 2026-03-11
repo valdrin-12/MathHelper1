@@ -291,4 +291,9 @@ async function analyzeWithWolfram(req, res) {
   }
 }
 
-module.exports = { analyzeImage, analyzeText, extractTextFromImage, analyzeWithWolfram };
+// Record a local solve attempt (rate limiter already ran and incremented counter)
+async function recordAnalysis(req, res) {
+  res.json({ success: true });
+}
+
+module.exports = { analyzeImage, analyzeText, extractTextFromImage, analyzeWithWolfram, recordAnalysis };

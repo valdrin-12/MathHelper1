@@ -5,8 +5,14 @@ const SALT_ROUNDS = 12;
 
 function toCamelCase(user) {
   if (!user) return null;
-  const { created_at, updated_at, ...rest } = user;
-  return { ...rest, createdAt: created_at, updatedAt: updated_at };
+  const { created_at, updated_at, free_analyses_used, premium_expires_at, ...rest } = user;
+  return {
+    ...rest,
+    freeAnalysesUsed: free_analyses_used ?? 0,
+    premiumExpiresAt: premium_expires_at || null,
+    createdAt: created_at,
+    updatedAt: updated_at,
+  };
 }
 
 async function createUser({ name, email, password, language = 'al' }) {
@@ -30,7 +36,7 @@ async function findByEmail(email) {
 
 async function findById(id) {
   const { rows } = await pool.query(
-    'SELECT id, name, email, language, tier, created_at, updated_at FROM users WHERE id = $1',
+    'SELECT id, name, email, language, tier, free_analyses_used, premium_expires_at, created_at, updated_at FROM users WHERE id = $1',
     [id]
   );
   return toCamelCase(rows[0]);
