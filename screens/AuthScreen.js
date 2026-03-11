@@ -507,15 +507,6 @@ export default function AuthScreen() {
           <Text style={styles.footerText}>{t('auth.footer')}</Text>
         </View>
 
-        {/* Clear Data Button (Testing) */}
-        <TouchableOpacity
-          style={styles.clearDataButton}
-          onPress={handleClearAllData}
-        >
-          <Ionicons name="trash-outline" size={14} color="#FFFFFF" style={{ marginRight: 6 }} />
-          <Text style={styles.clearDataText}>{t('auth.clearAllData')}</Text>
-        </TouchableOpacity>
-
         </WebContainer>
 
         {/* Forgot Password Overlay */}
