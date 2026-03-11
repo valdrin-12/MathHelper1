@@ -397,11 +397,14 @@
   },
   "rateLimit": {
     "title": "Daily Limit Reached",
-    "message": "You have used all your free analyses for today. Try again tomorrow or upgrade to Premium for more.",
+    "message": "You have used all 10 analyses for today. Try again tomorrow or upgrade to Premium.",
+    "freeTitle": "Free Analyses Exhausted",
+    "freeMessage": "You have used your 2 free analyses. Upgrade to Premium to continue with 10 analyses per day.",
     "premiumTitle": "Premium",
-    "premiumDesc": "Get 15 analyses per day with a Premium account. Solve more problems every day!",
+    "premiumDesc": "Get 10 analyses per day with a Premium account. Access all courses and quizzes!",
     "upgradePremium": "Upgrade to Premium",
     "tryTomorrow": "Try again tomorrow",
+    "close": "Close",
     "comingSoon": "Coming Soon",
     "comingSoonDesc": "Premium will be available soon. Thank you for your patience!"
   },

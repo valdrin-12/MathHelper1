@@ -62,6 +62,7 @@ export default function DashboardScreen() {
   const [showResultModal, setShowResultModal] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
+  const [limitType, setLimitType] = useState('free'); // 'free' or 'daily'
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   const greeting = getGreeting(t);
@@ -183,6 +184,7 @@ export default function DashboardScreen() {
       }
     } catch (error) {
       if (error.message === 'DAILY_LIMIT_REACHED' || error.message === 'FREE_LIMIT_REACHED') {
+        setLimitType(error.message === 'FREE_LIMIT_REACHED' ? 'free' : 'daily');
         setShowLimitModal(true);
       } else {
         Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
@@ -643,8 +645,12 @@ export default function DashboardScreen() {
             <View style={styles.limitIconBox}>
               <Ionicons name="lock-closed" size={36} color="#F59E0B" />
             </View>
-            <Text style={styles.limitTitle}>{t('rateLimit.title')}</Text>
-            <Text style={styles.limitMessage}>{t('rateLimit.message')}</Text>
+            <Text style={styles.limitTitle}>
+              {limitType === 'free' ? t('rateLimit.freeTitle') : t('rateLimit.title')}
+            </Text>
+            <Text style={styles.limitMessage}>
+              {limitType === 'free' ? t('rateLimit.freeMessage') : t('rateLimit.message')}
+            </Text>
 
             <View style={styles.limitDivider} />
 
@@ -674,12 +680,22 @@ export default function DashboardScreen() {
               </LinearGradient>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              style={styles.limitCloseButton}
-              onPress={() => setShowLimitModal(false)}
-            >
-              <Text style={styles.limitCloseText}>{t('rateLimit.tryTomorrow')}</Text>
-            </TouchableOpacity>
+            {limitType === 'daily' && (
+              <TouchableOpacity
+                style={styles.limitCloseButton}
+                onPress={() => setShowLimitModal(false)}
+              >
+                <Text style={styles.limitCloseText}>{t('rateLimit.tryTomorrow')}</Text>
+              </TouchableOpacity>
+            )}
+            {limitType === 'free' && (
+              <TouchableOpacity
+                style={styles.limitCloseButton}
+                onPress={() => setShowLimitModal(false)}
+              >
+                <Text style={styles.limitCloseText}>{t('rateLimit.close')}</Text>
+              </TouchableOpacity>
+            )}
           </View>
         </View>
       </Modal>

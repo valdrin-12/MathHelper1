@@ -490,11 +490,14 @@
   },
   "rateLimit": {
     "title": "Limiti Ditor i Arritur",
-    "message": "Ke përdorur të gjitha analizat falas për sot. Provo përsëri nesër ose kalo në Premium për më shumë analiza.",
+    "message": "Ke përdorur të gjitha 10 analizat për sot. Provo përsëri nesër ose kalo në Premium.",
+    "freeTitle": "Analizat Falas të Shteruara",
+    "freeMessage": "Ke përdorur të 2 analizat falas. Kalo në Premium për të vazhduar me 10 analiza në ditë.",
     "premiumTitle": "Premium",
-    "premiumDesc": "Merr 15 analiza në ditë me llogarinë Premium. Zgjidh më shumë probleme çdo ditë!",
+    "premiumDesc": "Merr 10 analiza në ditë me llogarinë Premium. Qasje në të gjitha kurset dhe kuizet!",
     "upgradePremium": "Kalo në Premium",
     "tryTomorrow": "Provo përsëri nesër",
+    "close": "Mbyll",
     "comingSoon": "Së Shpejti",
     "comingSoonDesc": "Premium do të jetë i disponueshëm së shpejti. Faleminderit për durimin!"
   },
