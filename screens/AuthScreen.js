@@ -37,6 +37,7 @@ export default function AuthScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [loginError, setLoginError] = useState('');
 
   // Forgot password state
   const [forgotMode, setForgotMode] = useState(false); // false | 'email' | 'code' | 'newPassword' | 'success'
@@ -104,6 +105,7 @@ export default function AuthScreen() {
 
   const handleLogin = async () => {
     if (!validateLogin()) return;
+    setLoginError('');
     setLoading(true);
     try {
       const result = await login(email.trim(), password);
@@ -111,7 +113,7 @@ export default function AuthScreen() {
         const msg = result.error === 'USER_NOT_FOUND'
           ? t('auth.userNotFound')
           : t('auth.loginFailed');
-        Alert.alert(t('common.error'), msg);
+        setLoginError(msg);
       }
     } finally {
       setLoading(false);
@@ -351,6 +353,14 @@ export default function AuthScreen() {
                 </View>
                 {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
               </View>
+
+              {/* Login error message */}
+              {loginError ? (
+                <View style={styles.loginErrorBox}>
+                  <Ionicons name="alert-circle" size={16} color="#DC2626" style={{ marginRight: 6 }} />
+                  <Text style={styles.loginErrorText}>{loginError}</Text>
+                </View>
+              ) : null}
 
               {/* Submit */}
               <TouchableOpacity
@@ -869,6 +879,23 @@ const styles = StyleSheet.create({
   },
 
   // Submit Button
+  loginErrorBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FEF2F2',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#FECACA',
+    padding: 12,
+    marginBottom: 8,
+  },
+  loginErrorText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#DC2626',
+    fontWeight: '500',
+    lineHeight: 18,
+  },
   submitButton: {
     borderRadius: 14,
     overflow: 'hidden',
