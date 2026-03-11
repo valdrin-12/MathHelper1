@@ -55,8 +55,10 @@ export const recordAnalysis = async () => {
   try {
     await api.post('/api/analyze/record', {});
   } catch (error) {
+    // Always propagate limit errors
     throwLimitError(error);
-    // If record fails for non-limit reason, ignore silently
+    // For other errors (e.g. server error), also propagate so the user sees feedback
+    throw new Error(error.message || 'Could not record analysis');
   }
 };
 

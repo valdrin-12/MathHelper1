@@ -201,6 +201,8 @@ export default function DashboardScreen() {
           return;
         }
         setIsAnalyzing(true);
+        // Count 1 analysis before calling AI
+        await geminiService.recordAnalysis();
         const result = await geminiService.analyzeMathProblemFromText(mathProblemText);
         setAnalysisResult({ ...result, solverType: 'ai' });
         setShowResultModal(true);
@@ -212,13 +214,14 @@ export default function DashboardScreen() {
         setIsAnalyzing(true);
         const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
         setLastBase64(base64);
+        // Count 1 analysis before calling AI
+        await geminiService.recordAnalysis();
         const result = await geminiService.analyzeMathProblem(base64, mimeType);
         setAnalysisResult({ ...result, solverType: 'ai' });
         setShowResultModal(true);
       }
     } catch (error) {
-      console.error('Gabim gjate analizes:', error);
-      if (error.message === 'DAILY_LIMIT_REACHED') {
+      if (error.message === 'FREE_LIMIT_REACHED' || error.message === 'DAILY_LIMIT_REACHED') {
         setShowLimitModal(true);
       } else {
         Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
