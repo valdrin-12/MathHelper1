@@ -998,6 +998,11 @@
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
       });
+
+      // Update all dashboard links to include ?lang= parameter
+      document.querySelectorAll('a[href*="/dashboard"]').forEach(a => {
+        a.href = '/dashboard?lang=' + lang;
+      });
     }
 
     // Language button clicks
@@ -1005,8 +1010,8 @@
       btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
     });
 
-    // Apply saved language on load
-    if (currentLang !== 'sq') setLanguage(currentLang);
+    // Apply saved language on load (always run to set dashboard links correctly)
+    setLanguage(currentLang);
 
     // Scroll nav shadow
     const nav = document.getElementById('navbar');

@@ -24,6 +24,17 @@ i18n.use(initReactI18next).init({
 
 export const loadSavedLanguage = async () => {
   try {
+    // On web: check URL ?lang= parameter first (set by landing page)
+    if (typeof window !== 'undefined' && window.location?.search) {
+      const params = new URLSearchParams(window.location.search);
+      const urlLang = params.get('lang');
+      if (urlLang && resources[urlLang]) {
+        await AsyncStorage.setItem(LANGUAGE_KEY, urlLang);
+        await i18n.changeLanguage(urlLang);
+        return urlLang;
+      }
+    }
+
     const saved = await AsyncStorage.getItem(LANGUAGE_KEY);
     if (saved && resources[saved]) {
       await i18n.changeLanguage(saved);
