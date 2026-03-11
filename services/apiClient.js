@@ -72,6 +72,7 @@ async function request(method, path, body = null) {
   // Handle token expiry with auto-refresh
   if (response.status === 401) {
     const errorData = await response.json();
+
     if (errorData.code === 'TOKEN_EXPIRED') {
       // Use mutex to prevent concurrent refresh calls
       if (isRefreshing) {
@@ -94,12 +95,20 @@ async function request(method, path, body = null) {
 
         headers['Authorization'] = `Bearer ${newToken}`;
         response = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+        // Fall through to parse the new response below
       } catch (err) {
         isRefreshing = false;
         refreshQueue.forEach(({ reject }) => reject(err));
         refreshQueue = [];
         throw err;
       }
+    } else {
+      // 401 but NOT a token issue (e.g. USER_NOT_FOUND, wrong password)
+      // Body is already consumed — throw the error directly
+      const error = new Error(errorData.error || 'Unauthorized');
+      error.status = 401;
+      error.data = errorData;
+      throw error;
     }
   }
 
