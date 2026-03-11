@@ -48,6 +48,7 @@
     "clearAllSuccess": "Të gjitha të dhënat u fshinë me sukses! Aplikacioni do të rilexohet.",
     "clearAllError": "Nuk mund të fshiheshin të dhënat. Provoni përsëri.",
     "loginFailed": "Kyçja dështoi. Provoni përsëri.",
+    "userNotFound": "Ky email nuk është i regjistruar. Krijoni një llogari të re.",
     "registerFailed": "Regjistrimi dështoi. Provoni përsëri.",
     "validation": {
       "emailRequired": "Email-i është i detyrueshëm.",

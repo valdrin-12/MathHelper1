@@ -11,9 +11,12 @@ router.use(authMiddleware);
 // OCR-only endpoint (never counts against any limit)
 router.post('/ocr', analyzeController.extractTextFromImage);
 
-// All solve endpoints count against limits (free: 2 lifetime, premium: 10/day)
-router.use(rateLimitMiddleware);
-router.post('/record', analyzeController.recordAnalysis);    // local solve
+// /record: called ONCE per "Llogarit" click to pre-count the analysis
+// Rate limit is checked and decremented here.
+router.post('/record', rateLimitMiddleware, analyzeController.recordAnalysis);
+
+// Wolfram and AI endpoints do NOT independently count.
+// The counting was already done via /record before these are called.
 router.post('/wolfram', analyzeController.analyzeWithWolfram);
 router.post('/image', analyzeController.analyzeImage);
 router.post('/text', analyzeController.analyzeText);

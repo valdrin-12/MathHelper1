@@ -47,7 +47,7 @@ async function login(req, res) {
 
     const user = await userModel.findByEmail(email);
     if (!user) {
-      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+      return res.status(401).json({ success: false, error: 'USER_NOT_FOUND' });
     }
 
     const valid = await userModel.comparePassword(password, user.password_hash);

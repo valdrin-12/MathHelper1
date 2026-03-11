@@ -153,11 +153,15 @@ export default function DashboardScreen() {
       );
 
       if (localResult.success) {
-        // Record the local solve against the user's limit
+        // Count 1 analysis for local solve
         await geminiService.recordAnalysis();
         setAnalysisResult({ ...localResult, solverType: 'local' });
         setShowResultModal(true);
       } else {
+        // Count 1 analysis ONCE before the wolfram→AI chain
+        await geminiService.recordAnalysis();
+
+        // Try wolfram (no additional counting)
         let wolframSucceeded = false;
         try {
           const wolframResult = await geminiService.analyzeWithWolfram(problemText);
@@ -165,10 +169,7 @@ export default function DashboardScreen() {
           setShowResultModal(true);
           wolframSucceeded = true;
         } catch (wolframError) {
-          if (wolframError.message === 'FREE_LIMIT_REACHED' || wolframError.message === 'DAILY_LIMIT_REACHED') {
-            throw wolframError;
-          }
-          // Wolfram failed for other reason, fall back to Gemini
+          // Wolfram failed, fall back to AI (no additional counting)
         }
 
         if (!wolframSucceeded) {

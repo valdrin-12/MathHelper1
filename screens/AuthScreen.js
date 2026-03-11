@@ -108,7 +108,10 @@ export default function AuthScreen() {
     try {
       const result = await login(email.trim(), password);
       if (!result.success) {
-        Alert.alert(t('common.error'), result.error || t('auth.loginFailed'));
+        const msg = result.error === 'USER_NOT_FOUND'
+          ? t('auth.userNotFound')
+          : t('auth.loginFailed');
+        Alert.alert(t('common.error'), msg);
       }
     } finally {
       setLoading(false);

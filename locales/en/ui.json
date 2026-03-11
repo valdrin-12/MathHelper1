@@ -48,6 +48,7 @@
     "clearAllSuccess": "All data has been deleted successfully! The app will reload.",
     "clearAllError": "Could not delete data. Please try again.",
     "loginFailed": "Login failed. Please try again.",
+    "userNotFound": "This email is not registered. Please create a new account.",
     "registerFailed": "Registration failed. Please try again.",
     "validation": {
       "emailRequired": "Email is required.",

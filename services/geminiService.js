@@ -43,7 +43,6 @@ export const analyzeWithWolfram = async (problemText) => {
     const data = await api.post('/api/analyze/wolfram', { problemText });
     return { answer: data.answer, steps: data.steps, explanation: data.explanation, source: 'wolfram' };
   } catch (error) {
-    throwLimitError(error);
     throw new Error(error.message || 'Wolfram could not solve this problem');
   }
 };

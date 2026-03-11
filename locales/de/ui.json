@@ -48,6 +48,7 @@
     "clearAllSuccess": "Alle Daten wurden erfolgreich gelöscht! Die App wird neu geladen.",
     "clearAllError": "Daten konnten nicht gelöscht werden. Bitte versuchen Sie es erneut.",
     "loginFailed": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "userNotFound": "Diese E-Mail ist nicht registriert. Bitte erstellen Sie ein neues Konto.",
     "registerFailed": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "validation": {
       "emailRequired": "E-Mail ist erforderlich.",
