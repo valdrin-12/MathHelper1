@@ -125,6 +125,38 @@
     .contact-box h2 { color: #fff; font-size: 18px; margin-bottom: 10px; }
     .contact-box p { color: rgba(255,255,255,0.85); font-size: 15px; }
     .contact-box a { color: #fff; font-weight: 700; }
+
+    /* POLICY TABS */
+    .policy-tabs {
+      display: flex; gap: 8px; margin-bottom: 36px;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 0;
+    }
+    .policy-tab {
+      padding: 10px 24px;
+      border: none; background: none;
+      font-family: inherit; font-size: 15px; font-weight: 700;
+      color: var(--text-muted); cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px; transition: all 0.2s;
+    }
+    .policy-tab.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+    .policy-tab:hover:not(.active) { color: var(--text-secondary); }
+
+    /* COOKIE SECTION SEPARATOR */
+    .cookie-section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin: 48px 0 24px;
+    }
+    .cookie-section-header .page-badge { margin-bottom: 0; }
+    .cookie-separator {
+      border: none; border-top: 2px solid var(--border);
+      margin: 48px 0 32px;
+    }
+
     @media (max-width: 600px) {
       .container { padding: 40px 20px 80px; }
       .section { padding: 20px; }
@@ -150,7 +182,15 @@
   <div class="page-badge">&#x1F512; <span id="badgeText">Politika e Privatësisë</span></div>
   <h1 id="pageTitle">Politika e Privatësisë</h1>
   <p class="last-updated" id="lastUpdated">Përditësuar: Mars 2026</p>
+
+  <!-- Policy Tabs -->
+  <div class="policy-tabs">
+    <button class="policy-tab active" id="tabPrivacy" onclick="showSection('privacy')">&#x1F512; <span id="tabPrivacyLabel">Politika e Privatësisë</span></button>
+    <button class="policy-tab" id="tabCookie" onclick="showSection('cookie')">&#x1F36A; <span id="tabCookieLabel">Politika e Cookies</span></button>
+  </div>
+
   <div id="content"></div>
+  <div id="cookieContent" style="display:none;"></div>
 </div>
 
 <script>
@@ -159,6 +199,8 @@ const T = {
     badge: 'Politika e Privatësisë',
     title: 'Politika e Privatësisë',
     updated: 'Përditësuar: Mars 2026',
+    tabPrivacy: 'Politika e Privatësisë',
+    tabCookie: 'Politika e Cookies',
     sections: [
       {
         icon: '📋',
@@ -228,12 +270,51 @@ const T = {
       title: 'Keni pyetje?',
       body: 'Për çdo pyetje lidhur me privatësinë, na kontaktoni:',
       email: 'EnoDevSupport@proton.me'
+    },
+    cookie: {
+      badge: 'Politika e Cookies',
+      title: 'Politika e Cookies',
+      sections: [
+        {
+          icon: '🍪',
+          title: 'Çfarë janë cookies',
+          body: 'Cookies dhe teknologji të ngjashme (localStorage, sessionStorage) janë skedarë të vegjël që ruhen në pajisjen tuaj kur vizitoni mathhelper.online.'
+        },
+        {
+          icon: '🔑',
+          title: 'Cookies thelbësore (të domosdoshme)',
+          body: 'Këto cookies janë të nevojshme për funksionimin e aplikacionit. Pa to, shërbimi nuk mund të funksionojë siç duhet. Nuk mund të çaktivizohen.',
+          list: [
+            '@math_helper_access_token — Token i autentifikimit JWT (skadon pas 15 minutave)',
+            '@math_helper_refresh_token — Token për rinovim të sesionit (skadon pas 7 ditëve)',
+            '@math_helper_language — Gjuha e preferuar e aplikacionit (pa skadim)',
+            '@mathhelper_course_progress — Progresi në kurse (pa skadim)'
+          ]
+        },
+        {
+          icon: '📊',
+          title: 'Cookies analitike dhe marketingu',
+          body: 'Aktualisht MathHelper nuk përdor Google Analytics, Facebook Pixel, ose shërbime të ngjashme analitike/marketingu të palëve të treta. Nëse kjo ndryshon, do të kërkojmë pëlqimin tuaj paraprak.'
+        },
+        {
+          icon: '⚙️',
+          title: 'Si të menaxhoni cookies',
+          body: 'Mund të fshini cookies dhe të dhënat lokale në çdo kohë nga cilësimet e shfletuesit tuaj ose nga aplikacioni i telefonit. Fshirja e cookies thelbësore do të shkaktojë dalje nga llogaria juaj.'
+        },
+        {
+          icon: '📅',
+          title: 'Ndryshimet e kësaj politike',
+          body: 'Çdo ndryshim i rëndësishëm do të njoftohet me email ose njoftim brenda aplikacionit. Vazhdimi i përdorimit pas ndryshimeve nënkupton pranimin e tyre.'
+        }
+      ]
     }
   },
   en: {
     badge: 'Privacy Policy',
     title: 'Privacy Policy',
     updated: 'Last updated: March 2026',
+    tabPrivacy: 'Privacy Policy',
+    tabCookie: 'Cookie Policy',
     sections: [
       {
         icon: '📋',
@@ -303,12 +384,51 @@ const T = {
       title: 'Have questions?',
       body: 'For any privacy-related questions, contact us:',
       email: 'EnoDevSupport@proton.me'
+    },
+    cookie: {
+      badge: 'Cookie Policy',
+      title: 'Cookie Policy',
+      sections: [
+        {
+          icon: '🍪',
+          title: 'What are cookies',
+          body: 'Cookies and similar technologies (localStorage, sessionStorage) are small files stored on your device when you visit mathhelper.online.'
+        },
+        {
+          icon: '🔑',
+          title: 'Essential cookies (required)',
+          body: 'These cookies are necessary for the application to function. Without them, the service cannot work properly. They cannot be disabled.',
+          list: [
+            '@math_helper_access_token — JWT authentication token (expires after 15 minutes)',
+            '@math_helper_refresh_token — Session renewal token (expires after 7 days)',
+            '@math_helper_language — Preferred application language (no expiry)',
+            '@mathhelper_course_progress — Course progress (no expiry)'
+          ]
+        },
+        {
+          icon: '📊',
+          title: 'Analytics and marketing cookies',
+          body: 'MathHelper currently does not use Google Analytics, Facebook Pixel, or similar third-party analytics/marketing services. If this changes, we will request your prior consent.'
+        },
+        {
+          icon: '⚙️',
+          title: 'How to manage cookies',
+          body: 'You can delete cookies and local data at any time from your browser settings or from the phone app. Deleting essential cookies will cause you to be logged out of your account.'
+        },
+        {
+          icon: '📅',
+          title: 'Changes to this policy',
+          body: 'Any significant changes will be notified by email or in-app notification. Continued use after changes implies acceptance.'
+        }
+      ]
     }
   },
   de: {
     badge: 'Datenschutzrichtlinie',
     title: 'Datenschutzrichtlinie',
     updated: 'Zuletzt aktualisiert: Maerz 2026',
+    tabPrivacy: 'Datenschutzrichtlinie',
+    tabCookie: 'Cookie-Richtlinie',
     sections: [
       {
         icon: '📋',
@@ -360,7 +480,7 @@ const T = {
       },
       {
         icon: '🗑️',
-        title: 'Datenloesch­ung',
+        title: 'Datenloesch\u00ADung',
         body: `Sie haben das Recht, die Loeschung Ihres Kontos und aller Ihrer Daten zu beantragen. Senden Sie eine E-Mail an EnoDevSupport@proton.me und wir loeschen sie innerhalb von 30 Tagen.`
       },
       {
@@ -378,17 +498,79 @@ const T = {
       title: 'Haben Sie Fragen?',
       body: 'Fuer datenschutzbezogene Fragen kontaktieren Sie uns:',
       email: 'EnoDevSupport@proton.me'
+    },
+    cookie: {
+      badge: 'Cookie-Richtlinie',
+      title: 'Cookie-Richtlinie',
+      sections: [
+        {
+          icon: '🍪',
+          title: 'Was sind Cookies',
+          body: 'Cookies und aehnliche Technologien (localStorage, sessionStorage) sind kleine Dateien, die auf Ihrem Geraet gespeichert werden, wenn Sie mathhelper.online besuchen.'
+        },
+        {
+          icon: '🔑',
+          title: 'Wesentliche Cookies (erforderlich)',
+          body: 'Diese Cookies sind fuer das Funktionieren der Anwendung notwendig. Ohne sie kann der Dienst nicht ordnungsgemaess funktionieren. Sie koennen nicht deaktiviert werden.',
+          list: [
+            '@math_helper_access_token — JWT-Authentifizierungstoken (laeuft nach 15 Minuten ab)',
+            '@math_helper_refresh_token — Sitzungserneuerungstoken (laeuft nach 7 Tagen ab)',
+            '@math_helper_language — Bevorzugte App-Sprache (kein Ablaufdatum)',
+            '@mathhelper_course_progress — Kursfortschritt (kein Ablaufdatum)'
+          ]
+        },
+        {
+          icon: '📊',
+          title: 'Analyse- und Marketing-Cookies',
+          body: 'MathHelper verwendet derzeit kein Google Analytics, Facebook Pixel oder aehnliche Analyse-/Marketingdienste von Drittanbietern. Wenn sich dies aendert, werden wir Ihre vorherige Zustimmung einholen.'
+        },
+        {
+          icon: '⚙️',
+          title: 'Cookie-Verwaltung',
+          body: 'Sie koennen Cookies und lokale Daten jederzeit ueber Ihre Browsereinstellungen oder die Telefon-App loeschen. Das Loeschen wesentlicher Cookies fuehrt zur Abmeldung aus Ihrem Konto.'
+        },
+        {
+          icon: '📅',
+          title: 'Aenderungen dieser Richtlinie',
+          body: 'Wesentliche Aenderungen werden per E-Mail oder In-App-Benachrichtigung mitgeteilt. Die weitere Nutzung nach Aenderungen impliziert deren Akzeptanz.'
+        }
+      ]
     }
   }
 };
+
+let currentSection = 'privacy';
+
+function showSection(section) {
+  currentSection = section;
+  const privacyDiv = document.getElementById('content');
+  const cookieDiv = document.getElementById('cookieContent');
+  const tabPrivacy = document.getElementById('tabPrivacy');
+  const tabCookie = document.getElementById('tabCookie');
+
+  if (section === 'privacy') {
+    privacyDiv.style.display = '';
+    cookieDiv.style.display = 'none';
+    tabPrivacy.classList.add('active');
+    tabCookie.classList.remove('active');
+  } else {
+    privacyDiv.style.display = 'none';
+    cookieDiv.style.display = '';
+    tabPrivacy.classList.remove('active');
+    tabCookie.classList.add('active');
+  }
+}
 
 function render(lang) {
   const t = T[lang];
   document.getElementById('badgeText').textContent = t.badge;
   document.getElementById('pageTitle').textContent = t.title;
   document.getElementById('lastUpdated').textContent = t.updated;
+  document.getElementById('tabPrivacyLabel').textContent = t.tabPrivacy;
+  document.getElementById('tabCookieLabel').textContent = t.tabCookie;
   document.documentElement.lang = lang === 'sq' ? 'sq' : lang === 'de' ? 'de' : 'en';
 
+  // Render privacy policy sections
   const content = document.getElementById('content');
   content.innerHTML = t.sections.map(s => `
     <div class="section">
@@ -404,6 +586,25 @@ function render(lang) {
     </div>
   `;
 
+  // Render cookie policy sections
+  const cookieContent = document.getElementById('cookieContent');
+  const ck = t.cookie;
+  cookieContent.innerHTML = `
+    <div class="page-badge" style="margin-bottom:24px;">&#x1F36A; ${ck.badge}</div>
+    <h2 style="font-size:clamp(22px,3vw,32px);font-weight:900;letter-spacing:-0.5px;margin-bottom:32px;color:var(--text);">${ck.title}</h2>
+  ` + ck.sections.map(s => `
+    <div class="section">
+      <h2><span class="icon">${s.icon}</span> ${s.title}</h2>
+      ${s.body ? `<p>${s.body}</p>` : ''}
+      ${s.list ? `<ul>${s.list.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+    </div>
+  `).join('') + `
+    <div class="contact-box" style="margin-top:32px;">
+      <h2>${t.contact.title}</h2>
+      <p>${t.contact.body}<br><a href="mailto:${t.contact.email}">${t.contact.email}</a></p>
+    </div>
+  `;
+
   document.querySelectorAll('.lang-btn').forEach(b => {
     b.classList.toggle('active', b.dataset.lang === lang);
   });
@@ -412,6 +613,11 @@ function render(lang) {
 document.querySelectorAll('.lang-btn').forEach(b => {
   b.addEventListener('click', () => render(b.dataset.lang));
 });
+
+// Check if we arrived via #cookies anchor
+if (window.location.hash === '#cookies') {
+  showSection('cookie');
+}
 
 render('sq');
 </script>

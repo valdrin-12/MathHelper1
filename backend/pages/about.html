@@ -510,6 +510,43 @@
       .qr-steps li { justify-content: center; }
       .qr-section { padding: 60px 24px; }
     }
+
+    /* COOKIE BANNER */
+    #cookie-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+      background: #0F172A;
+      color: #fff;
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; flex-wrap: wrap;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+    #cookie-banner p {
+      font-size: 14px; color: rgba(255,255,255,0.85);
+      margin: 0; line-height: 1.5;
+    }
+    #cookie-banner .cookie-actions {
+      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    }
+    #cookie-banner .cookie-learn {
+      font-size: 14px; color: #93C5FD; font-weight: 600;
+      text-decoration: underline; cursor: pointer;
+      background: none; border: none; font-family: inherit;
+      white-space: nowrap;
+    }
+    #cookie-banner .cookie-learn:hover { color: #BFDBFE; }
+    #cookie-banner .cookie-accept {
+      background: #10B981; color: #fff;
+      border: none; border-radius: 10px;
+      padding: 9px 22px; font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      white-space: nowrap; transition: background 0.2s;
+    }
+    #cookie-banner .cookie-accept:hover { background: #059669; }
+    @media (max-width: 600px) {
+      #cookie-banner { flex-direction: column; text-align: center; }
+    }
   </style>
 </head>
 <body>
@@ -766,6 +803,7 @@
         <a href="/about" data-i18n="footer.about">Rreth nesh</a>
         <a href="/dashboard" data-i18n="footer.app">Aplikacioni</a>
         <a href="/privacy" data-i18n="footer.privacy">Privatesia</a>
+        <a href="/privacy#cookies" data-i18n="footer.cookie">Cookie Policy</a>
         <a href="mailto:EnoDevSupport@proton.me" data-i18n="footer.contact">Kontakt</a>
       </div>
       <div style="font-size: 14px;" data-i18n="footer.copy">
@@ -838,8 +876,12 @@
         'footer.about': 'Rreth nesh',
         'footer.app': 'Aplikacioni',
         'footer.privacy': 'Privatesia',
+        'footer.cookie': 'Cookie Policy',
         'footer.contact': 'Kontakt',
         'footer.copy': '\u00A9 2026 MathHelper. Te gjitha te drejtat e rezervuara.',
+        'cookie.banner': 'mathhelper.online p\u00ebrdor cookies th\u00eblb\u00ebsore p\u00ebr funksionimin e aplikacionit.',
+        'cookie.learnMore': 'Lexo m\u00eb shum\u00eb',
+        'cookie.accept': 'Kuptova',
       },
       en: {
         'nav.how': 'How it works',
@@ -902,8 +944,12 @@
         'footer.about': 'About us',
         'footer.app': 'App',
         'footer.privacy': 'Privacy',
+        'footer.cookie': 'Cookie Policy',
         'footer.contact': 'Contact',
         'footer.copy': '\u00A9 2026 MathHelper. All rights reserved.',
+        'cookie.banner': 'mathhelper.online uses essential cookies for app functionality.',
+        'cookie.learnMore': 'Learn more',
+        'cookie.accept': 'Got it',
       },
       de: {
         'nav.how': 'Wie es funktioniert',
@@ -966,8 +1012,12 @@
         'footer.about': '\u00DCber uns',
         'footer.app': 'App',
         'footer.privacy': 'Datenschutz',
+        'footer.cookie': 'Cookie-Richtlinie',
         'footer.contact': 'Kontakt',
         'footer.copy': '\u00A9 2026 MathHelper. Alle Rechte vorbehalten.',
+        'cookie.banner': 'mathhelper.online verwendet wesentliche Cookies f\u00FCr die App-Funktionalit\u00E4t.',
+        'cookie.learnMore': 'Mehr erfahren',
+        'cookie.accept': 'Verstanden',
       }
     };
 
@@ -1003,6 +1053,17 @@
       document.querySelectorAll('a[href*="/dashboard"]').forEach(a => {
         a.href = '/dashboard?lang=' + lang;
       });
+
+      // Update cookie banner text if visible
+      const banner = document.getElementById('cookie-banner');
+      if (banner && T[lang]) {
+        const bannerP = banner.querySelector('p');
+        const learnBtn = banner.querySelector('.cookie-learn');
+        const acceptBtn = banner.querySelector('.cookie-accept');
+        if (bannerP) bannerP.textContent = T[lang]['cookie.banner'] || T['sq']['cookie.banner'];
+        if (learnBtn) learnBtn.textContent = T[lang]['cookie.learnMore'] || T['sq']['cookie.learnMore'];
+        if (acceptBtn) acceptBtn.textContent = T[lang]['cookie.accept'] || T['sq']['cookie.accept'];
+      }
     }
 
     // Language button clicks
@@ -1053,6 +1114,29 @@
         if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
+
+    // ─── COOKIE BANNER ───
+    (function() {
+      const COOKIE_KEY = 'mathhelper_cookie_accepted';
+      if (localStorage.getItem(COOKIE_KEY)) return;
+
+      const t = T[currentLang] || T['sq'];
+      const banner = document.createElement('div');
+      banner.id = 'cookie-banner';
+      banner.innerHTML = `
+        <p>${t['cookie.banner']}</p>
+        <div class="cookie-actions">
+          <button class="cookie-learn" onclick="window.location.href='/privacy#cookies'">${t['cookie.learnMore']}</button>
+          <button class="cookie-accept" id="cookieAcceptBtn">${t['cookie.accept']}</button>
+        </div>
+      `;
+      document.body.appendChild(banner);
+
+      document.getElementById('cookieAcceptBtn').addEventListener('click', function() {
+        localStorage.setItem(COOKIE_KEY, '1');
+        banner.remove();
+      });
+    })();
   </script>
 </body>
 </html>

@@ -570,6 +570,12 @@
     "invalidCode": "Kod i pavlefshëm. Provoni përsëri.",
     "passwordMismatch": "Fjalëkalimet nuk përputhen"
   },
+  "privacy": {
+    "consentText": "Jam dakord me",
+    "consentLink": "Politikën e Privatësisë dhe Cookie Policy",
+    "consentSuffix": "të MathHelper",
+    "consentRequired": "Duhet të pranoni Politikën e Privatësisë për t'u regjistruar."
+  },
   "onboarding": {
     "slide1Title": "Skano & Zgjidh Menjehere",
     "slide1Desc": "Bej nje foto te problemit matematikor ose shkruaje, dhe merr zgjidhje hap pas hapi me AI.",

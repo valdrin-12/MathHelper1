@@ -477,6 +477,12 @@
     "invalidCode": "Invalid code. Please try again.",
     "passwordMismatch": "Passwords don't match"
   },
+  "privacy": {
+    "consentText": "I agree to the",
+    "consentLink": "Privacy Policy and Cookie Policy",
+    "consentSuffix": "of MathHelper",
+    "consentRequired": "You must accept the Privacy Policy to register."
+  },
   "onboarding": {
     "slide1Title": "Scan & Solve Instantly",
     "slide1Desc": "Take a photo of any math problem or type it in, and get step-by-step solutions powered by AI.",

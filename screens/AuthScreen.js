@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   Alert,
   Dimensions,
+  Linking,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
@@ -37,6 +38,7 @@ export default function AuthScreen() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [privacyConsent, setPrivacyConsent] = useState(false);
   const [loginError, setLoginError] = useState('');
 
   // Forgot password state
@@ -55,6 +57,7 @@ export default function AuthScreen() {
     setEmail('');
     setPassword('');
     setConfirmPassword('');
+    setPrivacyConsent(false);
     setErrors({});
     setShowPassword(false);
     setShowConfirmPassword(false);
@@ -98,6 +101,9 @@ export default function AuthScreen() {
       newErrors.confirmPassword = t('auth.validation.confirmRequired');
     } else if (password !== confirmPassword) {
       newErrors.confirmPassword = t('auth.validation.passwordsMismatch');
+    }
+    if (!privacyConsent) {
+      newErrors.privacyConsent = t('privacy.consentRequired');
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -470,6 +476,33 @@ export default function AuthScreen() {
                 </View>
                 {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
               </View>
+
+              {/* Privacy Consent */}
+              <TouchableOpacity
+                style={styles.consentRow}
+                onPress={() => {
+                  setPrivacyConsent(!privacyConsent);
+                  if (errors.privacyConsent) setErrors({ ...errors, privacyConsent: null });
+                }}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.checkbox, privacyConsent && styles.checkboxChecked, errors.privacyConsent && styles.checkboxError]}>
+                  {privacyConsent && <Ionicons name="checkmark" size={13} color="#FFFFFF" />}
+                </View>
+                <Text style={styles.consentText}>
+                  {t('privacy.consentText')}{' '}
+                  <Text
+                    style={styles.consentLink}
+                    onPress={() => Linking.openURL('https://mathhelper.online/privacy')}
+                  >
+                    {t('privacy.consentLink')}
+                  </Text>
+                  {' '}{t('privacy.consentSuffix')}
+                </Text>
+              </TouchableOpacity>
+              {errors.privacyConsent && (
+                <Text style={styles.errorText}>{errors.privacyConsent}</Text>
+              )}
 
               {/* Submit */}
               <TouchableOpacity
@@ -876,6 +909,46 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginLeft: 4,
     fontWeight: '500',
+  },
+
+  // Privacy Consent
+  consentRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginTop: 4,
+    marginBottom: 4,
+    gap: 10,
+  },
+  checkbox: {
+    width: 20,
+    height: 20,
+    borderRadius: 5,
+    borderWidth: 2,
+    borderColor: COLORS.inputBorder,
+    backgroundColor: COLORS.inputBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 1,
+    flexShrink: 0,
+  },
+  checkboxChecked: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  checkboxError: {
+    borderColor: COLORS.error,
+    backgroundColor: COLORS.errorLight,
+  },
+  consentText: {
+    flex: 1,
+    fontSize: 13,
+    color: COLORS.textSubtle,
+    lineHeight: 19,
+  },
+  consentLink: {
+    color: COLORS.primary,
+    fontWeight: '700',
+    textDecorationLine: 'underline',
   },
 
   // Submit Button

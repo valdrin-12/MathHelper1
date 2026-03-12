@@ -477,6 +477,12 @@
     "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
     "passwordMismatch": "Passwörter stimmen nicht überein"
   },
+  "privacy": {
+    "consentText": "Ich stimme der",
+    "consentLink": "Datenschutzrichtlinie und Cookie-Richtlinie",
+    "consentSuffix": "von MathHelper zu",
+    "consentRequired": "Sie müssen die Datenschutzrichtlinie akzeptieren, um sich zu registrieren."
+  },
   "onboarding": {
     "slide1Title": "Scannen & Sofort Losen",
     "slide1Desc": "Fotografiere ein Mathe-Problem oder tippe es ein und erhalte schrittweise Losungen mit KI.",
