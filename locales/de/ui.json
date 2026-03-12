@@ -25,7 +25,7 @@
   "auth": {
     "login": "Anmelden",
     "register": "Registrieren",
-    "welcomeBack": "Willkommen zurück!",
+    "welcomeBack": "Willkommen",
     "loginSubtitle": "Melden Sie sich an, um weiterzulernen",
     "createAccount": "Konto erstellen",
     "registerSubtitle": "Starten Sie Ihre Mathe-Reise",
@@ -50,6 +50,7 @@
     "loginFailed": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
     "userNotFound": "Diese E-Mail ist nicht registriert. Bitte erstellen Sie ein neues Konto.",
     "registerFailed": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "emailAlreadyExists": "Dieser Benutzer ist bereits auf der MathHelper-Plattform registriert.",
     "validation": {
       "emailRequired": "E-Mail ist erforderlich.",
       "emailInvalid": "Ungültiges E-Mail-Format.",
@@ -475,7 +476,9 @@
     "backToLogin": "Zurück zur Anmeldung",
     "codeExpired": "Code abgelaufen. Bitte fordern Sie einen neuen an.",
     "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
-    "passwordMismatch": "Passwörter stimmen nicht überein"
+    "passwordMismatch": "Passwörter stimmen nicht überein",
+    "noAccountFound": "Kein Konto mit dieser E-Mail gefunden.",
+    "codeSentSuccess": "Code wurde erfolgreich an Ihre E-Mail gesendet"
   },
   "privacy": {
     "consentText": "Ich stimme der",

@@ -50,6 +50,7 @@
     "loginFailed": "Kyçja dështoi. Provoni përsëri.",
     "userNotFound": "Ky email nuk është i regjistruar. Krijoni një llogari të re.",
     "registerFailed": "Regjistrimi dështoi. Provoni përsëri.",
+    "emailAlreadyExists": "Ky përdorues është tashmë i regjistruar në platformën MathHelper.",
     "validation": {
       "emailRequired": "Email-i është i detyrueshëm.",
       "emailInvalid": "Formati i emailit është i pavlefshëm.",
@@ -568,7 +569,9 @@
     "backToLogin": "Kthehu te Kyçja",
     "codeExpired": "Kodi ka skaduar. Kërkoni një të ri.",
     "invalidCode": "Kod i pavlefshëm. Provoni përsëri.",
-    "passwordMismatch": "Fjalëkalimet nuk përputhen"
+    "passwordMismatch": "Fjalëkalimet nuk përputhen",
+    "noAccountFound": "Nuk u gjet asnjë llogari me këtë email.",
+    "codeSentSuccess": "Kodi u dërgua me sukses në emailin tuaj"
   },
   "privacy": {
     "consentText": "Jam dakord me",

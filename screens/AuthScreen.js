@@ -132,7 +132,12 @@ export default function AuthScreen() {
     try {
       const result = await register(name.trim(), email.trim(), password, i18n.language);
       if (!result.success) {
-        Alert.alert(t('common.error'), result.error || t('auth.registerFailed'));
+        let errorMessage = result.error || t('auth.registerFailed');
+        // Check if error is about email already existing
+        if (result.error && (result.error.toLowerCase().includes('already') || result.error === 'EMAIL_EXISTS')) {
+          errorMessage = t('auth.validation.emailAlreadyExists');
+        }
+        Alert.alert(t('common.error'), errorMessage);
       }
     } finally {
       setLoading(false);
@@ -163,8 +168,16 @@ export default function AuthScreen() {
     try {
       await api.post('/api/auth/forgot-password', { email: resetEmail.trim(), language: i18n.language });
       setForgotMode('code');
+      setForgotError('');
     } catch (err) {
-      setForgotError(err.message || t('common.error'));
+      // Check if error is about email not found
+      if (err.data?.error && err.data.error.includes('not found')) {
+        setForgotError(t('forgotPassword.noAccountFound'));
+      } else if (err.status === 404) {
+        setForgotError(t('forgotPassword.noAccountFound'));
+      } else {
+        setForgotError(err.message || t('common.error'));
+      }
     } finally {
       setForgotLoading(false);
     }

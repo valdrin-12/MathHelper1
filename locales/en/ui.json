@@ -25,7 +25,7 @@
   "auth": {
     "login": "Log In",
     "register": "Sign Up",
-    "welcomeBack": "Welcome back!",
+    "welcomeBack": "Welcome",
     "loginSubtitle": "Log in to continue learning",
     "createAccount": "Create Account",
     "registerSubtitle": "Start your math journey",
@@ -50,6 +50,7 @@
     "loginFailed": "Login failed. Please try again.",
     "userNotFound": "This email is not registered. Please create a new account.",
     "registerFailed": "Registration failed. Please try again.",
+    "emailAlreadyExists": "This user is already registered on the MathHelper platform.",
     "validation": {
       "emailRequired": "Email is required.",
       "emailInvalid": "Invalid email format.",
@@ -475,7 +476,9 @@
     "backToLogin": "Back to Login",
     "codeExpired": "Code expired. Please request a new one.",
     "invalidCode": "Invalid code. Please try again.",
-    "passwordMismatch": "Passwords don't match"
+    "passwordMismatch": "Passwords don't match",
+    "noAccountFound": "No account found with this email.",
+    "codeSentSuccess": "Code sent successfully to your email"
   },
   "privacy": {
     "consentText": "I agree to the",

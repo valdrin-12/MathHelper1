@@ -186,15 +186,9 @@ async function forgotPassword(req, res) {
   try {
     const { email, language } = req.body;
 
-    // Always return success to prevent email enumeration
-    const genericResponse = {
-      success: true,
-      message: 'If an account exists with that email, a reset code has been sent.',
-    };
-
     const user = await userModel.findByEmail(email);
     if (!user) {
-      return res.json(genericResponse);
+      return res.status(404).json({ success: false, error: 'No account found with this email' });
     }
 
     // Generate 6-digit code
@@ -214,7 +208,10 @@ async function forgotPassword(req, res) {
     const emailLang = language || user.language || 'al';
     await sendPasswordResetEmail(email, code, emailLang);
 
-    res.json(genericResponse);
+    res.json({
+      success: true,
+      message: 'Code sent successfully to your email',
+    });
   } catch (err) {
     console.error('ForgotPassword error:', err);
     res.status(500).json({ success: false, error: 'Failed to process request' });
