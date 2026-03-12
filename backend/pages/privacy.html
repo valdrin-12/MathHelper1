@@ -614,12 +614,17 @@ document.querySelectorAll('.lang-btn').forEach(b => {
   b.addEventListener('click', () => render(b.dataset.lang));
 });
 
+// Read ?lang= from URL (set by app or landing page)
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+const T_LANGS = ['sq', 'en', 'de'];
+const initLang = T_LANGS.includes(urlLang) ? urlLang : 'sq';
+
 // Check if we arrived via #cookies anchor
 if (window.location.hash === '#cookies') {
   showSection('cookie');
 }
 
-render('sq');
+render(initLang);
 </script>
 </body>
 </html>
