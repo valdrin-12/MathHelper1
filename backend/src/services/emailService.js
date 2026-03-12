@@ -39,6 +39,7 @@ const translations = {
       feature3Title: 'Kuize interaktive',
       feature3Sub: 'Testo njohurite e tua me kuize te ndryshme',
       footer: 'Nese ke ndonje pytje ose problem, mos hezito te na kontaktosh.',
+      ctaButton: 'Hap MathHelper',
       copyright: 'Te gjitha te drejtat te rezervuara.',
     },
     reset: {
@@ -63,6 +64,7 @@ const translations = {
       feature3Title: 'Interactive quizzes',
       feature3Sub: 'Test your knowledge with various quizzes',
       footer: 'If you have any questions or issues, don\'t hesitate to contact us.',
+      ctaButton: 'Open MathHelper',
       copyright: 'All rights reserved.',
     },
     reset: {
@@ -87,6 +89,7 @@ const translations = {
       feature3Title: 'Interaktive Quizze',
       feature3Sub: 'Teste dein Wissen mit verschiedenen Quizzen',
       footer: 'Wenn du Fragen oder Probleme hast, zögere nicht uns zu kontaktieren.',
+      ctaButton: 'MathHelper öffnen',
       copyright: 'Alle Rechte vorbehalten.',
     },
     reset: {
@@ -165,6 +168,16 @@ function getWelcomeEmailHtml(userName, lang) {
                         <div style="color:#6b7280;font-size:13px;">${t.feature3Sub}</div>
                       </td>
                     </tr></table>
+                  </td>
+                </tr>
+              </table>
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0 20px;">
+                <tr>
+                  <td align="center">
+                    <a href="https://mathhelper.online/dashboard"
+                       style="display:inline-block;background-color:#4ade80;color:#000000;font-size:16px;font-weight:700;padding:16px 48px;border-radius:12px;text-decoration:none;letter-spacing:0.3px;">
+                      ${t.ctaButton}
+                    </a>
                   </td>
                 </tr>
               </table>
