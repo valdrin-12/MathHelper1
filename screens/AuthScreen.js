@@ -40,6 +40,7 @@ export default function AuthScreen() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [loginError, setLoginError] = useState('');
+  const [registerError, setRegisterError] = useState('');
 
   // Forgot password state
   const [forgotMode, setForgotMode] = useState(false); // false | 'email' | 'code' | 'newPassword' | 'success'
@@ -62,6 +63,7 @@ export default function AuthScreen() {
     setErrors({});
     setShowPassword(false);
     setShowConfirmPassword(false);
+    setRegisterError('');
   };
 
   const toggleMode = () => {
@@ -133,12 +135,11 @@ export default function AuthScreen() {
     try {
       const result = await register(name.trim(), email.trim(), password, i18n.language);
       if (!result.success) {
-        let errorMessage = result.error || t('auth.registerFailed');
-        // Check if error is about email already existing
         if (result.error && (result.error.toLowerCase().includes('already') || result.error === 'EMAIL_EXISTS')) {
-          errorMessage = t('auth.emailAlreadyExists');
+          setRegisterError(t('auth.emailAlreadyExists'));
+        } else {
+          setRegisterError(result.error || t('auth.registerFailed'));
         }
-        Alert.alert(t('common.error'), errorMessage);
       }
     } finally {
       setLoading(false);
@@ -517,6 +518,14 @@ export default function AuthScreen() {
               {errors.privacyConsent && (
                 <Text style={styles.errorText}>{errors.privacyConsent}</Text>
               )}
+
+              {/* Register error message */}
+              {registerError ? (
+                <View style={styles.loginErrorBox}>
+                  <Ionicons name="alert-circle" size={16} color="#DC2626" style={{ marginRight: 6 }} />
+                  <Text style={styles.loginErrorText}>{registerError}</Text>
+                </View>
+              ) : null}
 
               {/* Submit */}
               <TouchableOpacity
