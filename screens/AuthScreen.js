@@ -49,6 +49,7 @@ export default function AuthScreen() {
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotError, setForgotError] = useState('');
+  const [forgotSuccess, setForgotSuccess] = useState('');
 
   const [errors, setErrors] = useState({});
 
@@ -135,7 +136,7 @@ export default function AuthScreen() {
         let errorMessage = result.error || t('auth.registerFailed');
         // Check if error is about email already existing
         if (result.error && (result.error.toLowerCase().includes('already') || result.error === 'EMAIL_EXISTS')) {
-          errorMessage = t('auth.validation.emailAlreadyExists');
+          errorMessage = t('auth.emailAlreadyExists');
         }
         Alert.alert(t('common.error'), errorMessage);
       }
@@ -167,13 +168,13 @@ export default function AuthScreen() {
     setForgotError('');
     try {
       await api.post('/api/auth/forgot-password', { email: resetEmail.trim(), language: i18n.language });
-      setForgotMode('code');
+      setForgotSuccess(t('forgotPassword.codeSentSuccess'));
       setForgotError('');
+      setForgotMode('code');
     } catch (err) {
+      setForgotSuccess('');
       // Check if error is about email not found
-      if (err.data?.error && err.data.error.includes('not found')) {
-        setForgotError(t('forgotPassword.noAccountFound'));
-      } else if (err.status === 404) {
+      if (err.status === 404 || (err.data?.error && err.data.error.includes('not found'))) {
         setForgotError(t('forgotPassword.noAccountFound'));
       } else {
         setForgotError(err.message || t('common.error'));
@@ -585,6 +586,13 @@ export default function AuthScreen() {
                 <View style={styles.forgotErrorContainer}>
                   <Ionicons name="alert-circle" size={16} color={COLORS.error} style={{ marginRight: 6 }} />
                   <Text style={styles.forgotErrorText}>{forgotError}</Text>
+                </View>
+              ) : null}
+
+              {forgotSuccess ? (
+                <View style={styles.forgotSuccessMessageContainer}>
+                  <Ionicons name="checkmark-circle" size={16} color={COLORS.success} style={{ marginRight: 6 }} />
+                  <Text style={styles.forgotSuccessMessageText}>{forgotSuccess}</Text>
                 </View>
               ) : null}
 
@@ -1130,6 +1138,20 @@ const styles = StyleSheet.create({
   forgotErrorText: {
     fontSize: 13,
     color: COLORS.error,
+    fontWeight: '500',
+    flex: 1,
+  },
+  forgotSuccessMessageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLORS.successLight,
+    borderRadius: 10,
+    padding: 12,
+    marginBottom: 16,
+  },
+  forgotSuccessMessageText: {
+    fontSize: 13,
+    color: COLORS.success,
     fontWeight: '500',
     flex: 1,
   },
