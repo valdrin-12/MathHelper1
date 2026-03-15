@@ -140,7 +140,7 @@ async function createCheckout(req, res) {
     // Build Paysera payment URL
     const paymentUrl = p.buildRequestUrl({
       orderid: orderId,
-      amount: 199, // €1.99 in cents
+      amount: 399, // €3.99 in cents
       currency: 'EUR',
       test: 1, // Remove this for production
     });

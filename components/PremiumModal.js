@@ -17,7 +17,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS, SHADOWS } from '../theme/constants';
 import { useUser } from '../context/UserContext';
 import * as purchaseService from '../services/purchaseService';
-import api from '../services/apiClient';
 
 export default function PremiumModal({ visible, onClose }) {
   const { t } = useTranslation();
@@ -74,20 +73,8 @@ export default function PremiumModal({ visible, onClose }) {
 
   const handleBuyPremium = async () => {
     if (isWeb) {
-      // Web: redirect to Stripe Checkout
-      try {
-        setLoading(true);
-        const response = await api.post('/api/purchases/create-checkout');
-        if (response.data?.url) {
-          window.location.href = response.data.url;
-        } else {
-          setLoading(false);
-          Alert.alert(t('common.error'), response.data?.error || t('premium.purchaseError'));
-        }
-      } catch (error) {
-        setLoading(false);
-        Alert.alert(t('common.error'), t('premium.purchaseError'));
-      }
+      // Web: redirect to payment page
+      window.location.href = '/payment.html';
       return;
     }
 

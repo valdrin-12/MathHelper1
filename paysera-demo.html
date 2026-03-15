@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MathHelper – Paguaj Premium</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 40%, #f0fdf4 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 24px 16px 48px;
+      color: #1e1b4b;
+    }
+
+    .demo-notice {
+      width: 100%;
+      max-width: 480px;
+      background: #fefce8;
+      border: 1.5px solid #fbbf24;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .demo-notice .icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+    .demo-notice p { font-size: 13px; color: #92400e; line-height: 1.5; }
+    .demo-notice strong { color: #78350f; }
+
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: #ffffff;
+      border-radius: 20px;
+      box-shadow: 0 4px 6px rgba(124,58,237,0.06), 0 20px 60px rgba(124,58,237,0.12);
+      overflow: hidden;
+    }
+
+    .card-header {
+      background: linear-gradient(135deg, #7C3AED 0%, #6d28d9 50%, #5b21b6 100%);
+      padding: 28px 28px 24px;
+      text-align: center;
+      position: relative;
+    }
+    .card-header::after {
+      content: '';
+      position: absolute;
+      bottom: -1px; left: 0; right: 0;
+      height: 20px;
+      background: #ffffff;
+      border-radius: 20px 20px 0 0;
+    }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .logo-emoji { font-size: 32px; }
+    .logo-text { font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+    .logo-text span { color: #c4b5fd; }
+    .header-subtitle { font-size: 14px; color: rgba(255,255,255,0.75); font-weight: 400; letter-spacing: 0.3px; }
+
+    .card-body { padding: 28px 28px 24px; }
+
+    .order-summary {
+      background: linear-gradient(135deg, #f5f3ff, #faf5ff);
+      border: 1.5px solid #e9d5ff;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 24px;
+    }
+    .order-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .order-title { font-size: 15px; font-weight: 700; color: #1e1b4b; margin-bottom: 3px; }
+    .order-tag {
+      display: inline-block;
+      background: #ede9fe;
+      color: #6d28d9;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .order-price { text-align: right; flex-shrink: 0; }
+    .price-amount { font-size: 28px; font-weight: 800; color: #7C3AED; line-height: 1; }
+    .price-currency { font-size: 16px; vertical-align: super; font-weight: 700; }
+    .order-divider { border: none; border-top: 1px dashed #ddd6fe; margin: 12px 0; }
+    .order-note { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 5px; }
+
+    .section-label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #9ca3af;
+      margin-bottom: 14px;
+    }
+
+    .form-group { margin-bottom: 16px; position: relative; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .input-wrapper { position: relative; display: flex; align-items: center; }
+    .input-icon { position: absolute; left: 14px; font-size: 16px; color: #9ca3af; pointer-events: none; z-index: 1; }
+    .form-input {
+      width: 100%;
+      padding: 13px 14px 13px 40px;
+      border: 1.5px solid #e5e7eb;
+      border-radius: 11px;
+      font-size: 15px;
+      color: #1e1b4b;
+      background: #fafafa;
+      transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .form-input::placeholder { color: #c4b5fd; font-size: 14px; }
+    .form-input:focus { border-color: #7C3AED; background: #fff; box-shadow: 0 0 0 3px rgba(124,58,237,0.12); }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .card-brands { position: absolute; right: 12px; display: flex; gap: 5px; align-items: center; }
+    .brand-chip { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 5px; padding: 2px 7px; font-size: 10px; font-weight: 800; letter-spacing: 0.3px; }
+    .brand-visa { color: #1a1f71; }
+    .brand-mc { color: #eb001b; }
+
+    .pay-btn {
+      width: 100%;
+      padding: 16px;
+      margin-top: 8px;
+      background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 14px rgba(22,163,74,0.35);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .pay-btn:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(22,163,74,0.4); }
+    .pay-btn:active:not(:disabled) { transform: translateY(0); }
+    .pay-btn:disabled { opacity: 0.75; cursor: not-allowed; }
+
+    .spinner {
+      width: 20px; height: 20px;
+      border: 2.5px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .secure-badge {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-size: 12.5px;
+      color: #6b7280;
+      font-weight: 500;
+    }
+    .paysera-logo { background: #0a2a6e; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 7px; border-radius: 4px; letter-spacing: 0.5px; }
+
+    .success-overlay {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 28px;
+      text-align: center;
+      animation: fadeIn 0.4s ease;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    .success-circle {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #16a34a, #15803d);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px rgba(22,163,74,0.3);
+      animation: pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.1s both;
+    }
+    @keyframes pop { from { transform: scale(0); } to { transform: scale(1); } }
+    .success-title { font-size: 20px; font-weight: 800; color: #065f46; margin-bottom: 8px; }
+    .success-sub { font-size: 14px; color: #6b7280; line-height: 1.6; max-width: 280px; }
+    .success-tag {
+      margin-top: 20px;
+      background: #f0fdf4;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 30px;
+      padding: 8px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #15803d;
+    }
+
+    footer { margin-top: 20px; font-size: 12px; color: #9ca3af; text-align: center; }
+    footer a { color: #9ca3af; text-decoration: none; }
+    footer a:hover { color: #7C3AED; }
+
+    @media (max-width: 360px) {
+      .card-body { padding: 20px 18px; }
+      .price-amount { font-size: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="demo-notice">
+    <div class="icon">⚠️</div>
+    <p>
+      <strong>Mënyra Demo</strong> — Të dhëna testimi:&nbsp;
+      Kartë: <strong>4111 1111 1111 1111</strong> &nbsp;|&nbsp;
+      Skadim: <strong>12/28</strong> &nbsp;|&nbsp;
+      CVV: <strong>123</strong>
+    </p>
+  </div>
+
+  <div class="card" id="mainCard">
+
+    <div class="card-header">
+      <div class="logo-row">
+        <span class="logo-emoji">📐</span>
+        <span class="logo-text">Math<span>Helper</span></span>
+      </div>
+      <div class="header-subtitle">Upgrade to Premium · Faturim i sigurt</div>
+    </div>
+
+    <div class="card-body" id="formView">
+
+      <div class="order-summary">
+        <div class="order-row">
+          <div class="order-info">
+            <div class="order-title">MathHelper Premium</div>
+            <span class="order-tag">Blerje një herë</span>
+          </div>
+          <div class="order-price">
+            <div class="price-amount"><span class="price-currency">€</span>3.99</div>
+          </div>
+        </div>
+        <hr class="order-divider" />
+        <div class="order-note">
+          <span>✅</span>
+          Pa abonim &nbsp;·&nbsp; Pa tarifa të fshehura &nbsp;·&nbsp; Akses i përhershëm
+        </div>
+      </div>
+
+      <div class="section-label">Të dhënat e pagesës</div>
+
+      <form id="payForm" onsubmit="handlePay(event)" novalidate>
+
+        <div class="form-group">
+          <label for="cardNumber">Card Number</label>
+          <div class="input-wrapper">
+            <span class="input-icon">💳</span>
+            <input class="form-input" id="cardNumber" type="text" inputmode="numeric" placeholder="4111 1111 1111 1111" maxlength="19" autocomplete="cc-number" />
+            <div class="card-brands">
+              <span class="brand-chip brand-visa">VISA</span>
+              <span class="brand-chip brand-mc">MC</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="cardName">Cardholder Name</label>
+          <div class="input-wrapper">
+            <span class="input-icon">👤</span>
+            <input class="form-input" id="cardName" type="text" placeholder="Test User" autocomplete="cc-name" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="expiry">Expiry Date</label>
+            <div class="input-wrapper">
+              <span class="input-icon">📅</span>
+              <input class="form-input" id="expiry" type="text" inputmode="numeric" placeholder="12/28" maxlength="5" autocomplete="cc-exp" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="cvv">CVV</label>
+            <div class="input-wrapper">
+              <span class="input-icon">🔑</span>
+              <input class="form-input" id="cvv" type="text" inputmode="numeric" placeholder="123" maxlength="3" autocomplete="cc-csc" />
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <div class="input-wrapper">
+            <span class="input-icon">✉️</span>
+            <input class="form-input" id="email" type="email" placeholder="test@mathhelper.online" autocomplete="email" />
+          </div>
+        </div>
+
+        <button class="pay-btn" type="submit" id="payBtn">
+          <span id="btnText">🔒 Paguaj €3.99</span>
+          <div class="spinner" id="spinner"></div>
+        </button>
+
+      </form>
+
+      <div class="secure-badge">
+        <span>🔒</span>
+        Pagesa e sigurt me
+        <span class="paysera-logo">PAYSERA</span>
+        &nbsp;· SSL / TLS
+      </div>
+
+    </div>
+
+    <div class="success-overlay" id="successView">
+      <div class="success-circle">✓</div>
+      <div class="success-title">Pagesa u krye me sukses!</div>
+      <div class="success-sub">
+        Mirë se vini në <strong>MathHelper Premium</strong> 🎉<br/>
+        Një email konfirmimi u dërgua te adresa juaj.
+      </div>
+      <div class="success-tag">Akses i aktivizuar · €3.99 · Blerje një herë</div>
+    </div>
+
+  </div>
+
+  <footer>
+    © 2025 MathHelper &nbsp;·&nbsp; Powered by <a href="#">Paysera</a>
+    &nbsp;·&nbsp; <a href="#">Privatësia</a>
+    &nbsp;·&nbsp; <a href="#">Kushtet</a>
+  </footer>
+
+  <script>
+    document.getElementById('cardNumber').addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '').substring(0, 16);
+      e.target.value = v.replace(/(.{4})/g, '$1 ').trim();
+    });
+
+    document.getElementById('expiry').addEventListener('input', function(e) {
+      let v = e.target.value.replace(/\D/g, '').substring(0, 4);
+      if (v.length >= 3) v = v.substring(0, 2) + '/' + v.substring(2);
+      e.target.value = v;
+    });
+
+    document.getElementById('cvv').addEventListener('input', function(e) {
+      e.target.value = e.target.value.replace(/\D/g, '').substring(0, 3);
+    });
+
+    function handlePay(e) {
+      e.preventDefault();
+      const btn = document.getElementById('payBtn');
+      const btnText = document.getElementById('btnText');
+      const spinner = document.getElementById('spinner');
+
+      const fields = ['cardNumber','cardName','expiry','cvv','email'];
+      let ok = true;
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) {
+          el.style.borderColor = '#ef4444';
+          el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+          ok = false;
+        } else {
+          el.style.borderColor = '';
+          el.style.boxShadow = '';
+        }
+      });
+      if (!ok) return;
+
+      btn.disabled = true;
+      btnText.style.display = 'none';
+      spinner.style.display = 'block';
+
+      setTimeout(() => {
+        document.getElementById('formView').style.display = 'none';
+        const sv = document.getElementById('successView');
+        sv.style.display = 'flex';
+      }, 1800);
+    }
+
+    document.querySelectorAll('.form-input').forEach(el => {
+      el.addEventListener('focus', function() {
+        this.style.borderColor = '';
+        this.style.boxShadow = '';
+      });
+    });
+  </script>
+
+</body>
+</html>

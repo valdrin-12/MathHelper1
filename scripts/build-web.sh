@@ -26,4 +26,7 @@ sed -i.bak 's|</style>|</style>\
     </style>|' backend/public/index.html
 rm -f backend/public/index.html.bak
 
+# Copy payment page
+cp paysera-demo.html backend/public/payment.html
+
 echo "Done! Web build ready in backend/public/"
