@@ -466,6 +466,7 @@
     "title": "Passwort zurücksetzen",
     "emailPlaceholder": "Geben Sie Ihre E-Mail ein",
     "sendCode": "Code senden",
+    "emailInstruction": "Geben Sie die E-Mail ein, mit der Sie sich bei MathHelper registriert haben",
     "codeSent": "Code gesendet! Überprüfen Sie Ihre E-Mail",
     "codePlaceholder": "6-stelligen Code eingeben",
     "verifyCode": "Code überprüfen",

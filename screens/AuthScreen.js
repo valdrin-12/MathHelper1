@@ -608,7 +608,7 @@ export default function AuthScreen() {
               {/* Step 1: Email */}
               {forgotMode === 'email' && (
                 <View>
-                  <Text style={styles.forgotStepText}>{t('forgotPassword.codeSent').split('!')[0]}</Text>
+                  <Text style={styles.forgotStepText}>{t('forgotPassword.emailInstruction')}</Text>
                   <View style={styles.inputGroup}>
                     <View style={styles.inputWrapper}>
                       <Ionicons name="mail-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />

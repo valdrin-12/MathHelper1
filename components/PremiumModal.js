@@ -124,7 +124,7 @@ export default function PremiumModal({ visible, onClose }) {
     }
   };
 
-  const price = product?.localizedPrice || '€1.99';
+  const price = product?.localizedPrice || '€3.99';
 
   const freeBenefits = [
     { icon: 'camera-outline', text: t('premium.freeAnalyses') },
