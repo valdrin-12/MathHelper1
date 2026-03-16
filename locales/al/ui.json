@@ -144,6 +144,7 @@
     "quizCount_other": "{{count}} kuize",
     "challengeOfDay": "Sfida e Ditës",
     "daily": "Ditore",
+    "completed": "Completuar sot ✓",
     "bestScore": "Më i miri: {{score}}%"
   },
   "saved": {
@@ -163,7 +164,10 @@
     "confirmDelete": "Konfirmo Fshirjen",
     "confirmDeleteMessage": "Jeni i sigurt që doni të fshini këtë problem?",
     "deleteSuccess": "Problemi u fshi me sukses.",
-    "deleteError": "Nuk mund të fshihet problemi."
+    "deleteError": "Nuk mund të fshihet problemi.",
+    "selectAll": "Zgjidh të gjitha",
+    "selectedCount": "{{count}} zgjedhur",
+    "confirmBulkDelete": "Jeni i sigurt që doni të fshini {{count}} probleme?"
   },
   "settings": {
     "title": "Cilësimet",
@@ -188,6 +192,11 @@
     "privacyPolicy": "Politika e Privatësisë",
     "aboutApp": "Rreth Aplikacionit",
     "logout": "Dilni nga Llogaria",
+    "deleteAccount": "Fshi Llogarinë",
+    "deleteAccountDesc": "Fshi llogarinë dhe të gjitha të dhënat përgjithmonë",
+    "deleteAccountConfirmTitle": "Fshi Llogarinë",
+    "deleteAccountConfirm": "Jeni i sigurt? Ky veprim është i pakthyeshëm. Të gjitha të dhënat tuaja do të fshihen.",
+    "deleteAccountError": "Nuk mund të fshihet llogaria. Provoni përsëri.",
     "logoutConfirm": "Jeni i sigurt që dëshironi të dilni?",
     "logoutConfirmTitle": "Dilni nga Llogaria",
     "version": "MathHelper · Versioni 1.0.0",
@@ -273,7 +282,8 @@
     "correctAnswer": "Përgjigja e saktë: {{answer}}",
     "retry": "Provo Përsëri",
     "goBack": "Kthehu",
-    "perfectScore": "REZULTAT PERFEKT!"
+    "perfectScore": "REZULTAT PERFEKT!",
+    "history": "Tentativa të mëparshme"
   },
   "profileModal": {
     "title": "Profili Im",

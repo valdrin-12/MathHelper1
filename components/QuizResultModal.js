@@ -110,7 +110,7 @@ function ConfettiAnimation() {
   );
 }
 
-export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, isPerfectScore }) {
+export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, isPerfectScore, quizHistory = [] }) {
   const { t } = useTranslation();
 
   if (!result || !quizSet) return null;
@@ -209,6 +209,22 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
               </View>
             );
           })}
+          {/* Quiz History */}
+          {quizHistory.length > 1 && (
+            <View style={styles.historySection}>
+              <Text style={styles.historyTitle}>{t('quizResult.history')}</Text>
+              {quizHistory.slice().reverse().slice(0, 5).map((attempt, i) => (
+                <View key={i} style={styles.historyRow}>
+                  <Text style={styles.historyAttempt}>#{quizHistory.length - i}</Text>
+                  <View style={styles.historyBar}>
+                    <View style={[styles.historyBarFill, { width: `${attempt.percentage}%`, backgroundColor: attempt.percentage >= 75 ? COLORS.success : attempt.percentage >= 50 ? COLORS.warning : COLORS.error }]} />
+                  </View>
+                  <Text style={styles.historyScore}>{attempt.percentage}%</Text>
+                </View>
+              ))}
+            </View>
+          )}
+
           <View style={{ height: 20 }} />
         </ScrollView>
 
@@ -438,5 +454,52 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     color: COLORS.textLight,
+  },
+  historySection: {
+    marginHorizontal: SPACING.md,
+    marginTop: SPACING.lg,
+    backgroundColor: COLORS.backgroundAlt,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.md,
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  historyTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+    marginBottom: SPACING.sm,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  historyRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+    gap: 8,
+  },
+  historyAttempt: {
+    fontSize: 12,
+    color: COLORS.textMuted,
+    fontWeight: '600',
+    width: 28,
+  },
+  historyBar: {
+    flex: 1,
+    height: 8,
+    backgroundColor: COLORS.border,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  historyBarFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  historyScore: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: COLORS.text,
+    width: 36,
+    textAlign: 'right',
   },
 });

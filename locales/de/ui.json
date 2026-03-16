@@ -144,6 +144,7 @@
     "quizCount_other": "{{count}} Quiz",
     "challengeOfDay": "Herausforderung des Tages",
     "daily": "Täglich",
+    "completed": "Heute erledigt ✓",
     "bestScore": "Beste: {{score}}%"
   },
   "saved": {
@@ -163,7 +164,10 @@
     "confirmDelete": "Löschung bestätigen",
     "confirmDeleteMessage": "Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?",
     "deleteSuccess": "Aufgabe erfolgreich gelöscht.",
-    "deleteError": "Aufgabe konnte nicht gelöscht werden."
+    "deleteError": "Aufgabe konnte nicht gelöscht werden.",
+    "selectAll": "Alle auswählen",
+    "selectedCount": "{{count}} ausgewählt",
+    "confirmBulkDelete": "Möchten Sie wirklich {{count}} Aufgaben löschen?"
   },
   "settings": {
     "title": "Einstellungen",
@@ -188,6 +192,11 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "aboutApp": "Über die App",
     "logout": "Abmelden",
+    "deleteAccount": "Konto löschen",
+    "deleteAccountDesc": "Konto und alle Daten dauerhaft löschen",
+    "deleteAccountConfirmTitle": "Konto löschen",
+    "deleteAccountConfirm": "Sind Sie sicher? Diese Aktion ist unwiderruflich. Alle Ihre Daten werden dauerhaft gelöscht.",
+    "deleteAccountError": "Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
     "logoutConfirm": "Sind Sie sicher, dass Sie sich abmelden möchten?",
     "logoutConfirmTitle": "Abmelden",
     "version": "MathHelper · Version 1.0.0",
@@ -273,7 +282,8 @@
     "correctAnswer": "Richtige Antwort: {{answer}}",
     "retry": "Erneut versuchen",
     "goBack": "Zurück",
-    "perfectScore": "PERFEKTE PUNKTZAHL!"
+    "perfectScore": "PERFEKTE PUNKTZAHL!",
+    "history": "Frühere Versuche"
   },
   "profileModal": {
     "title": "Mein Profil",

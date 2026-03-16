@@ -32,6 +32,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
   const [savedLesson, setSavedLesson] = useState(null);
   const [showResumeMessage, setShowResumeMessage] = useState(false);
   const scrollRef = useRef(null);
+  const lessonNavRef = useRef(null);
 
   // Load saved progress when modal opens
   useEffect(() => {
@@ -82,11 +83,14 @@ export default function CourseDetailModal({ visible, course, onClose }) {
 
   const handleStartCourse = () => {
     if (savedLesson !== null && savedLesson > 0) {
-      // Show resume message and jump to saved lesson
       setCurrentLesson(savedLesson);
       setShowContent(true);
       setShowResumeMessage(true);
-      setTimeout(() => setShowResumeMessage(false), 3000);
+      setTimeout(() => setShowResumeMessage(false), 5000);
+      // Scroll lesson nav to the saved lesson tab
+      setTimeout(() => {
+        lessonNavRef.current?.scrollTo({ x: savedLesson * 48, animated: true });
+      }, 200);
     } else {
       setShowContent(true);
     }
@@ -102,7 +106,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
     setCurrentLesson(index);
     setExpandedPractice({});
     scrollRef.current?.scrollTo({ y: 0, animated: true });
-    // Save progress
+    lessonNavRef.current?.scrollTo({ x: index * 48, animated: true });
     saveCourseProgress(index);
   };
 
@@ -146,7 +150,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
 
         {/* Lesson Navigation */}
         <View style={contentStyles.lessonNav}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={contentStyles.lessonNavContent}>
+          <ScrollView ref={lessonNavRef} horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={contentStyles.lessonNavContent}>
             {lessons.map((l, index) => (
               <TouchableOpacity
                 key={index}

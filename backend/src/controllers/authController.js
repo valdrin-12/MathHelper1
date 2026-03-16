@@ -254,4 +254,21 @@ async function resetPassword(req, res) {
   }
 }
 
-module.exports = { register, login, logout, getMe, updateProfile, refreshTokens, forgotPassword, resetPassword };
+async function deleteAccount(req, res) {
+  try {
+    const userId = req.userId;
+    // Delete all user data in order (foreign keys first)
+    await pool.query('DELETE FROM refresh_tokens WHERE user_id = $1', [userId]);
+    await pool.query('DELETE FROM saved_items WHERE user_id = $1', [userId]);
+    await pool.query('DELETE FROM completed_courses WHERE user_id = $1', [userId]);
+    await pool.query('DELETE FROM completed_quizzes WHERE user_id = $1', [userId]);
+    await pool.query('DELETE FROM daily_activity WHERE user_id = $1', [userId]);
+    await pool.query('DELETE FROM users WHERE id = $1', [userId]);
+    res.json({ success: true, message: 'Account deleted successfully' });
+  } catch (err) {
+    console.error('DeleteAccount error:', err);
+    res.status(500).json({ success: false, error: 'Failed to delete account' });
+  }
+}
+
+module.exports = { register, login, logout, getMe, updateProfile, refreshTokens, forgotPassword, resetPassword, deleteAccount };

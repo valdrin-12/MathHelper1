@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
   Text,
@@ -81,6 +82,15 @@ export default function QuizScreen() {
   const [completedQuizSet, setCompletedQuizSet] = useState(null);
   const [lastScore, setLastScore] = useState(null);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [challengeCompletedToday, setChallengeCompletedToday] = useState(false);
+
+  const todayDateKey = new Date().toISOString().slice(0, 10);
+
+  useEffect(() => {
+    AsyncStorage.getItem(`@mathhelper_challenge_${todayDateKey}`)
+      .then(val => { if (val === 'done') setChallengeCompletedToday(true); })
+      .catch(() => {});
+  }, [todayDateKey]);
 
   // Animations
   const streakPulse = useRef(new Animated.Value(1)).current;
@@ -152,6 +162,12 @@ export default function QuizScreen() {
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     setLastScore(percentage);
     recordQuizCompleted(quizSet?.id, quizSet?.title, correct, total);
+    // Mark daily challenge as completed
+    if (dailyChallenge && quizSet?.id === dailyChallenge.id) {
+      AsyncStorage.setItem(`@mathhelper_challenge_${todayDateKey}`, 'done')
+        .then(() => setChallengeCompletedToday(true))
+        .catch(() => {});
+    }
   };
 
   const handleRetryQuiz = () => {
@@ -248,10 +264,17 @@ export default function QuizScreen() {
                 <Ionicons name="trophy" size={20} color="#F59E0B" />
                 <Text style={styles.challengeTitle}>{t('quiz.challengeOfDay')}</Text>
               </View>
-              <View style={styles.challengeDailyBadge}>
-                <Ionicons name="today" size={12} color={COLORS.primary} />
-                <Text style={styles.challengeDailyText}>{t('quiz.daily')}</Text>
-              </View>
+              {challengeCompletedToday ? (
+                <View style={[styles.challengeDailyBadge, { backgroundColor: COLORS.successLight }]}>
+                  <Ionicons name="checkmark-circle" size={12} color={COLORS.success} />
+                  <Text style={[styles.challengeDailyText, { color: COLORS.success }]}>{t('quiz.completed')}</Text>
+                </View>
+              ) : (
+                <View style={styles.challengeDailyBadge}>
+                  <Ionicons name="today" size={12} color={COLORS.primary} />
+                  <Text style={styles.challengeDailyText}>{t('quiz.daily')}</Text>
+                </View>
+              )}
             </View>
             <TouchableOpacity
               style={styles.challengeCard}
@@ -456,6 +479,7 @@ export default function QuizScreen() {
         onClose={handleCloseResult}
         onRetry={handleRetryQuiz}
         isPerfectScore={lastScore === 100}
+        quizHistory={(stats?.completedQuizzes || []).filter(q => q.quizId === completedQuizSet?.id)}
       />
 
       {/* Premium Upsell Modal */}

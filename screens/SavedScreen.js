@@ -31,6 +31,47 @@ export default function SavedScreen() {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedIds, setSelectedIds] = useState(new Set());
+
+  const toggleSelectionMode = () => {
+    setSelectionMode(prev => !prev);
+    setSelectedIds(new Set());
+  };
+
+  const toggleSelectItem = (id) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
+
+  const selectAll = () => setSelectedIds(new Set(savedItems.map(i => i.id)));
+
+  const handleBulkDelete = () => {
+    if (selectedIds.size === 0) return;
+    Alert.alert(
+      t('saved.confirmDelete'),
+      t('saved.confirmBulkDelete', { count: selectedIds.size }),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('common.delete'),
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await Promise.all([...selectedIds].map(id => removeItem(id)));
+              setSelectionMode(false);
+              setSelectedIds(new Set());
+            } catch (e) {
+              Alert.alert(t('common.error'), t('saved.deleteError'));
+            }
+          },
+        },
+      ]
+    );
+  };
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -99,9 +140,11 @@ export default function SavedScreen() {
               {t('saved.itemCount', { count: savedItems.length })}
             </Text>
           </View>
-          <View style={styles.headerIconBox}>
-            <Ionicons name="bookmark" size={26} color="rgba(255,255,255,0.9)" />
-          </View>
+          {savedItems.length > 0 && (
+            <TouchableOpacity onPress={toggleSelectionMode} style={styles.headerIconBox}>
+              <Ionicons name={selectionMode ? 'close' : 'checkmark-done'} size={22} color="rgba(255,255,255,0.9)" />
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Glass stats */}
@@ -159,13 +202,33 @@ export default function SavedScreen() {
             </TouchableOpacity>
           </View>
         ) : (
+          <>
+          {selectionMode && (
+            <View style={styles.selectionBar}>
+              <TouchableOpacity onPress={selectAll} style={styles.selectionBarBtn}>
+                <Ionicons name="checkmark-done" size={16} color={COLORS.primary} />
+                <Text style={styles.selectionBarBtnText}>{t('saved.selectAll')}</Text>
+              </TouchableOpacity>
+              <Text style={styles.selectionCount}>{t('saved.selectedCount', { count: selectedIds.size })}</Text>
+              <TouchableOpacity onPress={handleBulkDelete} style={[styles.selectionBarBtn, styles.deleteBtn]}>
+                <Ionicons name="trash" size={16} color="#fff" />
+                <Text style={[styles.selectionBarBtnText, { color: '#fff' }]}>{t('common.delete')}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <View style={[styles.itemsList, isDesktop && { flexDirection: 'row', flexWrap: 'wrap', gap: 16 }]}>
             {savedItems.map((item) => (
               <PressableCard
                 key={item.id}
-                style={[styles.glassItemCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }]}
-                onPress={() => handleViewItem(item)}
+                style={[styles.glassItemCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }, selectionMode && selectedIds.has(item.id) && { borderWidth: 2, borderColor: COLORS.primary }]}
+                onPress={() => selectionMode ? toggleSelectItem(item.id) : handleViewItem(item)}
+                onLongPress={() => { if (!selectionMode) { setSelectionMode(true); toggleSelectItem(item.id); } }}
               >
+              {selectionMode && (
+                <View style={styles.checkboxOverlay}>
+                  <Ionicons name={selectedIds.has(item.id) ? 'checkmark-circle' : 'ellipse-outline'} size={24} color={selectedIds.has(item.id) ? COLORS.primary : COLORS.textMuted} />
+                </View>
+              )}
                 {/* Glass layer */}
                 <View style={styles.glassLayer} />
 
@@ -228,6 +291,7 @@ export default function SavedScreen() {
 
             <View style={{ height: SPACING.xl }} />
           </View>
+          </>
         )}
         </WebContainer>
       </ScrollView>
@@ -320,6 +384,46 @@ const styles = StyleSheet.create({
   },
   itemsList: {
     padding: SPACING.xl,
+  },
+
+  selectionBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm,
+    backgroundColor: COLORS.background,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.glassBorder,
+    marginBottom: SPACING.md,
+  },
+  selectionBarBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  selectionBarBtnText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: COLORS.primary,
+  },
+  deleteBtn: {
+    backgroundColor: COLORS.error,
+    borderRadius: 8,
+  },
+  selectionCount: {
+    fontSize: 13,
+    color: COLORS.textMuted,
+    fontWeight: '500',
+  },
+  checkboxOverlay: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 10,
   },
 
   // Glassmorphism Item Card

@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import api from '../services/apiClient';
 import {
   View,
   Text,
@@ -31,6 +33,54 @@ export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
   const [soundEffects, setSoundEffects] = useState(true);
   const [infoModal, setInfoModal] = useState(null);
+
+  useEffect(() => {
+    const loadSettings = async () => {
+      try {
+        const [notif, sound] = await Promise.all([
+          AsyncStorage.getItem('@mathhelper_notifications'),
+          AsyncStorage.getItem('@mathhelper_sound'),
+        ]);
+        if (notif !== null) setNotifications(notif === 'true');
+        if (sound !== null) setSoundEffects(sound === 'true');
+      } catch (e) {}
+    };
+    loadSettings();
+  }, []);
+
+  const handleNotificationsChange = async (value) => {
+    setNotifications(value);
+    try { await AsyncStorage.setItem('@mathhelper_notifications', String(value)); } catch (e) {}
+  };
+
+  const handleSoundChange = async (value) => {
+    setSoundEffects(value);
+    try { await AsyncStorage.setItem('@mathhelper_sound', String(value)); } catch (e) {}
+  };
+
+  const handleDeleteAccount = async () => {
+    const doDelete = async () => {
+      try {
+        await api.delete('/api/auth/account');
+        await logout();
+      } catch (e) {
+        Alert.alert(t('common.error'), t('settings.deleteAccountError'));
+      }
+    };
+
+    if (Platform.OS === 'web') {
+      if (window.confirm(t('settings.deleteAccountConfirm'))) await doDelete();
+    } else {
+      Alert.alert(
+        t('settings.deleteAccountConfirmTitle'),
+        t('settings.deleteAccountConfirm'),
+        [
+          { text: t('common.cancel'), style: 'cancel' },
+          { text: t('settings.deleteAccount'), style: 'destructive', onPress: doDelete },
+        ]
+      );
+    }
+  };
 
   const handleLogout = async () => {
     if (Platform.OS === 'web') {
@@ -137,7 +187,7 @@ export default function SettingsScreen() {
           title={t('settings.notifications')}
           description={t('settings.notificationsDesc')}
           value={notifications}
-          onValueChange={setNotifications}
+          onValueChange={handleNotificationsChange}
         />
 
         <SettingToggle
@@ -157,7 +207,7 @@ export default function SettingsScreen() {
           title={t('settings.soundEffects')}
           description={t('settings.soundEffectsDesc')}
           value={soundEffects}
-          onValueChange={setSoundEffects}
+          onValueChange={handleSoundChange}
         />
 
         <View style={[styles.settingCard, { backgroundColor: colors.surface }]}>
@@ -250,7 +300,7 @@ export default function SettingsScreen() {
         />
       </View>
 
-      {/* Logout */}
+      {/* Logout + Delete Account */}
       <View style={styles.section}>
         <TouchableOpacity
           style={styles.logoutButton}
@@ -259,6 +309,19 @@ export default function SettingsScreen() {
         >
           <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
           <Text style={styles.logoutText}>{t('settings.logout')}</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.deleteAccountButton}
+          onPress={handleDeleteAccount}
+          activeOpacity={0.8}
+        >
+          <Ionicons name="trash-outline" size={18} color={COLORS.error} />
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <Text style={styles.deleteAccountText}>{t('settings.deleteAccount')}</Text>
+            <Text style={styles.deleteAccountDesc}>{t('settings.deleteAccountDesc')}</Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color={COLORS.error} />
         </TouchableOpacity>
       </View>
 
@@ -519,6 +582,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: '#FFFFFF',
+  },
+
+  deleteAccountButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: SPACING.md,
+    marginTop: SPACING.sm,
+    borderRadius: BORDER_RADIUS.lg,
+    borderWidth: 1,
+    borderColor: COLORS.error + '40',
+    backgroundColor: COLORS.error + '08',
+  },
+  deleteAccountText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: COLORS.error,
+  },
+  deleteAccountDesc: {
+    fontSize: 12,
+    color: COLORS.error + '99',
+    marginTop: 2,
   },
 
   // Version

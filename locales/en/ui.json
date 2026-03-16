@@ -144,6 +144,7 @@
     "quizCount_other": "{{count}} quizzes",
     "challengeOfDay": "Challenge of the Day",
     "daily": "Daily",
+    "completed": "Completed today ✓",
     "bestScore": "Best: {{score}}%"
   },
   "saved": {
@@ -163,7 +164,10 @@
     "confirmDelete": "Confirm Deletion",
     "confirmDeleteMessage": "Are you sure you want to delete this problem?",
     "deleteSuccess": "Problem deleted successfully.",
-    "deleteError": "Could not delete the problem."
+    "deleteError": "Could not delete the problem.",
+    "selectAll": "Select all",
+    "selectedCount": "{{count}} selected",
+    "confirmBulkDelete": "Are you sure you want to delete {{count}} problems?"
   },
   "settings": {
     "title": "Settings",
@@ -188,6 +192,11 @@
     "privacyPolicy": "Privacy Policy",
     "aboutApp": "About the App",
     "logout": "Sign Out",
+    "deleteAccount": "Delete Account",
+    "deleteAccountDesc": "Permanently delete your account and all data",
+    "deleteAccountConfirmTitle": "Delete Account",
+    "deleteAccountConfirm": "Are you sure? This action is irreversible. All your data will be permanently deleted.",
+    "deleteAccountError": "Could not delete account. Please try again.",
     "logoutConfirm": "Are you sure you want to sign out?",
     "logoutConfirmTitle": "Sign Out",
     "version": "MathHelper · Version 1.0.0",
@@ -273,7 +282,8 @@
     "correctAnswer": "Correct answer: {{answer}}",
     "retry": "Try Again",
     "goBack": "Go Back",
-    "perfectScore": "PERFECT SCORE!"
+    "perfectScore": "PERFECT SCORE!",
+    "history": "Previous attempts"
   },
   "profileModal": {
     "title": "My Profile",

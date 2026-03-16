@@ -43,4 +43,6 @@ router.post('/reset-password', [
   validate,
 ], authController.resetPassword);
 
+router.delete('/account', authMiddleware, authController.deleteAccount);
+
 module.exports = router;
