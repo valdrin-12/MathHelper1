@@ -172,7 +172,7 @@
     MathHelper
   </a>
   <div class="lang-row">
-    <button class="lang-btn active" data-lang="sq">Shqip</button>
+    <button class="lang-btn active" data-lang="al">Shqip</button>
     <button class="lang-btn" data-lang="en">English</button>
     <button class="lang-btn" data-lang="de">Deutsch</button>
   </div>
@@ -195,7 +195,7 @@
 
 <script>
 const T = {
-  sq: {
+  al: {
     badge: 'Politika e Privatësisë',
     title: 'Politika e Privatësisë',
     updated: 'Përditësuar: Mars 2026',
@@ -285,10 +285,10 @@ const T = {
           title: 'Cookies thelbësore (të domosdoshme)',
           body: 'Këto cookies janë të nevojshme për funksionimin e aplikacionit. Pa to, shërbimi nuk mund të funksionojë siç duhet. Nuk mund të çaktivizohen.',
           list: [
-            '@math_helper_access_token — Token i autentifikimit JWT (skadon pas 15 minutave)',
-            '@math_helper_refresh_token — Token për rinovim të sesionit (skadon pas 7 ditëve)',
-            '@math_helper_language — Gjuha e preferuar e aplikacionit (pa skadim)',
-            '@mathhelper_course_progress — Progresi në kurse (pa skadim)'
+            '@math_helper_access_token: Token i autentifikimit JWT (skadon pas 15 minutave)',
+            '@math_helper_refresh_token: Token per rinovim të sesionit (skadon pas 7 ditëve)',
+            '@math_helper_language: Gjuha e preferuar e aplikacionit (pa skadim)',
+            '@mathhelper_course_progress: Progresi ne kurse (pa skadim)'
           ]
         },
         {
@@ -399,10 +399,10 @@ const T = {
           title: 'Essential cookies (required)',
           body: 'These cookies are necessary for the application to function. Without them, the service cannot work properly. They cannot be disabled.',
           list: [
-            '@math_helper_access_token — JWT authentication token (expires after 15 minutes)',
-            '@math_helper_refresh_token — Session renewal token (expires after 7 days)',
-            '@math_helper_language — Preferred application language (no expiry)',
-            '@mathhelper_course_progress — Course progress (no expiry)'
+            '@math_helper_access_token: JWT authentication token (expires after 15 minutes)',
+            '@math_helper_refresh_token: Session renewal token (expires after 7 days)',
+            '@math_helper_language: Preferred application language (no expiry)',
+            '@mathhelper_course_progress: Course progress (no expiry)'
           ]
         },
         {
@@ -513,10 +513,10 @@ const T = {
           title: 'Wesentliche Cookies (erforderlich)',
           body: 'Diese Cookies sind fuer das Funktionieren der Anwendung notwendig. Ohne sie kann der Dienst nicht ordnungsgemaess funktionieren. Sie koennen nicht deaktiviert werden.',
           list: [
-            '@math_helper_access_token — JWT-Authentifizierungstoken (laeuft nach 15 Minuten ab)',
-            '@math_helper_refresh_token — Sitzungserneuerungstoken (laeuft nach 7 Tagen ab)',
-            '@math_helper_language — Bevorzugte App-Sprache (kein Ablaufdatum)',
-            '@mathhelper_course_progress — Kursfortschritt (kein Ablaufdatum)'
+            '@math_helper_access_token: JWT-Authentifizierungstoken (laeuft nach 15 Minuten ab)',
+            '@math_helper_refresh_token: Sitzungserneuerungstoken (laeuft nach 7 Tagen ab)',
+            '@math_helper_language: Bevorzugte App-Sprache (kein Ablaufdatum)',
+            '@mathhelper_course_progress: Kursfortschritt (kein Ablaufdatum)'
           ]
         },
         {
@@ -568,7 +568,7 @@ function render(lang) {
   document.getElementById('lastUpdated').textContent = t.updated;
   document.getElementById('tabPrivacyLabel').textContent = t.tabPrivacy;
   document.getElementById('tabCookieLabel').textContent = t.tabCookie;
-  document.documentElement.lang = lang === 'sq' ? 'sq' : lang === 'de' ? 'de' : 'en';
+  const htmlLangMap = { al: 'sq', en: 'en', de: 'de' }; document.documentElement.lang = htmlLangMap[lang] || 'en';
 
   // Render privacy policy sections
   const content = document.getElementById('content');
@@ -616,8 +616,8 @@ document.querySelectorAll('.lang-btn').forEach(b => {
 
 // Read ?lang= from URL (set by app or landing page)
 const urlLang = new URLSearchParams(window.location.search).get('lang');
-const T_LANGS = ['sq', 'en', 'de'];
-const initLang = T_LANGS.includes(urlLang) ? urlLang : 'sq';
+const T_LANGS = ['al', 'en', 'de'];
+const storedLang = localStorage.getItem('mathhelper-lang'); const initLang = T_LANGS.includes(urlLang) ? urlLang : (T_LANGS.includes(storedLang) ? storedLang : 'al');
 
 // Check if we arrived via #cookies anchor
 if (window.location.hash === '#cookies') {

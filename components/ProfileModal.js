@@ -25,7 +25,7 @@ import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/co
 const { width } = Dimensions.get('window');
 
 const formatDate = (dateString, t) => {
-  if (!dateString) return '—';
+  if (!dateString) return '-';
   const date = new Date(dateString);
   const day = date.getDate();
   const month = t(`months.${date.getMonth()}`);

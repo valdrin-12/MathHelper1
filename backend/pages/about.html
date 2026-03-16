@@ -920,7 +920,7 @@
         'nav.openApp': 'Hap aplikacionin',
         'hero.badge': 'Falas per te gjithe',
         'hero.title': 'Ke nevoje per ndihme<br>ne matematike?',
-        'hero.subtitle': 'Mos u stresohu\u2014jo te gjithe e kuptojne matematiken qe ne provimin e pare. MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive qe te mesosh duke praktikuar.',
+        'hero.subtitle': 'Mos u stresohu, jo te gjithe e kuptojne matematiken qe ne provimin e pare. MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive qe te mesosh duke praktikuar.',
         'hero.cta': 'Fillo tani',
         'hero.secondary': 'Si funksionon?',
         'preview.dashboard': 'Paneli kryesor',
@@ -930,7 +930,7 @@
         'how.title': 'Tri hapa te thjeshta',
         'how.subtitle': 'Skenoj, shkruaj ose fotografo problemin tend dhe MathHelper do te te ndihmoje menjehere.',
         'how.step1.title': 'Skenoj ose shkruaj',
-        'how.step1.desc': 'Ke problem ne detyra? Fotografoje me kamere ose shkruaje me tastieren matematikore. MathHelper e lexon problemin ne cast\u2014edhe problemet me tekst.',
+        'how.step1.desc': 'Ke problem ne detyra? Fotografoje me kamere ose shkruaje me tastieren matematikore. MathHelper e lexon problemin ne cast, edhe problemet me tekst.',
         'how.step2.title': 'Merr zgjidhjen',
         'how.step2.desc': 'AI-ja jone (Gemini) analizon problemin dhe te jep zgjidhjen e plote me te gjitha hapat e shpjeguara. Asnje hap nuk mungon.',
         'how.step3.title': 'Meso dhe praktiko',
@@ -988,7 +988,7 @@
         'nav.openApp': 'Open app',
         'hero.badge': 'Free for everyone',
         'hero.title': 'Need help<br>with math?',
-        'hero.subtitle': 'Don\'t stress\u2014not everyone understands math on the first try. MathHelper helps you with step-by-step explanations, full courses, and interactive quizzes to learn by practicing.',
+        'hero.subtitle': 'Don\'t stress. Not everyone understands math on the first try. MathHelper helps you with step-by-step explanations, full courses, and interactive quizzes to learn by practicing.',
         'hero.cta': 'Start now',
         'hero.secondary': 'How it works?',
         'preview.dashboard': 'Dashboard',
@@ -998,7 +998,7 @@
         'how.title': 'Three simple steps',
         'how.subtitle': 'Scan, type, or photograph your problem and MathHelper will help you right away.',
         'how.step1.title': 'Scan or type',
-        'how.step1.desc': 'Having trouble with homework? Take a photo with the camera or type it with the math keyboard. MathHelper reads the problem instantly\u2014even text problems.',
+        'how.step1.desc': 'Having trouble with homework? Take a photo with the camera or type it with the math keyboard. MathHelper reads the problem instantly, even text problems.',
         'how.step2.title': 'Get the solution',
         'how.step2.desc': 'Our AI (Gemini) analyzes the problem and gives you the full solution with all steps explained. No step is missing.',
         'how.step3.title': 'Learn and practice',
@@ -1056,7 +1056,7 @@
         'nav.openApp': 'App \u00F6ffnen',
         'hero.badge': 'Kostenlos f\u00FCr alle',
         'hero.title': 'Brauchst du Hilfe<br>in Mathematik?',
-        'hero.subtitle': 'Keine Sorge\u2014nicht jeder versteht Mathe beim ersten Mal. MathHelper hilft dir mit Schritt-f\u00FCr-Schritt-Erkl\u00E4rungen, vollst\u00E4ndigen Kursen und interaktiven Quizzen zum Lernen durch \u00DCben.',
+        'hero.subtitle': 'Keine Sorge. Nicht jeder versteht Mathe beim ersten Mal. MathHelper hilft dir mit Schritt-f\u00FCr-Schritt-Erkl\u00E4rungen, vollst\u00E4ndigen Kursen und interaktiven Quizzen zum Lernen durch \u00DCben.',
         'hero.cta': 'Jetzt starten',
         'hero.secondary': 'Wie es funktioniert?',
         'preview.dashboard': '\u00DCbersicht',
@@ -1066,7 +1066,7 @@
         'how.title': 'Drei einfache Schritte',
         'how.subtitle': 'Scanne, tippe oder fotografiere dein Problem und MathHelper hilft dir sofort.',
         'how.step1.title': 'Scannen oder tippen',
-        'how.step1.desc': 'Probleme mit den Hausaufgaben? Fotografiere sie mit der Kamera oder tippe sie mit der Mathe-Tastatur. MathHelper liest das Problem sofort\u2014auch Textaufgaben.',
+        'how.step1.desc': 'Probleme mit den Hausaufgaben? Fotografiere sie mit der Kamera oder tippe sie mit der Mathe-Tastatur. MathHelper liest das Problem sofort, auch Textaufgaben.',
         'how.step2.title': 'L\u00F6sung erhalten',
         'how.step2.desc': 'Unsere KI (Gemini) analysiert das Problem und gibt dir die vollst\u00E4ndige L\u00F6sung mit allen erkl\u00E4rten Schritten. Kein Schritt fehlt.',
         'how.step3.title': 'Lernen und \u00FCben',
@@ -1160,9 +1160,15 @@
         a.href = '/dashboard?lang=' + lang;
       });
 
-      // Update QR links to include ?lang= parameter (Task 2)
+      // Update QR links to include ?lang= parameter
       document.querySelectorAll('a[href*="/qr"]').forEach(a => {
         a.href = '/qr?lang=' + lang;
+      });
+
+      // Update privacy links to include ?lang= parameter
+      document.querySelectorAll('a[href*="/privacy"]').forEach(a => {
+        const hash = a.href.includes('#') ? '#' + a.href.split('#')[1] : '';
+        a.href = '/privacy?lang=' + lang + hash;
       });
 
       // Update cookie banner text if visible
@@ -1237,7 +1243,7 @@
       banner.innerHTML = `
         <p>${t['cookie.banner']}</p>
         <div class="cookie-actions">
-          <button class="cookie-learn" onclick="window.location.href='/privacy#cookies'">${t['cookie.learnMore']}</button>
+          <button class="cookie-learn" onclick="window.location.href='/privacy?lang='+currentLang+'#cookies'">${t['cookie.learnMore']}</button>
           <button class="cookie-accept" id="cookieAcceptBtn">${t['cookie.accept']}</button>
         </div>
       `;
