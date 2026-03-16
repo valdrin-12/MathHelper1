@@ -1124,6 +1124,8 @@
     if (_urlLangAbout && _validLangsAbout.includes(_urlLangAbout)) {
       localStorage.setItem('mathhelper-lang', _urlLangAbout);
     }
+    // Track if user had explicitly chosen a language before (popup logic needs this)
+    const _langAlreadyChosen = !!localStorage.getItem('mathhelper-lang') || !!_urlLangAbout;
     let currentLang = localStorage.getItem('mathhelper-lang') || 'al';
 
     function setLanguage(lang) {
@@ -1249,11 +1251,11 @@
 
     // ─── LANGUAGE POPUP (first visit) ───
     (function() {
-      const LANG_KEY = 'mathhelper-lang';
       const overlay = document.getElementById('lang-popup-overlay');
 
-      // Show popup only if language not yet chosen
-      if (!localStorage.getItem(LANG_KEY)) {
+      // Show popup only if user has NOT explicitly chosen a language before
+      // (_langAlreadyChosen is captured before setLanguage() writes to localStorage)
+      if (!_langAlreadyChosen) {
         overlay.classList.remove('hidden');
       }
 
