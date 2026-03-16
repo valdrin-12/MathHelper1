@@ -547,9 +547,106 @@
     @media (max-width: 600px) {
       #cookie-banner { flex-direction: column; text-align: center; }
     }
+
+    /* ─── LANGUAGE SELECTION POPUP ─── */
+    #lang-popup-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(15,23,42,0.65);
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    #lang-popup-overlay.hidden { display: none; }
+    #lang-popup {
+      background: #fff;
+      border-radius: 24px;
+      padding: 40px 36px 36px;
+      max-width: 420px; width: 100%;
+      box-shadow: 0 24px 80px rgba(15,23,42,0.2);
+      text-align: center;
+      animation: popupIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes popupIn {
+      from { opacity: 0; transform: scale(0.88) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    #lang-popup .popup-icon {
+      width: 64px; height: 64px; border-radius: 18px;
+      background: #1E3A8A; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin: 0 auto 20px;
+    }
+    #lang-popup h2 {
+      font-size: 22px; font-weight: 800; color: #0F172A;
+      margin-bottom: 8px; letter-spacing: -0.4px;
+    }
+    #lang-popup p {
+      font-size: 14px; color: #64748B; margin-bottom: 28px; line-height: 1.6;
+    }
+    .lang-popup-options {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .lang-popup-btn {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px; border-radius: 14px;
+      border: 2px solid #E2E8F0; background: #F8FAFC;
+      cursor: pointer; text-align: left;
+      transition: all 0.18s; font-family: inherit;
+    }
+    .lang-popup-btn:hover {
+      border-color: #1E3A8A; background: #EFF6FF;
+      transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,58,138,0.1);
+    }
+    .lang-popup-btn .lp-flag { font-size: 28px; line-height: 1; }
+    .lang-popup-btn .lp-text { flex: 1; }
+    .lang-popup-btn .lp-name {
+      font-size: 15px; font-weight: 700; color: #0F172A; display: block;
+    }
+    .lang-popup-btn .lp-sub {
+      font-size: 12px; color: #64748B; display: block; margin-top: 2px;
+    }
+    .lang-popup-btn .lp-arrow {
+      font-size: 18px; color: #94A3B8; transition: color 0.18s;
+    }
+    .lang-popup-btn:hover .lp-arrow { color: #1E3A8A; }
   </style>
 </head>
 <body>
+
+  <!-- LANGUAGE SELECTION POPUP (shown on first visit) -->
+  <div id="lang-popup-overlay" class="hidden">
+    <div id="lang-popup">
+      <div class="popup-icon">📐</div>
+      <h2 id="popup-title">Zgjidhni gjuhën tuaj</h2>
+      <p id="popup-sub">Zgjidhni gjuhën në të cilën dëshironi të përdorni MathHelper.</p>
+      <div class="lang-popup-options">
+        <button class="lang-popup-btn" data-popup-lang="al">
+          <span class="lp-flag">🇦🇱</span>
+          <span class="lp-text">
+            <span class="lp-name">Shqip</span>
+            <span class="lp-sub">Albanian</span>
+          </span>
+          <span class="lp-arrow">›</span>
+        </button>
+        <button class="lang-popup-btn" data-popup-lang="en">
+          <span class="lp-flag">🇬🇧</span>
+          <span class="lp-text">
+            <span class="lp-name">English</span>
+            <span class="lp-sub">English</span>
+          </span>
+          <span class="lp-arrow">›</span>
+        </button>
+        <button class="lang-popup-btn" data-popup-lang="de">
+          <span class="lp-flag">🇩🇪</span>
+          <span class="lp-text">
+            <span class="lp-name">Deutsch</span>
+            <span class="lp-sub">German</span>
+          </span>
+          <span class="lp-arrow">›</span>
+        </button>
+      </div>
+    </div>
+  </div>
 
   <!-- NAV -->
   <nav id="navbar">
@@ -563,7 +660,7 @@
         <a href="#features" data-i18n="nav.features">Karakteristikat</a>
         <a href="#subjects" data-i18n="nav.subjects">Lendet</a>
         <div class="lang-switcher">
-          <button class="lang-btn active" data-lang="sq" title="Shqip">&#x1F1E6;&#x1F1F1;</button>
+          <button class="lang-btn active" data-lang="al" title="Shqip">&#x1F1E6;&#x1F1F1;</button>
           <button class="lang-btn" data-lang="en" title="English">&#x1F1EC;&#x1F1E7;</button>
           <button class="lang-btn" data-lang="de" title="Deutsch">&#x1F1E9;&#x1F1EA;</button>
         </div>
@@ -582,7 +679,7 @@
     <a href="/qr" data-i18n="nav.qr">&#x1F4F1; QR Code</a>
     <a href="/dashboard" data-i18n="nav.openApp">Hap aplikacionin</a>
     <div class="mobile-lang-row">
-      <button class="lang-btn active" data-lang="sq">&#x1F1E6;&#x1F1F1;</button>
+      <button class="lang-btn active" data-lang="al">&#x1F1E6;&#x1F1F1;</button>
       <button class="lang-btn" data-lang="en">&#x1F1EC;&#x1F1E7;</button>
       <button class="lang-btn" data-lang="de">&#x1F1E9;&#x1F1EA;</button>
     </div>
@@ -815,7 +912,7 @@
   <script>
     // ─── TRANSLATIONS ───
     const T = {
-      sq: {
+      al: {
         'nav.how': 'Si funksionon',
         'nav.features': 'Karakteristikat',
         'nav.subjects': 'Lendet',
@@ -1021,12 +1118,19 @@
       }
     };
 
-    let currentLang = localStorage.getItem('mathhelper-lang') || 'sq';
+    // Check ?lang= URL param (e.g. when coming back from QR page)
+    const _urlLangAbout = new URLSearchParams(window.location.search).get('lang');
+    const _validLangsAbout = ['al', 'en', 'de'];
+    if (_urlLangAbout && _validLangsAbout.includes(_urlLangAbout)) {
+      localStorage.setItem('mathhelper-lang', _urlLangAbout);
+    }
+    let currentLang = localStorage.getItem('mathhelper-lang') || 'al';
 
     function setLanguage(lang) {
       currentLang = lang;
       localStorage.setItem('mathhelper-lang', lang);
-      document.documentElement.lang = lang === 'sq' ? 'sq' : lang;
+      const htmlLangMap = { al: 'sq', en: 'en', de: 'de' };
+      document.documentElement.lang = htmlLangMap[lang] || lang;
 
       // Update all translatable elements
       document.querySelectorAll('[data-i18n]').forEach(el => {
@@ -1038,11 +1142,11 @@
 
       // Update page title
       const titles = {
-        sq: 'MathHelper - Asistenti yt personal i matematikes',
+        al: 'MathHelper - Asistenti yt personal i matematikes',
         en: 'MathHelper - Your personal math assistant',
         de: 'MathHelper - Dein pers\u00F6nlicher Mathe-Assistent'
       };
-      document.title = titles[lang] || titles.sq;
+      document.title = titles[lang] || titles.al;
 
       // Update active states on all lang buttons
       document.querySelectorAll('.lang-btn').forEach(btn => {
@@ -1054,15 +1158,20 @@
         a.href = '/dashboard?lang=' + lang;
       });
 
+      // Update QR links to include ?lang= parameter (Task 2)
+      document.querySelectorAll('a[href*="/qr"]').forEach(a => {
+        a.href = '/qr?lang=' + lang;
+      });
+
       // Update cookie banner text if visible
       const banner = document.getElementById('cookie-banner');
       if (banner && T[lang]) {
         const bannerP = banner.querySelector('p');
         const learnBtn = banner.querySelector('.cookie-learn');
         const acceptBtn = banner.querySelector('.cookie-accept');
-        if (bannerP) bannerP.textContent = T[lang]['cookie.banner'] || T['sq']['cookie.banner'];
-        if (learnBtn) learnBtn.textContent = T[lang]['cookie.learnMore'] || T['sq']['cookie.learnMore'];
-        if (acceptBtn) acceptBtn.textContent = T[lang]['cookie.accept'] || T['sq']['cookie.accept'];
+        if (bannerP) bannerP.textContent = T[lang]['cookie.banner'] || T['al']['cookie.banner'];
+        if (learnBtn) learnBtn.textContent = T[lang]['cookie.learnMore'] || T['al']['cookie.learnMore'];
+        if (acceptBtn) acceptBtn.textContent = T[lang]['cookie.accept'] || T['al']['cookie.accept'];
       }
     }
 
@@ -1120,7 +1229,7 @@
       const COOKIE_KEY = 'mathhelper_cookie_accepted';
       if (localStorage.getItem(COOKIE_KEY)) return;
 
-      const t = T[currentLang] || T['sq'];
+      const t = T[currentLang] || T['al'];
       const banner = document.createElement('div');
       banner.id = 'cookie-banner';
       banner.innerHTML = `
@@ -1135,6 +1244,26 @@
       document.getElementById('cookieAcceptBtn').addEventListener('click', function() {
         localStorage.setItem(COOKIE_KEY, '1');
         banner.remove();
+      });
+    })();
+
+    // ─── LANGUAGE POPUP (first visit) ───
+    (function() {
+      const LANG_KEY = 'mathhelper-lang';
+      const overlay = document.getElementById('lang-popup-overlay');
+
+      // Show popup only if language not yet chosen
+      if (!localStorage.getItem(LANG_KEY)) {
+        overlay.classList.remove('hidden');
+      }
+
+      // Popup button clicks
+      overlay.querySelectorAll('.lang-popup-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const lang = this.getAttribute('data-popup-lang');
+          overlay.classList.add('hidden');
+          setLanguage(lang);
+        });
       });
     })();
   </script>

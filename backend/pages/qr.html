@@ -143,7 +143,7 @@
     <h1 id="pageTitle">QR Code per Printim Stikera</h1>
     <p id="pageDesc">Printo kete faqe dhe ngjit stickerat.</p>
     <div class="lang-row">
-      <button class="lang-btn active" data-lang="sq">Shqip</button>
+      <button class="lang-btn active" data-lang="al">Shqip</button>
       <button class="lang-btn" data-lang="en">English</button>
       <button class="lang-btn" data-lang="de">Deutsch</button>
     </div>
@@ -157,10 +157,14 @@
   <div id="stickersContainer"></div>
 
   <script>
-    const QR_IMG = 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2';
+    const QR_URLS = {
+      al: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online%2F%3Flang%3Dal&bgcolor=ffffff&color=1E3A8A&qzone=2',
+      en: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online%2F%3Flang%3Den&bgcolor=ffffff&color=1E3A8A&qzone=2',
+      de: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online%2F%3Flang%3Dde&bgcolor=ffffff&color=1E3A8A&qzone=2',
+    };
 
     const TRANSLATIONS = {
-      sq: {
+      al: {
         pageTitle: 'QR Code per Printim Stikera',
         pageDesc: 'Printo kete faqe dhe ngjit stickerat.',
         printBtn: 'Printo tani',
@@ -207,15 +211,21 @@
       },
     };
 
-    let currentLang = 'sq';
+    // Read ?lang= from URL, fallback to localStorage, then 'al'
+    const _urlLang = new URLSearchParams(window.location.search).get('lang');
+    const _validLangs = ['al', 'en', 'de'];
+    let currentLang = (_urlLang && _validLangs.includes(_urlLang))
+      ? _urlLang
+      : (localStorage.getItem('mathhelper-lang') || 'al');
 
     function buildSticker(lang) {
       const t = TRANSLATIONS[lang];
+      const qrImg = QR_URLS[lang] || QR_URLS.al;
       return `
         <div class="stickers-grid">
           <!-- LARGE -->
           <div class="sticker large">
-            <img src="${QR_IMG}" alt="QR Code MathHelper" />
+            <img src="${qrImg}" alt="QR Code MathHelper" />
             <div class="sticker-content">
               <div class="sticker-logo">
                 <div class="sticker-logo-icon">&#x1F4D0;</div>
@@ -233,7 +243,7 @@
               <div class="sticker-logo-icon">&#x1F4D0;</div>
               MathHelper
             </div>
-            <img src="${QR_IMG}" alt="QR Code" />
+            <img src="${qrImg}" alt="QR Code" />
             <div class="sticker-tagline">${t.s1.tag}</div>
             <div class="sticker-desc">${t.s1.desc}</div>
             <div class="sticker-url">mathhelper.online</div>
@@ -245,7 +255,7 @@
               <div class="sticker-logo-icon">&#x1F4D0;</div>
               MathHelper
             </div>
-            <img src="${QR_IMG}" alt="QR Code" />
+            <img src="${qrImg}" alt="QR Code" />
             <div class="sticker-tagline">${t.s2.tag}</div>
             <div class="sticker-desc">${t.s2.desc}</div>
             <div class="sticker-url">mathhelper.online</div>
@@ -257,7 +267,7 @@
               <div class="sticker-logo-icon">&#x1F4D0;</div>
               MathHelper
             </div>
-            <img src="${QR_IMG}" alt="QR Code" />
+            <img src="${qrImg}" alt="QR Code" />
             <div class="sticker-tagline">${t.s3.tag}</div>
             <div class="sticker-desc">${t.s3.desc}</div>
             <div class="sticker-url">mathhelper.online</div>
@@ -269,7 +279,7 @@
               <div class="sticker-logo-icon">&#x1F4D0;</div>
               MathHelper
             </div>
-            <img src="${QR_IMG}" alt="QR Code" />
+            <img src="${qrImg}" alt="QR Code" />
             <div class="sticker-tagline">${t.s4.tag}</div>
             <div class="sticker-desc">${t.s4.desc}</div>
             <div class="sticker-url">mathhelper.online</div>
@@ -288,11 +298,16 @@
       document.querySelector('.back-link').textContent = t.backLink;
       document.getElementById('stickersContainer').innerHTML = buildSticker(lang);
 
+      // Update back link with lang param
+      const backLink = document.querySelector('.back-link');
+      if (backLink) backLink.href = '/?lang=' + lang;
+
       document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.lang === lang);
       });
 
-      document.documentElement.lang = lang === 'sq' ? 'sq' : lang === 'de' ? 'de' : 'en';
+      const htmlLangMap = { al: 'sq', en: 'en', de: 'de' };
+      document.documentElement.lang = htmlLangMap[lang] || 'en';
     }
 
     // Lang buttons
@@ -300,8 +315,8 @@
       btn.addEventListener('click', () => applyLang(btn.dataset.lang));
     });
 
-    // Init
-    applyLang('sq');
+    // Init with detected language
+    applyLang(currentLang);
   </script>
 </body>
 </html>
