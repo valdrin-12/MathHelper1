@@ -34,7 +34,7 @@
         "READ_EXTERNAL_STORAGE",
         "WRITE_EXTERNAL_STORAGE",
         "com.android.vending.BILLING"
-      ],
+      ]
     },
     "web": {
       "favicon": "./assets/icon.png",
@@ -50,7 +50,8 @@
     },
     "owner": "valdrin11",
     "plugins": [
-      "react-native-iap"
+      "react-native-iap",
+      "expo-secure-store"
     ]
   }
 }

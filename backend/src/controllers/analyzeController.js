@@ -1,6 +1,10 @@
 const { getModel } = require('../config/gemini');
 const { solveWithWolfram } = require('../services/wolframService');
 
+const MAX_IMAGE_BYTES = 4 * 1024 * 1024; // 4 MB (base64 decoded)
+const MAX_TEXT_LENGTH = 2000;            // 2000 characters
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
 const LANGUAGE_NAMES = {
   al: 'Albanian (Shqip)',
   en: 'English',
@@ -138,11 +142,22 @@ async function analyzeImage(req, res) {
       return res.status(400).json({ success: false, error: 'imageBase64 is required' });
     }
 
+    // Validate MIME type
+    const resolvedMime = mimeType || 'image/jpeg';
+    if (!ALLOWED_MIME_TYPES.includes(resolvedMime)) {
+      return res.status(400).json({ success: false, error: 'Invalid image type' });
+    }
+
+    // Validate image size (base64 string length * 0.75 ≈ decoded bytes)
+    if (imageBase64.length * 0.75 > MAX_IMAGE_BYTES) {
+      return res.status(413).json({ success: false, error: 'Image too large (max 4 MB)' });
+    }
+
     const model = getModel();
     const imagePart = {
       inlineData: {
         data: imageBase64,
-        mimeType: mimeType || 'image/jpeg',
+        mimeType: resolvedMime,
       },
     };
 
@@ -176,6 +191,9 @@ async function analyzeText(req, res) {
 
     if (!problemText) {
       return res.status(400).json({ success: false, error: 'problemText is required' });
+    }
+    if (problemText.length > MAX_TEXT_LENGTH) {
+      return res.status(413).json({ success: false, error: `Text too long (max ${MAX_TEXT_LENGTH} characters)` });
     }
 
     const model = getModel();
@@ -211,11 +229,19 @@ async function extractTextFromImage(req, res) {
       return res.status(400).json({ success: false, error: 'imageBase64 is required' });
     }
 
+    const resolvedMime = mimeType || 'image/jpeg';
+    if (!ALLOWED_MIME_TYPES.includes(resolvedMime)) {
+      return res.status(400).json({ success: false, error: 'Invalid image type' });
+    }
+    if (imageBase64.length * 0.75 > MAX_IMAGE_BYTES) {
+      return res.status(413).json({ success: false, error: 'Image too large (max 4 MB)' });
+    }
+
     const model = getModel();
     const imagePart = {
       inlineData: {
         data: imageBase64,
-        mimeType: mimeType || 'image/jpeg',
+        mimeType: resolvedMime,
       },
     };
 
@@ -270,6 +296,9 @@ async function analyzeWithWolfram(req, res) {
 
     if (!problemText) {
       return res.status(400).json({ success: false, error: 'problemText is required' });
+    }
+    if (problemText.length > MAX_TEXT_LENGTH) {
+      return res.status(413).json({ success: false, error: `Text too long (max ${MAX_TEXT_LENGTH} characters)` });
     }
 
     const result = await solveWithWolfram(problemText);

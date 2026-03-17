@@ -137,13 +137,16 @@ async function createCheckout(req, res) {
     // Generate unique order ID
     const orderId = `premium-${userId}-${Date.now()}`;
 
-    // Build Paysera payment URL
-    const paymentUrl = p.buildRequestUrl({
+    // Build Paysera payment URL (test mode only when env var explicitly set)
+    const paymentParams = {
       orderid: orderId,
       amount: 399, // €3.99 in cents
       currency: 'EUR',
-      test: 1, // Remove this for production
-    });
+    };
+    if (process.env.PAYSERA_TEST_MODE === '1') {
+      paymentParams.test = 1;
+    }
+    const paymentUrl = p.buildRequestUrl(paymentParams);
 
     res.json({ success: true, url: paymentUrl });
   } catch (err) {
@@ -178,6 +181,20 @@ async function payseraCallback(req, res) {
       return res.status(400).send('FAILED');
     }
     const userId = parts[1];
+
+    // Validate userId is a positive integer and exists in DB
+    if (!/^\d+$/.test(userId)) {
+      console.error('[Paysera] Non-numeric userId in orderid:', orderid);
+      return res.status(400).send('FAILED');
+    }
+    const { rows: userCheck } = await pool.query(
+      'SELECT id FROM users WHERE id = $1',
+      [userId]
+    );
+    if (userCheck.length === 0) {
+      console.error('[Paysera] Unknown userId in orderid:', userId);
+      return res.status(400).send('FAILED');
+    }
 
     // Idempotency check
     const { rows: existing } = await pool.query(

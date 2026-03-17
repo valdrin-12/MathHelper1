@@ -26,7 +26,24 @@ app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
 }));
-app.use(cors());
+const ALLOWED_ORIGINS = [
+  'https://mathhelper.online',
+  'https://www.mathhelper.online',
+  'https://mathhelper1-4zct.onrender.com',
+  // Allow localhost during development
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006'] : []),
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, curl)
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 app.use(morgan('dev'));
 app.use(express.json({ limit: '10mb' }));
 

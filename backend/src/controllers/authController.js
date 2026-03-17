@@ -47,7 +47,7 @@ async function login(req, res) {
 
     const user = await userModel.findByEmail(email);
     if (!user) {
-      return res.status(401).json({ success: false, error: 'USER_NOT_FOUND' });
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
     }
 
     const valid = await userModel.comparePassword(password, user.password_hash);
@@ -191,8 +191,8 @@ async function forgotPassword(req, res) {
       return res.status(404).json({ success: false, error: 'No account found with this email' });
     }
 
-    // Generate 6-digit code
-    const code = crypto.randomInt(100000, 999999).toString();
+    // Generate 8-digit code (100M combinations — brute-force resistant)
+    const code = crypto.randomInt(10000000, 99999999).toString();
 
     // Delete any existing reset tokens for this user
     await pool.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [user.id]);

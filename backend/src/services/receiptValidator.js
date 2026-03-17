@@ -13,6 +13,10 @@ async function validateAppleReceipt(receiptData) {
   const sharedSecret = process.env.APPLE_SHARED_SECRET;
 
   if (!sharedSecret) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[Receipt Validation] APPLE_SHARED_SECRET not set in production — rejecting purchase');
+      return { valid: false, error: 'Receipt validation not configured' };
+    }
     console.warn('[Receipt Validation] APPLE_SHARED_SECRET not set - skipping validation (dev mode)');
     return { valid: true, skipped: true };
   }
@@ -101,6 +105,10 @@ async function validateGoogleReceipt(productId, purchaseToken) {
   const serviceAccountJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
 
   if (!serviceAccountJson) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[Receipt Validation] GOOGLE_SERVICE_ACCOUNT_JSON not set in production — rejecting purchase');
+      return { valid: false, error: 'Receipt validation not configured' };
+    }
     console.warn('[Receipt Validation] GOOGLE_SERVICE_ACCOUNT_JSON not set - skipping validation (dev mode)');
     return { valid: true, skipped: true };
   }

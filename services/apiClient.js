@@ -1,30 +1,43 @@
+import { Platform } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ACCESS_TOKEN_KEY = '@math_helper_access_token';
-const REFRESH_TOKEN_KEY = '@math_helper_refresh_token';
+const ACCESS_TOKEN_KEY = 'math_helper_access_token';
+const REFRESH_TOKEN_KEY = 'math_helper_refresh_token';
 
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL || 'https://mathhelper1-4zct.onrender.com';
+
+// SecureStore is not available on web — fall back to AsyncStorage there
+const secureGet = (key) =>
+  Platform.OS === 'web' ? AsyncStorage.getItem(key) : SecureStore.getItemAsync(key);
+const secureSet = (key, value) =>
+  Platform.OS === 'web' ? AsyncStorage.setItem(key, value) : SecureStore.setItemAsync(key, value);
+const secureDelete = (key) =>
+  Platform.OS === 'web' ? AsyncStorage.removeItem(key) : SecureStore.deleteItemAsync(key);
 
 let isRefreshing = false;
 let refreshQueue = [];
 
 async function getAccessToken() {
-  return AsyncStorage.getItem(ACCESS_TOKEN_KEY);
+  return secureGet(ACCESS_TOKEN_KEY);
 }
 
 async function getRefreshToken() {
-  return AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+  return secureGet(REFRESH_TOKEN_KEY);
 }
 
 async function storeTokens(accessToken, refreshToken) {
-  await AsyncStorage.multiSet([
-    [ACCESS_TOKEN_KEY, accessToken],
-    [REFRESH_TOKEN_KEY, refreshToken],
+  await Promise.all([
+    secureSet(ACCESS_TOKEN_KEY, accessToken),
+    secureSet(REFRESH_TOKEN_KEY, refreshToken),
   ]);
 }
 
 async function clearTokens() {
-  await AsyncStorage.multiRemove([ACCESS_TOKEN_KEY, REFRESH_TOKEN_KEY]);
+  await Promise.all([
+    secureDelete(ACCESS_TOKEN_KEY),
+    secureDelete(REFRESH_TOKEN_KEY),
+  ]);
 }
 
 async function hasTokens() {
