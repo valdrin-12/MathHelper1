@@ -178,11 +178,11 @@ export default function SettingsScreen() {
       <WebContainer maxWidth={600}>
       {/* Preferences Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.preferences')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.preferences')}</Text>
 
         <SettingToggle
           icon="notifications"
-          iconColor="#3B82F6"
+          iconColor="#006FE6"
           iconBg={colors.primaryBg}
           title={t('settings.notifications')}
           description={t('settings.notificationsDesc')}
@@ -226,7 +226,7 @@ export default function SettingsScreen() {
 
       {/* Learning Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.learning')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.learning')}</Text>
 
         <MenuItem
           icon="flag"
@@ -238,7 +238,7 @@ export default function SettingsScreen() {
         />
         <MenuItem
           icon="bar-chart"
-          iconColor="#3B82F6"
+          iconColor="#006FE6"
           iconBg={colors.primaryBg}
           title={t('settings.progressStats')}
           subtitle={t('settings.coursesQuizzes', { courses: completedCoursesCount, quizzes: completedQuizzesCount })}
@@ -256,7 +256,7 @@ export default function SettingsScreen() {
 
       {/* Other Section */}
       <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.text }]}>{t('settings.other')}</Text>
+        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.other')}</Text>
 
         <MenuItem
           icon="help-circle"
@@ -267,7 +267,7 @@ export default function SettingsScreen() {
         />
         <MenuItem
           icon="document-text"
-          iconColor="#64748B"
+          iconColor="#636366"
           iconBg={isDark ? 'rgba(100,116,139,0.12)' : '#F1F5F9'}
           title={t('settings.termsOfService')}
           onPress={() => setInfoModal('terms')}
@@ -287,7 +287,7 @@ export default function SettingsScreen() {
         />
         <MenuItem
           icon="information-circle"
-          iconColor="#3B82F6"
+          iconColor="#006FE6"
           iconBg={colors.primaryBg}
           title={t('settings.aboutApp')}
           onPress={() => {
@@ -420,8 +420,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.xl,
     paddingTop: 60,
     paddingBottom: 24,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     fontSize: 30,
@@ -499,9 +499,10 @@ const styles = StyleSheet.create({
     paddingTop: SPACING.xl,
   },
   sectionTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    letterSpacing: -0.3,
+    fontSize: 13,
+    fontWeight: '600',
+    letterSpacing: 0.6,
+    color: '#8E8E93',
     marginBottom: 14,
   },
 
@@ -509,7 +510,7 @@ const styles = StyleSheet.create({
   settingCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 18,
+    borderRadius: 12,
     padding: 16,
     marginBottom: 10,
     ...SHADOWS.soft,
@@ -549,7 +550,7 @@ const styles = StyleSheet.create({
   menuCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 18,
+    borderRadius: 12,
     padding: 16,
     marginBottom: 10,
     ...SHADOWS.soft,
@@ -573,7 +574,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#EF4444',
-    borderRadius: 18,
+    borderRadius: 14,
     padding: 18,
     gap: 8,
     ...SHADOWS.medium,

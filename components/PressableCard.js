@@ -11,7 +11,7 @@ export default function PressableCard({ children, onPress, style, hoverStyle, ac
 
   const webHoverStyles = hovered && isWeb ? [
     { transform: [{ scale: 1.015 }] },
-    isWeb && { boxShadow: '0 8px 24px rgba(30,58,138,0.14)' },
+    isWeb && { boxShadow: '0 8px 24px rgba(0,0,0,0.08)' },
     hoverStyle,
   ] : [];
 

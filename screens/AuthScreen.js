@@ -778,8 +778,8 @@ const styles = StyleSheet.create({
     paddingTop: 60,
     paddingBottom: 36,
     alignItems: 'center',
-    borderBottomLeftRadius: 32,
-    borderBottomRightRadius: 32,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
     overflow: 'hidden',
   },
   decorCircle1: {
@@ -818,7 +818,7 @@ const styles = StyleSheet.create({
   logoInner: {
     width: 66,
     height: 66,
-    borderRadius: 22,
+    borderRadius: 20,
     backgroundColor: 'rgba(255,255,255,0.18)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -845,7 +845,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginTop: -16,
     backgroundColor: COLORS.surface,
-    borderRadius: 24,
+    borderRadius: 20,
     padding: 24,
     ...SHADOWS.large,
   },
@@ -1109,7 +1109,7 @@ const styles = StyleSheet.create({
   },
   forgotCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 24,
+    borderRadius: 20,
     padding: 24,
     width: '100%',
     maxWidth: 400,

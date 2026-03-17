@@ -423,7 +423,7 @@ export default function DashboardScreen() {
                     disabled={!mathProblemText.trim() || isAnalyzing}
                   >
                     <LinearGradient
-                      colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : ['#3B82F6', '#2563EB']}
+                      colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : ['#006FE6', '#2B8AFF']}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 0 }}
                       style={styles.buttonGradient}
@@ -718,8 +718,8 @@ const styles = StyleSheet.create({
   headerGradient: {
     paddingTop: 56,
     paddingBottom: 24,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   header: {
     flexDirection: 'row',
@@ -803,7 +803,7 @@ const styles = StyleSheet.create({
   // Scan Card
   scanCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 22,
+    borderRadius: 16,
     marginHorizontal: 18,
     marginTop: 16,
     padding: 20,
@@ -981,7 +981,7 @@ const styles = StyleSheet.create({
   },
   calculateBtn: {
     flex: 1,
-    backgroundColor: '#3B82F6',
+    backgroundColor: '#006FE6',
   },
   analyzeBtn: {
     flex: 1,
@@ -1005,7 +1005,7 @@ const styles = StyleSheet.create({
   // Daily Goal
   goalCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 22,
+    borderRadius: 16,
     marginHorizontal: 18,
     marginTop: 16,
     padding: 20,
@@ -1088,7 +1088,7 @@ const styles = StyleSheet.create({
   },
   statCard: {
     width: (width - 18 * 2 - 12) / 2,
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 18,
   },
   statCardDesktop: {
@@ -1228,7 +1228,7 @@ const styles = StyleSheet.create({
   },
   limitModal: {
     backgroundColor: COLORS.surface,
-    borderRadius: 24,
+    borderRadius: 20,
     padding: 28,
     width: '100%',
     maxWidth: 360,

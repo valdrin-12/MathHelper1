@@ -604,7 +604,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 18,
     marginTop: -16,
     backgroundColor: COLORS.surface,
-    borderRadius: 22,
+    borderRadius: 16,
     ...SHADOWS.medium,
   },
   circularStatItem: {

@@ -502,8 +502,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.xl,
     paddingTop: 60,
     paddingBottom: 24,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitleRow: {
     flexDirection: 'row',
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
   },
   challengeCard: {
-    borderRadius: 18,
+    borderRadius: 16,
     overflow: 'hidden',
     ...SHADOWS.medium,
   },
@@ -724,7 +724,7 @@ const styles = StyleSheet.create({
   // Glassmorphism Quiz Card
   glassQuizCard: {
     marginBottom: SPACING.lg,
-    borderRadius: 22,
+    borderRadius: 16,
     overflow: 'hidden',
     backgroundColor: COLORS.glassBackground,
     borderWidth: 1,
@@ -734,7 +734,7 @@ const styles = StyleSheet.create({
   glassLayer: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: COLORS.glassBackgroundDark,
-    borderRadius: 22,
+    borderRadius: 16,
   },
   quizCardAccentBar: {
     height: 4,

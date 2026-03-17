@@ -321,8 +321,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.xl,
     paddingTop: 60,
     paddingBottom: 20,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerRow: {
     flexDirection: 'row',
@@ -428,7 +428,7 @@ const styles = StyleSheet.create({
 
   // Glassmorphism Item Card
   glassItemCard: {
-    borderRadius: 22,
+    borderRadius: 16,
     marginBottom: SPACING.lg,
     overflow: 'hidden',
     backgroundColor: COLORS.glassBackground,
@@ -439,7 +439,7 @@ const styles = StyleSheet.create({
   glassLayer: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: COLORS.glassBackgroundDark,
-    borderRadius: 22,
+    borderRadius: 16,
   },
   itemImage: {
     width: '100%',
