@@ -129,14 +129,13 @@ export default function QuizScreen() {
   };
 
   // Get daily challenge quiz (deterministic based on date)
-  // Free users only get challenges from free quizzes
+  // Uses days-since-epoch so each calendar date maps to a unique index,
+  // avoiding the leap-year collision of the old dayOfYear approach.
   const getDailyChallenge = () => {
     const pool = isPremium ? quizSets : quizSets.filter(q => FREE_QUIZ_IDS.includes(q.id));
     if (pool.length === 0) return null;
-    const today = new Date();
-    const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / 86400000);
-    const index = dayOfYear % pool.length;
-    return pool[index];
+    const daysSinceEpoch = Math.floor(Date.now() / 86400000);
+    return pool[daysSinceEpoch % pool.length];
   };
 
   const dailyChallenge = getDailyChallenge();
@@ -161,7 +160,10 @@ export default function QuizScreen() {
     const total = quizSet?.questions?.length || 0;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     setLastScore(percentage);
-    recordQuizCompleted(quizSet?.id, quizSet?.title, correct, total);
+    // Guard: only record if we have a valid quiz reference
+    if (quizSet?.id && quizSet?.title) {
+      recordQuizCompleted(quizSet.id, quizSet.title, correct, total);
+    }
     // Mark daily challenge as completed
     if (dailyChallenge && quizSet?.id === dailyChallenge.id) {
       AsyncStorage.setItem(`@mathhelper_challenge_${todayDateKey}`, 'done')

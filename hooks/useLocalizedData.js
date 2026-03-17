@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import {
   getLocalizedCourses,
@@ -19,7 +19,7 @@ export function useLocalizedCourses() {
   const categories = useMemo(() => getLocalizedCategories(language), [language]);
   const difficultyLevels = useMemo(() => getLocalizedDifficulty(language), [language]);
 
-  const search = (query) => searchCourses(query, language);
+  const search = useCallback((query) => searchCourses(query, language), [language]);
 
   return { courses, categories, difficultyLevels, search, language };
 }

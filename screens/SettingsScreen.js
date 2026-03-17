@@ -79,38 +79,29 @@ export default function SettingsScreen() {
       }
     };
 
-    if (Platform.OS === 'web') {
-      if (window.confirm(t('settings.deleteAccountConfirm'))) await doDelete();
-    } else {
-      Alert.alert(
-        t('settings.deleteAccountConfirmTitle'),
-        t('settings.deleteAccountConfirm'),
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          { text: t('settings.deleteAccount'), style: 'destructive', onPress: doDelete },
-        ]
-      );
-    }
+    Alert.alert(
+      t('settings.deleteAccountConfirmTitle'),
+      t('settings.deleteAccountConfirm'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        { text: t('settings.deleteAccount'), style: 'destructive', onPress: doDelete },
+      ]
+    );
   };
 
   const handleLogout = async () => {
-    if (Platform.OS === 'web') {
-      const confirmed = window.confirm(t('settings.logoutConfirm'));
-      if (confirmed) await logout();
-    } else {
-      Alert.alert(
-        t('settings.logoutConfirmTitle'),
-        t('settings.logoutConfirm'),
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          {
-            text: t('settings.logout'),
-            style: 'destructive',
-            onPress: async () => await logout(),
-          },
-        ]
-      );
-    }
+    Alert.alert(
+      t('settings.logoutConfirmTitle'),
+      t('settings.logoutConfirm'),
+      [
+        { text: t('common.cancel'), style: 'cancel' },
+        {
+          text: t('settings.logout'),
+          style: 'destructive',
+          onPress: async () => await logout(),
+        },
+      ]
+    );
   };
 
   const initials = user?.name

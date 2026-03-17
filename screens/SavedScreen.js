@@ -47,7 +47,8 @@ export default function SavedScreen() {
     });
   };
 
-  const selectAll = () => setSelectedIds(new Set(savedItems.map(i => i.id)));
+  const selectAll = () =>
+    setSelectedIds(new Set(savedItems.map(i => i.id)));
 
   const handleBulkDelete = () => {
     if (selectedIds.size === 0) return;
@@ -60,11 +61,14 @@ export default function SavedScreen() {
           text: t('common.delete'),
           style: 'destructive',
           onPress: async () => {
-            try {
-              await Promise.all([...selectedIds].map(id => removeItem(id)));
-              setSelectionMode(false);
-              setSelectedIds(new Set());
-            } catch (e) {
+            // allSettled ensures every deletion is attempted even if one fails
+            const results = await Promise.allSettled(
+              [...selectedIds].map(id => removeItem(id))
+            );
+            const failed = results.filter(r => r.status === 'rejected').length;
+            setSelectionMode(false);
+            setSelectedIds(new Set());
+            if (failed > 0) {
               Alert.alert(t('common.error'), t('saved.deleteError'));
             }
           },

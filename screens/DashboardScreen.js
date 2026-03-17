@@ -124,6 +124,7 @@ export default function DashboardScreen() {
 
   // Calculate locally (try calculator first, fallback to AI if needed)
   const handleCalculate = async () => {
+    setAnalysisResult(null); // reset so modal never shows stale data
     try {
       let problemText = mathProblemText;
       let imageBase64 = null; // Store base64 for AI fallback
@@ -206,6 +207,7 @@ export default function DashboardScreen() {
 
   // Analyze with AI (always use AI, no local calculator)
   const handleAnalyzeWithAI = async () => {
+    setAnalysisResult(null); // reset so modal never shows stale data
     try {
       if (inputMode === 'keyboard') {
         if (!mathProblemText.trim()) {
