@@ -12,20 +12,20 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     :root {
-      --primary: #1E3A8A;
-      --primary-light: #3B82F6;
-      --primary-soft: #2563EB;
-      --primary-bg: #EFF6FF;
-      --accent: #F59E0B;
-      --accent-dark: #D97706;
-      --success: #10B981;
-      --error: #EF4444;
-      --text: #0F172A;
-      --text-secondary: #475569;
-      --text-muted: #94A3B8;
-      --bg: #F0F4FF;
+      --primary: #006FE6;
+      --primary-light: #4DA6FF;
+      --primary-soft: #0058CC;
+      --primary-bg: #EBF3FF;
+      --accent: #FF9500;
+      --accent-dark: #CC7700;
+      --success: #34C759;
+      --error: #FF3B30;
+      --text: #000000;
+      --text-secondary: #3C3C43;
+      --text-muted: #8E8E93;
+      --bg: #F2F2F7;
       --surface: #FFFFFF;
-      --border: #E2E8F0;
+      --border: #E5E5EA;
     }
 
     body {
@@ -124,8 +124,10 @@
     }
     .hero::before {
       content: '';
-      position: absolute; top: -40%; left: -20%; right: -20%; bottom: 20%;
-      background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 70%);
+      position: absolute; top: -50%; left: -20%; right: -20%; bottom: 10%;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(0,111,230,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 60%, rgba(77,166,255,0.08) 0%, transparent 50%);
       pointer-events: none;
     }
     .hero-badge {
@@ -153,13 +155,13 @@
     }
     .btn-primary {
       display: inline-flex; align-items: center; gap: 8px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 100%);
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
       color: #fff; padding: 16px 36px; border-radius: 16px;
       font-size: 17px; font-weight: 700; text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
-      box-shadow: 0 4px 16px rgba(30,58,138,0.2);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+      box-shadow: 0 4px 20px rgba(0,111,230,0.28), 0 1px 3px rgba(0,111,230,0.15);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(30,58,138,0.3); }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(0,111,230,0.35); }
     .btn-secondary {
       display: inline-flex; align-items: center; gap: 8px;
       background: var(--surface); color: var(--text);
@@ -270,8 +272,8 @@
       position: relative; overflow: hidden;
     }
     .step-card:hover {
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(30,58,138,0.1);
+      transform: translateY(-8px);
+      box-shadow: 0 24px 64px rgba(0,111,230,0.12);
     }
     .step-number {
       position: absolute; top: 20px; right: 24px;
@@ -283,9 +285,9 @@
       display: flex; align-items: center; justify-content: center;
       font-size: 28px; margin-bottom: 24px;
     }
-    .step-card:nth-child(1) .step-icon { background: linear-gradient(135deg, #DBEAFE, #BFDBFE); }
-    .step-card:nth-child(2) .step-icon { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
-    .step-card:nth-child(3) .step-icon { background: linear-gradient(135deg, #D1FAE5, #A7F3D0); }
+    .step-card:nth-child(1) .step-icon { background: linear-gradient(135deg, #EBF3FF, #BDD9FF); }
+    .step-card:nth-child(2) .step-icon { background: linear-gradient(135deg, #FFF4E0, #FFD999); }
+    .step-card:nth-child(3) .step-icon { background: linear-gradient(135deg, #E9F8EE, #A8EFC0); }
     .step-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
     .step-card p { color: var(--text-secondary); font-size: 16px; line-height: 1.7; }
 
@@ -307,20 +309,20 @@
       transition: transform 0.3s, box-shadow 0.3s;
     }
     .feature-card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(30,58,138,0.08);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 56px rgba(0,111,230,0.10);
     }
     .feature-icon {
       width: 52px; height: 52px; border-radius: 16px;
       display: flex; align-items: center; justify-content: center;
       font-size: 24px; margin-bottom: 20px;
     }
-    .feature-card:nth-child(1) .feature-icon { background: #EFF6FF; }
-    .feature-card:nth-child(2) .feature-icon { background: #FEF3C7; }
-    .feature-card:nth-child(3) .feature-icon { background: #ECFDF5; }
-    .feature-card:nth-child(4) .feature-icon { background: #F5F3FF; }
-    .feature-card:nth-child(5) .feature-icon { background: #FEF2F2; }
-    .feature-card:nth-child(6) .feature-icon { background: #F0F9FF; }
+    .feature-card:nth-child(1) .feature-icon { background: linear-gradient(135deg, #EBF3FF, #BDD9FF); }
+    .feature-card:nth-child(2) .feature-icon { background: linear-gradient(135deg, #FFF4E0, #FFD999); }
+    .feature-card:nth-child(3) .feature-icon { background: linear-gradient(135deg, #E9F8EE, #A8EFC0); }
+    .feature-card:nth-child(4) .feature-icon { background: linear-gradient(135deg, #F5EEFF, #DCC5FF); }
+    .feature-card:nth-child(5) .feature-icon { background: linear-gradient(135deg, #FFEBEA, #FFBFBB); }
+    .feature-card:nth-child(6) .feature-icon { background: linear-gradient(135deg, #E0F8FF, #9EEDFF); }
     .feature-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
     .feature-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
 
@@ -347,7 +349,7 @@
     /* LANGUAGES */
     .languages-section {
       padding: 80px 32px;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-soft) 50%, var(--primary-light) 100%);
+      background: linear-gradient(135deg, #004EB5 0%, var(--primary) 50%, var(--primary-light) 100%);
       text-align: center; color: #fff;
     }
     .languages-section h2 {
@@ -373,9 +375,41 @@
     .lang-flag:hover { transform: scale(1.05); background: rgba(255,255,255,0.22); }
     .lang-flag .flag { font-size: 28px; }
 
+    /* STATS BAR */
+    .stats-bar {
+      padding: 28px 32px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-bar-inner {
+      max-width: 800px; margin: 0 auto;
+      display: flex; justify-content: center; align-items: center;
+      gap: 0; flex-wrap: wrap;
+    }
+    .stat-item {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 40px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-size: 28px; font-weight: 800;
+      color: var(--primary); letter-spacing: -1px; line-height: 1.1;
+    }
+    .stat-desc {
+      font-size: 13px; color: var(--text-muted);
+      font-weight: 500; margin-top: 4px; text-align: center;
+    }
+    @media (max-width: 600px) {
+      .stats-bar-inner { gap: 16px; }
+      .stat-item { border-right: none; padding: 8px 20px; }
+    }
+
     /* CTA */
     .cta-section {
       padding: 120px 32px; text-align: center;
+      background: linear-gradient(180deg, var(--surface) 0%, var(--primary-bg) 60%, var(--bg) 100%);
     }
     .cta-section h2 {
       font-size: clamp(32px, 5vw, 52px);
@@ -444,13 +478,15 @@
     /* QR CODE SECTION */
     .qr-section {
       padding: 80px 32px;
-      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+      background: linear-gradient(135deg, #004EB5 0%, var(--primary) 60%, var(--primary-light) 100%);
       position: relative; overflow: hidden;
     }
     .qr-section::before {
       content: '';
       position: absolute; top: -60%; left: -10%; right: -10%; bottom: -60%;
-      background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.06) 0%, transparent 60%);
+      background:
+        radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.04) 0%, transparent 45%);
       pointer-events: none;
     }
     .qr-inner {
@@ -773,6 +809,28 @@
     </div>
   </section>
 
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-item">
+        <span class="stat-num">10K+</span>
+        <span class="stat-desc" data-i18n="stats.problems">Probleme të zgjidhura</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">23</span>
+        <span class="stat-desc" data-i18n="stats.quizzes">Kuize interaktive</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">6</span>
+        <span class="stat-desc" data-i18n="stats.courses">Kurse të plota</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-desc" data-i18n="stats.languages">Gjuhë</span>
+      </div>
+    </div>
+  </div>
+
   <!-- APP PREVIEW -->
   <section class="preview-section fade-up">
     <div class="phones-container">
@@ -991,6 +1049,10 @@
         'nav.subjects': 'Lendet',
         'nav.qr': '📱 QR Code',
         'nav.openApp': 'Hap aplikacionin',
+        'stats.problems': 'Probleme të zgjidhura',
+        'stats.quizzes': 'Kuize interaktive',
+        'stats.courses': 'Kurse të plota',
+        'stats.languages': 'Gjuhë',
         'hero.badge': 'Falas per te gjithe',
         'hero.title': 'Ke nevoje per ndihme<br>ne matematike?',
         'hero.subtitle': 'Mos u stresohu, jo te gjithe e kuptojne matematiken qe ne provimin e pare. MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive qe te mesosh duke praktikuar.',
@@ -1059,6 +1121,10 @@
         'nav.subjects': 'Subjects',
         'nav.qr': '📱 QR Code',
         'nav.openApp': 'Open app',
+        'stats.problems': 'Problems solved',
+        'stats.quizzes': 'Interactive quizzes',
+        'stats.courses': 'Full courses',
+        'stats.languages': 'Languages',
         'hero.badge': 'Free for everyone',
         'hero.title': 'Need help<br>with math?',
         'hero.subtitle': 'Don\'t stress. Not everyone understands math on the first try. MathHelper helps you with step-by-step explanations, full courses, and interactive quizzes to learn by practicing.',
@@ -1127,6 +1193,10 @@
         'nav.subjects': 'F\u00E4cher',
         'nav.qr': '📱 QR-Code',
         'nav.openApp': 'App \u00F6ffnen',
+        'stats.problems': 'Gelöste Aufgaben',
+        'stats.quizzes': 'Interaktive Quizze',
+        'stats.courses': 'Vollständige Kurse',
+        'stats.languages': 'Sprachen',
         'hero.badge': 'Kostenlos f\u00FCr alle',
         'hero.title': 'Brauchst du Hilfe<br>in Mathematik?',
         'hero.subtitle': 'Keine Sorge. Nicht jeder versteht Mathe beim ersten Mal. MathHelper hilft dir mit Schritt-f\u00FCr-Schritt-Erkl\u00E4rungen, vollst\u00E4ndigen Kursen und interaktiven Quizzen zum Lernen durch \u00DCben.',

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -11,6 +11,7 @@ import {
   Modal,
   TextInput,
   Platform,
+  Animated,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect } from '@react-navigation/native';
@@ -73,6 +74,15 @@ export default function DashboardScreen() {
   const progressPercent = (dailyProgress / dailyGoal) * 100;
 
   const recentItems = useMemo(() => savedItems.slice(0, 3), [savedItems]);
+
+  // ── Micro-animations ─────────────────────────────────────────────────────────
+  const calcAnim    = useRef(new Animated.Value(1)).current;
+  const aiAnim      = useRef(new Animated.Value(1)).current;
+  const galleryAnim = useRef(new Animated.Value(1)).current;
+  const cameraAnim  = useRef(new Animated.Value(1)).current;
+
+  const pressIn  = (a) => Animated.spring(a, { toValue: 0.95, useNativeDriver: true, friction: 20, tension: 350 }).start();
+  const pressOut = (a) => Animated.spring(a, { toValue: 1,    useNativeDriver: true, friction: 20, tension: 350 }).start();
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -420,50 +430,60 @@ export default function DashboardScreen() {
                   <TouchableOpacity
                     style={[styles.halfButton, (!mathProblemText.trim() || isAnalyzing) && styles.halfButtonDisabled]}
                     onPress={handleCalculate}
+                    onPressIn={() => pressIn(calcAnim)}
+                    onPressOut={() => pressOut(calcAnim)}
                     disabled={!mathProblemText.trim() || isAnalyzing}
+                    activeOpacity={1}
                   >
-                    <LinearGradient
-                      colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : ['#006FE6', '#2B8AFF']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.buttonGradient}
-                    >
-                      <View style={styles.buttonInner}>
-                        <Ionicons
-                          name={isAnalyzing ? 'hourglass' : 'calculator'}
-                          size={16}
-                          color="#FFFFFF"
-                        />
-                        <Text style={styles.buttonText}>
-                          {t('dashboard.calculate')}
-                        </Text>
-                      </View>
-                    </LinearGradient>
+                    <Animated.View style={{ transform: [{ scale: calcAnim }] }}>
+                      <LinearGradient
+                        colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : ['#006FE6', '#2B8AFF']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonGradient}
+                      >
+                        <View style={styles.buttonInner}>
+                          <Ionicons
+                            name={isAnalyzing ? 'hourglass' : 'calculator'}
+                            size={16}
+                            color="#FFFFFF"
+                          />
+                          <Text style={styles.buttonText}>
+                            {t('dashboard.calculate')}
+                          </Text>
+                        </View>
+                      </LinearGradient>
+                    </Animated.View>
                   </TouchableOpacity>
 
                   {/* Analyze with AI Button */}
                   <TouchableOpacity
                     style={[styles.halfButton, (!mathProblemText.trim() || isAnalyzing) && styles.halfButtonDisabled]}
                     onPress={handleAnalyzeWithAI}
+                    onPressIn={() => pressIn(aiAnim)}
+                    onPressOut={() => pressOut(aiAnim)}
                     disabled={!mathProblemText.trim() || isAnalyzing}
+                    activeOpacity={1}
                   >
-                    <LinearGradient
-                      colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : [COLORS.primarySoft, COLORS.primary]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.buttonGradient}
-                    >
-                      <View style={styles.buttonInner}>
-                        <Ionicons
-                          name={isAnalyzing ? 'hourglass' : 'sparkles'}
-                          size={16}
-                          color="#FFFFFF"
-                        />
-                        <Text style={styles.buttonText}>
-                          {t('dashboard.analyzeAI')}
-                        </Text>
-                      </View>
-                    </LinearGradient>
+                    <Animated.View style={{ transform: [{ scale: aiAnim }] }}>
+                      <LinearGradient
+                        colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : [COLORS.primarySoft, COLORS.primary]}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                        style={styles.buttonGradient}
+                      >
+                        <View style={styles.buttonInner}>
+                          <Ionicons
+                            name={isAnalyzing ? 'hourglass' : 'sparkles'}
+                            size={16}
+                            color="#FFFFFF"
+                          />
+                          <Text style={styles.buttonText}>
+                            {t('dashboard.analyzeAI')}
+                          </Text>
+                        </View>
+                      </LinearGradient>
+                    </Animated.View>
                   </TouchableOpacity>
                 </View>
 
@@ -515,19 +535,35 @@ export default function DashboardScreen() {
                   </View>
                 ) : (
                   <View style={styles.uploadRow}>
-                    <TouchableOpacity style={styles.uploadCard} onPress={pickImage}>
-                      <View style={[styles.uploadIconBox, { backgroundColor: COLORS.primaryBg }]}>
-                        <Ionicons name="images" size={28} color={COLORS.primarySoft} />
-                      </View>
-                      <Text style={styles.uploadLabel}>{t('dashboard.uploadPhoto')}</Text>
-                      <Text style={styles.uploadSub}>{t('dashboard.fromGallery')}</Text>
+                    <TouchableOpacity
+                      style={styles.uploadCard}
+                      onPress={pickImage}
+                      onPressIn={() => pressIn(galleryAnim)}
+                      onPressOut={() => pressOut(galleryAnim)}
+                      activeOpacity={1}
+                    >
+                      <Animated.View style={[styles.uploadCardInner, { transform: [{ scale: galleryAnim }] }]}>
+                        <View style={[styles.uploadIconBox, { backgroundColor: COLORS.primaryBg }]}>
+                          <Ionicons name="images" size={28} color={COLORS.primarySoft} />
+                        </View>
+                        <Text style={styles.uploadLabel}>{t('dashboard.uploadPhoto')}</Text>
+                        <Text style={styles.uploadSub}>{t('dashboard.fromGallery')}</Text>
+                      </Animated.View>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.uploadCard} onPress={takePhoto}>
-                      <View style={[styles.uploadIconBox, { backgroundColor: COLORS.successLight }]}>
-                        <Ionicons name="camera" size={28} color={COLORS.success} />
-                      </View>
-                      <Text style={styles.uploadLabel}>{t('dashboard.takePhoto')}</Text>
-                      <Text style={styles.uploadSub}>{t('dashboard.useCamera')}</Text>
+                    <TouchableOpacity
+                      style={styles.uploadCard}
+                      onPress={takePhoto}
+                      onPressIn={() => pressIn(cameraAnim)}
+                      onPressOut={() => pressOut(cameraAnim)}
+                      activeOpacity={1}
+                    >
+                      <Animated.View style={[styles.uploadCardInner, { transform: [{ scale: cameraAnim }] }]}>
+                        <View style={[styles.uploadIconBox, { backgroundColor: COLORS.successLight }]}>
+                          <Ionicons name="camera" size={28} color={COLORS.success} />
+                        </View>
+                        <Text style={styles.uploadLabel}>{t('dashboard.takePhoto')}</Text>
+                        <Text style={styles.uploadSub}>{t('dashboard.useCamera')}</Text>
+                      </Animated.View>
                     </TouchableOpacity>
                   </View>
                 )}
@@ -939,6 +975,9 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: COLORS.inputBorder,
     borderStyle: 'dashed',
+  },
+  uploadCardInner: {
+    alignItems: 'center',
   },
   uploadIconBox: {
     width: 56,
