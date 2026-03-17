@@ -430,7 +430,10 @@
     "fallbackShort": "Vollständige Antwort anzeigen",
     "notMathImage": "Dieses Foto enthält kein eindeutiges Mathe-Problem",
     "unclearImage": "Das Foto ist zu unklar zum Analysieren. Bitte machen Sie ein klareres Foto",
-    "notMathText": "Dies ist kein eindeutiges Mathe-Problem"
+    "notMathText": "Dies ist kein eindeutiges Mathe-Problem",
+    "ocrError": "Text konnte nicht aus dem Foto gelesen werden. Bitte versuchen Sie ein klareres Bild.",
+    "wolframError": "Keine automatische Lösung gefunden. KI versucht einen anderen Ansatz.",
+    "recordError": "Analyse konnte nicht aufgezeichnet werden. Bitte versuchen Sie es erneut."
   },
   "mathKeyboard": {
     "selectKeyboard": "Tastatur auswählen",
@@ -498,13 +501,13 @@
     "consentRequired": "Sie müssen die Datenschutzrichtlinie akzeptieren, um sich zu registrieren."
   },
   "onboarding": {
-    "slide1Title": "Scannen & Sofort Losen",
-    "slide1Desc": "Fotografiere ein Mathe-Problem oder tippe es ein und erhalte schrittweise Losungen mit KI.",
+    "slide1Title": "Scannen & Sofort Lösen",
+    "slide1Desc": "Fotografiere ein Mathe-Problem oder tippe es ein und erhalte schrittweise Lösungen mit KI.",
     "slide2Title": "Lerne in Deinem Tempo",
-    "slide2Desc": "Entdecke 50+ Kurse von Grundrechenarten bis Infinitesimalrechnung. Interaktive Lektionen machen Mathe zum Spass.",
+    "slide2Desc": "Entdecke 50+ Kurse von Grundrechenarten bis Infinitesimalrechnung. Interaktive Lektionen machen Mathe zum Spaß.",
     "slide3Title": "Verfolge Deinen Fortschritt",
-    "slide3Desc": "Baue tagliche Streaks auf, verdiene Erfolge und beobachte wie deine Mathe-Fahigkeiten wachsen.",
-    "skip": "Uberspringen",
+    "slide3Desc": "Baue tägliche Streaks auf, verdiene Erfolge und beobachte, wie deine Mathe-Fähigkeiten wachsen.",
+    "skip": "Überspringen",
     "next": "Weiter",
     "getStarted": "Los geht's"
   }

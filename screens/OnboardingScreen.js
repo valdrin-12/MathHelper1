@@ -182,7 +182,12 @@ export default function OnboardingScreen({ onComplete }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.skipButton} onPress={onComplete}>
+      <TouchableOpacity
+        style={styles.skipButton}
+        onPress={onComplete}
+        accessibilityLabel={t('onboarding.skip')}
+        accessibilityRole="button"
+      >
         <Text style={styles.skipText}>{t('onboarding.skip')}</Text>
       </TouchableOpacity>
 

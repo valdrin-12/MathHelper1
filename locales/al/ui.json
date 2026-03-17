@@ -523,7 +523,10 @@
     "fallbackShort": "Shiko përgjigjen e plotë",
     "notMathImage": "Kjo fotografi nuk përmban një problem matematikor të qartë",
     "unclearImage": "Fotografia është shumë e paqartë për të analizuar. Ju lutemi bëni një fotografi më të qartë",
-    "notMathText": "Kjo nuk është një problem matematikor i qartë"
+    "notMathText": "Kjo nuk është një problem matematikor i qartë",
+    "ocrError": "Nuk mundëm të lexojmë tekstin nga fotografia. Provoni një foto më të qartë.",
+    "wolframError": "Nuk u gjet zgjidhje automatike. AI-ja do të provojë mënyrën tjetër.",
+    "recordError": "Nuk u regjistrua analiza. Provoni përsëri."
   },
   "mathKeyboard": {
     "selectKeyboard": "Zgjidhni një tastierë",

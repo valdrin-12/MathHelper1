@@ -289,7 +289,7 @@ function MainApp() {
   const { width } = useWindowDimensions();
   const isWeb = Platform.OS === 'web';
   const showSidebar = isWeb && width > 768;
-  const [showSplash, setShowSplash] = useState(isWeb ? false : true);
+  const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
     // Clean up legacy force-logout flag (no longer needed)

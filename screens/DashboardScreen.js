@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,9 +12,10 @@ import {
   TextInput,
   Platform,
   Animated,
+  Keyboard,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import * as imageService from '../services/imageService';
 import * as geminiService from '../services/geminiService';
@@ -66,7 +67,21 @@ export default function DashboardScreen() {
   const [limitType, setLimitType] = useState('free'); // 'free' or 'daily'
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
-  const greeting = getGreeting(t);
+  const navigation = useNavigation();
+  const [greeting, setGreeting] = useState(() => getGreeting(t));
+
+  // Refresh greeting every minute so it updates if the app stays open past a time boundary
+  useEffect(() => {
+    const id = setInterval(() => setGreeting(getGreeting(t)), 60_000);
+    return () => clearInterval(id);
+  }, [t]);
+
+  // Dismiss keyboard when leaving this tab
+  useEffect(() => {
+    const unsub = navigation.addListener('blur', () => Keyboard.dismiss());
+    return unsub;
+  }, [navigation]);
+
   const displayName = user?.name ? user.name.split(' ')[0] : t('common.friend');
 
   const dailyGoal = 10;

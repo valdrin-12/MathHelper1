@@ -43,7 +43,7 @@ export const analyzeWithWolfram = async (problemText) => {
     const data = await api.post('/api/analyze/wolfram', { problemText });
     return { answer: data.answer, steps: data.steps, explanation: data.explanation, source: 'wolfram' };
   } catch (error) {
-    throw new Error(error.message || 'Wolfram could not solve this problem');
+    throw new Error(error.message || i18n.t('gemini.wolframError'));
   }
 };
 
@@ -58,7 +58,7 @@ export const recordAnalysis = async () => {
     // Always propagate limit errors
     throwLimitError(error);
     // For other errors (e.g. server error), also propagate so the user sees feedback
-    throw new Error(error.message || 'Could not record analysis');
+    throw new Error(error.message || i18n.t('gemini.recordError'));
   }
 };
 

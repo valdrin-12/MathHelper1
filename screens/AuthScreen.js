@@ -249,7 +249,7 @@ export default function AuthScreen() {
         window.location.reload();
       } else {
         Alert.alert(t('common.success'), successMessage, [
-          { text: 'OK', onPress: () => clearForm() }
+          { text: t('common.ok'), onPress: () => clearForm() }
         ]);
       }
     } catch (error) {

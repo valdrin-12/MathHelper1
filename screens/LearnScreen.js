@@ -13,6 +13,7 @@ import { useLocalizedCourses } from '../hooks/useLocalizedData';
 import { useStats } from '../context/StatsContext';
 import { useUser } from '../context/UserContext';
 import { FREE_COURSE_IDS } from '../data/coursesData';
+import { isPremiumActive } from '../utils/isPremium';
 import CourseDetailModal from '../components/CourseDetailModal';
 import PremiumModal from '../components/PremiumModal';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -30,9 +31,7 @@ export default function LearnScreen() {
   const { courses, categories, difficultyLevels, search } = useLocalizedCourses();
   const { stats } = useStats();
   const { user } = useUser();
-  const isPremium = user?.tier === 'premium' &&
-    user?.premiumExpiresAt &&
-    new Date(user.premiumExpiresAt) > new Date();
+  const isPremium = isPremiumActive(user);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');

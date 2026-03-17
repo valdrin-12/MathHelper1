@@ -430,7 +430,10 @@
     "fallbackShort": "See full answer",
     "notMathImage": "This photo does not contain a clear math problem",
     "unclearImage": "The photo is too unclear to analyze. Please take a clearer photo",
-    "notMathText": "This is not a clear math problem"
+    "notMathText": "This is not a clear math problem",
+    "ocrError": "Could not read text from the photo. Please try a clearer image.",
+    "wolframError": "Could not find an automatic solution. AI will try another approach.",
+    "recordError": "Could not record the analysis. Please try again."
   },
   "mathKeyboard": {
     "selectKeyboard": "Select a keyboard",

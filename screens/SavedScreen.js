@@ -238,7 +238,11 @@ export default function SavedScreen() {
 
                 {/* Image or Text Preview */}
                 {item.imageData ? (
-                  <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.itemImage} />
+                  <Image
+                    source={{ uri: `data:image/jpeg;base64,${item.imageData}` }}
+                    style={styles.itemImage}
+                    onError={() => {/* silently fall through to text preview below */}}
+                  />
                 ) : item.problemText ? (
                   <View style={styles.textPreviewBox}>
                     <Ionicons name="keypad" size={22} color={COLORS.primarySoft} style={{ marginBottom: 8 }} />

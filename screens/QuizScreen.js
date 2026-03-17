@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useLocalizedQuizzes } from '../hooks/useLocalizedData';
 import { FREE_QUIZ_IDS } from '../data/quizData';
+import { isPremiumActive } from '../utils/isPremium';
 import ActiveQuizModal from '../components/ActiveQuizModal';
 import QuizResultModal from '../components/QuizResultModal';
 import PremiumModal from '../components/PremiumModal';
@@ -71,9 +72,7 @@ export default function QuizScreen() {
   const { quizSets, getDifficultyLabel, getDifficultyColor } = useLocalizedQuizzes();
   const { recordQuizCompleted, streak, stats } = useStats();
   const { user } = useUser();
-  const isPremium = user?.tier === 'premium' &&
-    user?.premiumExpiresAt &&
-    new Date(user.premiumExpiresAt) > new Date();
+  const isPremium = isPremiumActive(user);
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [showQuiz, setShowQuiz] = useState(false);
