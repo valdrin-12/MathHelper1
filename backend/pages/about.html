@@ -560,8 +560,8 @@
     #lang-popup {
       background: #fff;
       border-radius: 24px;
-      padding: 40px 36px 36px;
-      max-width: 420px; width: 100%;
+      padding: 36px 32px 32px;
+      max-width: 440px; width: 100%;
       box-shadow: 0 24px 80px rgba(15,23,42,0.2);
       text-align: center;
       animation: popupIn 0.35s cubic-bezier(0.34,1.56,0.64,1) both;
@@ -577,12 +577,11 @@
       font-size: 28px; margin: 0 auto 20px;
     }
     #lang-popup h2 {
-      font-size: 22px; font-weight: 800; color: #0F172A;
-      margin-bottom: 8px; letter-spacing: -0.4px;
+      font-size: 16px; font-weight: 800; color: #0F172A;
+      margin-bottom: 2px; letter-spacing: -0.3px; line-height: 1.5;
     }
-    #lang-popup p {
-      font-size: 14px; color: #64748B; margin-bottom: 28px; line-height: 1.6;
-    }
+    #lang-popup h2 span { display: block; color: #64748B; font-weight: 600; font-size: 13px; }
+    #lang-popup p { display: none; }
     .lang-popup-options {
       display: flex; flex-direction: column; gap: 12px;
     }
@@ -603,7 +602,7 @@
       font-size: 15px; font-weight: 700; color: #0F172A; display: block;
     }
     .lang-popup-btn .lp-sub {
-      font-size: 12px; color: #64748B; display: block; margin-top: 2px;
+      font-size: 12px; color: #64748B; display: block; margin-top: 3px; line-height: 1.4;
     }
     .lang-popup-btn .lp-arrow {
       font-size: 18px; color: #94A3B8; transition: color 0.18s;
@@ -616,15 +615,17 @@
   <!-- LANGUAGE SELECTION POPUP (shown on first visit) -->
   <div id="lang-popup-overlay" class="hidden">
     <div id="lang-popup">
-      <div class="popup-icon">📐</div>
-      <h2 id="popup-title">Zgjidhni gjuhën tuaj</h2>
-      <p id="popup-sub">Zgjidhni gjuhën në të cilën dëshironi të përdorni MathHelper.</p>
+      <div class="popup-icon">🌐</div>
+      <h2 id="popup-title">Zgjidhni gjuhën tuaj
+        <span>Choose your language &bull; Wählen Sie Ihre Sprache</span>
+      </h2>
+      <p id="popup-sub"></p>
       <div class="lang-popup-options">
         <button class="lang-popup-btn" data-popup-lang="al">
           <span class="lp-flag">🇦🇱</span>
           <span class="lp-text">
             <span class="lp-name">Shqip</span>
-            <span class="lp-sub">Albanian</span>
+            <span class="lp-sub">Zgjidhni këtë gjuhe per te perdorur MathHelper ne shqip</span>
           </span>
           <span class="lp-arrow">›</span>
         </button>
@@ -632,7 +633,7 @@
           <span class="lp-flag">🇬🇧</span>
           <span class="lp-text">
             <span class="lp-name">English</span>
-            <span class="lp-sub">English</span>
+            <span class="lp-sub">Select this to use MathHelper in English</span>
           </span>
           <span class="lp-arrow">›</span>
         </button>
@@ -640,7 +641,7 @@
           <span class="lp-flag">🇩🇪</span>
           <span class="lp-text">
             <span class="lp-name">Deutsch</span>
-            <span class="lp-sub">German</span>
+            <span class="lp-sub">Wahlen Sie dies, um MathHelper auf Deutsch zu nutzen</span>
           </span>
           <span class="lp-arrow">›</span>
         </button>
