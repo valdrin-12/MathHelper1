@@ -10,7 +10,6 @@ import {
   Platform,
   ActivityIndicator,
   Alert,
-  Dimensions,
   Linking,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -23,7 +22,6 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
 import WebContainer from '../components/WebContainer';
 
-const { width } = Dimensions.get('window');
 
 export default function AuthScreen() {
   const { login, register } = useUser();
@@ -270,34 +268,22 @@ export default function AuthScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Gradient Header */}
-        <LinearGradient
-          colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.headerGradient}
-        >
-          {/* Decorative circles - hidden on web */}
-          {Platform.OS !== 'web' && <View style={styles.decorCircle1} />}
-          {Platform.OS !== 'web' && <View style={styles.decorCircle2} />}
-
-          {/* Logo */}
-          <View style={styles.logoContainer}>
-            <View style={styles.logoOuter}>
-              <View style={styles.logoInner}>
-                <Ionicons name="calculator" size={36} color="#FFFFFF" />
-              </View>
-            </View>
-          </View>
-
-          <Text style={styles.appName}>MathHelper</Text>
-          <Text style={styles.appTagline}>{t('auth.tagline')}</Text>
-
-          {/* Language Switcher */}
-          <View style={styles.languageSwitcherContainer}>
+        {/* Brand Area — clean, no gradient background */}
+        <View style={styles.brandArea}>
+          <View style={styles.languageSwitcherTop}>
             <LanguageSwitcher />
           </View>
-        </LinearGradient>
+          <LinearGradient
+            colors={[COLORS.primary, COLORS.primarySoft]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.appIconSquircle}
+          >
+            <Ionicons name="calculator" size={38} color="#FFFFFF" />
+          </LinearGradient>
+          <Text style={styles.appName}>MathHelper</Text>
+          <Text style={styles.appTagline}>{t('auth.tagline')}</Text>
+        </View>
 
         {/* Form Card */}
         <WebContainer maxWidth={480}>
@@ -737,7 +723,7 @@ export default function AuthScreen() {
               {forgotMode === 'success' && (
                 <View style={styles.forgotSuccessContainer}>
                   <View style={styles.forgotSuccessIcon}>
-                    <Ionicons name="checkmark-circle" size={56} color={COLORS.success} />
+                    <Ionicons name="checkmark-circle" size={44} color={COLORS.success} />
                   </View>
                   <Text style={styles.forgotSuccessText}>{t('forgotPassword.success')}</Text>
                   <TouchableOpacity
@@ -764,184 +750,157 @@ export default function AuthScreen() {
 }
 
 const styles = StyleSheet.create({
+  // ─── Root ───────────────────────────────────────────────────────────────────
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
   },
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 30,
+    paddingBottom: 48,
   },
 
-  // Header Gradient
-  headerGradient: {
-    paddingTop: 60,
+  // ─── Brand Area ─────────────────────────────────────────────────────────────
+  // Apple sign-in pattern: clean background, centered app icon + name
+  brandArea: {
+    paddingTop: Platform.OS === 'ios' ? 64 : 52,
     paddingBottom: 36,
     alignItems: 'center',
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    overflow: 'hidden',
+    backgroundColor: COLORS.background,
   },
-  decorCircle1: {
+  languageSwitcherTop: {
     position: 'absolute',
-    width: width * 0.7,
-    height: width * 0.7,
-    borderRadius: width * 0.35,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.08)',
-    top: -width * 0.15,
-    right: -width * 0.2,
+    top: Platform.OS === 'ios' ? 58 : 46,
+    right: 20,
   },
-  decorCircle2: {
-    position: 'absolute',
-    width: width * 0.5,
-    height: width * 0.5,
-    borderRadius: width * 0.25,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.06)',
-    bottom: -width * 0.1,
-    left: -width * 0.15,
-  },
-  logoContainer: {
-    marginBottom: 16,
-  },
-  logoOuter: {
-    width: 88,
-    height: 88,
-    borderRadius: 28,
-    backgroundColor: 'rgba(255,255,255,0.12)',
+  languageSwitcherContainer: { display: 'none' }, // legacy compat
+  // App icon squircle — single clean container (no double-nesting)
+  appIconSquircle: {
+    width: 80,
+    height: 80,
+    borderRadius: 20,          // Apple continuous curve squircle
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.2)',
-  },
-  logoInner: {
-    width: 66,
-    height: 66,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    justifyContent: 'center',
-    alignItems: 'center',
+    marginBottom: 18,
+    ...SHADOWS.primary,
   },
   appName: {
-    fontSize: 30,
-    fontWeight: '900',
-    color: '#FFFFFF',
+    fontSize: 28,
+    fontWeight: '700',
+    color: COLORS.text,
+    letterSpacing: -0.38,
     marginBottom: 6,
-    letterSpacing: -0.5,
   },
   appTagline: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.8)',
-    fontWeight: '500',
-    marginBottom: 20,
-  },
-  languageSwitcherContainer: {
-    marginTop: 4,
+    color: COLORS.textMuted,
+    fontWeight: '400',
+    letterSpacing: -0.24,
   },
 
-  // Form Card
+  // ─── Form Card ──────────────────────────────────────────────────────────────
   formCard: {
-    marginHorizontal: 20,
-    marginTop: -16,
+    marginHorizontal: 16,
     backgroundColor: COLORS.surface,
-    borderRadius: 20,
-    padding: 24,
-    ...SHADOWS.large,
+    borderRadius: 16,
+    padding: 20,
+    paddingTop: 24,
+    ...SHADOWS.medium,
   },
 
-  // Tabs
+  // ─── Segmented Control ──────────────────────────────────────────────────────
+  // Matches iOS UISegmentedControl exactly: grey pill, white selected chip
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: COLORS.primaryBg,
-    borderRadius: 14,
-    padding: 4,
-    marginBottom: 24,
+    backgroundColor: COLORS.inputBg,
+    borderRadius: 9,
+    padding: 2,
+    marginBottom: 28,
   },
   tab: {
     flex: 1,
     flexDirection: 'row',
-    paddingVertical: 11,
+    paddingVertical: 9,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 11,
+    borderRadius: 7,
+    gap: 5,
   },
   activeTab: {
     backgroundColor: COLORS.surface,
     ...SHADOWS.small,
   },
   tabText: {
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: '600',
     color: COLORS.textMuted,
+    letterSpacing: -0.08,
   },
   activeTabText: {
-    color: COLORS.primary,
-    fontWeight: '700',
+    color: COLORS.text,
+    fontWeight: '600',
   },
 
-  // Form
-  form: {
-    marginBottom: 8,
-  },
+  // ─── Form Content ────────────────────────────────────────────────────────────
+  form: { marginBottom: 8 },
   formTitle: {
     fontSize: 22,
-    fontWeight: '800',
+    fontWeight: '700',
     color: COLORS.text,
-    marginBottom: 6,
-    letterSpacing: -0.3,
+    marginBottom: 4,
+    letterSpacing: -0.26,
   },
   formSubtitle: {
-    fontSize: 14,
-    color: COLORS.textSubtle,
+    fontSize: 15,
+    color: COLORS.textMuted,
     marginBottom: 24,
-    fontWeight: '500',
+    fontWeight: '400',
+    letterSpacing: -0.24,
   },
 
-  // Inputs
-  inputGroup: {
-    marginBottom: 16,
-  },
+  // ─── Input Fields ────────────────────────────────────────────────────────────
+  // iOS inset-grouped style: subtle background, clean 1px border
+  inputGroup: { marginBottom: 14 },
   inputLabel: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '600',
-    color: COLORS.textLabel,
-    marginBottom: 8,
+    color: COLORS.textMuted,
+    marginBottom: 7,
+    letterSpacing: 0.2,
+    textTransform: 'uppercase',
   },
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: COLORS.inputBg,
-    borderRadius: 14,
-    borderWidth: 1.5,
-    borderColor: COLORS.inputBorder,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
     paddingHorizontal: 14,
   },
   inputWrapperError: {
     borderColor: COLORS.error,
     backgroundColor: COLORS.errorLight,
   },
-  inputIcon: {
-    marginRight: 10,
-  },
+  inputIcon: { marginRight: 10 },
   textInput: {
     flex: 1,
-    fontSize: 15,
+    fontSize: 17,
     color: COLORS.text,
-    paddingVertical: 14,
+    paddingVertical: 15,
+    letterSpacing: -0.43,
   },
-  eyeButton: {
-    padding: 6,
-  },
+  eyeButton: { padding: 8 },
   errorText: {
     fontSize: 12,
     color: COLORS.error,
-    marginTop: 5,
-    marginLeft: 4,
+    marginTop: 6,
+    marginLeft: 2,
     fontWeight: '500',
+    letterSpacing: -0.08,
   },
 
-  // Privacy Consent
+  // ─── Privacy Consent ────────────────────────────────────────────────────────
   consentRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -950,11 +909,11 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   checkbox: {
-    width: 20,
-    height: 20,
-    borderRadius: 5,
-    borderWidth: 2,
-    borderColor: COLORS.inputBorder,
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    borderColor: COLORS.border,
     backgroundColor: COLORS.inputBg,
     alignItems: 'center',
     justifyContent: 'center',
@@ -973,56 +932,71 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 13,
     color: COLORS.textSubtle,
-    lineHeight: 19,
+    lineHeight: 20,
+    letterSpacing: -0.08,
   },
   consentLink: {
     color: COLORS.primary,
-    fontWeight: '700',
-    textDecorationLine: 'underline',
+    fontWeight: '600',
   },
 
-  // Submit Button
+  // ─── Error Banners ──────────────────────────────────────────────────────────
   loginErrorBox: {
     flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FEF2F2',
+    alignItems: 'flex-start',
+    backgroundColor: COLORS.errorLight,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#FECACA',
     padding: 12,
-    marginBottom: 8,
+    marginBottom: 12,
+    gap: 8,
   },
   loginErrorText: {
     flex: 1,
     fontSize: 13,
-    color: '#DC2626',
+    color: COLORS.error,
     fontWeight: '500',
     lineHeight: 18,
+    letterSpacing: -0.08,
   },
+
+  // ─── Primary Button ─────────────────────────────────────────────────────────
+  // Apple-style: full-width, prominent, 17pt semibold, 50pt tall
   submitButton: {
     borderRadius: 14,
     overflow: 'hidden',
     marginTop: 8,
     ...SHADOWS.primary,
   },
-  submitButtonDisabled: {
-    opacity: 0.7,
-  },
+  submitButtonDisabled: { opacity: 0.55 },
   submitGradient: {
     flexDirection: 'row',
-    paddingVertical: 16,
+    paddingVertical: 17,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 14,
+    gap: 8,
   },
   submitButtonText: {
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: '600',
     color: '#FFFFFF',
-    letterSpacing: 0.3,
+    letterSpacing: -0.43,
   },
 
-  // Divider
+  // ─── Forgot Password ────────────────────────────────────────────────────────
+  forgotPasswordLink: {
+    alignItems: 'center',
+    marginTop: 16,
+    paddingVertical: 4,
+  },
+  forgotPasswordText: {
+    fontSize: 15,
+    color: COLORS.primary,
+    fontWeight: '500',
+    letterSpacing: -0.24,
+  },
+
+  // ─── Divider ────────────────────────────────────────────────────────────────
   dividerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -1030,44 +1004,47 @@ const styles = StyleSheet.create({
   },
   dividerLine: {
     flex: 1,
-    height: 1,
-    backgroundColor: COLORS.inputBorder,
+    height: 0.5,
+    backgroundColor: COLORS.border,
   },
   dividerText: {
     fontSize: 13,
     color: COLORS.textMuted,
     marginHorizontal: 12,
-    fontWeight: '500',
+    fontWeight: '400',
+    letterSpacing: -0.08,
   },
 
-  // Switch mode
+  // ─── Mode Toggle ─────────────────────────────────────────────────────────────
   switchModeButton: {
     alignItems: 'center',
     paddingVertical: 4,
   },
   switchModeText: {
-    fontSize: 14,
-    color: COLORS.textSubtle,
+    fontSize: 15,
+    color: COLORS.textMuted,
+    letterSpacing: -0.24,
   },
   switchModeLink: {
     color: COLORS.primary,
-    fontWeight: '700',
+    fontWeight: '600',
   },
 
-  // Footer
+  // ─── Footer ──────────────────────────────────────────────────────────────────
   footerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 24,
+    marginTop: 28,
   },
   footerText: {
     fontSize: 13,
     color: COLORS.textMuted,
-    fontWeight: '500',
+    fontWeight: '400',
+    letterSpacing: -0.08,
   },
 
-  // Clear Data Button
+  // ─── Destructive Action ──────────────────────────────────────────────────────
   clearDataButton: {
     flexDirection: 'row',
     backgroundColor: COLORS.error,
@@ -1078,6 +1055,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 20,
     alignSelf: 'center',
+    gap: 6,
     ...SHADOWS.small,
   },
   clearDataText: {
@@ -1086,33 +1064,23 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
-  // Forgot Password
-  forgotPasswordLink: {
-    alignItems: 'center',
-    marginTop: 14,
-  },
-  forgotPasswordText: {
-    fontSize: 14,
-    color: COLORS.primary,
-    fontWeight: '600',
-  },
+  // ─── Forgot Password Sheet ───────────────────────────────────────────────────
+  // iOS bottom sheet pattern — slides up from the bottom
   forgotOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
+    backgroundColor: 'rgba(0,0,0,0.40)',
+    justifyContent: 'flex-end',
   },
   forgotCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     padding: 24,
-    width: '100%',
-    maxWidth: 400,
+    paddingBottom: 40,
     ...SHADOWS.large,
   },
   forgotHeader: {
@@ -1122,60 +1090,77 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   forgotBackButton: {
-    padding: 6,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: COLORS.inputBg,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   forgotTitle: {
-    fontSize: 20,
-    fontWeight: '800',
+    fontSize: 17,
+    fontWeight: '600',
     color: COLORS.text,
-    letterSpacing: -0.3,
+    letterSpacing: -0.43,
   },
   forgotStepText: {
-    fontSize: 14,
+    fontSize: 15,
     color: COLORS.textSubtle,
-    marginBottom: 16,
-    lineHeight: 20,
+    marginBottom: 20,
+    lineHeight: 22,
+    letterSpacing: -0.24,
   },
   forgotErrorContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: COLORS.errorLight,
     borderRadius: 10,
     padding: 12,
     marginBottom: 16,
+    gap: 8,
   },
   forgotErrorText: {
     fontSize: 13,
     color: COLORS.error,
     fontWeight: '500',
     flex: 1,
+    letterSpacing: -0.08,
   },
   forgotSuccessMessageContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     backgroundColor: COLORS.successLight,
     borderRadius: 10,
     padding: 12,
     marginBottom: 16,
+    gap: 8,
   },
   forgotSuccessMessageText: {
     fontSize: 13,
     color: COLORS.success,
     fontWeight: '500',
     flex: 1,
+    letterSpacing: -0.08,
   },
   forgotSuccessContainer: {
     alignItems: 'center',
-    paddingVertical: 16,
+    paddingVertical: 24,
   },
   forgotSuccessIcon: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: COLORS.successLight,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 16,
   },
   forgotSuccessText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: COLORS.success,
+    fontSize: 17,
+    fontWeight: '600',
+    color: COLORS.text,
     marginBottom: 24,
     textAlign: 'center',
+    letterSpacing: -0.43,
   },
 });

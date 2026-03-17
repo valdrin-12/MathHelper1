@@ -1075,11 +1075,11 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   sectionTitle: {
-    fontSize: 19,
-    fontWeight: '800',
+    fontSize: 22,
+    fontWeight: '700',
     color: COLORS.text,
     marginBottom: 14,
-    letterSpacing: -0.3,
+    letterSpacing: -0.26,
   },
   statsGrid: {
     flexDirection: 'row',
@@ -1124,7 +1124,7 @@ const styles = StyleSheet.create({
   },
   emptyActivity: {
     backgroundColor: COLORS.surface,
-    borderRadius: 20,
+    borderRadius: 16,
     padding: 32,
     alignItems: 'center',
     ...SHADOWS.soft,
@@ -1181,7 +1181,7 @@ const styles = StyleSheet.create({
   },
   activityCard: {
     backgroundColor: COLORS.surface,
-    borderRadius: 18,
+    borderRadius: 16,
     padding: 14,
     flexDirection: 'row',
     alignItems: 'center',

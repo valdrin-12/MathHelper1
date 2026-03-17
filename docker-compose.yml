@@ -26,11 +26,11 @@ services:
       JWT_SECRET: mathhelper-dev-secret-key-2024
       JWT_ACCESS_EXPIRY: 15m
       JWT_REFRESH_EXPIRY: 7d
-      GEMINI_API_KEY: AIzaSyDAX-EZaIj62Al8Xe7yd9l-iBdUZgqZIso
+      GEMINI_API_KEY: AIzaSyC62xS3g7fATPTSH88vuT1PSGncXxwURwE
       GEMINI_MODEL: gemini-2.5-flash
       MAX_IMAGE_SIZE_MB: 4
-      SMTP_USER: qerimivaldrin85@gmail.com
-      SMTP_PASS: bcqjqodfmdzrekjb
+      RESEND_API_KEY: re_Va2Wouih_3CwDaGGrjChUDsSp5eU9kPKr
+      EMAIL_FROM: MathHelper <noreply@mathhelper.online>
     depends_on:
       postgres:
         condition: service_healthy
