@@ -292,16 +292,8 @@ function MainApp() {
   const [showSplash, setShowSplash] = useState(isWeb ? false : true);
 
   useEffect(() => {
-    // One-time force logout to start fresh at auth screen
-    const forceLogoutOnce = async () => {
-      const didForceLogout = await AsyncStorage.getItem('@mathhelper_force_logout_v1');
-      if (!didForceLogout) {
-        await AsyncStorage.multiRemove(['@math_helper_access_token', '@math_helper_refresh_token']);
-        await AsyncStorage.setItem('@mathhelper_force_logout_v1', 'true');
-      }
-    };
-    forceLogoutOnce();
-
+    // Clean up legacy force-logout flag (no longer needed)
+    AsyncStorage.removeItem('@mathhelper_force_logout_v1').catch(() => {});
   }, []);
 
   if (showSplash) {

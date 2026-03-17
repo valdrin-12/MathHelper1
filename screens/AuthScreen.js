@@ -494,7 +494,11 @@ export default function AuthScreen() {
                   {t('privacy.consentText')}{' '}
                   <Text
                     style={styles.consentLink}
-                    onPress={() => Linking.openURL(`https://mathhelper.online/privacy?lang=${i18n.language || 'al'}`)}
+                    onPress={() => {
+                      const SUPPORTED = ['al', 'en', 'de'];
+                      const lang = SUPPORTED.includes(i18n.language) ? i18n.language : 'al';
+                      Linking.openURL(`https://mathhelper.online/privacy?lang=${lang}`);
+                    }}
                   >
                     {t('privacy.consentLink')}
                   </Text>

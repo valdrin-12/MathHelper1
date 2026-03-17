@@ -43,19 +43,30 @@ export default function SettingsScreen() {
         ]);
         if (notif !== null) setNotifications(notif === 'true');
         if (sound !== null) setSoundEffects(sound === 'true');
-      } catch (e) {}
+      } catch (e) {
+        console.error('[SettingsScreen] Failed to load settings from storage:', e);
+        // Defaults remain in place — non-critical, no user-visible error needed
+      }
     };
     loadSettings();
   }, []);
 
   const handleNotificationsChange = async (value) => {
     setNotifications(value);
-    try { await AsyncStorage.setItem('@mathhelper_notifications', String(value)); } catch (e) {}
+    try {
+      await AsyncStorage.setItem('@mathhelper_notifications', String(value));
+    } catch (e) {
+      console.error('[SettingsScreen] Failed to save notifications setting:', e);
+    }
   };
 
   const handleSoundChange = async (value) => {
     setSoundEffects(value);
-    try { await AsyncStorage.setItem('@mathhelper_sound', String(value)); } catch (e) {}
+    try {
+      await AsyncStorage.setItem('@mathhelper_sound', String(value));
+    } catch (e) {
+      console.error('[SettingsScreen] Failed to save sound setting:', e);
+    }
   };
 
   const handleDeleteAccount = async () => {
