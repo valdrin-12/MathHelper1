@@ -302,7 +302,7 @@ export default function SettingsScreen() {
         />
       </View>
 
-      {/* Logout + Delete Account */}
+      {/* Logout */}
       <View style={styles.section}>
         <TouchableOpacity
           style={styles.logoutButton}
@@ -312,18 +312,24 @@ export default function SettingsScreen() {
           <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
           <Text style={styles.logoutText}>{t('settings.logout')}</Text>
         </TouchableOpacity>
+      </View>
 
+      {/* Danger Zone */}
+      <View style={styles.dangerZoneCard}>
+        <View style={styles.dangerZoneHeader}>
+          <View style={styles.dangerZoneIconWrap}>
+            <Ionicons name="warning-outline" size={16} color={COLORS.error} />
+          </View>
+          <Text style={styles.dangerZoneLabel}>{t('settings.dangerZone')}</Text>
+        </View>
+        <Text style={styles.dangerZoneDesc}>{t('settings.deleteAccountDesc')}</Text>
         <TouchableOpacity
           style={styles.deleteAccountButton}
           onPress={handleDeleteAccount}
-          activeOpacity={0.8}
+          activeOpacity={0.75}
         >
-          <Ionicons name="trash-outline" size={18} color={COLORS.error} />
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <Text style={styles.deleteAccountText}>{t('settings.deleteAccount')}</Text>
-            <Text style={styles.deleteAccountDesc}>{t('settings.deleteAccountDesc')}</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={18} color={COLORS.error} />
+          <Ionicons name="trash-outline" size={16} color={COLORS.error} />
+          <Text style={styles.deleteAccountText}>{t('settings.deleteAccount')}</Text>
         </TouchableOpacity>
       </View>
 
@@ -354,7 +360,11 @@ export default function SettingsScreen() {
           { heading: t('infoContent.terms.acceptance.heading'), text: t('infoContent.terms.acceptance.text') },
           { heading: t('infoContent.terms.service.heading'), text: t('infoContent.terms.service.text') },
           { heading: t('infoContent.terms.accounts.heading'), text: t('infoContent.terms.accounts.text') },
+          { heading: t('infoContent.terms.ip.heading'), text: t('infoContent.terms.ip.text') },
+          { heading: t('infoContent.terms.ugc.heading'), text: t('infoContent.terms.ugc.text') },
+          { heading: t('infoContent.terms.premium.heading'), text: t('infoContent.terms.premium.text') },
           { heading: t('infoContent.terms.liability.heading'), text: t('infoContent.terms.liability.text') },
+          { heading: t('infoContent.terms.prohibited.heading'), text: t('infoContent.terms.prohibited.text') },
           { heading: t('infoContent.terms.changes.heading'), text: t('infoContent.terms.changes.text') },
         ]}
         onClose={() => setInfoModal(null)}
@@ -587,25 +597,58 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
   },
 
+  dangerZoneCard: {
+    marginHorizontal: SPACING.md,
+    marginBottom: SPACING.md,
+    borderRadius: BORDER_RADIUS.xl,
+    borderWidth: 1,
+    borderColor: COLORS.error + '30',
+    backgroundColor: COLORS.error + '06',
+    padding: SPACING.md,
+    gap: SPACING.sm,
+  },
+  dangerZoneHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  dangerZoneIconWrap: {
+    width: 26,
+    height: 26,
+    borderRadius: 8,
+    backgroundColor: COLORS.error + '15',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dangerZoneLabel: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.error,
+    textTransform: 'uppercase',
+    letterSpacing: 0.6,
+  },
+  dangerZoneDesc: {
+    fontSize: 13,
+    color: COLORS.error + 'AA',
+    lineHeight: 18,
+  },
   deleteAccountButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: SPACING.md,
-    marginTop: SPACING.sm,
+    justifyContent: 'center',
+    gap: 7,
+    paddingVertical: 11,
+    paddingHorizontal: SPACING.md,
     borderRadius: BORDER_RADIUS.lg,
-    borderWidth: 1,
-    borderColor: COLORS.error + '40',
-    backgroundColor: COLORS.error + '08',
+    borderWidth: 1.5,
+    borderColor: COLORS.error + '60',
+    backgroundColor: COLORS.error + '0D',
+    alignSelf: 'flex-start',
   },
   deleteAccountText: {
     fontSize: 14,
     fontWeight: '600',
     color: COLORS.error,
-  },
-  deleteAccountDesc: {
-    fontSize: 12,
-    color: COLORS.error + '99',
-    marginTop: 2,
   },
 
   // Version

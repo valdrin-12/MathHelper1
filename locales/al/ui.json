@@ -192,6 +192,7 @@
     "privacyPolicy": "Politika e Privatësisë",
     "aboutApp": "Rreth Aplikacionit",
     "logout": "Dilni nga Llogaria",
+    "dangerZone": "Zona e Rrezikut",
     "deleteAccount": "Fshi Llogarinë",
     "deleteAccountDesc": "Fshi llogarinë dhe të gjitha të dhënat përgjithmonë",
     "deleteAccountConfirmTitle": "Fshi Llogarinë",
@@ -420,28 +421,44 @@
     "terms": {
       "title": "Kushtet e Shërbimit",
       "version": {
-        "heading": "Kushtet e Shërbimit",
-        "text": "Versioni: 1.0\nData: Janar 2025"
+        "heading": "MathHelper — Kushtet e Shërbimit",
+        "text": "Data e Hyrjes në Fuqi: Mars 2026"
       },
       "acceptance": {
-        "heading": "1. Pranimi i Kushteve",
-        "text": "Duke përdorur MathHelper, pranoni kushtet e mëposhtme. Nëse nuk pranoni, mos e përdorni aplikacionin."
+        "heading": "1. Hyrje",
+        "text": "MathHelper ofron një platformë inteligjente të mësimit të matematikës përmes aplikacionit celular, faqes mathhelper.com dhe të gjitha shërbimeve të ndërlidhura. Duke shkarkuar ose përdorur MathHelper, pranoni këto Kushte.\n\nE Rëndësishme: MathHelper është hartuar si shoqërues mësimi edukativ — jo për të lehtësuar mashtrimet akademike. Për informacion mbi privatësinë: mathhelper.com/privacy"
       },
       "service": {
-        "heading": "2. Shërbimi",
-        "text": "MathHelper ofron mësimet matematikore, kuize interaktive dhe analizë të problemeve me inteligjencë artificiale për qëllime edukative."
+        "heading": "2. Modifikimet e Shërbimit dhe Kushteve",
+        "text": "Ne mund të shtojmë ose heqim veçori, të rregullojmë kufijtë e aksesit dhe të përditësojmë platformën për arsye teknike, ligjore ose sigurie. Do të njoftoheni paraprakisht për ndryshimet domethënëse. Vazhdimi i përdorimit pas përditësimeve përbën pranimin e Kushteve të reja. Nëse nuk jeni dakord, ndërprisni përdorimin dhe fshini Aplikacionin."
       },
       "accounts": {
-        "heading": "3. Llogaritë",
-        "text": "Jeni përgjegjës për sigurinë e llogarisë suaj. Mos ndani fjalëkalimin me të tjerë."
+        "heading": "3. Pranimi dhe Kërkesat e Llogarisë",
+        "text": "• MathHelper është i disponueshëm vetëm për individët mbi 13 vjeç\n• Të miturit duhet të marrin miratim të prindërve/kujdestarëve ligjor\n• Prindërit/kujdestarët janë përgjegjës për aktivitetin e fëmijës\n• Duhet të pajtoheni me të gjithë ligjet e zbatueshme\n• Duhet të jepni informacion të saktë gjatë regjistrimit\n• Jeni përgjegjës për kostot e internetit të shoqëruara me aksesimin e MathHelper-it"
+      },
+      "ip": {
+        "heading": "4–5. Pronësia Intelektuale dhe Lidhjet e Treta",
+        "text": "Gjithë përmbajtja, dizajni, algoritmet dhe materialet e MathHelper janë pronë e MathHelper. Ju mund t'i përdorni për qëllime personale edukative.\n\nNuk mund të:\n• Riprodhoni, shpërndani ose shisni ndonjë përmbajtje\n• Inxhinieroni të kundërt ose nxirrni kodin burimor\n• Krijoni produkte konkurruese ose shfrytëzoni të dhënat\n• Përdorni mjete të automatizuara për nxjerrjen e përmbajtjes\n\nLindhjet ndaj palëve të treta ofrohen vetëm për referim dhe ne nuk jemi përgjegjës për saktësinë e tyre."
+      },
+      "ugc": {
+        "heading": "6. Përmbajtja e Gjeneruar nga Përdoruesi",
+        "text": "Duke parashtruar probleme, zgjidhje ose materiale të tjera, na jepni licencë jo-ekskluzive dhe pa honorar për t'i përdorur ato për të përmirësuar shërbimin.\n\nNuk lejohet parashtrimi i përmbajtjes:\n• Shpifëse, obscene ose ofenduese\n• Ilegale ose që promovon aktivitet ilegal\n• Ngacmuese ose kërcënuese\n• Që cënon të drejtat e pronësisë intelektuale\n\nRaportoni material të pahijshëm: EnoDevSupport@proton.me"
+      },
+      "premium": {
+        "heading": "7. Shërbimi Premium dhe Pagesat",
+        "text": "MathHelper Plus ofrohet përmes Google Play Store ose iOS App Store.\n\n• Provat falas konvertohen automatikisht në abonime të paguara nëse nuk anulohen para skadimit\n• Anuloni në çdo kohë përmes dyqanit të aplikacioneve të pajisjes suaj\n• Kthimet ndjekin politikat e Google Play dhe App Store\n• Rritjet e çmimit kërkojnë njoftim 30-ditor paraprak\n• Taksat e zbatueshme tarifohen në blerje"
       },
       "liability": {
-        "heading": "4. Kufizimi i Përgjegjësisë",
-        "text": "MathHelper nuk garanton saktësinë absolute të zgjidhjes me AI. Gjithmonë verifikoni me mësusin tuaj."
+        "heading": "8. Përgjegjësia dhe Garancitë",
+        "text": "Konsumatorët e BE/EEA mbrohen nga garancitë ligjore për deri në dy vjet.\n\nPër të gjithë përdoruesit:\n• MathHelper ofrohet 'SI ËSHTË' pa garanci absolute saktësie\n• Nuk jemi përgjegjës për dëmet e tërthorta ose fitimet e humbura\n• Përgjegjësia jonë maksimale kufizohet në tarifat e paguara\n• Të drejtat tuaja si konsumator nën ligjin e detyrueshëm mbeten të paprekura"
+      },
+      "prohibited": {
+        "heading": "9–10. Sjellja e Ndaluar dhe Të Drejtat e Autorit",
+        "text": "Pajtoheni të mos:\n• Përfaqësoheni si përdorues të tjerë ose entitete\n• Transmetoni kod toksik, virus ose malware\n• Ngacmoni, abuzoni ose kërcënoni përdoruesit e tjerë\n• Ndërhyjni në funksionimin e Shërbimit\n• Mblidhni të dhëna pa autorizim\n\nPër të raportuar shkelje të drejtës së autorit, kontaktoni EnoDevSupport@proton.me me emrin, përshkrimin e detajuar të shkeljes dhe konfirmimin e pronësisë."
       },
       "changes": {
-        "heading": "5. Ndryshimet",
-        "text": "Mund të ndryshojmë kushtet e shërbimit në çdo kohë. Njoftimet dërgohen me email."
+        "heading": "11. Privatësia dhe Kontakti",
+        "text": "Rishikoni Politikën tonë të Privatësisë tek mathhelper.com/privacy për të kuptuar si mblidhim, përdorim dhe mbrojmë informacionin tuaj. Respektoni privatësinë e përdoruesve të tjerë.\n\nKontakt: EnoDevSupport@proton.me"
       }
     },
     "privacy": {

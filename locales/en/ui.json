@@ -192,6 +192,7 @@
     "privacyPolicy": "Privacy Policy",
     "aboutApp": "About the App",
     "logout": "Sign Out",
+    "dangerZone": "Danger Zone",
     "deleteAccount": "Delete Account",
     "deleteAccountDesc": "Permanently delete your account and all data",
     "deleteAccountConfirmTitle": "Delete Account",
@@ -374,12 +375,16 @@
     },
     "terms": {
       "title": "Terms of Service",
-      "version": { "heading": "Terms of Service", "text": "Version: 1.0\nDate: January 2025" },
-      "acceptance": { "heading": "1. Acceptance of Terms", "text": "By using MathHelper, you accept the following terms. If you do not accept, do not use the application." },
-      "service": { "heading": "2. The Service", "text": "MathHelper provides math lessons, interactive quizzes, and AI-powered problem analysis for educational purposes." },
-      "accounts": { "heading": "3. Accounts", "text": "You are responsible for the security of your account. Do not share your password with others." },
-      "liability": { "heading": "4. Limitation of Liability", "text": "MathHelper does not guarantee absolute accuracy of AI solutions. Always verify with your teacher." },
-      "changes": { "heading": "5. Changes", "text": "We may change the terms of service at any time. Notifications are sent by email." }
+      "version": { "heading": "MathHelper — Terms of Service", "text": "Effective Date: March 2026" },
+      "acceptance": { "heading": "1. Introduction", "text": "MathHelper ("we", "us", or "MathHelper") provides an intelligent math learning platform through the MathHelper mobile app, the website at mathhelper.com, and all associated services. By downloading or using MathHelper, you agree to these Terms.\n\nImportant: MathHelper is designed as an educational learning companion — not to facilitate academic dishonesty. For privacy information: mathhelper.com/privacy" },
+      "service": { "heading": "2. Service Modifications and Terms Updates", "text": "We continuously evolve MathHelper by adding or removing features, adjusting usage limits, introducing new content, and ensuring legal compliance. We provide advance notice for significant changes that negatively affect your ability to use the Service. Continued use of MathHelper after updates constitutes acceptance of the revised Terms. If you disagree with modifications, you must stop using and delete the Application." },
+      "accounts": { "heading": "3. Eligibility and Account Requirements", "text": "• MathHelper is available only to individuals over 13 years of age\n• Minors must obtain parental/legal guardian consent\n• Parents/guardians accepting these Terms are responsible for their child's activity\n• You must comply with all applicable local, state, and international laws\n• You must provide accurate information when registering\n• You are responsible for internet/data costs associated with accessing MathHelper" },
+      "ip": { "heading": "4–5. Intellectual Property & Third-Party Links", "text": "All MathHelper content, designs, algorithms, and materials are the property of MathHelper. You may use the Service for personal, non-commercial educational purposes.\n\nYou may not:\n• Reproduce, distribute, or sell any MathHelper content\n• Reverse engineer, decompile, or attempt to extract our source code\n• Create derivative works or competing products\n• Scrape data or use automated tools to extract content\n\nLinks to third-party websites are provided for reference only. We are not responsible for their content or accuracy." },
+      "ugc": { "heading": "6. User-Generated Content", "text": "\"User Content\" includes any problems, solutions, images, notes, or other materials you submit to MathHelper. By submitting content, you grant us a non-exclusive, royalty-free license to use, display, and improve our Service based on that content.\n\nYou may not submit content that is:\n• Defamatory, obscene, or offensive\n• Illegal or promotes illegal activity\n• Harassing or threatening\n• Infringing on intellectual property rights\n\nReport inappropriate content: EnoDevSupport@proton.me" },
+      "premium": { "heading": "7. Premium Services and Payments", "text": "MathHelper Plus offers enhanced features available through in-app purchases via Google Play Store or iOS App Store.\n\n• Free trial periods automatically convert to paid subscriptions — cancel before expiry to avoid charges\n• Cancel at any time through your device's app store\n• Returns follow Google Play Store and Apple App Store policies\n• Price increases require 30 days' advance notice\n• Applicable taxes are charged at purchase" },
+      "liability": { "heading": "8. Liability and Disclaimers", "text": "For EU/EEA Consumers: You are protected by statutory consumer guarantees covering conformity and defects for up to two years.\n\nFor all users:\n• MathHelper is provided \"AS IS\" without warranty of merchantability or fitness for a particular purpose\n• We are not liable for indirect damages, lost profits, or consequential losses\n• Our maximum liability is limited to the fees you paid us\n• Nothing here removes your rights as a consumer under mandatory law" },
+      "prohibited": { "heading": "9–10. Prohibited Conduct & Copyright", "text": "You agree not to:\n• Impersonate other users or entities\n• Transmit malicious code, viruses, or malware\n• Harass, abuse, stalk, or threaten other users\n• Interfere with the operation of the Service\n• Collect user data without authorization\n• Disclose others' personal information\n\nTo report copyright infringement, contact EnoDevSupport@proton.me with your name, a detailed description of the infringing content and its location, confirmation of your copyright ownership, and your signature." },
+      "changes": { "heading": "11. Privacy and Contact", "text": "Please review our Privacy Policy at mathhelper.com/privacy to understand how we collect, use, and protect your information. Respect the privacy of other users and comply with our data collection policies.\n\nContact: EnoDevSupport@proton.me" }
     },
     "privacy": {
       "title": "Privacy Policy",

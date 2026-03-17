@@ -192,6 +192,7 @@
     "privacyPolicy": "Datenschutzrichtlinie",
     "aboutApp": "Über die App",
     "logout": "Abmelden",
+    "dangerZone": "Gefahrenzone",
     "deleteAccount": "Konto löschen",
     "deleteAccountDesc": "Konto und alle Daten dauerhaft löschen",
     "deleteAccountConfirmTitle": "Konto löschen",
@@ -374,12 +375,16 @@
     },
     "terms": {
       "title": "Nutzungsbedingungen",
-      "version": { "heading": "Nutzungsbedingungen", "text": "Version: 1.0\nDatum: Januar 2025" },
-      "acceptance": { "heading": "1. Annahme der Bedingungen", "text": "Durch die Nutzung von MathHelper akzeptieren Sie die folgenden Bedingungen. Wenn Sie nicht akzeptieren, verwenden Sie die Anwendung nicht." },
-      "service": { "heading": "2. Der Dienst", "text": "MathHelper bietet Mathematik-Lektionen, interaktive Quiz und KI-gestützte Aufgabenanalyse für Bildungszwecke." },
-      "accounts": { "heading": "3. Konten", "text": "Sie sind für die Sicherheit Ihres Kontos verantwortlich. Teilen Sie Ihr Passwort nicht mit anderen." },
-      "liability": { "heading": "4. Haftungsbeschränkung", "text": "MathHelper garantiert keine absolute Genauigkeit der KI-Lösungen. Überprüfen Sie immer mit Ihrem Lehrer." },
-      "changes": { "heading": "5. Änderungen", "text": "Wir können die Nutzungsbedingungen jederzeit ändern. Benachrichtigungen werden per E-Mail gesendet." }
+      "version": { "heading": "MathHelper — Allgemeine Geschäftsbedingungen", "text": "Gültig ab: März 2026" },
+      "acceptance": { "heading": "1. Einführung", "text": "MathHelper bietet eine intelligente Mathematik-Lernplattform über die MathHelper-App, die Website mathhelper.com und alle damit verbundenen Dienste. Durch das Herunterladen oder die Nutzung von MathHelper akzeptieren Sie diese Bedingungen.\n\nWichtig: MathHelper ist als Lernbegleiter konzipiert — nicht zur Erleichterung akademischer Unehrlichkeit. Datenschutzinformationen: mathhelper.com/privacy" },
+      "service": { "heading": "2. Änderungen am Dienst und den Bedingungen", "text": "Wir entwickeln MathHelper kontinuierlich weiter durch Hinzufügen oder Entfernen von Features, Anpassung von Nutzungsgrenzen, Einführung neuer Lerninhalte und Wahrung der Rechtskonformität. Wir benachrichtigen Sie rechtzeitig über wesentliche Änderungen. Ihre fortgesetzte Nutzung nach Updates stellt die Akzeptanz der aktualisierten Bedingungen dar. Wenn Sie nicht zustimmen, müssen Sie die Nutzung beenden und die Anwendung löschen." },
+      "accounts": { "heading": "3. Berechtigung und Kontoanforderungen", "text": "• MathHelper ist nur für Personen ab 13 Jahren verfügbar\n• Minderjährige benötigen die Zustimmung eines Erziehungsberechtigten\n• Erziehungsberechtigte sind für die Aktivitäten ihres Kindes verantwortlich\n• Sie müssen alle geltenden Gesetze einhalten\n• Sie müssen bei der Registrierung genaue Angaben machen\n• Sie tragen die Kosten für Internet- und Datenverbindungen zur MathHelper-Nutzung" },
+      "ip": { "heading": "4–5. Geistiges Eigentum & Drittanbieter-Links", "text": "Alle MathHelper-Inhalte, Designs, Algorithmen und Materialien sind Eigentum von MathHelper. Sie dürfen den Dienst für private, nicht-kommerzielle Lernzwecke nutzen.\n\nSie dürfen nicht:\n• MathHelper-Inhalte reproduzieren, verteilen oder verkaufen\n• Reverse Engineering durchführen oder Quellcode extrahieren\n• Abgeleitete Werke oder konkurrierende Produkte erstellen\n• Automatisierte Tools zur Inhaltsextraktion nutzen\n\nLinks zu Drittanbieter-Websites dienen nur zur Referenz. Wir sind nicht für deren Inhalte verantwortlich." },
+      "ugc": { "heading": "6. Nutzergenerierte Inhalte", "text": "\"Benutzerinhalte\" umfassen Aufgaben, Lösungen, Bilder, Notizen oder andere Materialien, die Sie MathHelper einreichen. Durch das Einreichen gewähren Sie uns eine nicht-exklusive, gebührenfreie Lizenz zur Nutzung und Verbesserung des Dienstes.\n\nSie dürfen keine Inhalte einreichen, die:\n• Verleumdung, Obszönität oder Beleidigung darstellen\n• Illegal sind oder illegale Aktivitäten fördern\n• Belästigung oder Bedrohung darstellen\n• Urheberrechte verletzen\n\nUnangemessene Inhalte melden: EnoDevSupport@proton.me" },
+      "premium": { "heading": "7. Premium-Dienste und Zahlungen", "text": "MathHelper Plus ist über In-App-Käufe im Google Play Store oder iOS App Store erhältlich.\n\n• Kostenlose Testphasen werden automatisch in bezahlte Abonnements umgewandelt — kündigen Sie vor Ablauf, um Gebühren zu vermeiden\n• Kündigung jederzeit über den App Store Ihres Geräts möglich\n• Rückgaben folgen den Richtlinien von Google Play und App Store\n• Preiserhöhungen erfordern 30 Tage Vorankündigung\n• Geltende Steuern werden beim Kauf berechnet" },
+      "liability": { "heading": "8. Haftung und Haftungsausschlüsse", "text": "Für EU/EEA-Verbraucher: Sie sind durch gesetzliche Verbraucherschutzgarantien für bis zu zwei Jahre geschützt.\n\nFür alle Nutzer:\n• MathHelper wird „WIE BESEHEN" ohne Garantien bereitgestellt\n• Wir haften nicht für indirekte Schäden, entgangene Gewinne oder Folgeschäden\n• Unsere maximale Haftung ist auf gezahlte Gebühren beschränkt\n• Ihre gesetzlichen Verbraucherrechte bleiben unberührt" },
+      "prohibited": { "heading": "9–10. Verbotenes Verhalten & Urheberrecht", "text": "Sie erklären sich einverstanden, nicht zu:\n• Sich als andere Nutzer oder Entitäten ausgeben\n• Bösartigen Code, Viren oder Malware übertragen\n• Andere Nutzer belästigen, missbrauchen oder bedrohen\n• In den Betrieb des Dienstes eingreifen\n• Nutzerdaten ohne Genehmigung sammeln\n\nUm Urheberrechtsverletzungen zu melden, kontaktieren Sie EnoDevSupport@proton.me mit Ihrem Namen, einer detaillierten Beschreibung des verletzenden Inhalts, Bestätigung Ihres Urheberrechtsbesitzes und Ihrer Unterschrift." },
+      "changes": { "heading": "11. Datenschutz und Kontakt", "text": "Bitte beachten Sie unsere Datenschutzrichtlinie unter mathhelper.com/privacy, um zu verstehen, wie wir Ihre Informationen erfassen, nutzen und schützen. Respektieren Sie die Privatsphäre anderer Nutzer.\n\nKontakt: EnoDevSupport@proton.me" }
     },
     "privacy": {
       "title": "Datenschutzrichtlinie",
