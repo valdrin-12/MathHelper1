@@ -95,7 +95,7 @@ export default function AuthScreen() {
     }
     if (!password) {
       newErrors.password = t('auth.validation.passwordRequired');
-    } else if (password.length < 6) {
+    } else if (password.length < 8) {
       newErrors.password = t('auth.validation.passwordMinLength');
     }
     if (!confirmPassword) {
@@ -117,10 +117,7 @@ export default function AuthScreen() {
     try {
       const result = await login(email.trim(), password);
       if (!result.success) {
-        const msg = result.error === 'USER_NOT_FOUND'
-          ? t('auth.userNotFound')
-          : t('auth.loginFailed');
-        setLoginError(msg);
+        setLoginError(t('auth.loginFailed'));
       }
     } finally {
       setLoading(false);
@@ -184,7 +181,7 @@ export default function AuthScreen() {
   };
 
   const handleVerifyCode = () => {
-    if (!resetCode || resetCode.length !== 6) {
+    if (!resetCode || resetCode.length !== 8) {
       setForgotError(t('forgotPassword.invalidCode'));
       return;
     }
@@ -193,7 +190,7 @@ export default function AuthScreen() {
   };
 
   const handleResetPassword = async () => {
-    if (!newPassword || newPassword.length < 6) {
+    if (!newPassword || newPassword.length < 8) {
       setForgotError(t('auth.validation.passwordMinLength'));
       return;
     }
@@ -211,7 +208,7 @@ export default function AuthScreen() {
       });
       setForgotMode('success');
     } catch (err) {
-      const msg = err.data?.error || err.message;
+      const msg = err.data?.error || err.message || '';
       if (msg.includes('expired')) {
         setForgotError(t('forgotPassword.codeExpired'));
       } else if (msg.includes('Invalid')) {
