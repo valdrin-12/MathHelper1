@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "skills": {
+    "design-md": {
+      "source": "google-labs-code/stitch-skills",
+      "sourceType": "github",
+      "computedHash": "d3a4c7d2f2715a33662c8b06ffc16035d01965a8b4ed81c2958fb22ae94760f8"
+    },
+    "discover-testing": {
+      "source": "rand/cc-polymath",
+      "sourceType": "github",
+      "computedHash": "f1daef1ffa2bd7fdec30649c5f6c1f2b232ae9fed4a45ac89dc340e4500f5240"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "computedHash": "063a0e6448123cd359ad0044cc46b0e490cc7964d45ef4bb9fd842bd2ffbca67"
+    },
+    "math": {
+      "source": "parcadei/continuous-claude-v3",
+      "sourceType": "github",
+      "computedHash": "13fc5f5bc185198642adea57aaff35a4dcd4bde6c7c0eaa67c7e787e969d6018"
+    },
+    "math-teacher": {
+      "source": "jamesrochabrun/skills",
+      "sourceType": "github",
+      "computedHash": "460446132949dfadae87f5f824782a0916496494821519f6cc63b847da9ae1f4"
+    },
+    "nodejs-backend-patterns": {
+      "source": "wshobson/agents",
+      "sourceType": "github",
+      "computedHash": "4c6bf8fbd9a13d61e326ddeb210af5854fea3b253922a7981bd7718f3b765c08"
+    },
+    "simple-math": {
+      "source": "cisco-ai-defense/skill-scanner",
+      "sourceType": "github",
+      "computedHash": "a532fc4bf143e681aebf721cabfbbaeac4a4e6f79bdf804ea737a51b655c2722"
+    },
+    "statistics-math": {
+      "source": "pluginagentmarketplace/custom-plugin-data-engineer",
+      "sourceType": "github",
+      "computedHash": "2abd4d5a2df0d09a22bc6395f18b5f02499085edee65909bbdabe71e0f577f5d"
+    },
+    "web-design-guidelines": {
+      "source": "vercel-labs/agent-skills",
+      "sourceType": "github",
+      "computedHash": "a6a44d5498f7e8f68289902f3dedfc6f38ae0cee1e96527c80724cf27f727c2a"
+    }
+  }
+}

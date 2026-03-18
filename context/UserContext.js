@@ -106,6 +106,19 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const socialLogin = async (provider, accessToken, language) => {
+    try {
+      const result = await authService.socialLoginUser({ provider, accessToken, language });
+      if (result.success) {
+        setUser(result.user);
+      }
+      return { success: result.success, error: result.error };
+    } catch (error) {
+      console.error('Gabim gjatë social login:', error);
+      return { success: false, error: 'Gabim i papritur. Provoni përsëri.' };
+    }
+  };
+
   const value = {
     user,
     loading,
@@ -113,6 +126,7 @@ export const UserProvider = ({ children }) => {
     register,
     logout,
     updateProfile,
+    socialLogin,
     refresh: checkCurrentUser,
   };
 

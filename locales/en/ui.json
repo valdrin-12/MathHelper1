@@ -42,6 +42,12 @@
     "hasAccount": "Already have an account? ",
     "tagline": "Learn math with ease",
     "footer": "Learn math in your language",
+    "social": {
+      "orContinueWith": "or continue with",
+      "continueWithGoogle": "Continue with Google",
+      "continueWithFacebook": "Continue with Facebook",
+      "error": "Social login failed. Please try again."
+    },
     "clearAllData": "Delete All Data (Testing)",
     "clearAllConfirm": "Are you sure you want to delete ALL data? (accounts, stats, saved items)?",
     "clearAllTitle": "Delete All Data",

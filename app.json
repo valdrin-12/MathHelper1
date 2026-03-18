@@ -51,7 +51,8 @@
     "owner": "valdrin11",
     "plugins": [
       "react-native-iap",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-web-browser"
     ]
   }
 }

@@ -71,4 +71,10 @@ router.post('/reset-password', passwordResetLimiter, [
 
 router.delete('/account', authMiddleware, authController.deleteAccount);
 
+router.post('/social', [
+  body('provider').isIn(['google', 'facebook']).withMessage('Invalid provider'),
+  body('accessToken').notEmpty().withMessage('accessToken is required'),
+  validate,
+], authController.socialLogin);
+
 module.exports = router;

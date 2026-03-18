@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,9 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import * as Facebook from 'expo-auth-session/providers/facebook';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
 import api from '../services/apiClient';
@@ -22,9 +25,11 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
 import WebContainer from '../components/WebContainer';
 
+WebBrowser.maybeCompleteAuthSession();
+
 
 export default function AuthScreen() {
-  const { login, register } = useUser();
+  const { login, register, socialLogin } = useUser();
   const { t, i18n } = useTranslation();
 
   const [isLogin, setIsLogin] = useState(true);
@@ -51,6 +56,45 @@ export default function AuthScreen() {
   const [forgotSuccess, setForgotSuccess] = useState('');
 
   const [errors, setErrors] = useState({});
+  const [socialLoading, setSocialLoading] = useState(false);
+
+  // ── Social OAuth hooks ────────────────────────────────────────────────────────
+  const [googleRequest, googleResponse, googlePromptAsync] = Google.useAuthRequest({
+    clientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_WEB,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_IOS,
+    androidClientId: process.env.EXPO_PUBLIC_GOOGLE_CLIENT_ID_ANDROID,
+  });
+  const [fbRequest, fbResponse, fbPromptAsync] = Facebook.useAuthRequest({
+    clientId: process.env.EXPO_PUBLIC_FACEBOOK_APP_ID,
+  });
+
+  // Handle Google OAuth response
+  useEffect(() => {
+    if (googleResponse?.type === 'success') {
+      const token = googleResponse.authentication?.accessToken;
+      if (token) handleSocialLogin('google', token);
+    }
+  }, [googleResponse]);
+
+  // Handle Facebook OAuth response
+  useEffect(() => {
+    if (fbResponse?.type === 'success') {
+      const token = fbResponse.authentication?.accessToken;
+      if (token) handleSocialLogin('facebook', token);
+    }
+  }, [fbResponse]);
+
+  const handleSocialLogin = async (provider, accessToken) => {
+    setSocialLoading(true);
+    try {
+      const result = await socialLogin(provider, accessToken, i18n.language);
+      if (!result.success) {
+        Alert.alert(t('common.error'), result.error || t('auth.social.error'));
+      }
+    } finally {
+      setSocialLoading(false);
+    }
+  };
 
   const clearForm = () => {
     setName('');
@@ -542,11 +586,48 @@ export default function AuthScreen() {
             </View>
           )}
 
-          {/* Divider */}
+          {/* Social login divider */}
           <View style={styles.dividerRow}>
             <View style={styles.dividerLine} />
-            <Text style={styles.dividerText}>{t('common.or')}</Text>
+            <Text style={styles.dividerText}>{t('auth.social.orContinueWith')}</Text>
             <View style={styles.dividerLine} />
+          </View>
+
+          {/* Social buttons */}
+          <View style={styles.socialButtonsContainer}>
+            {/* Google */}
+            <TouchableOpacity
+              style={[styles.socialButton, styles.googleButton, (!googleRequest || socialLoading) && styles.socialButtonDisabled]}
+              onPress={() => googlePromptAsync()}
+              disabled={!googleRequest || socialLoading}
+              activeOpacity={0.75}
+            >
+              {socialLoading ? (
+                <ActivityIndicator size="small" color={COLORS.textMuted} style={{ marginRight: 10 }} />
+              ) : (
+                <View style={styles.googleLogoBox}>
+                  <Text style={styles.googleLogoG}>G</Text>
+                </View>
+              )}
+              <Text style={styles.googleButtonText}>{t('auth.social.continueWithGoogle')}</Text>
+            </TouchableOpacity>
+
+            {/* Facebook */}
+            <TouchableOpacity
+              style={[styles.socialButton, styles.facebookButton, (!fbRequest || socialLoading) && styles.socialButtonDisabled]}
+              onPress={() => fbPromptAsync()}
+              disabled={!fbRequest || socialLoading}
+              activeOpacity={0.75}
+            >
+              {socialLoading ? (
+                <ActivityIndicator size="small" color="#FFFFFF" style={{ marginRight: 10 }} />
+              ) : (
+                <View style={styles.facebookLogoBox}>
+                  <Text style={styles.facebookLogoF}>f</Text>
+                </View>
+              )}
+              <Text style={styles.facebookButtonText}>{t('auth.social.continueWithFacebook')}</Text>
+            </TouchableOpacity>
           </View>
 
           {/* Switch mode */}
@@ -1046,6 +1127,79 @@ const styles = StyleSheet.create({
     color: COLORS.textMuted,
     fontWeight: '400',
     letterSpacing: -0.08,
+  },
+
+  // ─── Social Login ────────────────────────────────────────────────────────────
+  socialButtonsContainer: {
+    gap: 12,
+    marginBottom: 4,
+  },
+  socialButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 14,
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+  },
+  socialButtonDisabled: {
+    opacity: 0.55,
+  },
+  // Google — white background, subtle border
+  googleButton: {
+    backgroundColor: COLORS.surface,
+    borderWidth: 1,
+    borderColor: COLORS.borderLight,
+    ...SHADOWS.small,
+  },
+  googleLogoBox: {
+    width: 24,
+    height: 24,
+    borderRadius: 4,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: '#E8EAED',
+  },
+  googleLogoG: {
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#4285F4',
+    lineHeight: 18,
+  },
+  googleButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: COLORS.text,
+    letterSpacing: -0.24,
+  },
+  // Facebook — brand blue
+  facebookButton: {
+    backgroundColor: '#1877F2',
+    ...SHADOWS.small,
+  },
+  facebookLogoBox: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255,255,255,0.20)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  facebookLogoF: {
+    fontSize: 16,
+    fontWeight: '800',
+    color: '#FFFFFF',
+    lineHeight: 18,
+  },
+  facebookButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    letterSpacing: -0.24,
   },
 
   // ─── Destructive Action ──────────────────────────────────────────────────────

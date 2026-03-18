@@ -271,4 +271,75 @@ async function deleteAccount(req, res) {
   }
 }
 
-module.exports = { register, login, logout, getMe, updateProfile, refreshTokens, forgotPassword, resetPassword, deleteAccount };
+async function socialLogin(req, res) {
+  try {
+    const { provider, accessToken, language } = req.body;
+
+    if (!provider || !accessToken) {
+      return res.status(400).json({ success: false, error: 'provider and accessToken are required' });
+    }
+    if (!['google', 'facebook'].includes(provider)) {
+      return res.status(400).json({ success: false, error: 'Invalid provider' });
+    }
+
+    // Verify token and fetch user info from provider
+    let providerUser;
+    if (provider === 'google') {
+      const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      if (!r.ok) return res.status(401).json({ success: false, error: 'Invalid Google token' });
+      providerUser = await r.json();
+      // Google returns { sub, name, email, picture }
+    } else {
+      const r = await fetch(
+        `https://graph.facebook.com/me?fields=id,name,email&access_token=${encodeURIComponent(accessToken)}`
+      );
+      if (!r.ok) return res.status(401).json({ success: false, error: 'Invalid Facebook token' });
+      providerUser = await r.json();
+      // Facebook returns { id, name, email }
+    }
+
+    if (!providerUser.email) {
+      return res.status(422).json({ success: false, error: 'Email permission is required for social login' });
+    }
+
+    // Find or create user
+    let user = await userModel.findByEmail(providerUser.email);
+    if (!user) {
+      // Create new account — random secure password (social users sign in via OAuth only)
+      const { randomBytes } = require('crypto');
+      const randomPassword = randomBytes(32).toString('hex');
+      user = await userModel.createUser({
+        name: providerUser.name || providerUser.email.split('@')[0],
+        email: providerUser.email,
+        password: randomPassword,
+        language: language || 'al',
+      });
+    }
+
+    const newAccessToken = generateAccessToken(user.id);
+    const newRefreshToken = generateRefreshToken(user.id);
+
+    const expiresAt = new Date(Date.now() + getRefreshTokenExpiry());
+    await pool.query(
+      'INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, $3)',
+      [user.id, newRefreshToken, expiresAt]
+    );
+
+    const { password_hash, created_at, updated_at, ...rest } = user.id ? user : {};
+    const safeUser = await userModel.findById(user.id);
+
+    res.json({
+      success: true,
+      user: safeUser,
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
+  } catch (err) {
+    console.error('SocialLogin error:', err);
+    res.status(500).json({ success: false, error: 'Social login failed' });
+  }
+}
+
+module.exports = { register, login, logout, getMe, updateProfile, refreshTokens, forgotPassword, resetPassword, deleteAccount, socialLogin };

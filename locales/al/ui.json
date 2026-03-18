@@ -42,6 +42,12 @@
     "hasAccount": "Ke llogari? ",
     "tagline": "Mëso matematikë me lehtësi",
     "footer": "Mëso matematikë në gjuhën shqipe",
+    "social": {
+      "orContinueWith": "ose vazhdo me",
+      "continueWithGoogle": "Vazhdo me Google",
+      "continueWithFacebook": "Vazhdo me Facebook",
+      "error": "Hyrja sociale dështoi. Provoni përsëri."
+    },
     "clearAllData": "Fshi të Gjitha të Dhënat (Testing)",
     "clearAllConfirm": "A jeni i sigurt që dëshironi të fshini TË GJITHA të dhënat? (llogari, stats, saved items)?",
     "clearAllTitle": "Fshi të Gjitha të Dhënat",
