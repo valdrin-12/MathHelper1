@@ -76,26 +76,10 @@ export const updateUser = async (updates) => {
   }
 };
 
-/**
- * Login or register via Google / Facebook OAuth token
- * @param {Object} params - { provider: 'google'|'facebook', accessToken, language }
- * @returns {Promise<{ success: boolean, user: Object|null, error: string|null }>}
- */
-export const socialLoginUser = async ({ provider, accessToken, language }) => {
-  try {
-    const data = await api.post('/api/auth/social', { provider, accessToken, language });
-    await api.storeTokens(data.accessToken, data.refreshToken);
-    return { success: true, user: data.user, error: null };
-  } catch (error) {
-    return { success: false, user: null, error: error.message || 'Social login failed' };
-  }
-};
-
 export default {
   registerUser,
   loginUser,
   getCurrentUser,
   logoutUser,
   updateUser,
-  socialLoginUser,
 };

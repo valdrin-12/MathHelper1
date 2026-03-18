@@ -42,12 +42,6 @@
     "hasAccount": "Bereits ein Konto? ",
     "tagline": "Mathe leicht lernen",
     "footer": "Lernen Sie Mathematik in Ihrer Sprache",
-    "social": {
-      "orContinueWith": "oder weiter mit",
-      "continueWithGoogle": "Weiter mit Google",
-      "continueWithFacebook": "Weiter mit Facebook",
-      "error": "Soziale Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut."
-    },
     "clearAllData": "Alle Daten löschen (Test)",
     "clearAllConfirm": "Sind Sie sicher, dass Sie ALLE Daten löschen möchten? (Konten, Statistiken, gespeicherte Elemente)?",
     "clearAllTitle": "Alle Daten löschen",
