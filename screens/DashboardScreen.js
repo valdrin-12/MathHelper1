@@ -20,8 +20,10 @@ import * as ImagePicker from 'expo-image-picker';
 import * as imageService from '../services/imageService';
 import * as geminiService from '../services/geminiService';
 import * as mathCalculatorService from '../services/mathCalculatorService';
+import { isPlottableFunction } from '../services/graphService';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ResultsModal from '../components/ResultsModal';
+import GraphModal from '../components/GraphModal';
 import MathKeyboard from '../components/MathKeyboard';
 import { useSavedItems } from '../context/SavedItemsContext';
 import { useUser } from '../context/UserContext';
@@ -66,6 +68,7 @@ export default function DashboardScreen() {
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [limitType, setLimitType] = useState('free'); // 'free' or 'daily'
   const [showPremiumModal, setShowPremiumModal] = useState(false);
+  const [showGraphModal, setShowGraphModal] = useState(false);
 
   const navigation = useNavigation();
   const [greeting, setGreeting] = useState(() => getGreeting(t));
@@ -504,6 +507,29 @@ export default function DashboardScreen() {
                   </TouchableOpacity>
                 </View>
 
+                {/* Graph Button — shown only when input contains a plottable function */}
+                {isPlottableFunction(mathProblemText) && (
+                  <TouchableOpacity
+                    style={styles.graphButton}
+                    onPress={() => setShowGraphModal(true)}
+                    activeOpacity={0.85}
+                  >
+                    <LinearGradient
+                      colors={['#F5A623', '#F0830A']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                      style={styles.buttonGradient}
+                    >
+                      <View style={styles.buttonInner}>
+                        <Ionicons name="stats-chart" size={16} color="#FFFFFF" />
+                        <Text style={styles.buttonText}>
+                          {t('dashboard.graphButton')}
+                        </Text>
+                      </View>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                )}
+
                 {/* Math Keyboard */}
                 <MathKeyboard
                   onKeyPress={(value) => setMathProblemText((prev) => prev + value)}
@@ -678,6 +704,12 @@ export default function DashboardScreen() {
         imageUri={selectedImage}
         onClose={() => setShowResultModal(false)}
         onSave={handleSaveResult}
+      />
+
+      <GraphModal
+        visible={showGraphModal}
+        functionText={mathProblemText}
+        onClose={() => setShowGraphModal(false)}
       />
 
       <ProfileModal
@@ -940,6 +972,12 @@ const styles = StyleSheet.create({
   },
   halfButtonDisabled: {
     opacity: 0.5,
+  },
+  graphButton: {
+    borderRadius: 14,
+    overflow: 'hidden',
+    marginHorizontal: 0,
+    marginTop: 4,
   },
   buttonGradient: {
     paddingVertical: 14,

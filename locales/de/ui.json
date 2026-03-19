@@ -81,6 +81,7 @@
     "camera": "KAMERA",
     "inputPlaceholder": "Geben Sie das Mathe-Problem hier ein...\n\nBeispiel: Löse 2x + 5 = 13",
     "calculate": "Berechnen",
+    "graphButton": "Graph",
     "analyzeAI": "Mit KI analysieren",
     "analyzing": "Analysiere...",
     "calculatedLocally": "Lokal berechnet",
