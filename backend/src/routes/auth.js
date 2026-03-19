@@ -64,7 +64,7 @@ router.post('/forgot-password', passwordResetLimiter, [
 
 router.post('/reset-password', passwordResetLimiter, [
   body('email').isEmail().withMessage('Valid email is required'),
-  body('code').isLength({ min: 8, max: 8 }).withMessage('8-digit code is required'),
+  body('code').isLength({ min: 6, max: 6 }).withMessage('6-digit code is required'),
   body('newPassword').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   validate,
 ], authController.resetPassword);

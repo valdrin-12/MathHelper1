@@ -192,7 +192,7 @@ async function forgotPassword(req, res) {
     }
 
     // Generate 8-digit code (100M combinations — brute-force resistant)
-    const code = crypto.randomInt(10000000, 99999999).toString();
+    const code = crypto.randomInt(100000, 999999).toString();
 
     // Delete any existing reset tokens for this user
     await pool.query('DELETE FROM password_reset_tokens WHERE user_id = $1', [user.id]);
