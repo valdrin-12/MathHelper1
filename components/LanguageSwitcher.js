@@ -4,8 +4,11 @@ import { useLanguage } from '../context/LanguageContext';
 import { SUPPORTED_LANGUAGES } from '../locales/i18n';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
-export default function LanguageSwitcher() {
+// variant: 'dark' (default, for use on coloured/dark backgrounds)
+//          'light' (for use on light/white backgrounds like AuthScreen)
+export default function LanguageSwitcher({ variant = 'dark' }) {
   const { language, setLanguage } = useLanguage();
+  const isLight = variant === 'light';
 
   return (
     <View style={styles.container}>
@@ -14,11 +17,19 @@ export default function LanguageSwitcher() {
         return (
           <TouchableOpacity
             key={lang.code}
-            style={[styles.pill, isActive && styles.pillActive]}
+            style={[
+              styles.pill,
+              isLight ? styles.pillLight : styles.pillDark,
+              isActive && (isLight ? styles.pillActiveLightBg : styles.pillActive),
+            ]}
             onPress={() => setLanguage(lang.code)}
           >
             <Text style={styles.flag}>{lang.flag}</Text>
-            <Text style={[styles.label, isActive && styles.labelActive]}>
+            <Text style={[
+              styles.label,
+              isLight ? styles.labelLight : styles.labelDark,
+              isActive && styles.labelActive,
+            ]}>
               {lang.code.toUpperCase()}
             </Text>
           </TouchableOpacity>
@@ -40,19 +51,38 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.lg,
     paddingVertical: SPACING.md,
     borderRadius: BORDER_RADIUS.round,
-    backgroundColor: 'rgba(255,255,255,0.15)',
     gap: 6,
+  },
+  pillDark: {
+    backgroundColor: 'rgba(255,255,255,0.15)',
+  },
+  pillLight: {
+    backgroundColor: COLORS.borderLight,
   },
   pillActive: {
     backgroundColor: COLORS.surface,
   },
+  pillActiveLightBg: {
+    backgroundColor: COLORS.surface,
+    borderWidth: 1.5,
+    borderColor: COLORS.primary,
+  },
   flag: {
     fontSize: 18,
+  },
+  labelDark: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: 'rgba(255,255,255,0.8)',
+  },
+  labelLight: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
   },
   label: {
     fontSize: 14,
     fontWeight: '700',
-    color: 'rgba(255,255,255,0.8)',
   },
   labelActive: {
     color: COLORS.primary,
