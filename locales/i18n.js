@@ -31,6 +31,11 @@ export const loadSavedLanguage = async () => {
       if (urlLang && resources[urlLang]) {
         await AsyncStorage.setItem(LANGUAGE_KEY, urlLang);
         await i18n.changeLanguage(urlLang);
+        // Strip ?lang= from the URL so it doesn't stay visible in the address bar
+        params.delete('lang');
+        const newSearch = params.toString();
+        const cleanUrl = window.location.pathname + (newSearch ? '?' + newSearch : '');
+        window.history.replaceState(null, '', cleanUrl);
         return urlLang;
       }
     }
