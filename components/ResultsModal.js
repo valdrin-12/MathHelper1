@@ -11,7 +11,6 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
-import MathText from './MathText';
 
 export default function ResultsModal({ visible, result, onClose, onSave, imageUri }) {
   const { t } = useTranslation();
@@ -94,14 +93,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                   <Text style={styles.sectionTitle}>{t('results.answer')}</Text>
                 </View>
                 <View style={styles.answerCard}>
-                  <MathText
-                    fontSize={22}
-                    color={COLORS.surface}
-                    background={COLORS.primary}
-                    minHeight={36}
-                  >
-                    {answer}
-                  </MathText>
+                  <Text style={styles.answerText}>{answer}</Text>
                 </View>
               </View>
             )}
@@ -118,13 +110,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                     <View style={styles.stepNumber}>
                       <Text style={styles.stepNumberText}>{index + 1}</Text>
                     </View>
-                    <MathText
-                      fontSize={15}
-                      color={COLORS.textDark}
-                      minHeight={24}
-                    >
-                      {step}
-                    </MathText>
+                    <Text style={styles.stepText}>{step}</Text>
                   </View>
                 ))}
               </View>
@@ -138,13 +124,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                   <Text style={styles.sectionTitle}>{t('results.explanation')}</Text>
                 </View>
                 <View style={styles.explanationCard}>
-                  <MathText
-                    fontSize={15}
-                    color={COLORS.textSecondary}
-                    minHeight={40}
-                  >
-                    {explanation}
-                  </MathText>
+                  <Text style={styles.explanationText}>{explanation}</Text>
                 </View>
               </View>
             )}
