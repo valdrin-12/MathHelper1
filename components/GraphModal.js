@@ -2,7 +2,7 @@
  * GraphModal — renders a function graph inside a full-screen modal.
  * Uses a self-contained WebView with function-plot.js + KaTeX loaded from CDN.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect, useRef } from 'react';
 import {
   Modal,
   View,
@@ -214,6 +214,90 @@ function buildGraphHtml(expr) {
 </html>`;
 }
 
+// ── Web-only component: loads D3 + function-plot from CDN and renders in a div
+function WebGraphModal({ visible, expr, onClose }) {
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    if (!visible || !expr) return;
+
+    function loadScript(src, id) {
+      return new Promise((resolve) => {
+        if (document.getElementById(id)) { resolve(); return; }
+        const s = document.createElement('script');
+        s.id = id;
+        s.src = src;
+        s.onload = resolve;
+        s.onerror = resolve;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function renderGraph() {
+      await loadScript('https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js', 'fp-d3');
+      await loadScript('https://cdn.jsdelivr.net/npm/function-plot@1/lib/index.js', 'fp-lib');
+
+      const container = containerRef.current;
+      if (!container || typeof window.functionPlot === 'undefined') return;
+
+      // Clear previous render
+      container.innerHTML = '';
+
+      try {
+        // Sample function to auto-scale
+        const fn = new Function('x', `with(Math){return (${expr})}`);
+        let yMin = Infinity, yMax = -Infinity;
+        for (let xi = -10; xi <= 10; xi += 0.2) {
+          const y = fn(xi);
+          if (isFinite(y)) { yMin = Math.min(yMin, y); yMax = Math.max(yMax, y); }
+        }
+        const pad = Math.max((yMax - yMin) * 0.2, 1);
+
+        window.functionPlot({
+          target: container,
+          width: container.offsetWidth || window.innerWidth,
+          height: container.offsetHeight || window.innerHeight - 120,
+          xAxis: { domain: [-10, 10] },
+          yAxis: { domain: [yMin - pad, yMax + pad] },
+          grid: true,
+          data: [{ fn: expr, color: '#6C47FF', graphType: 'polyline' }],
+        });
+
+        // Cream background
+        const svg = container.querySelector('svg');
+        if (svg) svg.style.background = '#FDF6EC';
+      } catch (e) {
+        container.innerHTML = `<p style="padding:24px;color:#8B6914">Could not plot: ${e.message}</p>`;
+      }
+    }
+
+    renderGraph();
+  }, [visible, expr]);
+
+  if (!visible) return null;
+
+  return React.createElement(Modal, { visible, animationType: 'slide', onRequestClose: onClose },
+    React.createElement(SafeAreaView, { style: styles.safeArea },
+      React.createElement(View, { style: styles.header },
+        React.createElement(View, { style: styles.headerLeft },
+          React.createElement(Ionicons, { name: 'stats-chart', size: 20, color: COLORS.primary, style: { marginRight: 8 } }),
+          React.createElement(Text, { style: styles.headerTitle }, 'Grafik')
+        ),
+        React.createElement(TouchableOpacity, { onPress: onClose, style: styles.closeBtn },
+          React.createElement(Ionicons, { name: 'close', size: 24, color: COLORS.textSecondary })
+        )
+      ),
+      React.createElement('div', {
+        ref: containerRef,
+        style: { flex: 1, background: '#FDF6EC', overflow: 'hidden' },
+      }),
+      React.createElement(View, { style: styles.legend },
+        React.createElement(Text, { style: styles.legendText }, `y = ${expr.replace(/\*/g, '·')}`)
+      )
+    )
+  );
+}
+
 export default function GraphModal({ visible, functionText, onClose }) {
   const expr = useMemo(
     () => normalizeFunction(functionText || ''),
@@ -224,33 +308,9 @@ export default function GraphModal({ visible, functionText, onClose }) {
 
   if (!visible) return null;
 
-  // Web: render graph inside an iframe using a blob URL
+  // Web: inject scripts and render graph directly in a div
   if (Platform.OS === 'web') {
-    return (
-      <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Ionicons name="stats-chart" size={20} color={COLORS.primary} style={{ marginRight: 8 }} />
-              <Text style={styles.headerTitle}>Grafik</Text>
-            </View>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={24} color={COLORS.textSecondary} />
-            </TouchableOpacity>
-          </View>
-          {React.createElement('iframe', {
-            srcDoc: html,
-            style: {
-              flex: 1,
-              width: '100%',
-              border: 'none',
-              background: '#FDF6EC',
-            },
-            sandbox: 'allow-scripts allow-same-origin',
-          })}
-        </SafeAreaView>
-      </Modal>
-    );
+    return <WebGraphModal visible={visible} expr={expr} onClose={onClose} />;
   }
 
   return (
@@ -320,15 +380,18 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FDF6EC',
   },
-  webPlaceholder: {
-    flex: 1,
-    justifyContent: 'center',
+  legend: {
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xl,
+    backgroundColor: '#FDF6EC',
+    borderTopWidth: 1,
+    borderTopColor: '#E8D5B0',
     alignItems: 'center',
-    padding: SPACING.xl,
   },
-  webPlaceholderText: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
+  legendText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6C47FF',
+    fontStyle: 'italic',
   },
 });
