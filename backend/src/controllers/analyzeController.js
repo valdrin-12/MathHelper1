@@ -24,21 +24,24 @@ RESPONSE FORMAT (VERY IMPORTANT - use these EXACT English markers):
 
 RULES:
 - Respond in ${lang} (the actual content must be in ${lang}, but keep the markers ANSWER:, STEPS:, EXPLANATION: in English)
-- Use correct mathematical symbols (×, ÷, =, ≠, ≤, ≥, π, √, ∫, Σ, etc.)
+- IMPORTANT: Wrap ALL mathematical expressions in dollar signs for proper rendering:
+  * Inline math: $expression$ (e.g., $x^2 + 2x + 5$, $x = 5$, $\\frac{1}{2}$)
+  * Display math (standalone equations): $$expression$$ (e.g., $$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$)
+- Use LaTeX math notation inside dollar signs: x^{2} for powers, \\frac{a}{b} for fractions, \\sqrt{x} for roots
 - Explain concepts in a simple and understandable way
 - If the image does not contain a clear math problem, say so in ${lang}
 - If the image is too unclear, say so in ${lang}
 
 EXAMPLE FORMAT:
 
-ANSWER: x = 5
+ANSWER: $x = 5$
 
 STEPS:
-Step 1: Start with equation 2x + 3 = 13
-Step 2: Subtract 3 from both sides: 2x = 10
-Step 3: Divide both sides by 2: x = 5
+Step 1: Start with equation $2x + 3 = 13$
+Step 2: Subtract 3 from both sides: $2x = 10$
+Step 3: Divide both sides by 2: $x = 5$
 
-EXPLANATION: To solve a linear equation, we isolate variable x by performing the same operations on both sides of the equation.
+EXPLANATION: To solve a linear equation, we isolate variable $x$ by performing the same operations on both sides of the equation.
 
 Now, analyze the image and provide the solution:`;
 }
@@ -59,20 +62,23 @@ RESPONSE FORMAT (VERY IMPORTANT - use these EXACT English markers):
 
 RULES:
 - Respond in ${lang} (the actual content must be in ${lang}, but keep the markers ANSWER:, STEPS:, EXPLANATION: in English)
-- Use correct mathematical symbols (×, ÷, =, ≠, ≤, ≥, π, √, ∫, Σ, etc.)
+- IMPORTANT: Wrap ALL mathematical expressions in dollar signs for proper rendering:
+  * Inline math: $expression$ (e.g., $x^2 + 2x + 5$, $x = 5$, $\\frac{1}{2}$)
+  * Display math (standalone equations): $$expression$$ (e.g., $$x = \\frac{-b \\pm \\sqrt{b^2-4ac}}{2a}$$)
+- Use LaTeX math notation inside dollar signs: x^{2} for powers, \\frac{a}{b} for fractions, \\sqrt{x} for roots
 - Explain concepts in a simple and understandable way
 - If the text does not contain a clear math problem, say so in ${lang}
 
 EXAMPLE FORMAT:
 
-ANSWER: x = 5
+ANSWER: $x = 5$
 
 STEPS:
-Step 1: Start with equation 2x + 3 = 13
-Step 2: Subtract 3 from both sides: 2x = 10
-Step 3: Divide both sides by 2: x = 5
+Step 1: Start with equation $2x + 3 = 13$
+Step 2: Subtract 3 from both sides: $2x = 10$
+Step 3: Divide both sides by 2: $x = 5$
 
-EXPLANATION: To solve a linear equation, we isolate variable x by performing the same operations on both sides of the equation.
+EXPLANATION: To solve a linear equation, we isolate variable $x$ by performing the same operations on both sides of the equation.
 
 Now, solve the problem:`;
 }

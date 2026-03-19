@@ -11,6 +11,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import MathText from './MathText';
 
 export default function ResultsModal({ visible, result, onClose, onSave, imageUri }) {
   const { t } = useTranslation();
@@ -93,7 +94,14 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                   <Text style={styles.sectionTitle}>{t('results.answer')}</Text>
                 </View>
                 <View style={styles.answerCard}>
-                  <Text style={styles.answerText}>{answer}</Text>
+                  <MathText
+                    fontSize={22}
+                    color={COLORS.surface}
+                    background={COLORS.primary}
+                    minHeight={36}
+                  >
+                    {answer}
+                  </MathText>
                 </View>
               </View>
             )}
@@ -110,7 +118,13 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                     <View style={styles.stepNumber}>
                       <Text style={styles.stepNumberText}>{index + 1}</Text>
                     </View>
-                    <Text style={styles.stepText}>{step}</Text>
+                    <MathText
+                      fontSize={15}
+                      color={COLORS.textDark}
+                      minHeight={24}
+                    >
+                      {step}
+                    </MathText>
                   </View>
                 ))}
               </View>
@@ -124,7 +138,13 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                   <Text style={styles.sectionTitle}>{t('results.explanation')}</Text>
                 </View>
                 <View style={styles.explanationCard}>
-                  <Text style={styles.explanationText}>{explanation}</Text>
+                  <MathText
+                    fontSize={15}
+                    color={COLORS.textSecondary}
+                    minHeight={40}
+                  >
+                    {explanation}
+                  </MathText>
                 </View>
               </View>
             )}
