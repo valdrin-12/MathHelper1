@@ -224,22 +224,30 @@ export default function GraphModal({ visible, functionText, onClose }) {
 
   if (!visible) return null;
 
-  // Web fallback — show a simple message
+  // Web: render graph inside an iframe using a blob URL
   if (Platform.OS === 'web') {
     return (
       <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
         <SafeAreaView style={styles.safeArea}>
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Grafik</Text>
+            <View style={styles.headerLeft}>
+              <Ionicons name="stats-chart" size={20} color={COLORS.primary} style={{ marginRight: 8 }} />
+              <Text style={styles.headerTitle}>Grafik</Text>
+            </View>
             <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
               <Ionicons name="close" size={24} color={COLORS.textSecondary} />
             </TouchableOpacity>
           </View>
-          <View style={styles.webPlaceholder}>
-            <Text style={styles.webPlaceholderText}>
-              Graph rendering is available in the mobile app.
-            </Text>
-          </View>
+          {React.createElement('iframe', {
+            srcDoc: html,
+            style: {
+              flex: 1,
+              width: '100%',
+              border: 'none',
+              background: '#FDF6EC',
+            },
+            sandbox: 'allow-scripts allow-same-origin',
+          })}
         </SafeAreaView>
       </Modal>
     );
