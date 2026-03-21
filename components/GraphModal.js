@@ -2,7 +2,7 @@
  * GraphModal — renders a function graph inside a full-screen modal.
  * Uses a self-contained WebView with function-plot.js + KaTeX loaded from CDN.
  */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   Modal,
   View,
@@ -26,9 +26,6 @@ function buildGraphHtml(expr) {
 <head>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/function-plot@1/lib/index.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{
@@ -72,6 +69,21 @@ function buildGraphHtml(expr) {
       padding:32px;
     }
     #error.show{ display:flex; }
+    #offline{
+      display:none;
+      position:absolute;
+      inset:0;
+      align-items:center;
+      justify-content:center;
+      flex-direction:column;
+      background:#FDF6EC;
+      color:#8B6914;
+      font-size:15px;
+      text-align:center;
+      padding:32px;
+      gap:12px;
+    }
+    #offline.show{ display:flex; }
   </style>
 </head>
 <body>
@@ -81,6 +93,25 @@ function buildGraphHtml(expr) {
     <span style="font-size:32px">⚠️</span>
     <p id="error-msg" style="margin-top:12px"></p>
   </div>
+  <div id="offline">
+    <span style="font-size:48px">📶</span>
+    <strong style="font-size:16px">No internet connection</strong>
+    <p style="font-size:13px;color:#A07830">The graph requires an internet connection to load the rendering library. Please check your connection and try again.</p>
+  </div>
+  <script>
+  var _scriptsLoaded = 0;
+  var _scriptsNeeded = 3;
+  function _onScriptError() {
+    document.getElementById('offline').classList.add('show');
+  }
+  function _onScriptLoad() {
+    _scriptsLoaded++;
+    if (_scriptsLoaded === _scriptsNeeded) { renderGraph(); }
+  }
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" onload="_onScriptLoad()" onerror="_onScriptError()"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js" onload="_onScriptLoad()" onerror="_onScriptError()"></script>
+  <script src="https://cdn.jsdelivr.net/npm/function-plot@1/lib/index.js" onload="_onScriptLoad()" onerror="_onScriptError()"></script>
   <script>
   (function() {
     var expr = '${safeExpr}';
@@ -200,14 +231,7 @@ function buildGraphHtml(expr) {
       }
     }
 
-    // function-plot is synchronous after d3 loads; wait for all scripts
-    window.addEventListener('load', function() {
-      try {
-        renderGraph();
-      } catch(e) {
-        showError('Failed to render graph. Please check the expression.');
-      }
-    });
+    // renderGraph is called by _onScriptLoad() once all 3 CDN scripts are loaded
   })();
   </script>
 </body>
@@ -240,6 +264,8 @@ function WebGraphModal({ visible, expr, onClose }) {
 }
 
 export default function GraphModal({ visible, functionText, onClose }) {
+  const [webViewError, setWebViewError] = useState(false);
+
   const expr = useMemo(
     () => normalizeFunction(functionText || ''),
     [functionText]
@@ -249,7 +275,7 @@ export default function GraphModal({ visible, functionText, onClose }) {
 
   if (!visible) return null;
 
-  // Web: inject scripts and render graph directly in a div
+  // Web: iframe pointing to backend /graph endpoint
   if (Platform.OS === 'web') {
     return <WebGraphModal visible={visible} expr={expr} onClose={onClose} />;
   }
@@ -272,15 +298,33 @@ export default function GraphModal({ visible, functionText, onClose }) {
           </TouchableOpacity>
         </View>
 
-        <WebView
-          source={{ html }}
-          style={styles.webView}
-          scrollEnabled={false}
-          originWhitelist={['*']}
-          showsVerticalScrollIndicator={false}
-          showsHorizontalScrollIndicator={false}
-          bounces={false}
-        />
+        {webViewError ? (
+          <View style={styles.offlineFallback}>
+            <Text style={styles.offlineIcon}>📶</Text>
+            <Text style={styles.offlineTitle}>No internet connection</Text>
+            <Text style={styles.offlineDesc}>
+              The graph requires an internet connection to load. Please check your connection and try again.
+            </Text>
+            <TouchableOpacity
+              style={styles.retryButton}
+              onPress={() => setWebViewError(false)}
+            >
+              <Text style={styles.retryText}>Try Again</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <WebView
+            source={{ html }}
+            style={styles.webView}
+            scrollEnabled={false}
+            originWhitelist={['*']}
+            showsVerticalScrollIndicator={false}
+            showsHorizontalScrollIndicator={false}
+            bounces={false}
+            onError={() => setWebViewError(true)}
+            onHttpError={() => setWebViewError(true)}
+          />
+        )}
       </SafeAreaView>
     </Modal>
   );
@@ -334,5 +378,40 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#6C47FF',
     fontStyle: 'italic',
+  },
+  offlineFallback: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FDF6EC',
+    padding: 32,
+    gap: 12,
+  },
+  offlineIcon: {
+    fontSize: 56,
+  },
+  offlineTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#8B6914',
+    textAlign: 'center',
+  },
+  offlineDesc: {
+    fontSize: 14,
+    color: '#A07830',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  retryButton: {
+    marginTop: 8,
+    backgroundColor: '#6C47FF',
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+  },
+  retryText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 15,
   },
 });

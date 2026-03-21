@@ -112,6 +112,11 @@ export default function OnboardingScreen({ onComplete }) {
       color: '#2563EB',
       title: t('onboarding.slide1Title'),
       description: t('onboarding.slide1Desc'),
+      features: [
+        t('onboarding.slide1Feature1'),
+        t('onboarding.slide1Feature2'),
+        t('onboarding.slide1Feature3'),
+      ],
     },
     {
       icon: 'school',
@@ -119,6 +124,11 @@ export default function OnboardingScreen({ onComplete }) {
       color: '#10B981',
       title: t('onboarding.slide2Title'),
       description: t('onboarding.slide2Desc'),
+      features: [
+        t('onboarding.slide2Feature1'),
+        t('onboarding.slide2Feature2'),
+        t('onboarding.slide2Feature3'),
+      ],
     },
     {
       icon: 'trophy',
@@ -126,6 +136,11 @@ export default function OnboardingScreen({ onComplete }) {
       color: '#F59E0B',
       title: t('onboarding.slide3Title'),
       description: t('onboarding.slide3Desc'),
+      features: [
+        t('onboarding.slide3Feature1'),
+        t('onboarding.slide3Feature2'),
+        t('onboarding.slide3Feature3'),
+      ],
     },
     {
       icon: 'diamond',

@@ -28,6 +28,19 @@ import MathKeyboard from '../components/MathKeyboard';
 import { useSavedItems } from '../context/SavedItemsContext';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
+
+function isNetworkError(err) {
+  if (!err || !err.message) return false;
+  const msg = err.message.toLowerCase();
+  return (
+    msg.includes('network request failed') ||
+    msg.includes('failed to fetch') ||
+    msg.includes('networkerror') ||
+    msg.includes('econnrefused') ||
+    msg.includes('timeout') ||
+    msg.includes('internet')
+  );
+}
 import ProfileModal from '../components/ProfileModal';
 import PremiumModal from '../components/PremiumModal';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -215,6 +228,11 @@ export default function DashboardScreen() {
       if (error.message === 'DAILY_LIMIT_REACHED' || error.message === 'FREE_LIMIT_REACHED') {
         setLimitType(error.message === 'FREE_LIMIT_REACHED' ? 'free' : 'daily');
         setShowLimitModal(true);
+      } else if (isNetworkError(error)) {
+        Alert.alert(t('common.noInternet'), t('common.noInternetDesc'), [
+          { text: t('common.retry'), onPress: handleCalculate },
+          { text: t('common.ok') },
+        ]);
       } else {
         Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
       }
@@ -255,6 +273,11 @@ export default function DashboardScreen() {
     } catch (error) {
       if (error.message === 'FREE_LIMIT_REACHED' || error.message === 'DAILY_LIMIT_REACHED') {
         setShowLimitModal(true);
+      } else if (isNetworkError(error)) {
+        Alert.alert(t('common.noInternet'), t('common.noInternetDesc'), [
+          { text: t('common.retry'), onPress: handleAnalyzeWithAI },
+          { text: t('common.ok') },
+        ]);
       } else {
         Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
       }

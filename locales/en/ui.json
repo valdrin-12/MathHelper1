@@ -13,7 +13,10 @@
     "ok": "OK",
     "continue": "Continue",
     "attention": "Attention",
-    "friend": "Friend"
+    "friend": "Friend",
+    "noInternet": "No Internet Connection",
+    "noInternetDesc": "Please check your connection and try again.",
+    "retry": "Try Again"
   },
   "navigation": {
     "dashboard": "Dashboard",
@@ -510,10 +513,19 @@
   "onboarding": {
     "slide1Title": "Scan & Solve Instantly",
     "slide1Desc": "Take a photo of any math problem or type it in, and get step-by-step solutions powered by AI.",
+    "slide1Feature1": "📷 Camera scan or type manually",
+    "slide1Feature2": "🧮 Step-by-step solutions",
+    "slide1Feature3": "📈 Graph any function with one tap",
     "slide2Title": "Learn at Your Pace",
     "slide2Desc": "Explore 50+ courses from basic arithmetic to advanced calculus. Interactive lessons make math fun.",
+    "slide2Feature1": "📚 50+ courses included free",
+    "slide2Feature2": "🎯 From arithmetic to calculus",
+    "slide2Feature3": "✅ Track lesson progress",
     "slide3Title": "Track Your Progress",
     "slide3Desc": "Build daily streaks, earn achievements, and watch your math skills grow over time.",
+    "slide3Feature1": "🔥 Daily streaks & achievements",
+    "slide3Feature2": "🏆 Quiz challenges",
+    "slide3Feature3": "📊 Stats & history",
     "slide4Title": "Start Free — Upgrade Anytime",
     "slide4Desc": "Free account includes 2 AI analyses. With Premium (€3.99/month) you get 10 analyses/day, all courses, and unlimited quizzes.",
     "slide4Feature1": "✓ 2 free AI analyses",

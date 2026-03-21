@@ -13,7 +13,10 @@
     "ok": "OK",
     "continue": "Vazhdoni",
     "attention": "Kujdes",
-    "friend": "Mik"
+    "friend": "Mik",
+    "noInternet": "Nuk ka lidhje interneti",
+    "noInternetDesc": "Ju lutem kontrolloni lidhjen tuaj dhe provoni përsëri.",
+    "retry": "Provo Përsëri"
   },
   "navigation": {
     "dashboard": "Kontrolli",
@@ -615,10 +618,19 @@
   "onboarding": {
     "slide1Title": "Skano & Zgjidh Menjehere",
     "slide1Desc": "Bej nje foto te problemit matematikor ose shkruaje, dhe merr zgjidhje hap pas hapi me AI.",
+    "slide1Feature1": "📷 Skano me kamera ose shkruaj",
+    "slide1Feature2": "🧮 Zgjidhje hap pas hapi",
+    "slide1Feature3": "📈 Vizualizo çdo funksion me një klik",
     "slide2Title": "Meso me Ritmin Tend",
     "slide2Desc": "Eksploro 50+ kurse nga aritmetika baze deri ne kalkulus te avancuar. Mesimet interaktive e bejne matematiken argetime.",
+    "slide2Feature1": "📚 50+ kurse të përfshira falas",
+    "slide2Feature2": "🎯 Nga aritmetika deri te kalkuli",
+    "slide2Feature3": "✅ Gjurmo progresin e mësimeve",
     "slide3Title": "Gjurmo Progresin Tend",
     "slide3Desc": "Nderto streak ditor, fito arritje, dhe shiko si rriten aftesite e tua matematikore me kalimin e kohes.",
+    "slide3Feature1": "🔥 Streak ditor & arritje",
+    "slide3Feature2": "🏆 Sfida kuizesh",
+    "slide3Feature3": "📊 Statistika & histori",
     "slide4Title": "Fillo Falas — Upgrade Kur të Duash",
     "slide4Desc": "Me llogarinë falas ke 2 analiza AI. Me Premium (3.99€/muaj) fiton 10 analiza/ditë, të gjitha kurset dhe kuizet pa limit.",
     "slide4Feature1": "✓ 2 analiza AI falas",
