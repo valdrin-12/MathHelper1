@@ -270,9 +270,6 @@ export default function AuthScreen() {
       >
         {/* Brand Area — clean, no gradient background */}
         <View style={styles.brandArea}>
-          <View style={styles.languageSwitcherTop}>
-            <LanguageSwitcher variant={Platform.OS === 'web' ? 'light' : 'dark'} />
-          </View>
           <LinearGradient
             colors={[COLORS.primary, COLORS.primarySoft]}
             start={{ x: 0, y: 0 }}
@@ -283,6 +280,9 @@ export default function AuthScreen() {
           </LinearGradient>
           <Text style={styles.appName}>MathHelper</Text>
           <Text style={styles.appTagline}>{t('auth.tagline')}</Text>
+          <View style={styles.languageSwitcherTop}>
+            <LanguageSwitcher variant={Platform.OS === 'web' ? 'light' : 'dark'} />
+          </View>
         </View>
 
         {/* Form Card */}
@@ -773,9 +773,8 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.background,
   },
   languageSwitcherTop: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 58 : 46,
-    right: 20,
+    marginTop: 20,
+    alignItems: 'center',
   },
   languageSwitcherContainer: { display: 'none' }, // legacy compat
   // App icon squircle — single clean container (no double-nesting)
