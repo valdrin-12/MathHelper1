@@ -9,6 +9,8 @@ import {
   TouchableOpacity,
   Switch,
   Alert,
+  Modal,
+  ActivityIndicator,
   Platform,
   Linking,
 } from 'react-native';
@@ -20,7 +22,7 @@ import InfoModal from '../components/InfoModal';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { COLORS, SPACING, SHADOWS } from '../theme/constants';
 import WebContainer from '../components/WebContainer';
 import { useResponsive } from '../utils/responsive';
 
@@ -33,6 +35,8 @@ export default function SettingsScreen() {
   const [notifications, setNotifications] = useState(true);
   const [soundEffects, setSoundEffects] = useState(true);
   const [infoModal, setInfoModal] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -69,24 +73,19 @@ export default function SettingsScreen() {
     }
   };
 
-  const handleDeleteAccount = async () => {
-    const doDelete = async () => {
-      try {
-        await api.delete('/api/auth/account');
-        await logout();
-      } catch (e) {
-        Alert.alert(t('common.error'), t('settings.deleteAccountError'));
-      }
-    };
+  const handleDeleteAccount = () => setShowDeleteModal(true);
 
-    Alert.alert(
-      t('settings.deleteAccountConfirmTitle'),
-      t('settings.deleteAccountConfirm'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        { text: t('settings.deleteAccount'), style: 'destructive', onPress: doDelete },
-      ]
-    );
+  const confirmDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await api.delete('/api/auth/account');
+      setShowDeleteModal(false);
+      await logout();
+    } catch (e) {
+      setIsDeleting(false);
+      setShowDeleteModal(false);
+      Alert.alert(t('common.error'), t('settings.deleteAccountError'));
+    }
   };
 
   const handleLogout = async () => {
@@ -302,36 +301,80 @@ export default function SettingsScreen() {
         />
       </View>
 
-      {/* Logout */}
+      {/* Account Actions */}
       <View style={styles.section}>
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={handleLogout}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
-          <Text style={styles.logoutText}>{t('settings.logout')}</Text>
+        <TouchableOpacity style={styles.actionRow} onPress={handleLogout} activeOpacity={0.7}>
+          <View style={[styles.actionIcon, { backgroundColor: '#FFF1F0' }]}>
+            <Ionicons name="log-out-outline" size={18} color="#EF4444" />
+          </View>
+          <Text style={[styles.actionRowText, { color: '#EF4444' }]}>{t('settings.logout')}</Text>
+          <Ionicons name="chevron-forward" size={16} color="#EF4444" style={{ opacity: 0.5 }} />
+        </TouchableOpacity>
+        <View style={styles.rowDivider} />
+        <TouchableOpacity style={styles.actionRow} onPress={handleDeleteAccount} activeOpacity={0.7}>
+          <View style={[styles.actionIcon, { backgroundColor: '#FFF1F0' }]}>
+            <Ionicons name="person-remove-outline" size={18} color="#EF4444" />
+          </View>
+          <Text style={[styles.actionRowText, { color: '#EF4444' }]}>{t('settings.deleteAccount')}</Text>
+          <Ionicons name="chevron-forward" size={16} color="#EF4444" style={{ opacity: 0.5 }} />
         </TouchableOpacity>
       </View>
 
-      {/* Danger Zone */}
-      <View style={styles.dangerZoneCard}>
-        <View style={styles.dangerZoneHeader}>
-          <View style={styles.dangerZoneIconWrap}>
-            <Ionicons name="warning-outline" size={16} color={COLORS.error} />
+      {/* Delete Account Modal */}
+      <Modal
+        visible={showDeleteModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => !isDeleting && setShowDeleteModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.deleteModalCard}>
+            {/* Icon */}
+            <View style={styles.deleteModalIconWrap}>
+              <Ionicons name="person-remove" size={32} color="#EF4444" />
+            </View>
+
+            <Text style={styles.deleteModalTitle}>{t('settings.deleteAccountConfirmTitle')}</Text>
+            <Text style={styles.deleteModalSubtitle}>{t('settings.deleteAccountConfirm')}</Text>
+
+            {/* What gets deleted */}
+            <View style={styles.deleteModalList}>
+              {[
+                { icon: 'bookmark-outline', label: t('settings.deleteWillRemove1') },
+                { icon: 'bar-chart-outline', label: t('settings.deleteWillRemove2') },
+                { icon: 'school-outline', label: t('settings.deleteWillRemove3') },
+              ].map((item, i) => (
+                <View key={i} style={styles.deleteModalListRow}>
+                  <Ionicons name={item.icon} size={16} color="#EF4444" />
+                  <Text style={styles.deleteModalListText}>{item.label}</Text>
+                </View>
+              ))}
+            </View>
+
+            {/* Actions */}
+            <TouchableOpacity
+              style={[styles.deleteConfirmBtn, isDeleting && { opacity: 0.6 }]}
+              onPress={confirmDeleteAccount}
+              disabled={isDeleting}
+              activeOpacity={0.8}
+            >
+              {isDeleting
+                ? <ActivityIndicator color="#fff" size="small" />
+                : <Text style={styles.deleteConfirmBtnText}>{t('settings.deleteAccount')}</Text>
+              }
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.deleteCancelBtn}
+              onPress={() => setShowDeleteModal(false)}
+              disabled={isDeleting}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.deleteCancelBtnText}>{t('common.cancel')}</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.dangerZoneLabel}>{t('settings.dangerZone')}</Text>
         </View>
-        <Text style={styles.dangerZoneDesc}>{t('settings.deleteAccountDesc')}</Text>
-        <TouchableOpacity
-          style={styles.deleteAccountButton}
-          onPress={handleDeleteAccount}
-          activeOpacity={0.75}
-        >
-          <Ionicons name="trash-outline" size={16} color={COLORS.error} />
-          <Text style={styles.deleteAccountText}>{t('settings.deleteAccount')}</Text>
-        </TouchableOpacity>
-      </View>
+      </Modal>
 
       {/* Version */}
       <View style={styles.versionContainer}>
@@ -580,75 +623,114 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 
-  // Logout
-  logoutButton: {
+  // Account action rows
+  actionRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#EF4444',
-    borderRadius: 14,
-    padding: 18,
-    gap: 8,
-    ...SHADOWS.medium,
+    paddingVertical: 13,
+    paddingHorizontal: 4,
+    gap: 12,
   },
-  logoutText: {
+  actionIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionRowText: {
+    flex: 1,
     fontSize: 16,
-    fontWeight: '700',
-    color: '#FFFFFF',
+    fontWeight: '500',
+  },
+  rowDivider: {
+    height: 0.5,
+    backgroundColor: COLORS.border,
+    marginLeft: 46,
   },
 
-  dangerZoneCard: {
-    marginHorizontal: SPACING.md,
-    marginBottom: SPACING.md,
-    borderRadius: BORDER_RADIUS.xl,
-    borderWidth: 1,
-    borderColor: COLORS.error + '30',
-    backgroundColor: COLORS.error + '06',
-    padding: SPACING.md,
-    gap: SPACING.sm,
-  },
-  dangerZoneHeader: {
-    flexDirection: 'row',
+  // Delete Account Modal
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
     alignItems: 'center',
-    gap: 6,
+    padding: 24,
   },
-  dangerZoneIconWrap: {
-    width: 26,
-    height: 26,
-    borderRadius: 8,
-    backgroundColor: COLORS.error + '15',
+  deleteModalCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 28,
+    width: '100%',
+    maxWidth: 380,
+    alignItems: 'center',
+    ...SHADOWS.large,
+  },
+  deleteModalIconWrap: {
+    width: 64,
+    height: 64,
+    borderRadius: 32,
+    backgroundColor: '#FFF1F0',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 16,
   },
-  dangerZoneLabel: {
-    fontSize: 13,
+  deleteModalTitle: {
+    fontSize: 20,
     fontWeight: '700',
-    color: COLORS.error,
-    textTransform: 'uppercase',
-    letterSpacing: 0.6,
+    color: '#111',
+    marginBottom: 8,
+    textAlign: 'center',
   },
-  dangerZoneDesc: {
-    fontSize: 13,
-    color: COLORS.error + 'AA',
-    lineHeight: 18,
+  deleteModalSubtitle: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 20,
   },
-  deleteAccountButton: {
+  deleteModalList: {
+    width: '100%',
+    backgroundColor: '#FFF5F5',
+    borderRadius: 12,
+    padding: 14,
+    gap: 10,
+    marginBottom: 24,
+  },
+  deleteModalListRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 7,
-    paddingVertical: 11,
-    paddingHorizontal: SPACING.md,
-    borderRadius: BORDER_RADIUS.lg,
-    borderWidth: 1.5,
-    borderColor: COLORS.error + '60',
-    backgroundColor: COLORS.error + '0D',
-    alignSelf: 'flex-start',
+    gap: 10,
   },
-  deleteAccountText: {
-    fontSize: 14,
+  deleteModalListText: {
+    fontSize: 13,
+    color: '#EF4444',
+    fontWeight: '500',
+  },
+  deleteConfirmBtn: {
+    width: '100%',
+    backgroundColor: '#EF4444',
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  deleteConfirmBtnText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+  },
+  deleteCancelBtn: {
+    width: '100%',
+    backgroundColor: '#F5F5F5',
+    borderRadius: 14,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  deleteCancelBtnText: {
+    color: '#333',
+    fontSize: 16,
     fontWeight: '600',
-    color: COLORS.error,
   },
 
   // Version
