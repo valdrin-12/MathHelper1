@@ -156,6 +156,70 @@ app.get('/premium/success', (req, res) => {
 // Screenshots static files
 app.use('/screenshots', express.static(path.join(__dirname, '..', 'pages', 'screenshots')));
 
+// Graph rendering endpoint — serves self-contained HTML with function-plot
+app.get('/graph', (req, res) => {
+  const rawExpr = (req.query.expr || '').slice(0, 500);
+  // Basic sanitization: only allow safe math characters
+  const expr = rawExpr.replace(/[^0-9x+\-*/^().sincotaqrple, ]/gi, '');
+  if (!expr) return res.status(400).send('Missing expr');
+
+  res.setHeader('Content-Type', 'text/html');
+  res.send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/function-plot@1.22.2/dist/function-plot.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;background:#FDF6EC;overflow:hidden}
+    #plot{width:100%;height:calc(100% - 52px)}
+    #legend{height:52px;display:flex;align-items:center;justify-content:center;
+      font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:17px;
+      font-weight:600;font-style:italic;color:#6C47FF;
+      border-top:1px solid #E8D5B0;background:#FDF6EC}
+    #err{display:none;padding:24px;color:#8B6914;font-family:sans-serif;font-size:14px;text-align:center}
+  </style>
+</head>
+<body>
+<div id="plot"></div>
+<div id="err"></div>
+<div id="legend">y = ${expr.replace(/\*/g, '·')}</div>
+<script>
+(function(){
+  var expr = ${JSON.stringify(expr)};
+  try {
+    var fn = new Function('x','with(Math){return ('+expr+')}');
+    var yMin=Infinity,yMax=-Infinity;
+    for(var xi=-10;xi<=10;xi+=0.2){
+      var y=fn(xi);
+      if(isFinite(y)){yMin=Math.min(yMin,y);yMax=Math.max(yMax,y);}
+    }
+    var pad=Math.max((yMax-yMin)*0.2,1);
+    functionPlot({
+      target:'#plot',
+      width:window.innerWidth,
+      height:window.innerHeight-52,
+      xAxis:{domain:[-10,10]},
+      yAxis:{domain:[yMin-pad,yMax+pad]},
+      grid:true,
+      data:[{fn:expr,color:'#6C47FF',graphType:'polyline'}]
+    });
+    var svg=document.querySelector('#plot svg');
+    if(svg)svg.style.background='#FDF6EC';
+  } catch(e) {
+    document.getElementById('plot').style.display='none';
+    var el=document.getElementById('err');
+    el.style.display='block';
+    el.textContent='Gabim: '+e.message;
+  }
+})();
+</script>
+</body>
+</html>`);
+});
+
 // Serve Expo web build assets
 const publicDir = path.join(__dirname, '..', 'public');
 app.use(express.static(publicDir));

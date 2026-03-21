@@ -271,7 +271,7 @@ export default function AuthScreen() {
         {/* Brand Area — clean, no gradient background */}
         <View style={styles.brandArea}>
           <View style={styles.languageSwitcherTop}>
-            <LanguageSwitcher variant="light" />
+            <LanguageSwitcher variant={Platform.OS === 'web' ? 'light' : 'dark'} />
           </View>
           <LinearGradient
             colors={[COLORS.primary, COLORS.primarySoft]}
