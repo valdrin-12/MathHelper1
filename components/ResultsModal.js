@@ -132,6 +132,13 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
             <View style={{ height: 100 }} />
           </ScrollView>
 
+          {/* AI Disclaimer — shown for AI and Wolfram results */}
+          {(solverType === 'ai' || solverType === 'wolfram') && (
+            <View style={styles.aiDisclaimer}>
+              <Text style={styles.aiDisclaimerText}>{t('results.aiDisclaimer')}</Text>
+            </View>
+          )}
+
           {/* Footer */}
           <View style={styles.footer}>
             {saveSuccess && (
@@ -331,6 +338,19 @@ const styles = StyleSheet.create({
   },
   savedButton: {
     backgroundColor: COLORS.success,
+  },
+  aiDisclaimer: {
+    backgroundColor: '#FFFBEB',
+    borderTopWidth: 1,
+    borderTopColor: '#FDE68A',
+    paddingVertical: 10,
+    paddingHorizontal: SPACING.xl,
+  },
+  aiDisclaimerText: {
+    fontSize: 12,
+    color: '#92400E',
+    lineHeight: 18,
+    textAlign: 'center',
   },
   successBanner: {
     backgroundColor: COLORS.successLight,

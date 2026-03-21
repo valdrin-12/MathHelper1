@@ -127,6 +127,18 @@ export default function OnboardingScreen({ onComplete }) {
       title: t('onboarding.slide3Title'),
       description: t('onboarding.slide3Desc'),
     },
+    {
+      icon: 'diamond',
+      secondaryIcon: 'star',
+      color: '#8B5CF6',
+      title: t('onboarding.slide4Title'),
+      description: t('onboarding.slide4Desc'),
+      features: [
+        t('onboarding.slide4Feature1'),
+        t('onboarding.slide4Feature2'),
+        t('onboarding.slide4Feature3'),
+      ],
+    },
   ];
 
   const handleNext = () => {
@@ -146,6 +158,15 @@ export default function OnboardingScreen({ onComplete }) {
       />
       <Text style={styles.slideTitle}>{item.title}</Text>
       <Text style={styles.slideDescription}>{item.description}</Text>
+      {item.features && (
+        <View style={styles.featureList}>
+          {item.features.map((feature, i) => (
+            <View key={i} style={[styles.featureRow, { borderColor: item.color + '30' }]}>
+              <Text style={[styles.featureText, { color: item.color }]}>{feature}</Text>
+            </View>
+          ))}
+        </View>
+      )}
     </View>
   );
 
@@ -300,5 +321,22 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '800',
     color: '#FFFFFF',
+  },
+  featureList: {
+    marginTop: 20,
+    gap: 10,
+    width: '100%',
+  },
+  featureRow: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    borderWidth: 1,
+    backgroundColor: '#F9F5FF',
+  },
+  featureText: {
+    fontSize: 15,
+    fontWeight: '600',
+    textAlign: 'center',
   },
 });

@@ -217,7 +217,8 @@
     "saving": "Speichern...",
     "saved": "Gespeichert!",
     "savedSuccess": "Aufgabe erfolgreich gespeichert!",
-    "savedError": "Aufgabe konnte nicht gespeichert werden."
+    "savedError": "Aufgabe konnte nicht gespeichert werden.",
+    "aiDisclaimer": "⚠️ Dieses Ergebnis wurde von KI generiert und kann Fehler enthalten. Überprüfe es immer mit deinem Lehrer oder Lehrbuch."
   },
   "courseDetail": {
     "title": "Kursdetails",
@@ -513,6 +514,11 @@
     "slide2Desc": "Entdecke 50+ Kurse von Grundrechenarten bis Infinitesimalrechnung. Interaktive Lektionen machen Mathe zum Spaß.",
     "slide3Title": "Verfolge Deinen Fortschritt",
     "slide3Desc": "Baue tägliche Streaks auf, verdiene Erfolge und beobachte, wie deine Mathe-Fähigkeiten wachsen.",
+    "slide4Title": "Kostenlos starten — Jederzeit upgraden",
+    "slide4Desc": "Das kostenlose Konto umfasst 2 KI-Analysen. Mit Premium (3,99 €/Monat) erhältst du 10 Analysen/Tag, alle Kurse und unbegrenzte Quizze.",
+    "slide4Feature1": "✓ 2 kostenlose KI-Analysen",
+    "slide4Feature2": "✓ Alle Kurse kostenlos",
+    "slide4Feature3": "★ Premium: 10 Analysen/Tag",
     "skip": "Überspringen",
     "next": "Weiter",
     "getStarted": "Los geht's"

@@ -217,7 +217,8 @@
     "saving": "Duke Ruajtur...",
     "saved": "Ruajtur!",
     "savedSuccess": "Problemi u ruajt me sukses!",
-    "savedError": "Nuk mund të ruhet problemi."
+    "savedError": "Nuk mund të ruhet problemi.",
+    "aiDisclaimer": "⚠️ Rezultati është gjeneruar nga AI dhe mund të përmbajë gabime. Gjithmonë verifiko me mësuesin ose librin shkollor."
   },
   "courseDetail": {
     "title": "Detajet e Kursit",
@@ -618,6 +619,11 @@
     "slide2Desc": "Eksploro 50+ kurse nga aritmetika baze deri ne kalkulus te avancuar. Mesimet interaktive e bejne matematiken argetime.",
     "slide3Title": "Gjurmo Progresin Tend",
     "slide3Desc": "Nderto streak ditor, fito arritje, dhe shiko si rriten aftesite e tua matematikore me kalimin e kohes.",
+    "slide4Title": "Fillo Falas — Upgrade Kur të Duash",
+    "slide4Desc": "Me llogarinë falas ke 2 analiza AI. Me Premium (3.99€/muaj) fiton 10 analiza/ditë, të gjitha kurset dhe kuizet pa limit.",
+    "slide4Feature1": "✓ 2 analiza AI falas",
+    "slide4Feature2": "✓ Të gjitha kurset falas",
+    "slide4Feature3": "★ Premium: 10 analiza/ditë",
     "skip": "Kalo",
     "next": "Vazhdo",
     "getStarted": "Fillo Tani"
