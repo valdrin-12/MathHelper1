@@ -268,22 +268,22 @@ export default function AuthScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Brand Area — clean, no gradient background */}
-        <View style={styles.brandArea}>
-          <LinearGradient
-            colors={[COLORS.primary, COLORS.primarySoft]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.appIconSquircle}
-          >
+        {/* Brand Area — full blue gradient header */}
+        <LinearGradient
+          colors={['#1A3BAA', COLORS.primary]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0.5, y: 1 }}
+          style={styles.brandArea}
+        >
+          <View style={styles.appIconSquircle}>
             <Ionicons name="calculator" size={38} color="#FFFFFF" />
-          </LinearGradient>
+          </View>
           <Text style={styles.appName}>MathHelper</Text>
           <Text style={styles.appTagline}>{t('auth.tagline')}</Text>
           <View style={styles.languageSwitcherTop}>
-            <LanguageSwitcher variant={Platform.OS === 'web' ? 'light' : 'dark'} />
+            <LanguageSwitcher variant="dark" />
           </View>
-        </View>
+        </LinearGradient>
 
         {/* Form Card */}
         <WebContainer maxWidth={480}>
@@ -757,7 +757,7 @@ const styles = StyleSheet.create({
   // ─── Root ───────────────────────────────────────────────────────────────────
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: '#E8ECFA',
   },
   scrollContent: {
     flexGrow: 1,
@@ -768,35 +768,33 @@ const styles = StyleSheet.create({
   // Apple sign-in pattern: clean background, centered app icon + name
   brandArea: {
     paddingTop: Platform.OS === 'ios' ? 64 : 52,
-    paddingBottom: 36,
+    paddingBottom: 40,
     alignItems: 'center',
-    backgroundColor: COLORS.background,
   },
   languageSwitcherTop: {
     marginTop: 20,
     alignItems: 'center',
   },
   languageSwitcherContainer: { display: 'none' }, // legacy compat
-  // App icon squircle — single clean container (no double-nesting)
   appIconSquircle: {
     width: 80,
     height: 80,
-    borderRadius: 20,          // Apple continuous curve squircle
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.18)',
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 18,
-    ...SHADOWS.primary,
   },
   appName: {
     fontSize: 28,
     fontWeight: '700',
-    color: COLORS.text,
+    color: '#FFFFFF',
     letterSpacing: -0.38,
     marginBottom: 6,
   },
   appTagline: {
     fontSize: 15,
-    color: COLORS.textMuted,
+    color: 'rgba(255,255,255,0.85)',
     fontWeight: '400',
     letterSpacing: -0.24,
   },
