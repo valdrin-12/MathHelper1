@@ -15,9 +15,9 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.valdrin.mathhelper",
       "infoPlist": {
-        "NSCameraUsageDescription": "MathHelper përdor kamerën për të skanuar problemet matematikore nga librat, fletoret ose tabelat tuaja. Foto analizohet me AI për t'ju dhënë zgjidhje hap pas hapi.",
-        "NSPhotoLibraryUsageDescription": "MathHelper acceson galerinë tuaj për të ngarkuar foto të problemeve matematikore. Imazhi analizohet vetëm për zgjidhjen e problemit dhe nuk ruhet në asnjë server.",
-        "NSMicrophoneUsageDescription": "MathHelper nuk përdor mikrofonin. Kjo leje kërkohet vetëm nga framework-u i kamerës."
+        "NSCameraUsageDescription": "MathHelper uses the camera to scan math problems from books, notebooks, or whiteboards. The photo is analyzed by AI to provide step-by-step solutions.",
+        "NSPhotoLibraryUsageDescription": "MathHelper accesses your photo library to upload images of math problems. Images are used only to solve the problem and are never stored on any server.",
+        "NSMicrophoneUsageDescription": "MathHelper does not use the microphone. This permission is required only by the camera framework."
       }
     },
     "android": {
