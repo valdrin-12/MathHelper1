@@ -46,7 +46,7 @@ export const UserProvider = ({ children }) => {
       if (result.success) {
         setUser(result.user);
       }
-      return { success: result.success, error: result.error };
+      return { success: result.success, error: result.error, code: result.code };
     } catch (error) {
       console.error('Gabim gjatë kyçjes:', error);
       return { success: false, error: 'Gabim i papritur. Provoni përsëri.' };
