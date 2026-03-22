@@ -26,7 +26,7 @@ export const loginUser = async ({ email, password }) => {
     await api.storeTokens(data.accessToken, data.refreshToken);
     return { success: true, user: data.user, error: null };
   } catch (error) {
-    return { success: false, user: null, error: error.message || 'Login failed' };
+    return { success: false, user: null, error: error.message || 'Login failed', code: error.data?.code || null };
   }
 };
 

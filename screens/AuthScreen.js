@@ -95,7 +95,7 @@ export default function AuthScreen() {
     }
     if (!password) {
       newErrors.password = t('auth.validation.passwordRequired');
-    } else if (password.length < 6) {
+    } else if (password.length < 8) {
       newErrors.password = t('auth.validation.passwordMinLength');
     }
     if (!confirmPassword) {
@@ -117,9 +117,11 @@ export default function AuthScreen() {
     try {
       const result = await login(email.trim(), password);
       if (!result.success) {
-        const msg = result.error === 'USER_NOT_FOUND'
+        const msg = result.code === 'EMAIL_NOT_FOUND'
           ? t('auth.userNotFound')
-          : t('auth.loginFailed');
+          : result.code === 'INVALID_PASSWORD'
+            ? t('auth.wrongPassword')
+            : t('auth.loginFailed');
         setLoginError(msg);
       }
     } finally {
@@ -193,7 +195,7 @@ export default function AuthScreen() {
   };
 
   const handleResetPassword = async () => {
-    if (!newPassword || newPassword.length < 6) {
+    if (!newPassword || newPassword.length < 8) {
       setForgotError(t('auth.validation.passwordMinLength'));
       return;
     }

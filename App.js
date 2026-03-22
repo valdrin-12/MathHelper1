@@ -23,6 +23,7 @@ import QuizScreen from './screens/QuizScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import AuthScreen from './screens/AuthScreen';
 import SplashScreen from './screens/SplashScreen';
+import OnboardingScreen from './screens/OnboardingScreen';
 import LoadingOverlay from './components/LoadingOverlay';
 
 const Tab = createBottomTabNavigator();
@@ -290,11 +291,25 @@ function MainApp() {
   const isWeb = Platform.OS === 'web';
   const showSidebar = isWeb && width > 768;
   const [showSplash, setShowSplash] = useState(true);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
-    // Clean up legacy force-logout flag (no longer needed)
     AsyncStorage.removeItem('@mathhelper_force_logout_v1').catch(() => {});
   }, []);
+
+  useEffect(() => {
+    // Show onboarding only for first-time users (not logged in yet)
+    if (!loading && !user) {
+      AsyncStorage.getItem('@mathhelper_onboarding_done').then((val) => {
+        if (!val) setShowOnboarding(true);
+      });
+    }
+  }, [loading, user]);
+
+  const handleOnboardingComplete = async () => {
+    await AsyncStorage.setItem('@mathhelper_onboarding_done', 'true');
+    setShowOnboarding(false);
+  };
 
   if (showSplash) {
     return <SplashScreen onFinish={() => setShowSplash(false)} />;
@@ -304,6 +319,10 @@ function MainApp() {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }} />
     );
+  }
+
+  if (!user && showOnboarding) {
+    return <OnboardingScreen onComplete={handleOnboardingComplete} />;
   }
 
   if (!user) {

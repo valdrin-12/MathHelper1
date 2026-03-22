@@ -301,16 +301,16 @@ export default function SettingsScreen() {
         />
       </View>
 
-      {/* Account Actions */}
+      {/* Logout Button */}
       <View style={styles.section}>
-        <TouchableOpacity style={styles.actionRow} onPress={handleLogout} activeOpacity={0.7}>
-          <View style={[styles.actionIcon, { backgroundColor: '#FFF1F0' }]}>
-            <Ionicons name="log-out-outline" size={18} color="#EF4444" />
-          </View>
-          <Text style={[styles.actionRowText, { color: '#EF4444' }]}>{t('settings.logout')}</Text>
-          <Ionicons name="chevron-forward" size={16} color="#EF4444" style={{ opacity: 0.5 }} />
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.8}>
+          <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
+          <Text style={styles.logoutText}>{t('settings.logout')}</Text>
         </TouchableOpacity>
-        <View style={styles.rowDivider} />
+      </View>
+
+      {/* Delete Account — clean list row */}
+      <View style={styles.section}>
         <TouchableOpacity style={styles.actionRow} onPress={handleDeleteAccount} activeOpacity={0.7}>
           <View style={[styles.actionIcon, { backgroundColor: '#FFF1F0' }]}>
             <Ionicons name="person-remove-outline" size={18} color="#EF4444" />
@@ -621,6 +621,23 @@ const styles = StyleSheet.create({
   },
   menuSubtitle: {
     fontSize: 12,
+  },
+
+  // Logout button
+  logoutButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#EF4444',
+    borderRadius: 14,
+    padding: 18,
+    gap: 8,
+    ...SHADOWS.medium,
+  },
+  logoutText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
 
   // Account action rows
