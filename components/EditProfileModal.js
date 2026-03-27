@@ -25,6 +25,7 @@ export default function EditProfileModal({ visible, onClose }) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   useEffect(() => {
     if (user && visible) {
@@ -38,7 +39,6 @@ export default function EditProfileModal({ visible, onClose }) {
 
   const handleSave = async () => {
     try {
-      // Validation
       if (!name.trim() || name.trim().length < 2) {
         Alert.alert(t('common.error'), t('auth.validation.nameMinLength'));
         return;
@@ -49,13 +49,11 @@ export default function EditProfileModal({ visible, onClose }) {
         return;
       }
 
-      // Check if changing password
       if (newPassword || confirmPassword) {
-        if (newPassword.length < 6) {
+        if (newPassword.length < 8) {
           Alert.alert(t('common.error'), t('editProfile.newPasswordMinLength'));
           return;
         }
-
         if (newPassword !== confirmPassword) {
           Alert.alert(t('common.error'), t('auth.validation.passwordsMismatch'));
           return;
@@ -64,21 +62,13 @@ export default function EditProfileModal({ visible, onClose }) {
 
       setLoading(true);
 
-      const updates = {
-        name: name.trim(),
-        email: email.trim(),
-      };
-
-      if (newPassword) {
-        updates.password = newPassword;
-      }
+      const updates = { name: name.trim(), email: email.trim() };
+      if (newPassword) updates.password = newPassword;
 
       const result = await updateProfile(updates);
 
       if (result.success) {
-        Alert.alert(t('common.success'), t('editProfile.profileUpdated'), [
-          { text: t('common.ok'), onPress: onClose },
-        ]);
+        setShowSuccess(true);
       } else {
         Alert.alert(t('common.error'), result.error || t('auth.validation.profileUpdateError'));
       }
@@ -193,6 +183,30 @@ export default function EditProfileModal({ visible, onClose }) {
           </View>
         </View>
       </SafeAreaView>
+
+      {/* Success popup */}
+      <Modal
+        visible={showSuccess}
+        transparent
+        animationType="fade"
+        onRequestClose={() => { setShowSuccess(false); onClose(); }}
+      >
+        <View style={styles.successOverlay}>
+          <View style={styles.successCard}>
+            <View style={styles.successIconWrap}>
+              <Ionicons name="checkmark-circle" size={48} color={COLORS.primary} />
+            </View>
+            <Text style={styles.successTitle}>{t('common.success')}</Text>
+            <Text style={styles.successMessage}>{t('editProfile.profileUpdated')}</Text>
+            <TouchableOpacity
+              style={styles.successBtn}
+              onPress={() => { setShowSuccess(false); onClose(); }}
+            >
+              <Text style={styles.successBtnText}>{t('common.ok')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 }
@@ -301,5 +315,55 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     ...TYPOGRAPHY.button,
     color: COLORS.primary,
+  },
+
+  // ─── Success popup ───────────────────────────────────────────────────────────
+  successOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  successCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 32,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 320,
+    ...SHADOWS.large,
+  },
+  successIconWrap: {
+    marginBottom: 14,
+  },
+  successTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.text,
+    marginBottom: 8,
+    letterSpacing: -0.3,
+  },
+  successMessage: {
+    fontSize: 15,
+    color: COLORS.textMuted,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 24,
+    letterSpacing: -0.2,
+  },
+  successBtn: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderTopWidth: 0.5,
+    borderTopColor: COLORS.borderLight,
+  },
+  successBtnText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: COLORS.primary,
+    letterSpacing: -0.3,
   },
 });
