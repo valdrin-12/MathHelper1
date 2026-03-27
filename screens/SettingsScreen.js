@@ -33,6 +33,8 @@ export default function SettingsScreen() {
   const { completedCoursesCount, completedQuizzesCount, streak, achievements } = useStats();
   const { isDark, toggleTheme, colors } = useTheme();
   const [notifications, setNotifications] = useState(true);
+  const [emailNotifications, setEmailNotifications] = useState(true);
+  const [pushNotifications, setPushNotifications] = useState(true);
   const [soundEffects, setSoundEffects] = useState(true);
   const [infoModal, setInfoModal] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -41,11 +43,15 @@ export default function SettingsScreen() {
   useEffect(() => {
     const loadSettings = async () => {
       try {
-        const [notif, sound] = await Promise.all([
+        const [notif, emailNotif, pushNotif, sound] = await Promise.all([
           AsyncStorage.getItem('@mathhelper_notifications'),
+          AsyncStorage.getItem('@mathhelper_email_notifications'),
+          AsyncStorage.getItem('@mathhelper_push_notifications'),
           AsyncStorage.getItem('@mathhelper_sound'),
         ]);
         if (notif !== null) setNotifications(notif === 'true');
+        if (emailNotif !== null) setEmailNotifications(emailNotif === 'true');
+        if (pushNotif !== null) setPushNotifications(pushNotif === 'true');
         if (sound !== null) setSoundEffects(sound === 'true');
       } catch (e) {
         console.error('[SettingsScreen] Failed to load settings from storage:', e);
@@ -57,10 +63,37 @@ export default function SettingsScreen() {
 
   const handleNotificationsChange = async (value) => {
     setNotifications(value);
+    // When master toggle is turned off, disable sub-notifications too
+    if (!value) {
+      setEmailNotifications(false);
+      setPushNotifications(false);
+      await AsyncStorage.multiSet([
+        ['@mathhelper_notifications', 'false'],
+        ['@mathhelper_email_notifications', 'false'],
+        ['@mathhelper_push_notifications', 'false'],
+      ]);
+    } else {
+      await AsyncStorage.setItem('@mathhelper_notifications', 'true');
+    }
+  };
+
+  const handleEmailNotificationsChange = async (value) => {
+    setEmailNotifications(value);
+    if (value && !notifications) setNotifications(true);
     try {
-      await AsyncStorage.setItem('@mathhelper_notifications', String(value));
+      await AsyncStorage.setItem('@mathhelper_email_notifications', String(value));
     } catch (e) {
-      console.error('[SettingsScreen] Failed to save notifications setting:', e);
+      console.error('[SettingsScreen] Failed to save email notifications setting:', e);
+    }
+  };
+
+  const handlePushNotificationsChange = async (value) => {
+    setPushNotifications(value);
+    if (value && !notifications) setNotifications(true);
+    try {
+      await AsyncStorage.setItem('@mathhelper_push_notifications', String(value));
+    } catch (e) {
+      console.error('[SettingsScreen] Failed to save push notifications setting:', e);
     }
   };
 
@@ -190,6 +223,49 @@ export default function SettingsScreen() {
           value={notifications}
           onValueChange={handleNotificationsChange}
         />
+
+        {/* Sub-notification toggles — indented, shown always */}
+        <View style={[styles.subNotifContainer, { backgroundColor: colors.surface, opacity: notifications ? 1 : 0.45 }]}>
+          {/* Email Notifications */}
+          <View style={styles.subNotifRow}>
+            <View style={[styles.subNotifIconBox, { backgroundColor: isDark ? 'rgba(16,185,129,0.12)' : '#ECFDF5' }]}>
+              <Ionicons name="mail-outline" size={17} color="#10B981" />
+            </View>
+            <View style={styles.subNotifText}>
+              <Text style={[styles.subNotifTitle, { color: colors.text }]}>{t('settings.emailNotifications')}</Text>
+              <Text style={[styles.subNotifDesc, { color: colors.textMuted }]}>{t('settings.emailNotificationsDesc')}</Text>
+            </View>
+            <Switch
+              value={emailNotifications && notifications}
+              onValueChange={handleEmailNotificationsChange}
+              disabled={!notifications}
+              trackColor={{ false: colors.border, true: COLORS.primary + '55' }}
+              thumbColor={emailNotifications && notifications ? COLORS.primary : colors.textMuted}
+              ios_backgroundColor={colors.border}
+            />
+          </View>
+
+          <View style={[styles.subNotifDivider, { backgroundColor: colors.border }]} />
+
+          {/* Push Notifications */}
+          <View style={styles.subNotifRow}>
+            <View style={[styles.subNotifIconBox, { backgroundColor: isDark ? 'rgba(139,92,246,0.12)' : '#F5F3FF' }]}>
+              <Ionicons name="phone-portrait-outline" size={17} color="#8B5CF6" />
+            </View>
+            <View style={styles.subNotifText}>
+              <Text style={[styles.subNotifTitle, { color: colors.text }]}>{t('settings.pushNotifications')}</Text>
+              <Text style={[styles.subNotifDesc, { color: colors.textMuted }]}>{t('settings.pushNotificationsDesc')}</Text>
+            </View>
+            <Switch
+              value={pushNotifications && notifications}
+              onValueChange={handlePushNotificationsChange}
+              disabled={!notifications}
+              trackColor={{ false: colors.border, true: COLORS.primary + '55' }}
+              thumbColor={pushNotifications && notifications ? COLORS.primary : colors.textMuted}
+              ios_backgroundColor={colors.border}
+            />
+          </View>
+        </View>
 
         <SettingToggle
           icon="moon"
@@ -590,6 +666,46 @@ const styles = StyleSheet.create({
   settingDesc: {
     fontSize: 12,
     lineHeight: 16,
+  },
+
+  // Sub-notification toggles
+  subNotifContainer: {
+    borderRadius: 12,
+    marginBottom: 10,
+    marginLeft: 16,
+    overflow: 'hidden',
+    ...SHADOWS.soft,
+  },
+  subNotifRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+  },
+  subNotifIconBox: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  subNotifText: {
+    flex: 1,
+    marginRight: 8,
+  },
+  subNotifTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 1,
+  },
+  subNotifDesc: {
+    fontSize: 11,
+    lineHeight: 15,
+  },
+  subNotifDivider: {
+    height: 0.5,
+    marginLeft: 60,
   },
 
   // Language
