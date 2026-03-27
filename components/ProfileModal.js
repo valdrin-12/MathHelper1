@@ -482,29 +482,24 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
         <View style={styles.container}>
           {showEdit ? renderEditView() : renderProfileView()}
         </View>
-      </SafeAreaView>
 
-      {/* Success popup */}
-      <Modal
-        visible={showSuccessPopup}
-        transparent
-        animationType="fade"
-        onRequestClose={() => { setShowSuccessPopup(false); setShowEdit(false); }}
-      >
-        <View style={styles.successOverlay}>
-          <View style={styles.successCard}>
-            <Ionicons name="checkmark-circle" size={52} color={COLORS.primary} style={{ marginBottom: 14 }} />
-            <Text style={styles.successTitle}>{t('common.success')}</Text>
-            <Text style={styles.successMessage}>{t('editProfile.profileUpdated')}</Text>
-            <TouchableOpacity
-              style={styles.successBtn}
-              onPress={() => { setShowSuccessPopup(false); setShowEdit(false); }}
-            >
-              <Text style={styles.successBtnText}>{t('common.ok')}</Text>
-            </TouchableOpacity>
+        {/* Success popup — absolute overlay inside the modal */}
+        {showSuccessPopup && (
+          <View style={styles.successOverlay}>
+            <View style={styles.successCard}>
+              <Ionicons name="checkmark-circle" size={52} color={COLORS.primary} style={{ marginBottom: 14 }} />
+              <Text style={styles.successTitle}>{t('common.success')}</Text>
+              <Text style={styles.successMessage}>{t('editProfile.profileUpdated')}</Text>
+              <TouchableOpacity
+                style={styles.successBtn}
+                onPress={() => { setShowSuccessPopup(false); setShowEdit(false); }}
+              >
+                <Text style={styles.successBtnText}>{t('common.ok')}</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
+        )}
+      </SafeAreaView>
     </Modal>
   );
 }
@@ -827,11 +822,16 @@ const editStyles = StyleSheet.create({
 
   // ─── Success popup ───
   successOverlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: 'rgba(0,0,0,0.45)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 32,
+    zIndex: 999,
   },
   successCard: {
     backgroundColor: '#FFFFFF',
