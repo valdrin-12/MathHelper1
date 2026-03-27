@@ -224,49 +224,6 @@ export default function SettingsScreen() {
           onValueChange={handleNotificationsChange}
         />
 
-        {/* Sub-notification toggles — indented, shown always */}
-        <View style={[styles.subNotifContainer, { backgroundColor: colors.surface, opacity: notifications ? 1 : 0.45 }]}>
-          {/* Email Notifications */}
-          <View style={styles.subNotifRow}>
-            <View style={[styles.subNotifIconBox, { backgroundColor: isDark ? 'rgba(16,185,129,0.12)' : '#ECFDF5' }]}>
-              <Ionicons name="mail-outline" size={17} color="#10B981" />
-            </View>
-            <View style={styles.subNotifText}>
-              <Text style={[styles.subNotifTitle, { color: colors.text }]}>{t('settings.emailNotifications')}</Text>
-              <Text style={[styles.subNotifDesc, { color: colors.textMuted }]}>{t('settings.emailNotificationsDesc')}</Text>
-            </View>
-            <Switch
-              value={emailNotifications && notifications}
-              onValueChange={handleEmailNotificationsChange}
-              disabled={!notifications}
-              trackColor={{ false: colors.border, true: COLORS.primary + '55' }}
-              thumbColor={emailNotifications && notifications ? COLORS.primary : colors.textMuted}
-              ios_backgroundColor={colors.border}
-            />
-          </View>
-
-          <View style={[styles.subNotifDivider, { backgroundColor: colors.border }]} />
-
-          {/* Push Notifications */}
-          <View style={styles.subNotifRow}>
-            <View style={[styles.subNotifIconBox, { backgroundColor: isDark ? 'rgba(139,92,246,0.12)' : '#F5F3FF' }]}>
-              <Ionicons name="phone-portrait-outline" size={17} color="#8B5CF6" />
-            </View>
-            <View style={styles.subNotifText}>
-              <Text style={[styles.subNotifTitle, { color: colors.text }]}>{t('settings.pushNotifications')}</Text>
-              <Text style={[styles.subNotifDesc, { color: colors.textMuted }]}>{t('settings.pushNotificationsDesc')}</Text>
-            </View>
-            <Switch
-              value={pushNotifications && notifications}
-              onValueChange={handlePushNotificationsChange}
-              disabled={!notifications}
-              trackColor={{ false: colors.border, true: COLORS.primary + '55' }}
-              thumbColor={pushNotifications && notifications ? COLORS.primary : colors.textMuted}
-              ios_backgroundColor={colors.border}
-            />
-          </View>
-        </View>
-
         <SettingToggle
           icon="moon"
           iconColor="#8B5CF6"
