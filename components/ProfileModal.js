@@ -162,6 +162,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const { completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, stats } = useStats();
   const { savedItems } = useSavedItems();
   const [showEdit, setShowEdit] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const { t } = useTranslation();
 
   // Animations
@@ -220,7 +221,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
         return;
       }
       if (newPassword || confirmPassword) {
-        if (newPassword.length < 6) {
+        if (newPassword.length < 8) {
           Alert.alert(t('common.error'), t('editProfile.newPasswordMinLength'));
           return;
         }
@@ -236,9 +237,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
 
       const result = await updateProfile(updates);
       if (result.success) {
-        Alert.alert(t('common.success'), t('editProfile.profileUpdated'), [
-          { text: t('common.ok'), onPress: () => setShowEdit(false) },
-        ]);
+        setShowSuccessPopup(true);
       } else {
         Alert.alert(t('common.error'), result.error || t('auth.validation.profileUpdateError'));
       }
@@ -484,6 +483,28 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
           {showEdit ? renderEditView() : renderProfileView()}
         </View>
       </SafeAreaView>
+
+      {/* Success popup */}
+      <Modal
+        visible={showSuccessPopup}
+        transparent
+        animationType="fade"
+        onRequestClose={() => { setShowSuccessPopup(false); setShowEdit(false); }}
+      >
+        <View style={styles.successOverlay}>
+          <View style={styles.successCard}>
+            <Ionicons name="checkmark-circle" size={52} color={COLORS.primary} style={{ marginBottom: 14 }} />
+            <Text style={styles.successTitle}>{t('common.success')}</Text>
+            <Text style={styles.successMessage}>{t('editProfile.profileUpdated')}</Text>
+            <TouchableOpacity
+              style={styles.successBtn}
+              onPress={() => { setShowSuccessPopup(false); setShowEdit(false); }}
+            >
+              <Text style={styles.successBtnText}>{t('common.ok')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </Modal>
   );
 }
@@ -803,4 +824,51 @@ const editStyles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButtonText: { ...TYPOGRAPHY.button, color: COLORS.primary },
+
+  // ─── Success popup ───
+  successOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+  },
+  successCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    padding: 32,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 320,
+    ...SHADOWS.large,
+  },
+  successTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: COLORS.text,
+    marginBottom: 8,
+    letterSpacing: -0.3,
+  },
+  successMessage: {
+    fontSize: 15,
+    color: COLORS.textMuted,
+    textAlign: 'center',
+    lineHeight: 22,
+    marginBottom: 24,
+    letterSpacing: -0.2,
+  },
+  successBtn: {
+    width: '100%',
+    paddingVertical: 14,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderTopWidth: 0.5,
+    borderTopColor: COLORS.borderLight,
+  },
+  successBtnText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: COLORS.primary,
+    letterSpacing: -0.3,
+  },
 });
