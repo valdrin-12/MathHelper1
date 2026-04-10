@@ -724,6 +724,47 @@ const styles = StyleSheet.create({
   actionSub: {
     fontSize: 12, color: COLORS.textSubtle, fontWeight: '500',
   },
+
+  // ─── Success popup ───
+  successOverlay: {
+    position: 'absolute',
+    top: 0, left: 0, right: 0, bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.50)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 32,
+    zIndex: 999,
+  },
+  successCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+    paddingTop: 32,
+    paddingHorizontal: 28,
+    paddingBottom: 0,
+    alignItems: 'center',
+    width: '100%',
+    maxWidth: 320,
+    ...SHADOWS.large,
+  },
+  successTitle: {
+    fontSize: 20, fontWeight: '700', color: COLORS.text,
+    marginBottom: 8, letterSpacing: -0.3,
+  },
+  successMessage: {
+    fontSize: 15, color: COLORS.textMuted,
+    textAlign: 'center', lineHeight: 22,
+    marginBottom: 24, letterSpacing: -0.2,
+  },
+  successBtn: {
+    width: '100%', paddingVertical: 16,
+    alignItems: 'center',
+    borderTopWidth: 0.5, borderTopColor: '#E5E7EB',
+    marginTop: 4,
+  },
+  successBtnText: {
+    fontSize: 17, fontWeight: '600',
+    color: COLORS.primary, letterSpacing: -0.3,
+  },
 });
 
 // ─── Chart Styles ───
@@ -819,56 +860,4 @@ const editStyles = StyleSheet.create({
     alignItems: 'center',
   },
   cancelButtonText: { ...TYPOGRAPHY.button, color: COLORS.primary },
-
-  // ─── Success popup ───
-  successOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.45)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
-    zIndex: 999,
-  },
-  successCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 32,
-    alignItems: 'center',
-    width: '100%',
-    maxWidth: 320,
-    ...SHADOWS.large,
-  },
-  successTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: 8,
-    letterSpacing: -0.3,
-  },
-  successMessage: {
-    fontSize: 15,
-    color: COLORS.textMuted,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 24,
-    letterSpacing: -0.2,
-  },
-  successBtn: {
-    width: '100%',
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: 'center',
-    borderTopWidth: 0.5,
-    borderTopColor: COLORS.borderLight,
-  },
-  successBtnText: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: COLORS.primary,
-    letterSpacing: -0.3,
-  },
 });
