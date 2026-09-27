@@ -11,8 +11,4 @@ router.use(authMiddleware);
 router.post('/verify', purchaseController.verifyPurchase);
 router.post('/restore', purchaseController.restorePurchase);
 
-// Paysera Web
-router.post('/create-checkout', purchaseController.createCheckout);
-router.get('/check-payment', purchaseController.checkPayment);
-
 module.exports = router;

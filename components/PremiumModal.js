@@ -14,20 +14,31 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SHADOWS } from '../theme/constants';
+import { COLORS, SHADOWS, BORDER_RADIUS, SPACING } from '../theme/constants';
 import { useUser } from '../context/UserContext';
+import { useLanguage } from '../context/LanguageContext';
 import * as purchaseService from '../services/purchaseService';
+import * as paddleService from '../services/paddleService';
+import { PREMIUM_PLAN, BILLING_INTERVALS } from '../config/plans';
 
 export default function PremiumModal({ visible, onClose }) {
   const { t } = useTranslation();
-  const { refresh } = useUser();
+  const { user, refresh } = useUser();
+  const { language } = useLanguage();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [restoring, setRestoring] = useState(false);
+  // Web (Paddle)
+  const [billingInterval, setBillingInterval] = useState('month');
+  const [webPrices, setWebPrices] = useState(null);
+  const [priceError, setPriceError] = useState(false);
 
   const isWeb = Platform.OS === 'web';
 
   useEffect(() => {
+    if (visible && isWeb) {
+      loadWebPrices();
+    }
     if (visible && !isWeb) {
       initStore();
     }
@@ -35,6 +46,19 @@ export default function PremiumModal({ visible, onClose }) {
       if (!isWeb) purchaseService.removePurchaseListeners();
     };
   }, [visible]);
+
+  const loadWebPrices = async () => {
+    setPriceError(false);
+    try {
+      const prices = await paddleService.fetchPrices(
+        BILLING_INTERVALS.map((i) => PREMIUM_PLAN.priceId[i])
+      );
+      setWebPrices(prices);
+    } catch (error) {
+      console.error('Paddle price preview error:', error);
+      setPriceError(true);
+    }
+  };
 
   const initStore = async () => {
     const connected = await purchaseService.initIAP();
@@ -73,8 +97,27 @@ export default function PremiumModal({ visible, onClose }) {
 
   const handleBuyPremium = async () => {
     if (isWeb) {
-      // Web: redirect to payment page
-      window.location.href = '/payment.html';
+      // Web: Paddle overlay checkout. The webhook matches the payment to the user via user_id.
+      if (!user?.id) {
+        Alert.alert(t('common.attention'), t('premium.signInRequired'));
+        return;
+      }
+      try {
+        setLoading(true);
+        // Close our modal first so it doesn't sit on top of Paddle's overlay
+        onClose();
+        await paddleService.openCheckout({
+          priceId: PREMIUM_PLAN.priceId[billingInterval],
+          email: user.email,
+          userId: user.id,
+          language,
+        });
+      } catch (error) {
+        console.error('Paddle checkout error:', error);
+        Alert.alert(t('common.error'), t('premium.purchaseError'));
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
@@ -111,7 +154,7 @@ export default function PremiumModal({ visible, onClose }) {
     }
   };
 
-  const price = product?.localizedPrice || '€3.99';
+  const selectedWebPrice = webPrices?.[PREMIUM_PLAN.priceId[billingInterval]];
 
   const freeBenefits = [
     { icon: 'camera-outline', text: t('premium.freeAnalyses') },
@@ -119,12 +162,11 @@ export default function PremiumModal({ visible, onClose }) {
     { icon: 'help-circle-outline', text: t('premium.freeQuizzes') },
   ];
 
-  const premiumBenefits = [
-    { icon: 'sparkles', text: t('premium.premiumAnalyses') },
-    { icon: 'book', text: t('premium.premiumCourses') },
-    { icon: 'help-circle', text: t('premium.premiumQuizzes') },
-    { icon: 'star', text: t('premium.premiumPriority') },
-  ];
+  const premiumIcons = ['sparkles', 'book', 'help-circle', 'star'];
+  const premiumBenefits = PREMIUM_PLAN.featureKeys.map((key, i) => ({
+    icon: premiumIcons[i] || 'checkmark',
+    text: t(key),
+  }));
 
   return (
     <Modal
@@ -196,21 +238,65 @@ export default function PremiumModal({ visible, onClose }) {
           </View>
 
           {/* Price */}
-          <View style={styles.priceSection}>
-            <Text style={styles.priceLabel}>{t('premium.oneTimePurchase')}</Text>
-            <Text style={styles.price}>{price}</Text>
-            <Text style={styles.priceNote}>{t('premium.priceNote')}</Text>
-          </View>
+          {isWeb ? (
+            <View style={styles.priceSection}>
+              <View style={styles.intervalRow}>
+                {BILLING_INTERVALS.map((i) => (
+                  <TouchableOpacity
+                    key={i}
+                    style={[styles.intervalChip, billingInterval === i && styles.intervalChipActive]}
+                    onPress={() => setBillingInterval(i)}
+                    activeOpacity={0.8}
+                  >
+                    <Text style={[styles.intervalChipText, billingInterval === i && styles.intervalChipTextActive]}>
+                      {t(i === 'month' ? 'premium.monthly' : 'premium.yearly')}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              {selectedWebPrice ? (
+                <>
+                  {selectedWebPrice.trialDays ? (
+                    <Text style={styles.priceLabel}>
+                      {t('premium.trialThen', { days: selectedWebPrice.trialDays })}
+                    </Text>
+                  ) : null}
+                  <Text style={styles.price}>
+                    {selectedWebPrice.total}
+                    <Text style={styles.pricePeriod}>
+                      {t(billingInterval === 'month' ? 'premium.perMonth' : 'premium.perYear')}
+                    </Text>
+                  </Text>
+                  <Text style={styles.priceNote}>{t('premium.cancelAnytime')}</Text>
+                </>
+              ) : priceError ? (
+                <TouchableOpacity onPress={loadWebPrices}>
+                  <Text style={styles.priceNote}>{t('premium.priceLoadError')}</Text>
+                </TouchableOpacity>
+              ) : (
+                <ActivityIndicator color={COLORS.textSubtle} />
+              )}
+            </View>
+          ) : (
+            product?.localizedPrice ? (
+              <View style={styles.priceSection}>
+                <Text style={styles.price}>{product.localizedPrice}</Text>
+              </View>
+            ) : (
+              <View style={{ height: 28 }} />
+            )
+          )}
 
           {/* Buy Button */}
           <TouchableOpacity
             style={styles.buyButton}
             onPress={handleBuyPremium}
-            disabled={loading}
+            disabled={loading || (isWeb && !selectedWebPrice)}
             activeOpacity={0.8}
           >
             <LinearGradient
-              colors={loading ? ['#D4D4D4', '#D4D4D4'] : ['#F59E0B', '#D97706']}
+              colors={loading || (isWeb && !selectedWebPrice) ? ['#D4D4D4', '#D4D4D4'] : ['#F59E0B', '#D97706']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.buyGradient}
@@ -382,10 +468,43 @@ const styles = StyleSheet.create({
     color: COLORS.text,
     letterSpacing: -1,
   },
+  pricePeriod: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: COLORS.textSubtle,
+    letterSpacing: 0,
+  },
   priceNote: {
     fontSize: 12,
     color: COLORS.textMuted,
     marginTop: 4,
+  },
+
+  // Billing interval toggle (web)
+  intervalRow: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    marginBottom: 16,
+  },
+  intervalChip: {
+    paddingHorizontal: 16,
+    paddingVertical: 7,
+    borderRadius: BORDER_RADIUS.round,
+    backgroundColor: COLORS.surface,
+    borderWidth: 1.5,
+    borderColor: COLORS.glassBorder,
+  },
+  intervalChipActive: {
+    backgroundColor: '#D97706',
+    borderColor: '#D97706',
+  },
+  intervalChipText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: COLORS.textSecondary,
+  },
+  intervalChipTextActive: {
+    color: '#FFFFFF',
   },
 
   // Buy Button

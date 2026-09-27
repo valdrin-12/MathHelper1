@@ -11,14 +11,14 @@ const statsRoutes = require('./routes/stats');
 const analyzeRoutes = require('./routes/analyze');
 const purchaseRoutes = require('./routes/purchases');
 
-const purchaseController = require('./controllers/purchaseController');
+const paddleController = require('./controllers/paddleController');
 
 const app = express();
 
-// Paysera callback needs urlencoded body BEFORE json parsing
-app.post('/api/purchases/paysera-callback',
-  express.urlencoded({ extended: true }),
-  purchaseController.payseraCallback
+// Paddle webhook needs the raw body (for signature verification) BEFORE json parsing
+app.post('/api/paddle/webhook',
+  express.raw({ type: 'application/json' }),
+  paddleController.handleWebhook
 );
 
 // Middleware
@@ -77,7 +77,7 @@ app.get('/privacy', (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'privacy.html'));
 });
 
-// Paysera payment success page
+// Paddle checkout success page (Paddle.Checkout successUrl)
 app.get('/premium/success', (req, res) => {
   const appUrl = process.env.APP_URL || 'https://mathhelper.online';
   res.send(`<!DOCTYPE html>
@@ -110,44 +110,46 @@ app.get('/premium/success', (req, res) => {
     <a href="${appUrl}/dashboard" class="btn hidden" id="btn">Open MathHelper</a>
   </div>
   <script>
-    const orderId = new URLSearchParams(window.location.search).get('orderid');
-    const token = localStorage.getItem('@math_helper_access_token');
+    // Premium is activated by the Paddle webhook; poll our own API until it lands.
+    const token = localStorage.getItem('math_helper_access_token');
+    let attempts = 0;
 
-    async function checkPayment() {
-      if (!orderId) {
-        document.getElementById('title').textContent = 'Payment Successful!';
-        document.getElementById('desc').textContent = 'You are now a Premium member.';
-        document.getElementById('status').classList.add('hidden');
-        document.getElementById('btn').classList.remove('hidden');
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/purchases/check-payment?orderid=' + orderId, {
-          headers: token ? { 'Authorization': 'Bearer ' + token } : {}
-        });
-        const data = await res.json();
-
-        if (data.paid) {
-          document.getElementById('title').textContent = 'Payment Successful!';
-          document.getElementById('desc').textContent = 'Welcome to MathHelper Premium! Enjoy 15 analyses/day and all courses & quizzes.';
-          document.getElementById('status').textContent = 'Redirecting...';
-          document.getElementById('btn').classList.remove('hidden');
-          setTimeout(() => { window.location.href = '${appUrl}/dashboard'; }, 2500);
-        } else {
-          document.getElementById('title').textContent = 'Payment Pending';
-          document.getElementById('desc').textContent = 'Your payment is still being processed. Please wait a moment.';
-          setTimeout(checkPayment, 3000);
-        }
-      } catch (e) {
-        document.getElementById('title').textContent = 'Payment Received!';
-        document.getElementById('desc').textContent = 'You can now access all Premium features.';
+    function show(title, desc, done) {
+      document.getElementById('title').textContent = title;
+      document.getElementById('desc').textContent = desc;
+      if (done) {
         document.getElementById('status').classList.add('hidden');
         document.getElementById('btn').classList.remove('hidden');
       }
     }
 
-    checkPayment();
+    async function checkPremium() {
+      attempts++;
+      if (!token) {
+        show('Payment Received!', 'Open MathHelper to start using Premium.', true);
+        return;
+      }
+      try {
+        const res = await fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } });
+        const data = await res.json();
+        if (data.user && data.user.tier === 'premium') {
+          show('Payment Successful!', 'Welcome to MathHelper Premium! Enjoy 10 analyses per day and all courses & quizzes.', false);
+          document.getElementById('status').textContent = 'Redirecting...';
+          document.getElementById('btn').classList.remove('hidden');
+          setTimeout(() => { window.location.href = '${appUrl}/dashboard'; }, 2500);
+          return;
+        }
+      } catch (e) {
+        // fall through to retry
+      }
+      if (attempts < 10) {
+        setTimeout(checkPremium, 3000);
+      } else {
+        show('Payment Received!', 'Premium will be active in a minute. You can open MathHelper now.', true);
+      }
+    }
+
+    checkPremium();
   </script>
 </body>
 </html>`);
