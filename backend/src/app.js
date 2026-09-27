@@ -15,6 +15,9 @@ const paddleController = require('./controllers/paddleController');
 
 const app = express();
 
+// Render terminates TLS at a single proxy hop; trust it so req.ip (and express-rate-limit) see the real client IP
+app.set('trust proxy', 1);
+
 // Paddle webhook needs the raw body (for signature verification) BEFORE json parsing
 app.post('/api/paddle/webhook',
   express.raw({ type: 'application/json' }),
