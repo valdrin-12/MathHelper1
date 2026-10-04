@@ -196,7 +196,9 @@ const HANDLERS = {
  * Must be mounted with express.raw() — signature verification needs the exact raw body.
  */
 async function handleWebhook(req, res) {
-  const secret = process.env.PADDLE_WEBHOOK_SECRET;
+  // Trim whitespace/quotes that often sneak in when pasting into a hosting dashboard
+  const rawSecret = process.env.PADDLE_WEBHOOK_SECRET || '';
+  const secret = rawSecret.trim().replace(/^["']|["']$/g, '');
   if (!secret) {
     console.error('[Paddle] PADDLE_WEBHOOK_SECRET is not set');
     return res.status(503).send('Webhook not configured');
@@ -212,8 +214,11 @@ async function handleWebhook(req, res) {
   try {
     event = await webhooks.unmarshal(rawBody, secret, signature);
   } catch (err) {
-    console.error('[Paddle] Invalid webhook signature:', err.message);
-    return res.status(400).send('Invalid signature');
+    // TEMP diagnostic: identify which destination's secret is loaded (destination ID prefix only, never the secret part)
+    const destPrefix = (secret.match(/^pdl_ntfset_(01[a-z0-9]{6})/) || [])[1] || 'unrecognized-format';
+    const hint = `cfg=${destPrefix}${rawSecret !== secret ? ' (trimmed)' : ''}`;
+    console.error(`[Paddle] Invalid webhook signature (${hint}):`, err.message);
+    return res.status(400).send(`Invalid signature ${hint}`);
   }
 
   const handler = HANDLERS[event.eventType];
