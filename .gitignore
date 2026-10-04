@@ -47,3 +47,6 @@ yarn-error.*
 # Backend
 backend/node_modules/
 backend/.env
+
+# E2E regression tests live in their own repository
+e2e/
