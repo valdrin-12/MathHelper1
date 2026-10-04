@@ -78,13 +78,12 @@ export const UserProvider = ({ children }) => {
    */
   const logout = async () => {
     try {
-      console.log('[UserContext] Logout thirret...');
       await authService.logoutUser();
-      console.log('[UserContext] authService.logoutUser() u krye');
-      setUser(null);
-      console.log('[UserContext] setUser(null) u thirr - user duhet të jetë null tani');
     } catch (error) {
       console.error('[UserContext] Gabim gjatë çkyçjes:', error);
+    } finally {
+      // Çkyçu lokalisht edhe nëse serveri dështon
+      setUser(null);
     }
   };
 

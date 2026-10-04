@@ -52,9 +52,15 @@ export const getCurrentUser = async () => {
  * Logout - clear session
  * @returns {Promise<boolean>}
  */
+const LOGOUT_TIMEOUT_MS = 5000;
+
 export const logoutUser = async () => {
   try {
-    await api.post('/api/auth/logout');
+    // Revoking refresh tokens is best-effort: don't keep the user waiting on a slow/cold server
+    await Promise.race([
+      api.post('/api/auth/logout'),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('Logout request timed out')), LOGOUT_TIMEOUT_MS)),
+    ]);
   } catch (error) {
     console.error('Logout API error:', error);
   }
