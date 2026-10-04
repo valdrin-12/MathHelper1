@@ -12,7 +12,8 @@ async function createPortalSession(req, res) {
     paddle = getPaddleClient();
   } catch (err) {
     console.error('[Paddle] Portal not configured:', err.message);
-    return res.status(503).json({ success: false, error: 'Billing portal not configured' });
+    // err.message never contains the key itself, only which variable/prefix is wrong
+    return res.status(503).json({ success: false, error: 'Billing portal not configured', configError: err.message });
   }
 
   try {
