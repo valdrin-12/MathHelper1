@@ -217,7 +217,12 @@
     "todayStreak": "Sot: {{streak}} ditë rresht",
     "startToday": "Sot: Fillo sot!",
     "coursesQuizzes": "{{courses}} kurse · {{quizzes}} kuize",
-    "achievementsCount": "{{count}} arritje të fituara"
+    "achievementsCount": "{{count}} arritje të fituara",
+    "subscription": "Abonimi",
+    "manageSubscription": "Menaxho abonimin",
+    "manageSubscriptionDesc": "Mënyra e pagesës, faturat, anulimi",
+    "manageSubscriptionOpening": "Duke u hapur…",
+    "manageSubscriptionError": "Menaxhimi i abonimit nuk u hap. Ju lutemi provoni përsëri."
   },
   "results": {
     "title": "Rezultatet e Analizës",

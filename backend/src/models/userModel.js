@@ -5,11 +5,12 @@ const SALT_ROUNDS = 12;
 
 function toCamelCase(user) {
   if (!user) return null;
-  const { created_at, updated_at, free_analyses_used, premium_expires_at, ...rest } = user;
+  const { created_at, updated_at, free_analyses_used, premium_expires_at, has_paddle_subscription, ...rest } = user;
   return {
     ...rest,
     freeAnalysesUsed: free_analyses_used ?? 0,
     premiumExpiresAt: premium_expires_at || null,
+    hasPaddleSubscription: !!has_paddle_subscription,
     createdAt: created_at,
     updatedAt: updated_at,
   };
@@ -36,7 +37,12 @@ async function findByEmail(email) {
 
 async function findById(id) {
   const { rows } = await pool.query(
-    'SELECT id, name, email, language, tier, free_analyses_used, premium_expires_at, created_at, updated_at FROM users WHERE id = $1',
+    `SELECT id, name, email, language, tier, free_analyses_used, premium_expires_at, created_at, updated_at,
+       EXISTS (
+         SELECT 1 FROM paddle_subscriptions ps
+         WHERE ps.user_id = users.id AND ps.status <> 'canceled'
+       ) AS has_paddle_subscription
+     FROM users WHERE id = $1`,
     [id]
   );
   return toCamelCase(rows[0]);

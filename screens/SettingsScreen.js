@@ -39,6 +39,19 @@ export default function SettingsScreen() {
   const [infoModal, setInfoModal] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [hasPaddleSubscription, setHasPaddleSubscription] = useState(!!user?.hasPaddleSubscription);
+  const [openingPortal, setOpeningPortal] = useState(false);
+
+  // Login doesn't return hasPaddleSubscription, so ask /me directly (refresh() would flash the loader)
+  useEffect(() => {
+    if (user?.tier !== 'premium') {
+      setHasPaddleSubscription(false);
+      return;
+    }
+    api.get('/api/auth/me')
+      .then((data) => setHasPaddleSubscription(!!data.user?.hasPaddleSubscription))
+      .catch((e) => console.error('[SettingsScreen] Failed to load subscription status:', e));
+  }, [user?.id, user?.tier]);
 
   useEffect(() => {
     const loadSettings = async () => {
@@ -103,6 +116,24 @@ export default function SettingsScreen() {
       await AsyncStorage.setItem('@mathhelper_sound', String(value));
     } catch (e) {
       console.error('[SettingsScreen] Failed to save sound setting:', e);
+    }
+  };
+
+  const handleManageSubscription = async () => {
+    setOpeningPortal(true);
+    try {
+      // Customer is resolved server-side from the session; we never send a customer ID
+      const data = await api.post('/api/paddle/portal-session', {});
+      if (Platform.OS === 'web') {
+        window.location.href = data.url;
+      } else {
+        await Linking.openURL(data.url);
+      }
+    } catch (e) {
+      console.error('[SettingsScreen] Failed to open billing portal:', e);
+      Alert.alert(t('common.error'), t('settings.manageSubscriptionError'));
+    } finally {
+      setOpeningPortal(false);
     }
   };
 
@@ -287,6 +318,21 @@ export default function SettingsScreen() {
           onPress={() => setInfoModal('achievements')}
         />
       </View>
+
+      {/* Subscription Section (Paddle subscribers only) */}
+      {user?.tier === 'premium' && hasPaddleSubscription && (
+        <View style={styles.section}>
+          <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.subscription')}</Text>
+          <MenuItem
+            icon="card"
+            iconColor="#D97706"
+            iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+            title={t('settings.manageSubscription')}
+            subtitle={openingPortal ? t('settings.manageSubscriptionOpening') : t('settings.manageSubscriptionDesc')}
+            onPress={openingPortal ? undefined : handleManageSubscription}
+          />
+        </View>
+      )}
 
       {/* Other Section */}
       <View style={styles.section}>

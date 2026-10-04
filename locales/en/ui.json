@@ -217,7 +217,12 @@
     "todayStreak": "Today: {{streak}} day streak",
     "startToday": "Today: Start today!",
     "coursesQuizzes": "{{courses}} courses · {{quizzes}} quizzes",
-    "achievementsCount": "{{count}} achievements earned"
+    "achievementsCount": "{{count}} achievements earned",
+    "subscription": "Subscription",
+    "manageSubscription": "Manage subscription",
+    "manageSubscriptionDesc": "Payment method, invoices, cancellation",
+    "manageSubscriptionOpening": "Opening…",
+    "manageSubscriptionError": "Couldn't open subscription management. Please try again."
   },
   "results": {
     "title": "Analysis Results",

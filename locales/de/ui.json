@@ -217,7 +217,12 @@
     "todayStreak": "Heute: {{streak}} Tage Serie",
     "startToday": "Heute: Fang heute an!",
     "coursesQuizzes": "{{courses}} Kurse · {{quizzes}} Quiz",
-    "achievementsCount": "{{count}} Erfolge erreicht"
+    "achievementsCount": "{{count}} Erfolge erreicht",
+    "subscription": "Abonnement",
+    "manageSubscription": "Abonnement verwalten",
+    "manageSubscriptionDesc": "Zahlungsmethode, Rechnungen, Kündigung",
+    "manageSubscriptionOpening": "Wird geöffnet…",
+    "manageSubscriptionError": "Die Abo-Verwaltung konnte nicht geöffnet werden. Bitte versuchen Sie es erneut."
   },
   "results": {
     "title": "Analyseergebnisse",
