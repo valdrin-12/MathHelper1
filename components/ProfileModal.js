@@ -20,6 +20,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
 import { useSavedItems } from '../context/SavedItemsContext';
+import { isPremiumActive } from '../utils/isPremium';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
 
 const { width } = Dimensions.get('window');
@@ -161,6 +162,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const { user, logout, updateProfile } = useUser();
   const { completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, stats } = useStats();
   const { savedItems } = useSavedItems();
+  const isPremium = isPremiumActive(user);
   const [showEdit, setShowEdit] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const { t } = useTranslation();
@@ -350,10 +352,10 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
           </View>
           <View style={styles.userNameRow}>
             <Text style={styles.userName}>{user.name}</Text>
-            <View style={[styles.tierBadge, user.tier === 'premium' ? styles.tierPremium : styles.tierFree]}>
-              <Ionicons name={user.tier === 'premium' ? 'star' : 'person'} size={10} color={user.tier === 'premium' ? '#92400E' : '#FFFFFF'} />
-              <Text style={[styles.tierBadgeText, user.tier === 'premium' && styles.tierPremiumText]}>
-                {user.tier === 'premium' ? 'Premium' : 'Free'}
+            <View style={[styles.tierBadge, isPremium ? styles.tierPremium : styles.tierFree]}>
+              <Ionicons name={isPremium ? 'star' : 'person'} size={10} color={isPremium ? '#92400E' : '#FFFFFF'} />
+              <Text style={[styles.tierBadgeText, isPremium && styles.tierPremiumText]}>
+                {isPremium ? 'Premium' : 'Free'}
               </Text>
             </View>
           </View>
@@ -402,7 +404,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
         </View>
 
         {/* Premium Upgrade Card (only for free users) */}
-        {user.tier !== 'premium' && (
+        {!isPremium && (
           <TouchableOpacity
             style={styles.premiumCard}
             onPress={() => { onClose(); setTimeout(() => onUpgrade?.(), 400); }}

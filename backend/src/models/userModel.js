@@ -76,12 +76,12 @@ async function updateUser(id, updates) {
   fields.push(`updated_at = NOW()`);
   values.push(id);
 
-  const { rows } = await pool.query(
-    `UPDATE users SET ${fields.join(', ')} WHERE id = $${paramIndex}
-     RETURNING id, name, email, language, tier, created_at, updated_at`,
+  const { rowCount } = await pool.query(
+    `UPDATE users SET ${fields.join(', ')} WHERE id = $${paramIndex}`,
     values
   );
-  return toCamelCase(rows[0]);
+  // Re-read so the response keeps premiumExpiresAt/hasPaddleSubscription like /me
+  return rowCount ? findById(id) : null;
 }
 
 async function comparePassword(plainPassword, hashedPassword) {

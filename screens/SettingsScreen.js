@@ -153,6 +153,11 @@ export default function SettingsScreen() {
   };
 
   const handleLogout = async () => {
+    // Alert.alert buttons are a no-op on react-native-web
+    if (Platform.OS === 'web') {
+      if (window.confirm(t('settings.logoutConfirm'))) await logout();
+      return;
+    }
     Alert.alert(
       t('settings.logoutConfirmTitle'),
       t('settings.logoutConfirm'),

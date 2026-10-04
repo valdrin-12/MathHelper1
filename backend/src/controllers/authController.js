@@ -65,10 +65,10 @@ async function login(req, res) {
       [user.id, refreshToken, expiresAt]
     );
 
-    const { password_hash, created_at, updated_at, ...rest } = user;
+    // Same shape as /me so the client sees premiumExpiresAt (premium gates) and no internal columns
     res.json({
       success: true,
-      user: { ...rest, createdAt: created_at, updatedAt: updated_at },
+      user: await userModel.findById(user.id),
       accessToken,
       refreshToken,
     });

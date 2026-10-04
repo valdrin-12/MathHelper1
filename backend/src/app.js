@@ -35,7 +35,7 @@ const ALLOWED_ORIGINS = [
   'https://www.mathhelper.online',
   'https://mathhelper1-4zct.onrender.com',
   // Allow localhost during development
-  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:8081', 'http://localhost:3000', 'http://localhost:19006'] : []),
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:8081', 'http://localhost:3000', 'http://localhost:3001', 'http://localhost:19006'] : []),
 ];
 app.use(cors({
   origin: (origin, callback) => {
