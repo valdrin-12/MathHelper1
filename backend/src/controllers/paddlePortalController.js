@@ -48,7 +48,13 @@ async function createPortalSession(req, res) {
     });
   } catch (err) {
     console.error('[Paddle] Portal session error:', err);
-    res.status(500).json({ success: false, error: 'Failed to create billing portal session' });
+    // Paddle's error code (e.g. "forbidden", "authentication_malformed") is not sensitive and
+    // makes misconfigured API keys diagnosable without server log access
+    res.status(500).json({
+      success: false,
+      error: 'Failed to create billing portal session',
+      paddleError: err?.code || null,
+    });
   }
 }
 

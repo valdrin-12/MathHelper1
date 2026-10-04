@@ -214,11 +214,8 @@ async function handleWebhook(req, res) {
   try {
     event = await webhooks.unmarshal(rawBody, secret, signature);
   } catch (err) {
-    // TEMP diagnostic: identify which destination's secret is loaded (destination ID prefix only, never the secret part)
-    const destPrefix = (secret.match(/^pdl_ntfset_(01[a-z0-9]{6})/) || [])[1] || 'unrecognized-format';
-    const hint = `cfg=${destPrefix}${rawSecret !== secret ? ' (trimmed)' : ''}`;
-    console.error(`[Paddle] Invalid webhook signature (${hint}):`, err.message);
-    return res.status(400).send(`Invalid signature ${hint}`);
+    console.error('[Paddle] Invalid webhook signature:', err.message);
+    return res.status(400).send('Invalid signature');
   }
 
   const handler = HANDLERS[event.eventType];
