@@ -14,10 +14,13 @@ import {
 } from 'react-native';
 import WebView from 'react-native-webview';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { SPACING, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { Button } from './ui';
 import { normalizeFunction } from '../services/graphService';
 
-function buildGraphHtml(expr) {
+function buildGraphHtml(expr, palette) {
+  const p = palette;
   // Escape for embedding in JS string literal
   const safeExpr = expr.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
 
@@ -29,7 +32,8 @@ function buildGraphHtml(expr) {
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
     html,body{
-      background:#FDF6EC;
+      background:${p.surface};
+      color:${p.text};
       font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
       height:100%;
       overflow:hidden;
@@ -40,10 +44,27 @@ function buildGraphHtml(expr) {
     }
     /* override function-plot background */
     .function-plot {
-      background: #FDF6EC !important;
+      background: ${p.surface} !important;
     }
     .function-plot .graph-canvas {
-      fill: #FDF6EC !important;
+      fill: ${p.surface} !important;
+    }
+    .function-plot .axis path,
+    .function-plot .axis line,
+    .function-plot .origin {
+      stroke: ${p.border} !important;
+    }
+    .function-plot .grid .tick line {
+      stroke: ${p.borderLight} !important;
+    }
+    .function-plot .tick text,
+    .function-plot text {
+      fill: ${p.textSubtle} !important;
+      font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    }
+    .function-plot .annotations line,
+    .function-plot .annotations path {
+      stroke: ${p.textSubtle} !important;
     }
     #legend{
       height:60px;
@@ -51,8 +72,9 @@ function buildGraphHtml(expr) {
       align-items:center;
       justify-content:center;
       padding: 0 16px;
-      background:#FDF6EC;
-      border-top:1px solid #E8D5B0;
+      background:${p.surface};
+      color:${p.text};
+      border-top:0.5px solid ${p.border};
     }
     #legend .katex { font-size: 1.1em; }
     #error{
@@ -62,8 +84,8 @@ function buildGraphHtml(expr) {
       align-items:center;
       justify-content:center;
       flex-direction:column;
-      background:#FDF6EC;
-      color:#8B6914;
+      background:${p.surface};
+      color:${p.textSubtle};
       font-size:14px;
       text-align:center;
       padding:32px;
@@ -76,8 +98,8 @@ function buildGraphHtml(expr) {
       align-items:center;
       justify-content:center;
       flex-direction:column;
-      background:#FDF6EC;
-      color:#8B6914;
+      background:${p.surface};
+      color:${p.text};
       font-size:15px;
       text-align:center;
       padding:32px;
@@ -96,7 +118,7 @@ function buildGraphHtml(expr) {
   <div id="offline">
     <span style="font-size:48px">📶</span>
     <strong style="font-size:16px">No internet connection</strong>
-    <p style="font-size:13px;color:#A07830">The graph requires an internet connection to load the rendering library. Please check your connection and try again.</p>
+    <p style="font-size:13px;color:${p.textSubtle}">The graph requires an internet connection to load the rendering library. Please check your connection and try again.</p>
   </div>
   <script>
   var _scriptsLoaded = 0;
@@ -208,10 +230,10 @@ function buildGraphHtml(expr) {
           yAxis: { domain: range.yDomain },
           grid: true,
           disableZoom: false,
-          background: '#FDF6EC',
+          background: '${p.surface}',
           data: [{
             fn: expr,
-            color: '#6C47FF',
+            color: '${p.primary}',
             graphType: 'polyline',
           }],
           annotations: annotations,
@@ -220,9 +242,9 @@ function buildGraphHtml(expr) {
         // Override SVG background fill
         var svg = document.querySelector('#graph-container svg');
         if (svg) {
-          svg.style.background = '#FDF6EC';
+          svg.style.background = '${p.surface}';
           var rect = svg.querySelector('rect.background');
-          if (rect) rect.style.fill = '#FDF6EC';
+          if (rect) rect.style.fill = '${p.surface}';
         }
 
         renderLegend();
@@ -238,32 +260,49 @@ function buildGraphHtml(expr) {
 </html>`;
 }
 
+// Shared iOS sheet header: centered headline title, plain close button, hairline separator
+function SheetHeader({ styles, colors, onClose }) {
+  return (
+    <View style={styles.header}>
+      <View style={styles.headerSide} />
+      <Text style={styles.headerTitle} numberOfLines={1}>Grafik</Text>
+      <View style={[styles.headerSide, styles.headerSideRight]}>
+        <TouchableOpacity
+          onPress={onClose}
+          style={styles.closeBtn}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          accessibilityRole="button"
+          accessibilityLabel="Close"
+        >
+          <Ionicons name="close" size={24} color={colors.textSecondary} />
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
 // ── Web-only component: iframe pointing to /graph?expr=... backend endpoint
-function WebGraphModal({ visible, expr, onClose }) {
+function WebGraphModal({ visible, expr, onClose, styles, colors }) {
   if (!visible) return null;
 
   const src = `/graph?expr=${encodeURIComponent(expr)}`;
 
-  return React.createElement(Modal, { visible, animationType: 'slide', onRequestClose: onClose },
-    React.createElement(SafeAreaView, { style: styles.safeArea },
-      React.createElement(View, { style: styles.header },
-        React.createElement(View, { style: styles.headerLeft },
-          React.createElement(Ionicons, { name: 'stats-chart', size: 20, color: COLORS.primary, style: { marginRight: 8 } }),
-          React.createElement(Text, { style: styles.headerTitle }, 'Grafik')
-        ),
-        React.createElement(TouchableOpacity, { onPress: onClose, style: styles.closeBtn },
-          React.createElement(Ionicons, { name: 'close', size: 24, color: COLORS.textSecondary })
-        )
-      ),
-      React.createElement('iframe', {
-        src,
-        style: { flex: 1, width: '100%', height: '100%', border: 'none', background: '#FDF6EC' },
-      })
-    )
+  return (
+    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+      <SafeAreaView style={styles.safeArea}>
+        <SheetHeader styles={styles} colors={colors} onClose={onClose} />
+        {React.createElement('iframe', {
+          src,
+          style: { flex: 1, width: '100%', height: '100%', border: 'none', background: colors.surface },
+        })}
+      </SafeAreaView>
+    </Modal>
   );
 }
 
 export default function GraphModal({ visible, functionText, onClose }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [webViewError, setWebViewError] = useState(false);
 
   const expr = useMemo(
@@ -271,13 +310,13 @@ export default function GraphModal({ visible, functionText, onClose }) {
     [functionText]
   );
 
-  const html = useMemo(() => buildGraphHtml(expr), [expr]);
+  const html = useMemo(() => buildGraphHtml(expr, colors), [expr, colors]);
 
   if (!visible) return null;
 
   // Web: iframe pointing to backend /graph endpoint
   if (Platform.OS === 'web') {
-    return <WebGraphModal visible={visible} expr={expr} onClose={onClose} />;
+    return <WebGraphModal visible={visible} expr={expr} onClose={onClose} styles={styles} colors={colors} />;
   }
 
   return (
@@ -288,29 +327,21 @@ export default function GraphModal({ visible, functionText, onClose }) {
       onRequestClose={onClose}
     >
       <SafeAreaView style={styles.safeArea}>
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Ionicons name="stats-chart" size={20} color={COLORS.primary} style={{ marginRight: 8 }} />
-            <Text style={styles.headerTitle}>Grafik</Text>
-          </View>
-          <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-            <Ionicons name="close" size={24} color={COLORS.textSecondary} />
-          </TouchableOpacity>
-        </View>
+        <SheetHeader styles={styles} colors={colors} onClose={onClose} />
 
         {webViewError ? (
           <View style={styles.offlineFallback}>
-            <Text style={styles.offlineIcon}>📶</Text>
+            <Ionicons name="cloud-offline-outline" size={48} color={colors.textSubtle} />
             <Text style={styles.offlineTitle}>No internet connection</Text>
             <Text style={styles.offlineDesc}>
               The graph requires an internet connection to load. Please check your connection and try again.
             </Text>
-            <TouchableOpacity
-              style={styles.retryButton}
+            <Button
+              title="Try Again"
+              variant="tinted"
               onPress={() => setWebViewError(false)}
-            >
-              <Text style={styles.retryText}>Try Again</Text>
-            </TouchableOpacity>
+              style={styles.retryButton}
+            />
           </View>
         ) : (
           <WebView
@@ -330,88 +361,63 @@ export default function GraphModal({ visible, functionText, onClose }) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FDF6EC',
+    backgroundColor: colors.surface,
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.md,
-    backgroundColor: '#FDF6EC',
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8D5B0',
+    minHeight: 52,
+    paddingHorizontal: SPACING.lg,
+    backgroundColor: colors.surface,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
   },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  headerSide: {
+    width: 44,
+    justifyContent: 'center',
+  },
+  headerSideRight: {
+    alignItems: 'flex-end',
   },
   headerTitle: {
-    ...TYPOGRAPHY.h2,
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.headline,
+    flex: 1,
+    textAlign: 'center',
+    color: colors.text,
   },
   closeBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#EDE0C8',
+    width: 44,
+    height: 44,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-end',
   },
   webView: {
     flex: 1,
-    backgroundColor: '#FDF6EC',
-  },
-  legend: {
-    paddingVertical: SPACING.md,
-    paddingHorizontal: SPACING.xl,
-    backgroundColor: '#FDF6EC',
-    borderTopWidth: 1,
-    borderTopColor: '#E8D5B0',
-    alignItems: 'center',
-  },
-  legendText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#6C47FF',
-    fontStyle: 'italic',
+    backgroundColor: colors.surface,
   },
   offlineFallback: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#FDF6EC',
-    padding: 32,
-    gap: 12,
-  },
-  offlineIcon: {
-    fontSize: 56,
+    backgroundColor: colors.surface,
+    padding: SPACING.xxxl,
+    gap: SPACING.md,
   },
   offlineTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#8B6914',
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
     textAlign: 'center',
   },
   offlineDesc: {
-    fontSize: 14,
-    color: '#A07830',
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
     textAlign: 'center',
-    lineHeight: 22,
   },
   retryButton: {
-    marginTop: 8,
-    backgroundColor: '#6C47FF',
-    paddingVertical: 12,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-  },
-  retryText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 15,
+    marginTop: SPACING.sm,
+    alignSelf: 'stretch',
   },
 });

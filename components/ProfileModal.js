@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
   Modal,
   View,
@@ -9,21 +9,22 @@ import {
   SafeAreaView,
   TextInput,
   Alert,
-  ActivityIndicator,
   Platform,
   Animated,
   Dimensions,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
 import { useSavedItems } from '../context/SavedItemsContext';
+import { useTheme } from '../context/ThemeContext';
 import { isPremiumActive } from '../utils/isPremium';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { ListSection, ListRow, Card, Pill, Button } from './ui';
 
 const { width } = Dimensions.get('window');
+const HAIRLINE = StyleSheet.hairlineWidth;
 
 const formatDate = (dateString, t) => {
   if (!dateString) return '-';
@@ -36,9 +37,7 @@ const formatDate = (dateString, t) => {
 
 // ─── Circular Progress Ring ───
 function CircularProgress({ size = 80, strokeWidth = 6, progress, color, children }) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const center = size / 2;
+  const { colors } = useTheme();
 
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
@@ -49,7 +48,7 @@ function CircularProgress({ size = 80, strokeWidth = 6, progress, color, childre
           height: size,
           borderRadius: size / 2,
           borderWidth: strokeWidth,
-          borderColor: COLORS.inputBorder,
+          borderColor: colors.borderLight,
         }} />
       </View>
       <View style={{ position: 'absolute' }}>
@@ -75,6 +74,8 @@ function CircularProgress({ size = 80, strokeWidth = 6, progress, color, childre
 // ─── Weekly Activity Bar Chart ───
 function WeeklyChart({ dailyActivity }) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const chartStyles = useMemo(() => makeChartStyles(colors), [colors]);
   const days = [];
   const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
@@ -90,18 +91,17 @@ function WeeklyChart({ dailyActivity }) {
   const maxValue = Math.max(...days.map(d => d.value), 1);
 
   return (
-    <View style={chartStyles.container}>
+    <Card style={chartStyles.container}>
       <Text style={chartStyles.title}>{t('profileModal.weeklyActivity')}</Text>
       <View style={chartStyles.chart}>
         {days.map((day, i) => (
           <View key={i} style={chartStyles.barColumn}>
             <View style={chartStyles.barTrack}>
-              <LinearGradient
-                colors={day.isToday ? [COLORS.primarySoft, COLORS.primaryLight] : [COLORS.primaryBg, COLORS.primaryBg]}
+              <View
                 style={[
                   chartStyles.bar,
                   { height: `${Math.max((day.value / maxValue) * 100, 8)}%` },
-                  day.isToday && chartStyles.barToday,
+                  !day.isToday && chartStyles.barInactive,
                 ]}
               />
             </View>
@@ -112,12 +112,14 @@ function WeeklyChart({ dailyActivity }) {
           </View>
         ))}
       </View>
-    </View>
+    </Card>
   );
 }
 
 // ─── Achievement Badge ───
 function AchievementBadge({ achievement, earned }) {
+  const { colors } = useTheme();
+  const badgeStyles = useMemo(() => makeBadgeStyles(colors), [colors]);
   const iconMap = {
     first_problem: 'checkmark-circle',
     ten_problems: 'star',
@@ -130,30 +132,31 @@ function AchievementBadge({ achievement, earned }) {
     streak_7: 'bonfire',
   };
   const colorMap = {
-    first_problem: COLORS.success,
-    ten_problems: COLORS.secondary,
-    fifty_problems: COLORS.purple,
-    first_course: COLORS.primarySoft,
-    five_courses: COLORS.info,
-    first_quiz: COLORS.accent,
-    five_quizzes: '#F59E0B',
-    streak_3: '#F97316',
-    streak_7: '#EF4444',
+    first_problem: colors.success,
+    ten_problems: colors.secondary,
+    fifty_problems: colors.purple,
+    first_course: colors.primary,
+    five_courses: colors.info,
+    first_quiz: colors.accent,
+    five_quizzes: colors.warningAccent,
+    streak_3: colors.secondary,
+    streak_7: colors.error,
   };
+  const tint = colorMap[achievement.id] || colors.primary;
 
   return (
     <View style={[badgeStyles.container, !earned && badgeStyles.locked]}>
-      <View style={[badgeStyles.iconCircle, { backgroundColor: earned ? colorMap[achievement.id] + '20' : COLORS.borderLight }]}>
+      <View style={[badgeStyles.iconCircle, { backgroundColor: earned ? tint + '20' : colors.borderLight }]}>
         <Ionicons
           name={iconMap[achievement.id] || 'medal'}
           size={22}
-          color={earned ? colorMap[achievement.id] : COLORS.textMuted}
+          color={earned ? tint : colors.textMuted}
         />
       </View>
       <Text style={[badgeStyles.title, !earned && badgeStyles.lockedText]} numberOfLines={1}>
         {achievement.title}
       </Text>
-      {earned && <Ionicons name="checkmark-circle" size={14} color={COLORS.success} />}
+      {earned && <Ionicons name="checkmark-circle" size={14} color={colors.success} />}
     </View>
   );
 }
@@ -162,6 +165,8 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const { user, logout, updateProfile } = useUser();
   const { completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, stats } = useStats();
   const { savedItems } = useSavedItems();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const isPremium = isPremiumActive(user);
   const [showEdit, setShowEdit] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -280,46 +285,42 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   // ─── Edit Profile View ───
   const renderEditView = () => (
     <>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={handleBackFromEdit} style={styles.backButton}>
-          <Ionicons name="chevron-back" size={22} color={COLORS.textSubtle} />
+      <View style={styles.navBar}>
+        <TouchableOpacity onPress={handleBackFromEdit} style={styles.navButton}>
+          <Ionicons name="chevron-back" size={26} color={colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>{t('editProfile.title')}</Text>
-        <View style={{ width: 36 }} />
+        <Text style={styles.navTitle} numberOfLines={1}>{t('editProfile.title')}</Text>
+        <View style={styles.navButton} />
       </View>
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={editStyles.section}>
-          <Text style={editStyles.sectionTitle}>{t('editProfile.personalInfo')}</Text>
-          <View style={editStyles.inputGroup}>
-            <Text style={editStyles.label}>{t('editProfile.fullName')}</Text>
-            <TextInput style={editStyles.input} value={editName} onChangeText={setEditName} placeholder={t('editProfile.namePlaceholder')} placeholderTextColor={COLORS.textMuted} />
+        <View style={styles.formSection}>
+          <Text style={styles.formSectionTitle}>{t('editProfile.personalInfo')}</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>{t('editProfile.fullName')}</Text>
+            <TextInput style={styles.input} value={editName} onChangeText={setEditName} placeholder={t('editProfile.namePlaceholder')} placeholderTextColor={colors.textMuted} />
           </View>
-          <View style={editStyles.inputGroup}>
-            <Text style={editStyles.label}>{t('auth.email')}</Text>
-            <TextInput style={editStyles.input} value={editEmail} onChangeText={setEditEmail} placeholder="email@example.com" placeholderTextColor={COLORS.textMuted} keyboardType="email-address" autoCapitalize="none" />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>{t('auth.email')}</Text>
+            <TextInput style={styles.input} value={editEmail} onChangeText={setEditEmail} placeholder="email@example.com" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" />
           </View>
         </View>
-        <View style={editStyles.section}>
-          <Text style={editStyles.sectionTitle}>{t('editProfile.changePassword')}</Text>
-          <View style={editStyles.inputGroup}>
-            <Text style={editStyles.label}>{t('editProfile.newPassword')}</Text>
-            <TextInput style={editStyles.input} value={newPassword} onChangeText={setNewPassword} placeholder={t('editProfile.newPasswordPlaceholder')} placeholderTextColor={COLORS.textMuted} secureTextEntry />
+        <View style={styles.formSection}>
+          <Text style={styles.formSectionTitle}>{t('editProfile.changePassword')}</Text>
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>{t('editProfile.newPassword')}</Text>
+            <TextInput style={styles.input} value={newPassword} onChangeText={setNewPassword} placeholder={t('editProfile.newPasswordPlaceholder')} placeholderTextColor={colors.textMuted} secureTextEntry />
           </View>
-          <View style={editStyles.inputGroup}>
-            <Text style={editStyles.label}>{t('editProfile.confirmPassword')}</Text>
-            <TextInput style={editStyles.input} value={confirmPassword} onChangeText={setConfirmPassword} placeholder={t('editProfile.confirmPlaceholder')} placeholderTextColor={COLORS.textMuted} secureTextEntry />
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>{t('editProfile.confirmPassword')}</Text>
+            <TextInput style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword} placeholder={t('editProfile.confirmPlaceholder')} placeholderTextColor={colors.textMuted} secureTextEntry />
           </View>
-          <Text style={editStyles.hint}>{t('editProfile.passwordHint')}</Text>
+          <Text style={styles.hint}>{t('editProfile.passwordHint')}</Text>
         </View>
         <View style={{ height: 100 }} />
       </ScrollView>
-      <View style={editStyles.footer}>
-        <TouchableOpacity style={[editStyles.saveButton, saving && editStyles.saveButtonDisabled]} onPress={handleSaveProfile} disabled={saving}>
-          {saving ? <ActivityIndicator color={COLORS.textLight} /> : <Text style={editStyles.saveButtonText}>{t('editProfile.saveChanges')}</Text>}
-        </TouchableOpacity>
-        <TouchableOpacity style={editStyles.cancelButton} onPress={handleBackFromEdit} disabled={saving}>
-          <Text style={editStyles.cancelButtonText}>{t('common.cancel')}</Text>
-        </TouchableOpacity>
+      <View style={styles.footer}>
+        <Button title={t('editProfile.saveChanges')} onPress={handleSaveProfile} loading={saving} />
+        <Button title={t('common.cancel')} variant="plain" onPress={handleBackFromEdit} disabled={saving} />
       </View>
     </>
   );
@@ -327,107 +328,83 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   // ─── Profile View ───
   const renderProfileView = () => (
     <>
-      {/* Gradient Header with Avatar */}
-      <LinearGradient
-        colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.profileHeader}
-      >
-        <View style={styles.profileHeaderTop}>
-          <TouchableOpacity onPress={onClose} style={styles.headerBackBtn}>
-            <Ionicons name="chevron-back" size={22} color="rgba(255,255,255,0.9)" />
-          </TouchableOpacity>
-          <Text style={styles.profileHeaderTitle}>{t('profileModal.title')}</Text>
-          <TouchableOpacity onPress={handleEditProfile} style={styles.headerEditBtn}>
-            <Ionicons name="create-outline" size={20} color="rgba(255,255,255,0.9)" />
-          </TouchableOpacity>
-        </View>
+      {/* Sheet nav bar */}
+      <View style={styles.navBar}>
+        <TouchableOpacity onPress={onClose} style={styles.navButton}>
+          <Ionicons name="chevron-back" size={26} color={colors.primary} />
+        </TouchableOpacity>
+        <Text style={styles.navTitle} numberOfLines={1}>{t('profileModal.title')}</Text>
+        <TouchableOpacity onPress={handleEditProfile} style={styles.navButton}>
+          <Ionicons name="create-outline" size={22} color={colors.primary} />
+        </TouchableOpacity>
+      </View>
 
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        {/* Avatar + identity */}
         <Animated.View style={[styles.avatarContainer, { opacity: fadeAnim, transform: [{ scale: scaleAnim }] }]}>
-          <View style={styles.avatarRing}>
-            <View style={styles.avatarCircle}>
-              <Text style={styles.avatarInitials}>{initials}</Text>
-            </View>
+          <View style={styles.avatarCircle}>
+            <Text style={styles.avatarInitials}>{initials}</Text>
           </View>
           <View style={styles.userNameRow}>
             <Text style={styles.userName}>{user.name}</Text>
-            <View style={[styles.tierBadge, isPremium ? styles.tierPremium : styles.tierFree]}>
-              <Ionicons name={isPremium ? 'star' : 'person'} size={10} color={isPremium ? '#92400E' : '#FFFFFF'} />
-              <Text style={[styles.tierBadgeText, isPremium && styles.tierPremiumText]}>
-                {isPremium ? 'Premium' : 'Free'}
-              </Text>
-            </View>
+            <Pill
+              label={isPremium ? 'Premium' : 'Free'}
+              icon={isPremium ? 'star' : 'person'}
+              color={isPremium ? colors.secondary : colors.textSubtle}
+            />
           </View>
           <Text style={styles.userEmail}>{user.email}</Text>
           <View style={styles.memberBadge}>
-            <Ionicons name="calendar-outline" size={12} color="rgba(255,255,255,0.8)" />
+            <Ionicons name="calendar-outline" size={12} color={colors.textSubtle} />
             <Text style={styles.memberText}>
               {t('profileModal.memberSince', { date: formatDate(user.createdAt, t) })}
             </Text>
           </View>
         </Animated.View>
-      </LinearGradient>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         {/* Circular Stats */}
-        <View style={styles.circularStatsRow}>
+        <Card style={styles.circularStatsRow}>
           <View style={styles.circularStatItem}>
-            <CircularProgress size={72} strokeWidth={5} progress={dailyProgress} color={COLORS.primarySoft}>
+            <CircularProgress size={72} strokeWidth={5} progress={dailyProgress} color={colors.primary}>
               <Text style={styles.circularStatValue}>{savedItems.length}</Text>
             </CircularProgress>
             <Text style={styles.circularStatLabel}>{t('profileModal.problemsSolved')}</Text>
           </View>
           <View style={styles.circularStatItem}>
-            <CircularProgress size={72} strokeWidth={5} progress={Math.min(completedQuizzesCount / 10, 1)} color={COLORS.secondary}>
+            <CircularProgress size={72} strokeWidth={5} progress={Math.min(completedQuizzesCount / 10, 1)} color={colors.secondary}>
               <Text style={styles.circularStatValue}>{completedQuizzesCount}</Text>
             </CircularProgress>
             <Text style={styles.circularStatLabel}>{t('profileModal.quizzesCompleted')}</Text>
           </View>
           <View style={styles.circularStatItem}>
-            <CircularProgress size={72} strokeWidth={5} progress={Math.min(completedCoursesCount / 10, 1)} color={COLORS.success}>
+            <CircularProgress size={72} strokeWidth={5} progress={Math.min(completedCoursesCount / 10, 1)} color={colors.success}>
               <Text style={styles.circularStatValue}>{completedCoursesCount}</Text>
             </CircularProgress>
             <Text style={styles.circularStatLabel}>{t('profileModal.coursesCompleted')}</Text>
           </View>
-        </View>
+        </Card>
 
-        {/* Streak Card */}
-        <View style={styles.streakCard}>
-          <View style={styles.streakIconBox}>
-            <Ionicons name="flame" size={28} color="#F97316" />
-          </View>
-          <View style={styles.streakInfo}>
-            <Text style={styles.streakValue}>{t('profileModal.daysStreak', { count: streak })}</Text>
-            <Text style={styles.streakBest}>{t('profileModal.longestStreak', { count: longestStreak })}</Text>
-          </View>
-        </View>
+        {/* Streak */}
+        <ListSection style={styles.tightSection}>
+          <ListRow
+            icon="flame"
+            iconColor={colors.secondary}
+            title={t('profileModal.daysStreak', { count: streak })}
+            subtitle={t('profileModal.longestStreak', { count: longestStreak })}
+          />
+        </ListSection>
 
-        {/* Premium Upgrade Card (only for free users) */}
+        {/* Premium Upgrade (only for free users) */}
         {!isPremium && (
-          <TouchableOpacity
-            style={styles.premiumCard}
-            onPress={() => { onClose(); setTimeout(() => onUpgrade?.(), 400); }}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={['#F59E0B', '#D97706']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.premiumGradient}
-            >
-              <View style={styles.premiumLeft}>
-                <View style={styles.premiumIconBox}>
-                  <Ionicons name="star" size={24} color="#F59E0B" />
-                </View>
-                <View style={styles.premiumTextBox}>
-                  <Text style={styles.premiumTitle}>{t('profileModal.upgradePremium')}</Text>
-                  <Text style={styles.premiumDesc}>{t('profileModal.upgradePremiumDesc')}</Text>
-                </View>
-              </View>
-              <Ionicons name="chevron-forward" size={20} color="rgba(255,255,255,0.8)" />
-            </LinearGradient>
-          </TouchableOpacity>
+          <ListSection style={styles.tightSection}>
+            <ListRow
+              icon="star"
+              iconColor={colors.secondary}
+              title={t('profileModal.upgradePremium')}
+              subtitle={t('profileModal.upgradePremiumDesc')}
+              onPress={() => { onClose(); setTimeout(() => onUpgrade?.(), 400); }}
+            />
+          </ListSection>
         )}
 
         {/* Weekly Activity Chart */}
@@ -437,9 +414,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
         <View style={styles.achievementsSection}>
           <View style={styles.achievementsHeader}>
             <Text style={styles.sectionTitle}>{t('profileModal.achievements')}</Text>
-            <View style={styles.achievementCount}>
-              <Text style={styles.achievementCountText}>{earnedAchievements.length}/{allAchievements.length}</Text>
-            </View>
+            <Text style={styles.achievementCountText}>{earnedAchievements.length}/{allAchievements.length}</Text>
           </View>
           <View style={styles.achievementsGrid}>
             {allAchievements.map((a) => (
@@ -449,29 +424,23 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
         </View>
 
         {/* Actions */}
-        <View style={styles.actionsSection}>
-          <TouchableOpacity style={styles.actionCard} onPress={handleEditProfile}>
-            <View style={[styles.actionIconBox, { backgroundColor: COLORS.primaryBg }]}>
-              <Ionicons name="person-outline" size={20} color={COLORS.primarySoft} />
-            </View>
-            <View style={styles.actionTextBox}>
-              <Text style={styles.actionTitle}>{t('profileModal.editProfile')}</Text>
-              <Text style={styles.actionSub}>{t('profileModal.editProfileSub')}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={COLORS.textMuted} />
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionCard} onPress={handleLogout}>
-            <View style={[styles.actionIconBox, { backgroundColor: COLORS.errorLight }]}>
-              <Ionicons name="log-out-outline" size={20} color={COLORS.error} />
-            </View>
-            <View style={styles.actionTextBox}>
-              <Text style={[styles.actionTitle, { color: COLORS.error }]}>{t('profileModal.logoutAction')}</Text>
-              <Text style={styles.actionSub}>{t('profileModal.logoutSub')}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={18} color={COLORS.textMuted} />
-          </TouchableOpacity>
-        </View>
+        <ListSection>
+          <ListRow
+            icon="person"
+            iconColor={colors.primary}
+            title={t('profileModal.editProfile')}
+            subtitle={t('profileModal.editProfileSub')}
+            onPress={handleEditProfile}
+          />
+          <ListRow
+            icon="log-out"
+            iconColor={colors.destructive}
+            title={t('profileModal.logoutAction')}
+            subtitle={t('profileModal.logoutSub')}
+            destructive
+            onPress={handleLogout}
+          />
+        </ListSection>
 
         <View style={{ height: 40 }} />
       </ScrollView>
@@ -489,7 +458,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
         {showSuccessPopup && (
           <View style={styles.successOverlay}>
             <View style={styles.successCard}>
-              <Ionicons name="checkmark-circle" size={52} color={COLORS.primary} style={{ marginBottom: 14 }} />
+              <Ionicons name="checkmark-circle" size={52} color={colors.primary} style={{ marginBottom: SPACING.md }} />
               <Text style={styles.successTitle}>{t('common.success')}</Text>
               <Text style={styles.successMessage}>{t('editProfile.profileUpdated')}</Text>
               <TouchableOpacity
@@ -507,319 +476,211 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
 }
 
 // ─── Main Styles ───
-const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: COLORS.background },
+const makeStyles = (colors) => StyleSheet.create({
+  safeArea: { flex: 1, backgroundColor: colors.background },
   container: { flex: 1 },
   content: { flex: 1 },
 
-  // Header (edit mode)
-  header: {
+  // Sheet nav bar
+  navBar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: SPACING.xl,
-    paddingTop: 10,
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.inputBorder,
+    paddingHorizontal: SPACING.sm,
+    minHeight: 52,
+    backgroundColor: colors.background,
+    borderBottomWidth: HAIRLINE,
+    borderBottomColor: colors.border,
   },
-  backButton: {
-    width: 36, height: 36, borderRadius: 18,
-    backgroundColor: COLORS.tabBg,
+  navButton: {
+    width: 44, height: 44,
     justifyContent: 'center', alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 20, fontWeight: '700', color: COLORS.text,
+  navTitle: {
+    flex: 1, ...TYPOGRAPHY.headline, color: colors.text, textAlign: 'center',
   },
 
-  // Profile Header
-  profileHeader: {
-    paddingTop: 14,
-    paddingBottom: 30,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-  },
-  profileHeaderTop: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 18,
-    marginBottom: 16,
-  },
-  headerBackBtn: {
-    width: 38, height: 38, borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center', alignItems: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)',
-  },
-  profileHeaderTitle: {
-    fontSize: 18, fontWeight: '700', color: '#FFFFFF',
-  },
-  headerEditBtn: {
-    width: 38, height: 38, borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center', alignItems: 'center',
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)',
-  },
+  // Avatar + identity
   avatarContainer: {
     alignItems: 'center',
-  },
-  avatarRing: {
-    width: 100, height: 100, borderRadius: 50,
-    borderWidth: 3, borderColor: 'rgba(255,255,255,0.4)',
-    justifyContent: 'center', alignItems: 'center',
-    marginBottom: 14,
+    paddingTop: SPACING.xxl,
+    paddingHorizontal: SPACING.xl,
   },
   avatarCircle: {
     width: 88, height: 88, borderRadius: 44,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    backgroundColor: colors.primary,
     justifyContent: 'center', alignItems: 'center',
+    marginBottom: SPACING.md,
   },
   avatarInitials: {
-    fontSize: 36, fontWeight: '800', color: '#FFFFFF',
+    ...TYPOGRAPHY.h1, fontSize: 34, color: '#FFFFFF',
   },
   userNameRow: {
-    flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 4,
+    flexDirection: 'row', alignItems: 'center', gap: SPACING.sm, marginBottom: SPACING.xs,
   },
   userName: {
-    fontSize: 24, fontWeight: '800', color: '#FFFFFF',
-  },
-  tierBadge: {
-    flexDirection: 'row', alignItems: 'center', gap: 4,
-    paddingHorizontal: 10, paddingVertical: 3, borderRadius: 12,
-  },
-  tierFree: {
-    backgroundColor: 'rgba(255,255,255,0.25)',
-  },
-  tierPremium: {
-    backgroundColor: '#FDE68A',
-  },
-  tierBadgeText: {
-    fontSize: 11, fontWeight: '700', color: '#FFFFFF',
-  },
-  tierPremiumText: {
-    color: '#92400E',
+    ...TYPOGRAPHY.h2, color: colors.text,
   },
   userEmail: {
-    fontSize: 14, color: 'rgba(255,255,255,0.8)', fontWeight: '500', marginBottom: 12,
+    ...TYPOGRAPHY.subhead, color: colors.textSubtle, marginBottom: SPACING.sm,
   },
   memberBadge: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 14, paddingVertical: 6, borderRadius: 20,
-    borderWidth: 1, borderColor: 'rgba(255,255,255,0.25)',
+    flexDirection: 'row', alignItems: 'center', gap: SPACING.xs + 2,
   },
   memberText: {
-    fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: '600',
+    ...TYPOGRAPHY.footnote, color: colors.textSubtle,
   },
 
   // Circular Stats
   circularStatsRow: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    paddingVertical: 24,
-    paddingHorizontal: 12,
-    marginHorizontal: 18,
-    marginTop: -16,
-    backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    ...SHADOWS.medium,
+    paddingVertical: SPACING.xl,
+    paddingHorizontal: SPACING.md,
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.xxl,
   },
   circularStatItem: {
-    alignItems: 'center', gap: 8,
+    alignItems: 'center', gap: SPACING.sm,
   },
   circularStatValue: {
-    fontSize: 18, fontWeight: '800', color: COLORS.text,
+    ...TYPOGRAPHY.headline, fontSize: 18, color: colors.text,
   },
   circularStatLabel: {
-    fontSize: 11, color: COLORS.textSubtle, fontWeight: '600', textAlign: 'center',
+    ...TYPOGRAPHY.small, color: colors.textSubtle, fontWeight: '500', textAlign: 'center',
     maxWidth: 80,
   },
 
-  // Streak
-  streakCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginHorizontal: 18,
-    marginTop: 16,
-    backgroundColor: COLORS.surface,
-    borderRadius: 18,
-    padding: 18,
-    gap: 14,
-    ...SHADOWS.soft,
-  },
-  streakIconBox: {
-    width: 52, height: 52, borderRadius: 16,
-    backgroundColor: '#FFF7ED',
-    justifyContent: 'center', alignItems: 'center',
-  },
-  streakInfo: { flex: 1 },
-  streakValue: {
-    fontSize: 18, fontWeight: '800', color: COLORS.text, marginBottom: 2,
-  },
-  streakBest: {
-    fontSize: 13, color: COLORS.textSubtle, fontWeight: '500',
-  },
-
-  // Premium Card
-  premiumCard: {
-    marginHorizontal: 18, marginTop: 16, borderRadius: 18, overflow: 'hidden',
-    ...SHADOWS.medium,
-  },
-  premiumGradient: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    padding: 18, borderRadius: 18,
-  },
-  premiumLeft: {
-    flexDirection: 'row', alignItems: 'center', gap: 14, flex: 1,
-  },
-  premiumIconBox: {
-    width: 48, height: 48, borderRadius: 14,
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    justifyContent: 'center', alignItems: 'center',
-  },
-  premiumTextBox: { flex: 1 },
-  premiumTitle: {
-    fontSize: 16, fontWeight: '800', color: '#FFFFFF', marginBottom: 2,
-  },
-  premiumDesc: {
-    fontSize: 12, color: 'rgba(255,255,255,0.85)', fontWeight: '500',
+  tightSection: {
+    marginTop: SPACING.lg,
   },
 
   // Achievements
   achievementsSection: {
-    marginHorizontal: 18, marginTop: 20,
+    marginHorizontal: SPACING.lg, marginTop: SPACING.xxl,
   },
   achievementsHeader: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline',
+    marginBottom: SPACING.md, paddingHorizontal: SPACING.xs,
   },
   sectionTitle: {
-    fontSize: 18, fontWeight: '800', color: COLORS.text, letterSpacing: -0.3,
-  },
-  achievementCount: {
-    backgroundColor: COLORS.primaryBg, paddingHorizontal: 12, paddingVertical: 4, borderRadius: 12,
+    ...TYPOGRAPHY.h3, fontWeight: '700', color: colors.text,
   },
   achievementCountText: {
-    fontSize: 13, fontWeight: '700', color: COLORS.primarySoft,
+    ...TYPOGRAPHY.subhead, color: colors.textSubtle,
   },
   achievementsGrid: {
-    flexDirection: 'row', flexWrap: 'wrap', gap: 10,
+    flexDirection: 'row', flexWrap: 'wrap', gap: SPACING.sm,
   },
 
-  // Actions
-  actionsSection: {
-    marginHorizontal: 18, marginTop: 20, gap: 10,
+  // Edit form
+  formSection: { marginTop: SPACING.xxl, paddingHorizontal: SPACING.lg },
+  formSectionTitle: {
+    ...TYPOGRAPHY.footnote, color: colors.textSubtle, textTransform: 'uppercase',
+    marginLeft: SPACING.lg, marginBottom: SPACING.sm,
   },
-  actionCard: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: COLORS.surface, borderRadius: 16, padding: 16, gap: 14,
-    ...SHADOWS.soft,
+  inputGroup: { marginBottom: SPACING.md },
+  label: { ...TYPOGRAPHY.subhead, color: colors.textSubtle, marginBottom: SPACING.xs + 2, marginLeft: SPACING.xs },
+  input: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.lg,
+    minHeight: 48,
+    ...TYPOGRAPHY.body,
+    color: colors.text,
   },
-  actionIconBox: {
-    width: 44, height: 44, borderRadius: 14,
-    justifyContent: 'center', alignItems: 'center',
-  },
-  actionTextBox: { flex: 1 },
-  actionTitle: {
-    fontSize: 15, fontWeight: '700', color: COLORS.text, marginBottom: 2,
-  },
-  actionSub: {
-    fontSize: 12, color: COLORS.textSubtle, fontWeight: '500',
+  hint: { ...TYPOGRAPHY.footnote, color: colors.textSubtle, marginTop: SPACING.xs, marginHorizontal: SPACING.lg },
+  footer: {
+    padding: SPACING.lg, paddingBottom: SPACING.sm,
+    backgroundColor: colors.background,
+    borderTopWidth: HAIRLINE, borderTopColor: colors.border,
+    gap: SPACING.xs,
   },
 
-  // ─── Success popup ───
+  // ─── Success popup (iOS alert style) ───
   successOverlay: {
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.50)',
+    backgroundColor: colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 32,
+    padding: SPACING.xxxl,
     zIndex: 999,
   },
   successCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    paddingTop: 32,
-    paddingHorizontal: 28,
-    paddingBottom: 0,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    paddingTop: SPACING.xxl,
     alignItems: 'center',
     width: '100%',
-    maxWidth: 320,
-    ...SHADOWS.large,
+    maxWidth: 300,
+    overflow: 'hidden',
   },
   successTitle: {
-    fontSize: 20, fontWeight: '700', color: COLORS.text,
-    marginBottom: 8, letterSpacing: -0.3,
+    ...TYPOGRAPHY.headline, color: colors.text,
+    marginBottom: SPACING.xs, paddingHorizontal: SPACING.lg,
   },
   successMessage: {
-    fontSize: 15, color: COLORS.textMuted,
-    textAlign: 'center', lineHeight: 22,
-    marginBottom: 24, letterSpacing: -0.2,
+    ...TYPOGRAPHY.footnote, color: colors.textSubtle,
+    textAlign: 'center',
+    marginBottom: SPACING.xl, paddingHorizontal: SPACING.lg,
   },
   successBtn: {
-    width: '100%', paddingVertical: 16,
-    alignItems: 'center',
-    borderTopWidth: 0.5, borderTopColor: '#E5E7EB',
-    marginTop: 4,
+    alignSelf: 'stretch', minHeight: 44,
+    justifyContent: 'center', alignItems: 'center',
+    borderTopWidth: HAIRLINE, borderTopColor: colors.border,
   },
   successBtnText: {
-    fontSize: 17, fontWeight: '600',
-    color: COLORS.primary, letterSpacing: -0.3,
+    ...TYPOGRAPHY.headline, color: colors.primary,
   },
 });
 
 // ─── Chart Styles ───
-const chartStyles = StyleSheet.create({
+const makeChartStyles = (colors) => StyleSheet.create({
   container: {
-    marginHorizontal: 18, marginTop: 16,
-    backgroundColor: COLORS.surface, borderRadius: 20, padding: 20,
-    ...SHADOWS.soft,
+    marginHorizontal: SPACING.lg, marginTop: SPACING.lg,
   },
   title: {
-    fontSize: 16, fontWeight: '700', color: COLORS.text, marginBottom: 16,
+    ...TYPOGRAPHY.headline, color: colors.text, marginBottom: SPACING.lg,
   },
   chart: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', height: 100, gap: 6,
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', height: 100, gap: SPACING.xs + 2,
   },
   barColumn: {
-    flex: 1, alignItems: 'center', gap: 4,
+    flex: 1, alignItems: 'center', gap: SPACING.xs,
   },
   barTrack: {
     width: '100%', height: 80, justifyContent: 'flex-end', borderRadius: 6, overflow: 'hidden',
-    backgroundColor: COLORS.inputBg,
+    backgroundColor: colors.inputBg,
   },
   bar: {
-    width: '100%', borderRadius: 6, minHeight: 6,
+    width: '100%', borderRadius: 6, minHeight: 6, backgroundColor: colors.primary,
   },
-  barToday: {
-    ...SHADOWS.small,
+  barInactive: {
+    opacity: 0.35,
   },
   barValue: {
-    fontSize: 10, fontWeight: '700', color: COLORS.textSubtle,
+    ...TYPOGRAPHY.small, fontSize: 10, fontWeight: '600', color: colors.textSubtle,
   },
   barValueToday: {
-    color: COLORS.primarySoft,
+    color: colors.primary,
   },
   barLabel: {
-    fontSize: 11, fontWeight: '600', color: COLORS.textMuted,
+    ...TYPOGRAPHY.small, fontWeight: '500', color: colors.textMuted,
   },
   barLabelToday: {
-    color: COLORS.primarySoft, fontWeight: '800',
+    color: colors.primary, fontWeight: '700',
   },
 });
 
 // ─── Badge Styles ───
-const badgeStyles = StyleSheet.create({
+const makeBadgeStyles = (colors) => StyleSheet.create({
   container: {
-    width: (width - 36 - 30) / 3,
-    backgroundColor: COLORS.surface,
-    borderRadius: 14,
-    padding: 12,
+    width: (width - SPACING.lg * 2 - SPACING.sm * 2) / 3,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md,
     alignItems: 'center',
-    gap: 6,
-    borderWidth: 1,
-    borderColor: COLORS.inputBorder,
+    gap: SPACING.xs + 2,
   },
   locked: {
     opacity: 0.5,
@@ -829,37 +690,9 @@ const badgeStyles = StyleSheet.create({
     justifyContent: 'center', alignItems: 'center',
   },
   title: {
-    fontSize: 10, fontWeight: '700', color: COLORS.text, textAlign: 'center',
+    ...TYPOGRAPHY.small, fontSize: 10, fontWeight: '600', color: colors.text, textAlign: 'center',
   },
   lockedText: {
-    color: COLORS.textMuted,
+    color: colors.textMuted,
   },
-});
-
-// ─── Edit Styles ───
-const editStyles = StyleSheet.create({
-  section: { marginBottom: 30, paddingHorizontal: SPACING.xl },
-  sectionTitle: { ...TYPOGRAPHY.bodyLargeBold, color: COLORS.text, marginBottom: SPACING.lg, marginTop: SPACING.xl },
-  inputGroup: { marginBottom: SPACING.lg },
-  label: { ...TYPOGRAPHY.label, color: '#4B5563', marginBottom: SPACING.sm },
-  input: {
-    backgroundColor: COLORS.surface, borderWidth: 1.5, borderColor: COLORS.inputBorder,
-    borderRadius: BORDER_RADIUS.md, padding: 14, ...TYPOGRAPHY.body, color: COLORS.text,
-  },
-  hint: { ...TYPOGRAPHY.caption, color: COLORS.textSubtle, marginTop: SPACING.sm, lineHeight: 18 },
-  footer: {
-    padding: SPACING.xl, paddingBottom: 10, backgroundColor: COLORS.surface,
-    borderTopWidth: 1, borderTopColor: COLORS.inputBorder, gap: 10,
-  },
-  saveButton: {
-    backgroundColor: COLORS.primary, borderRadius: BORDER_RADIUS.md, paddingVertical: SPACING.lg,
-    alignItems: 'center', ...SHADOWS.primary,
-  },
-  saveButtonDisabled: { opacity: 0.6 },
-  saveButtonText: { ...TYPOGRAPHY.bodyLargeBold, color: COLORS.textLight },
-  cancelButton: {
-    backgroundColor: COLORS.tabBg, borderRadius: BORDER_RADIUS.md, paddingVertical: SPACING.lg,
-    alignItems: 'center',
-  },
-  cancelButtonText: { ...TYPOGRAPHY.button, color: COLORS.primary },
 });

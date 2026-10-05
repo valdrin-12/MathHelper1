@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Modal,
   View,
@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { Button } from './ui';
 
 export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete }) {
   const { t } = useTranslation();
@@ -22,6 +24,8 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
   const [showQuitConfirm, setShowQuitConfirm] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   useEffect(() => {
     if (visible) {
@@ -91,13 +95,15 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
     return null;
   };
 
+  const isAnswerCorrect = selectedOption === currentQuestion.correct;
+
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={handleQuit}>
       <SafeAreaView style={styles.safeArea}>
-        {/* Header */}
+        {/* Navigation bar: close · centered title · quiz glyph */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleQuit} style={styles.quitButton}>
-            <Ionicons name="close" size={22} color={COLORS.textSecondary} />
+          <TouchableOpacity onPress={handleQuit} style={styles.quitButton} hitSlop={8} activeOpacity={0.6}>
+            <Ionicons name="close" size={18} color={colors.textSubtle} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>
             <Text style={styles.headerTitle} numberOfLines={1}>{quizSet.title}</Text>
@@ -108,7 +114,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
           </View>
         </View>
 
-        {/* Progress Bar */}
+        {/* Thin progress bar */}
         <View style={styles.progressContainer}>
           <View style={styles.progressBar}>
             <Animated.View
@@ -126,8 +132,8 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
           <ScrollView showsVerticalScrollIndicator={false}>
             {/* Question */}
-            <View style={[styles.questionCard, { borderTopColor: quizSet.color }]}>
-              <Text style={styles.questionNumber}>{t('activeQuiz.questionLabel', { number: currentIndex + 1 })}</Text>
+            <View style={styles.questionCard}>
+              <Text style={[styles.questionNumber, { color: quizSet.color }]}>{t('activeQuiz.questionLabel', { number: currentIndex + 1 })}</Text>
               <Text style={styles.questionText}>{currentQuestion.question}</Text>
             </View>
 
@@ -139,6 +145,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
                   style={getOptionStyle(index)}
                   onPress={() => handleOptionSelect(index)}
                   disabled={selectedOption !== null}
+                  activeOpacity={0.6}
                 >
                   <View style={styles.optionContent}>
                     <View style={[
@@ -146,7 +153,10 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
                       selectedOption !== null && index === currentQuestion.correct && styles.optionLetterCorrect,
                       selectedOption !== null && index === selectedOption && index !== currentQuestion.correct && styles.optionLetterWrong,
                     ]}>
-                      <Text style={styles.optionLetterText}>
+                      <Text style={[
+                        styles.optionLetterText,
+                        selectedOption !== null && (index === currentQuestion.correct || index === selectedOption) && styles.optionLetterTextOnColor,
+                      ]}>
                         {getOptionIcon(index) || ['A', 'B', 'C', 'D'][index]}
                       </Text>
                     </View>
@@ -160,10 +170,10 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
             {showExplanation && (
               <View style={[
                 styles.explanationCard,
-                selectedOption === currentQuestion.correct ? styles.explanationCorrect : styles.explanationWrong,
+                isAnswerCorrect ? styles.explanationCorrect : styles.explanationWrong,
               ]}>
-                <Text style={styles.explanationTitle}>
-                  {selectedOption === currentQuestion.correct ? `✓ ${t('activeQuiz.correct')}` : `✗ ${t('activeQuiz.wrong')}`}
+                <Text style={[styles.explanationTitle, { color: isAnswerCorrect ? colors.success : colors.error }]}>
+                  {isAnswerCorrect ? `✓ ${t('activeQuiz.correct')}` : `✗ ${t('activeQuiz.wrong')}`}
                 </Text>
                 <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
               </View>
@@ -176,28 +186,28 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
         {/* Next Button */}
         {showExplanation && (
           <View style={styles.footer}>
-            <TouchableOpacity
-              style={[styles.nextButton, { backgroundColor: quizSet.color }]}
+            <Button
+              title={currentIndex + 1 >= totalQuestions ? `🏆 ${t('activeQuiz.viewResult')}` : t('activeQuiz.nextQuestion')}
               onPress={handleNext}
-            >
-              <Text style={styles.nextButtonText}>
-                {currentIndex + 1 >= totalQuestions ? `🏆 ${t('activeQuiz.viewResult')}` : t('activeQuiz.nextQuestion')}
-              </Text>
-            </TouchableOpacity>
+              style={{ backgroundColor: quizSet.color }}
+            />
           </View>
         )}
 
-        {/* Quit Confirmation Overlay */}
+        {/* Quit Confirmation — iOS alert style */}
         {showQuitConfirm && (
           <View style={styles.quitOverlay}>
             <View style={styles.quitDialog}>
-              <Text style={styles.quitDialogTitle}>{t('activeQuiz.quitTitle')}</Text>
-              <Text style={styles.quitDialogText}>{t('activeQuiz.quitMessage')}</Text>
+              <View style={styles.quitDialogBody}>
+                <Text style={styles.quitDialogTitle}>{t('activeQuiz.quitTitle')}</Text>
+                <Text style={styles.quitDialogText}>{t('activeQuiz.quitMessage')}</Text>
+              </View>
               <View style={styles.quitDialogButtons}>
-                <TouchableOpacity style={styles.quitCancelButton} onPress={() => setShowQuitConfirm(false)}>
+                <TouchableOpacity style={styles.quitCancelButton} onPress={() => setShowQuitConfirm(false)} activeOpacity={0.6}>
                   <Text style={styles.quitCancelText}>{t('activeQuiz.continueQuiz')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.quitConfirmButton} onPress={onClose}>
+                <View style={styles.quitDialogDivider} />
+                <TouchableOpacity style={styles.quitConfirmButton} onPress={onClose} activeOpacity={0.6}>
                   <Text style={styles.quitConfirmText}>{t('activeQuiz.quit')}</Text>
                 </TouchableOpacity>
               </View>
@@ -209,255 +219,253 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
   );
 }
 
-const styles = StyleSheet.create({
+const HAIRLINE = StyleSheet.hairlineWidth;
+
+const makeStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.backgroundAlt,
+    backgroundColor: colors.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: 15,
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm + 2,
+    backgroundColor: colors.background,
   },
   quitButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F5F5F5',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: colors.inputBg,
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerCenter: {
+    flex: 1,
     alignItems: 'center',
+    marginHorizontal: SPACING.md,
   },
   headerTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
   },
   headerProgress: {
     ...TYPOGRAPHY.caption,
-    color: COLORS.textMuted,
-    marginTop: 2,
+    color: colors.textSubtle,
+    marginTop: 1,
   },
   difficultyBadge: {
-    width: 36,
-    height: 36,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
   },
   difficultyText: {
-    fontSize: 22,
+    fontSize: 20,
   },
   progressContainer: {
-    paddingHorizontal: SPACING.xl,
-    paddingVertical: 10,
-    backgroundColor: COLORS.surface,
+    paddingHorizontal: SPACING.lg,
+    paddingBottom: SPACING.sm,
+    backgroundColor: colors.background,
   },
   progressBar: {
-    height: 6,
-    backgroundColor: COLORS.borderLight,
-    borderRadius: 3,
+    height: 4,
+    backgroundColor: colors.borderLight,
+    borderRadius: 2,
     overflow: 'hidden',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 3,
+    borderRadius: 2,
   },
   content: {
     flex: 1,
-    paddingHorizontal: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
   },
+
+  // Question
   questionCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 15,
-    padding: 25,
-    marginTop: SPACING.xl,
-    borderTopWidth: 4,
-    ...SHADOWS.medium,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.xl,
+    marginTop: SPACING.lg,
   },
   questionNumber: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.footnote,
     fontWeight: '600',
-    marginBottom: 10,
+    marginBottom: SPACING.sm,
     textTransform: 'uppercase',
-    letterSpacing: 1,
   },
   questionText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
-    lineHeight: 30,
+    ...TYPOGRAPHY.h2,
+    fontWeight: '600',
+    color: colors.text,
   },
+
+  // Options
   optionsContainer: {
-    marginTop: SPACING.xl,
-    gap: BORDER_RADIUS.md,
+    marginTop: SPACING.lg,
+    gap: SPACING.sm + 2,
   },
   optionButton: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     borderRadius: BORDER_RADIUS.md,
-    borderWidth: 2,
-    borderColor: '#E8E8E8',
-    ...SHADOWS.small,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
   },
   optionCorrect: {
-    borderColor: COLORS.success,
-    backgroundColor: '#F1FFF1',
+    borderColor: colors.success,
+    backgroundColor: colors.successLight,
   },
   optionWrong: {
-    borderColor: COLORS.destructive,
-    backgroundColor: '#FFF1F1',
+    borderColor: colors.error,
+    backgroundColor: colors.errorLight,
   },
   optionDisabled: {
-    borderColor: COLORS.divider,
-    backgroundColor: '#FAFAFA',
+    opacity: 0.7,
   },
   optionContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: SPACING.lg,
-    gap: 14,
+    minHeight: 52,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    gap: SPACING.md,
   },
   optionLetter: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: COLORS.borderLight,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: colors.inputBg,
     justifyContent: 'center',
     alignItems: 'center',
   },
   optionLetterCorrect: {
-    backgroundColor: COLORS.success,
+    backgroundColor: colors.success,
   },
   optionLetterWrong: {
-    backgroundColor: COLORS.destructive,
+    backgroundColor: colors.error,
   },
   optionLetterText: {
-    ...TYPOGRAPHY.label,
-    fontWeight: 'bold',
-    color: COLORS.textSecondary,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.textSubtle,
+  },
+  optionLetterTextOnColor: {
+    color: '#FFFFFF',
   },
   optionText: {
-    ...TYPOGRAPHY.bodyLarge,
-    color: COLORS.textDark,
-    fontWeight: '500',
+    ...TYPOGRAPHY.body,
+    color: colors.text,
     flex: 1,
   },
   optionTextCorrect: {
-    color: '#2E7D32',
     fontWeight: '600',
   },
   optionTextWrong: {
-    color: '#C62828',
     fontWeight: '600',
   },
   optionTextDisabled: {
-    color: '#BDBDBD',
+    color: colors.textSubtle,
   },
+
+  // Explanation
   explanationCard: {
     borderRadius: BORDER_RADIUS.md,
-    padding: 18,
-    marginTop: SPACING.xl,
-    borderLeftWidth: 4,
+    padding: SPACING.lg,
+    marginTop: SPACING.lg,
   },
   explanationCorrect: {
-    backgroundColor: '#F1FFF1',
-    borderLeftColor: COLORS.success,
+    backgroundColor: colors.successLight,
   },
   explanationWrong: {
-    backgroundColor: '#FFF1F1',
-    borderLeftColor: COLORS.destructive,
+    backgroundColor: colors.errorLight,
   },
   explanationTitle: {
-    ...TYPOGRAPHY.bodyLargeBold,
-    color: COLORS.textDark,
-    marginBottom: SPACING.sm,
+    ...TYPOGRAPHY.headline,
+    marginBottom: SPACING.xs + 2,
   },
   explanationText: {
     ...TYPOGRAPHY.body,
-    color: COLORS.textSecondary,
-    lineHeight: 22,
+    color: colors.text,
   },
+
   footer: {
-    padding: SPACING.xl,
-    paddingBottom: 10,
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.md,
+    backgroundColor: colors.surface,
+    borderTopWidth: HAIRLINE,
+    borderTopColor: colors.border,
   },
-  nextButton: {
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: SPACING.lg,
-    alignItems: 'center',
-  },
-  nextButtonText: {
-    ...TYPOGRAPHY.buttonLarge,
-    color: COLORS.textLight,
-  },
+
+  // Quit alert
   quitOverlay: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: COLORS.overlay,
+    backgroundColor: colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 30,
+    paddingHorizontal: SPACING.xxxl,
   },
   quitDialog: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 18,
-    padding: SPACING.xxl,
+    backgroundColor: colors.surface,
+    borderRadius: 14,
     width: '100%',
-    ...SHADOWS.large,
+    maxWidth: 300,
+    overflow: 'hidden',
+  },
+  quitDialogBody: {
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.xl,
+    paddingBottom: SPACING.lg,
   },
   quitDialogTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
-    marginBottom: 10,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
+    marginBottom: SPACING.xs,
     textAlign: 'center',
   },
   quitDialogText: {
-    ...TYPOGRAPHY.body,
-    color: COLORS.textSecondary,
+    ...TYPOGRAPHY.footnote,
+    color: colors.text,
     textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: SPACING.xxl,
   },
   quitDialogButtons: {
     flexDirection: 'row',
-    gap: BORDER_RADIUS.md,
+    borderTopWidth: HAIRLINE,
+    borderTopColor: colors.border,
+  },
+  quitDialogDivider: {
+    width: HAIRLINE,
+    backgroundColor: colors.border,
   },
   quitCancelButton: {
     flex: 1,
-    backgroundColor: COLORS.tabBg,
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: 14,
+    minHeight: 44,
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: SPACING.sm,
   },
   quitCancelText: {
-    ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    color: COLORS.primary,
+    ...TYPOGRAPHY.headline,
+    color: colors.primary,
+    textAlign: 'center',
   },
   quitConfirmButton: {
     flex: 1,
-    backgroundColor: '#FF4B4B',
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: 14,
+    minHeight: 44,
+    justifyContent: 'center',
     alignItems: 'center',
+    paddingHorizontal: SPACING.sm,
   },
   quitConfirmText: {
     ...TYPOGRAPHY.body,
-    fontWeight: '600',
-    color: COLORS.textLight,
+    color: colors.destructive,
+    textAlign: 'center',
   },
 });

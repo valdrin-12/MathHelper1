@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Modal,
   View,
@@ -9,16 +9,19 @@ import {
   SafeAreaView,
   TextInput,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../context/UserContext';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { Button } from './ui';
 
 export default function EditProfileModal({ visible, onClose }) {
   const { t } = useTranslation();
   const { user, updateProfile } = useUser();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [currentPassword, setCurrentPassword] = useState('');
@@ -89,13 +92,13 @@ export default function EditProfileModal({ visible, onClose }) {
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          {/* Header */}
+          {/* Sheet nav bar */}
           <View style={styles.header}>
-            <TouchableOpacity onPress={onClose} style={styles.backButton}>
-              <Ionicons name="close" size={22} color={COLORS.textSubtle} />
+            <TouchableOpacity onPress={onClose} style={styles.navButton}>
+              <Ionicons name="close" size={24} color={colors.primary} />
             </TouchableOpacity>
             <Text style={styles.headerTitle} numberOfLines={1}>{t('editProfile.title')}</Text>
-            <View style={styles.placeholder} />
+            <View style={styles.navButton} />
           </View>
 
           {/* Content */}
@@ -110,7 +113,7 @@ export default function EditProfileModal({ visible, onClose }) {
                   value={name}
                   onChangeText={setName}
                   placeholder={t('editProfile.namePlaceholder')}
-                  placeholderTextColor={COLORS.textMuted}
+                  placeholderTextColor={colors.textMuted}
                 />
               </View>
 
@@ -121,7 +124,7 @@ export default function EditProfileModal({ visible, onClose }) {
                   value={email}
                   onChangeText={setEmail}
                   placeholder="email@example.com"
-                  placeholderTextColor={COLORS.textMuted}
+                  placeholderTextColor={colors.textMuted}
                   keyboardType="email-address"
                   autoCapitalize="none"
                 />
@@ -138,7 +141,7 @@ export default function EditProfileModal({ visible, onClose }) {
                   value={newPassword}
                   onChangeText={setNewPassword}
                   placeholder={t('editProfile.newPasswordPlaceholder')}
-                  placeholderTextColor={COLORS.textMuted}
+                  placeholderTextColor={colors.textMuted}
                   secureTextEntry
                 />
               </View>
@@ -150,7 +153,7 @@ export default function EditProfileModal({ visible, onClose }) {
                   value={confirmPassword}
                   onChangeText={setConfirmPassword}
                   placeholder={t('editProfile.confirmPlaceholder')}
-                  placeholderTextColor={COLORS.textMuted}
+                  placeholderTextColor={colors.textMuted}
                   secureTextEntry
                 />
               </View>
@@ -165,26 +168,13 @@ export default function EditProfileModal({ visible, onClose }) {
 
           {/* Footer */}
           <View style={styles.footer}>
-            <TouchableOpacity
-              style={[styles.saveButton, loading && styles.saveButtonDisabled]}
-              onPress={handleSave}
-              disabled={loading}
-            >
-              {loading ? (
-                <ActivityIndicator color={COLORS.textLight} />
-              ) : (
-                <Text style={styles.saveButtonText}>💾 {t('editProfile.saveChanges')}</Text>
-              )}
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.cancelButton} onPress={onClose} disabled={loading}>
-              <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
-            </TouchableOpacity>
+            <Button title={`💾 ${t('editProfile.saveChanges')}`} onPress={handleSave} loading={loading} />
+            <Button title={t('common.cancel')} variant="plain" onPress={onClose} disabled={loading} />
           </View>
         </View>
       </SafeAreaView>
 
-      {/* Success popup */}
+      {/* Success popup (iOS alert style) */}
       <Modal
         visible={showSuccess}
         transparent
@@ -194,7 +184,7 @@ export default function EditProfileModal({ visible, onClose }) {
         <View style={styles.successOverlay}>
           <View style={styles.successCard}>
             <View style={styles.successIconWrap}>
-              <Ionicons name="checkmark-circle" size={48} color={COLORS.primary} />
+              <Ionicons name="checkmark-circle" size={48} color={colors.primary} />
             </View>
             <Text style={styles.successTitle}>{t('common.success')}</Text>
             <Text style={styles.successMessage}>{t('editProfile.profileUpdated')}</Text>
@@ -211,159 +201,130 @@ export default function EditProfileModal({ visible, onClose }) {
   );
 }
 
-const styles = StyleSheet.create({
+const HAIRLINE = StyleSheet.hairlineWidth;
+
+const makeStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
   },
+
+  // Sheet nav bar
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: SPACING.xl,
-    paddingTop: 10,
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.inputBorder,
+    paddingHorizontal: SPACING.sm,
+    minHeight: 52,
+    backgroundColor: colors.background,
+    borderBottomWidth: HAIRLINE,
+    borderBottomColor: colors.border,
   },
-  backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.tabBg,
+  navButton: {
+    width: 44,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: TYPOGRAPHY.h2.fontSize,
-    fontWeight: 'bold',
-    color: COLORS.text,
+    flex: 1,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
+    textAlign: 'center',
   },
-  placeholder: {
-    width: 36,
-  },
+
+  // Form
   content: {
     flex: 1,
-    padding: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
   },
   section: {
-    marginBottom: 30,
+    marginTop: SPACING.xxl,
   },
   sectionTitle: {
-    ...TYPOGRAPHY.bodyLargeBold,
-    color: COLORS.text,
-    marginBottom: SPACING.lg,
-  },
-  inputGroup: {
-    marginBottom: SPACING.lg,
-  },
-  label: {
-    ...TYPOGRAPHY.label,
-    color: '#4B5563',
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    textTransform: 'uppercase',
+    marginLeft: SPACING.lg,
     marginBottom: SPACING.sm,
   },
+  inputGroup: {
+    marginBottom: SPACING.md,
+  },
+  label: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
+    marginBottom: SPACING.xs + 2,
+    marginLeft: SPACING.xs,
+  },
   input: {
-    backgroundColor: COLORS.surface,
-    borderWidth: 1.5,
-    borderColor: COLORS.inputBorder,
+    backgroundColor: colors.surface,
     borderRadius: BORDER_RADIUS.md,
-    padding: 14,
+    paddingHorizontal: SPACING.lg,
+    minHeight: 48,
     ...TYPOGRAPHY.body,
-    color: COLORS.text,
+    color: colors.text,
   },
   hint: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.textSubtle,
-    marginTop: SPACING.sm,
-    lineHeight: 18,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginTop: SPACING.xs,
+    marginHorizontal: SPACING.lg,
   },
   footer: {
-    padding: SPACING.xl,
-    paddingBottom: 10,
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.inputBorder,
-    gap: 10,
-  },
-  saveButton: {
-    backgroundColor: COLORS.primary,
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: SPACING.lg,
-    alignItems: 'center',
-    shadowColor: COLORS.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  saveButtonDisabled: {
-    opacity: 0.6,
-  },
-  saveButtonText: {
-    ...TYPOGRAPHY.bodyLargeBold,
-    color: COLORS.textLight,
-  },
-  cancelButton: {
-    backgroundColor: COLORS.tabBg,
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: SPACING.lg,
-    alignItems: 'center',
-  },
-  cancelButtonText: {
-    ...TYPOGRAPHY.button,
-    color: COLORS.primary,
+    padding: SPACING.lg,
+    paddingBottom: SPACING.sm,
+    backgroundColor: colors.background,
+    borderTopWidth: HAIRLINE,
+    borderTopColor: colors.border,
+    gap: SPACING.xs,
   },
 
   // ─── Success popup ───────────────────────────────────────────────────────────
   successOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.45)',
+    backgroundColor: colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 32,
+    padding: SPACING.xxxl,
   },
   successCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 32,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    paddingTop: SPACING.xxl,
     alignItems: 'center',
     width: '100%',
-    maxWidth: 320,
-    ...SHADOWS.large,
+    maxWidth: 300,
+    overflow: 'hidden',
   },
   successIconWrap: {
-    marginBottom: 14,
+    marginBottom: SPACING.md,
   },
   successTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: 8,
-    letterSpacing: -0.3,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
+    marginBottom: SPACING.xs,
+    paddingHorizontal: SPACING.lg,
   },
   successMessage: {
-    fontSize: 15,
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
     textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: 24,
-    letterSpacing: -0.2,
+    marginBottom: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
   },
   successBtn: {
-    width: '100%',
-    paddingVertical: 14,
-    borderRadius: 12,
+    alignSelf: 'stretch',
+    minHeight: 44,
+    justifyContent: 'center',
     alignItems: 'center',
-    borderTopWidth: 0.5,
-    borderTopColor: COLORS.borderLight,
+    borderTopWidth: HAIRLINE,
+    borderTopColor: colors.border,
   },
   successBtnText: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: COLORS.primary,
-    letterSpacing: -0.3,
+    ...TYPOGRAPHY.headline,
+    color: colors.primary,
   },
 });

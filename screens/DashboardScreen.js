@@ -5,7 +5,6 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  Dimensions,
   Image,
   Alert,
   Modal,
@@ -43,13 +42,12 @@ function isNetworkError(err) {
 }
 import ProfileModal from '../components/ProfileModal';
 import PremiumModal from '../components/PremiumModal';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SHADOWS } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { ScreenHeader, Card, SectionTitle, ListSection, ListRow, IconBadge, Button, SegmentedControl } from '../components/ui';
 import WebContainer from '../components/WebContainer';
 import { useResponsive } from '../utils/responsive';
-
-const { width } = Dimensions.get('window');
 
 const getGreeting = (t) => {
   const hour = new Date().getHours();
@@ -107,8 +105,6 @@ export default function DashboardScreen() {
   const recentItems = useMemo(() => savedItems.slice(0, 3), [savedItems]);
 
   // ── Micro-animations ─────────────────────────────────────────────────────────
-  const calcAnim    = useRef(new Animated.Value(1)).current;
-  const aiAnim      = useRef(new Animated.Value(1)).current;
   const galleryAnim = useRef(new Animated.Value(1)).current;
   const cameraAnim  = useRef(new Animated.Value(1)).current;
 
@@ -324,393 +320,218 @@ export default function DashboardScreen() {
   };
 
   const { isWeb, isDesktop } = useResponsive();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const canSubmit = !!mathProblemText.trim() && !isAnalyzing;
+  const goalDone = progressPercent >= 100;
+
+  const stats = [
+    { icon: 'checkmark-done', color: colors.primary, value: savedItems.length, label: t('dashboard.problemsSolved') },
+    { icon: 'flame', color: colors.secondary, value: streak, label: t('dashboard.dayStreak') },
+    { icon: 'book', color: colors.success, value: completedCoursesCount, label: t('dashboard.coursesCompleted') },
+    { icon: 'trophy', color: colors.purple, value: completedQuizzesCount, label: t('dashboard.quizzesCompleted') },
+  ];
 
   return (
     <>
-      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        {/* Header with Gradient */}
-        <LinearGradient
-          colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
-        >
-          <View style={styles.header}>
-            <View style={styles.headerLeft}>
-              <Text style={styles.headerGreeting}>{greeting}, {displayName}!</Text>
-              <Text style={styles.headerQuestion}>{t('dashboard.readyToLearn')}</Text>
-            </View>
-            <TouchableOpacity style={styles.avatarButton} onPress={() => setShowProfile(true)}>
-              <View style={styles.avatar}>
-                <Text style={styles.avatarText}>{user?.name ? user.name[0].toUpperCase() : '?'}</Text>
-              </View>
-            </TouchableOpacity>
-          </View>
-
-          {/* Quick Stats inside header */}
-          <View style={styles.quickStats}>
-            <View style={styles.quickStatItem}>
-              <Ionicons name="checkmark-done" size={18} color="rgba(255,255,255,0.8)" />
-              <Text style={styles.quickStatNumber}>{savedItems.length}</Text>
-              <Text style={styles.quickStatLabel}>{t('dashboard.problemsSolved')}</Text>
-            </View>
-            <View style={styles.quickStatDivider} />
-            <View style={styles.quickStatItem}>
-              <Ionicons name="flame" size={18} color="rgba(255,255,255,0.8)" />
-              <Text style={styles.quickStatNumber}>{streak}</Text>
-              <Text style={styles.quickStatLabel}>{t('dashboard.dayStreak')}</Text>
-            </View>
-            <View style={styles.quickStatDivider} />
-            <View style={styles.quickStatItem}>
-              <Ionicons name="trophy" size={18} color="rgba(255,255,255,0.8)" />
-              <Text style={styles.quickStatNumber}>{completedQuizzesCount}</Text>
-              <Text style={styles.quickStatLabel}>{t('dashboard.quizzesCompleted')}</Text>
-            </View>
-          </View>
-        </LinearGradient>
-
-        {/* Main Content */}
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <WebContainer>
+        <ScreenHeader
+          eyebrow={`${greeting}, ${displayName}!`}
+          title={t('dashboard.readyToLearn')}
+          right={
+            <TouchableOpacity style={styles.avatar} onPress={() => setShowProfile(true)} activeOpacity={0.7}>
+              <Text style={styles.avatarText}>{user?.name ? user.name[0].toUpperCase() : '?'}</Text>
+            </TouchableOpacity>
+          }
+        />
+
         <View style={styles.content}>
-          {/* Daily Goal Card */}
-          <View style={styles.goalCard}>
+          {/* Daily Goal */}
+          <Card style={styles.block}>
             <View style={styles.goalHeader}>
-              <View style={styles.goalIconBox}>
-                <Ionicons name="flag" size={22} color="#F59E0B" />
-              </View>
-              <View style={styles.goalTextContainer}>
-                <Text style={styles.goalTitle}>{t('dashboard.dailyGoal')}</Text>
-                <Text style={styles.goalCount}>
-                  {t('dashboard.problemsProgress', { done: dailyProgress, total: dailyGoal })}
-                </Text>
-              </View>
-              {progressPercent >= 100 && (
-                <View style={styles.goalCompleteBadge}>
-                  <Ionicons name="trophy" size={22} color="#10B981" />
-                </View>
-              )}
-            </View>
-            <View style={styles.progressBarBg}>
-              <LinearGradient
-                colors={progressPercent >= 100 ? ['#10B981', '#059669'] : [COLORS.primarySoft, COLORS.primaryLight]}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={[styles.progressBarFill, { width: `${Math.max(progressPercent, 2)}%` }]}
-              />
-            </View>
-            <View style={styles.goalEncouragementRow}>
-              <Ionicons
-                name={progressPercent >= 100 ? 'sparkles' : progressPercent >= 50 ? 'fitness' : 'rocket'}
-                size={16}
-                color={COLORS.textSubtle}
-              />
-              <Text style={styles.goalEncouragement}>
-                {progressPercent >= 100
-                  ? t('dashboard.goalReached')
-                  : progressPercent >= 50
-                  ? t('dashboard.keepGoing')
-                  : t('dashboard.startSolving')}
+              <IconBadge name={goalDone ? 'trophy' : 'flag'} color={goalDone ? colors.success : colors.secondary} />
+              <Text style={styles.goalTitle}>{t('dashboard.dailyGoal')}</Text>
+              <Text style={[styles.goalCount, goalDone && { color: colors.success }]}>
+                {t('dashboard.problemsProgress', { done: dailyProgress, total: dailyGoal })}
               </Text>
             </View>
-          </View>
-
-          {/* Scan / Input Card */}
-          <View style={styles.scanCard}>
-            {/* Tab Switcher */}
-            <View style={styles.tabContainer}>
-              <TouchableOpacity
-                style={[styles.tab, inputMode === 'keyboard' && styles.tabActive]}
-                onPress={() => setInputMode('keyboard')}
-              >
-                <View style={styles.tabInner}>
-                  <Ionicons
-                    name="keypad"
-                    size={16}
-                    color={inputMode === 'keyboard' ? '#FFFFFF' : COLORS.textSubtle}
-                  />
-                  <Text style={[styles.tabText, inputMode === 'keyboard' && styles.tabTextActive]}>
-                    {t('dashboard.keyboard')}
-                  </Text>
-                </View>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.tab, inputMode === 'camera' && styles.tabActive]}
-                onPress={() => setInputMode('camera')}
-              >
-                <View style={styles.tabInner}>
-                  <Ionicons
-                    name="camera"
-                    size={16}
-                    color={inputMode === 'camera' ? '#FFFFFF' : COLORS.textSubtle}
-                  />
-                  <Text style={[styles.tabText, inputMode === 'camera' && styles.tabTextActive]}>
-                    {t('dashboard.camera')}
-                  </Text>
-                </View>
-              </TouchableOpacity>
+            <View style={styles.progressTrack}>
+              <View
+                style={[
+                  styles.progressFill,
+                  { width: `${Math.max(progressPercent, 2)}%`, backgroundColor: goalDone ? colors.success : colors.primary },
+                ]}
+              />
             </View>
+            <Text style={styles.goalEncouragement}>
+              {goalDone
+                ? t('dashboard.goalReached')
+                : progressPercent >= 50
+                ? t('dashboard.keepGoing')
+                : t('dashboard.startSolving')}
+            </Text>
+          </Card>
 
-            {/* Keyboard Mode */}
+          {/* Solve */}
+          <Card style={styles.block}>
+            <SegmentedControl
+              style={styles.segmented}
+              value={inputMode}
+              onChange={setInputMode}
+              segments={[
+                { value: 'keyboard', icon: 'keypad', label: t('dashboard.keyboard') },
+                { value: 'camera', icon: 'camera', label: t('dashboard.camera') },
+              ]}
+            />
+
             {inputMode === 'keyboard' ? (
-              <View style={styles.keyboardMode}>
-                {/* Math Display Area */}
-                <View style={styles.mathDisplayArea}>
-                  <TextInput
-                    style={styles.mathTextInput}
-                    value={mathProblemText}
-                    onChangeText={setMathProblemText}
-                    placeholder={t('dashboard.inputPlaceholder')}
-                    placeholderTextColor={COLORS.textMuted}
-                    multiline
-                    numberOfLines={4}
-                    textAlignVertical="top"
+              <View>
+                <TextInput
+                  style={styles.mathTextInput}
+                  value={mathProblemText}
+                  onChangeText={setMathProblemText}
+                  placeholder={t('dashboard.inputPlaceholder')}
+                  placeholderTextColor={colors.textMuted}
+                  multiline
+                  numberOfLines={4}
+                  textAlignVertical="top"
+                />
+
+                <View style={styles.actionRow}>
+                  <Button
+                    style={styles.actionButton}
+                    icon={isAnalyzing ? 'hourglass' : 'calculator'}
+                    title={t('dashboard.calculate')}
+                    onPress={handleCalculate}
+                    disabled={!canSubmit}
+                  />
+                  <Button
+                    style={styles.actionButton}
+                    variant="tinted"
+                    icon={isAnalyzing ? 'hourglass' : 'sparkles'}
+                    title={t('dashboard.analyzeAI')}
+                    onPress={handleAnalyzeWithAI}
+                    disabled={!canSubmit}
                   />
                 </View>
 
-                {/* Action Buttons Row - Two Buttons */}
-                <View style={styles.mathActionRow}>
-                  {/* Calculate Button (Local) */}
-                  <TouchableOpacity
-                    style={[styles.halfButton, (!mathProblemText.trim() || isAnalyzing) && styles.halfButtonDisabled]}
-                    onPress={handleCalculate}
-                    onPressIn={() => pressIn(calcAnim)}
-                    onPressOut={() => pressOut(calcAnim)}
-                    disabled={!mathProblemText.trim() || isAnalyzing}
-                    activeOpacity={1}
-                  >
-                    <Animated.View style={{ transform: [{ scale: calcAnim }] }}>
-                      <LinearGradient
-                        colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : ['#006FE6', '#2B8AFF']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={styles.buttonGradient}
-                      >
-                        <View style={styles.buttonInner}>
-                          <Ionicons
-                            name={isAnalyzing ? 'hourglass' : 'calculator'}
-                            size={16}
-                            color="#FFFFFF"
-                          />
-                          <Text style={styles.buttonText}>
-                            {t('dashboard.calculate')}
-                          </Text>
-                        </View>
-                      </LinearGradient>
-                    </Animated.View>
-                  </TouchableOpacity>
-
-                  {/* Analyze with AI Button */}
-                  <TouchableOpacity
-                    style={[styles.halfButton, (!mathProblemText.trim() || isAnalyzing) && styles.halfButtonDisabled]}
-                    onPress={handleAnalyzeWithAI}
-                    onPressIn={() => pressIn(aiAnim)}
-                    onPressOut={() => pressOut(aiAnim)}
-                    disabled={!mathProblemText.trim() || isAnalyzing}
-                    activeOpacity={1}
-                  >
-                    <Animated.View style={{ transform: [{ scale: aiAnim }] }}>
-                      <LinearGradient
-                        colors={(!mathProblemText.trim() || isAnalyzing) ? [COLORS.disabled, COLORS.disabled] : [COLORS.primarySoft, COLORS.primary]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 0 }}
-                        style={styles.buttonGradient}
-                      >
-                        <View style={styles.buttonInner}>
-                          <Ionicons
-                            name={isAnalyzing ? 'hourglass' : 'sparkles'}
-                            size={16}
-                            color="#FFFFFF"
-                          />
-                          <Text style={styles.buttonText}>
-                            {t('dashboard.analyzeAI')}
-                          </Text>
-                        </View>
-                      </LinearGradient>
-                    </Animated.View>
-                  </TouchableOpacity>
-                </View>
-
-                {/* Graph Button — shown only when input contains a plottable function */}
+                {/* Graph — shown only when input contains a plottable function */}
                 {isPlottableFunction(mathProblemText) && (
-                  <TouchableOpacity
+                  <Button
                     style={styles.graphButton}
+                    variant="tinted"
+                    tone="warning"
+                    icon="stats-chart"
+                    title={t('dashboard.graphButton')}
                     onPress={() => setShowGraphModal(true)}
-                    activeOpacity={0.85}
-                  >
-                    <LinearGradient
-                      colors={['#F5A623', '#F0830A']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.buttonGradient}
-                    >
-                      <View style={styles.buttonInner}>
-                        <Ionicons name="stats-chart" size={16} color="#FFFFFF" />
-                        <Text style={styles.buttonText}>
-                          {t('dashboard.graphButton')}
-                        </Text>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
+                  />
                 )}
 
-                {/* Math Keyboard */}
                 <MathKeyboard
                   onKeyPress={(value) => setMathProblemText((prev) => prev + value)}
                   onBackspace={() => setMathProblemText((prev) => prev.slice(0, -1))}
                   onClear={() => setMathProblemText('')}
                 />
               </View>
+            ) : selectedImage ? (
+              <View>
+                <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
+                <View style={styles.actionRow}>
+                  <Button
+                    style={styles.actionButton}
+                    icon={isAnalyzing ? 'hourglass' : 'calculator'}
+                    title={t('dashboard.calculate')}
+                    onPress={handleCalculate}
+                    disabled={isAnalyzing}
+                  />
+                  <Button
+                    style={styles.actionButton}
+                    variant="tinted"
+                    icon={isAnalyzing ? 'hourglass' : 'sparkles'}
+                    title={t('dashboard.analyzeAI')}
+                    onPress={handleAnalyzeWithAI}
+                    disabled={isAnalyzing}
+                  />
+                </View>
+                <Button
+                  variant="plain"
+                  tone="destructive"
+                  icon="close"
+                  title={t('dashboard.remove')}
+                  onPress={removeImage}
+                />
+              </View>
             ) : (
-              /* Camera Mode */
-              <View style={styles.cameraMode}>
-                {selectedImage ? (
-                  <View style={styles.imagePreviewWrapper}>
-                    <Image source={{ uri: selectedImage }} style={styles.imagePreview} />
-                    <View style={styles.imageActions}>
-                      <TouchableOpacity
-                        style={[styles.actionBtn, styles.calculateBtn]}
-                        onPress={handleCalculate}
-                        disabled={isAnalyzing}
-                      >
-                        <View style={styles.actionBtnInner}>
-                          <Ionicons name={isAnalyzing ? 'hourglass' : 'calculator'} size={16} color="#FFFFFF" />
-                          <Text style={styles.actionBtnText}>
-                            {t('dashboard.calculate')}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.actionBtn, styles.analyzeBtn]}
-                        onPress={handleAnalyzeWithAI}
-                        disabled={isAnalyzing}
-                      >
-                        <View style={styles.actionBtnInner}>
-                          <Ionicons name={isAnalyzing ? 'hourglass' : 'sparkles'} size={16} color="#FFFFFF" />
-                          <Text style={styles.actionBtnText}>
-                            {t('dashboard.analyzeAI')}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                      <TouchableOpacity style={[styles.actionBtn, styles.removeBtn]} onPress={removeImage}>
-                        <View style={styles.actionBtnInner}>
-                          <Ionicons name="close" size={16} color="#FFFFFF" />
-                          <Text style={styles.actionBtnText}>{t('dashboard.remove')}</Text>
-                        </View>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                ) : (
-                  <View style={styles.uploadRow}>
-                    <TouchableOpacity
-                      style={styles.uploadCard}
-                      onPress={pickImage}
-                      onPressIn={() => pressIn(galleryAnim)}
-                      onPressOut={() => pressOut(galleryAnim)}
-                      activeOpacity={1}
-                    >
-                      <Animated.View style={[styles.uploadCardInner, { transform: [{ scale: galleryAnim }] }]}>
-                        <View style={[styles.uploadIconBox, { backgroundColor: COLORS.primaryBg }]}>
-                          <Ionicons name="images" size={28} color={COLORS.primarySoft} />
-                        </View>
-                        <Text style={styles.uploadLabel}>{t('dashboard.uploadPhoto')}</Text>
-                        <Text style={styles.uploadSub}>{t('dashboard.fromGallery')}</Text>
-                      </Animated.View>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.uploadCard}
-                      onPress={takePhoto}
-                      onPressIn={() => pressIn(cameraAnim)}
-                      onPressOut={() => pressOut(cameraAnim)}
-                      activeOpacity={1}
-                    >
-                      <Animated.View style={[styles.uploadCardInner, { transform: [{ scale: cameraAnim }] }]}>
-                        <View style={[styles.uploadIconBox, { backgroundColor: COLORS.successLight }]}>
-                          <Ionicons name="camera" size={28} color={COLORS.success} />
-                        </View>
-                        <Text style={styles.uploadLabel}>{t('dashboard.takePhoto')}</Text>
-                        <Text style={styles.uploadSub}>{t('dashboard.useCamera')}</Text>
-                      </Animated.View>
-                    </TouchableOpacity>
-                  </View>
-                )}
+              <View style={styles.uploadRow}>
+                {[
+                  { onPress: pickImage, anim: galleryAnim, icon: 'images', color: colors.primary, label: t('dashboard.uploadPhoto'), sub: t('dashboard.fromGallery') },
+                  { onPress: takePhoto, anim: cameraAnim, icon: 'camera', color: colors.success, label: t('dashboard.takePhoto'), sub: t('dashboard.useCamera') },
+                ].map((tile) => (
+                  <TouchableOpacity
+                    key={tile.icon}
+                    style={styles.uploadTile}
+                    onPress={tile.onPress}
+                    onPressIn={() => pressIn(tile.anim)}
+                    onPressOut={() => pressOut(tile.anim)}
+                    activeOpacity={1}
+                  >
+                    <Animated.View style={[styles.uploadTileInner, { transform: [{ scale: tile.anim }] }]}>
+                      <Ionicons name={tile.icon} size={30} color={tile.color} />
+                      <Text style={styles.uploadLabel}>{tile.label}</Text>
+                      <Text style={styles.uploadSub}>{tile.sub}</Text>
+                    </Animated.View>
+                  </TouchableOpacity>
+                ))}
               </View>
             )}
-          </View>
+          </Card>
 
-          {/* Statistics Grid */}
-          <View style={styles.statsSection}>
-            <Text style={styles.sectionTitle}>{t('dashboard.yourStats')}</Text>
-            <View style={[styles.statsGrid, isDesktop && { gap: 14 }]}>
-              <View style={[styles.statCard, { backgroundColor: COLORS.primaryBg }, isDesktop && styles.statCardDesktop]}>
-                <View style={[styles.statIconBox, { backgroundColor: COLORS.primarySoft }]}>
-                  <Ionicons name="checkmark-done" size={20} color="#FFFFFF" />
-                </View>
-                <Text style={styles.statNumber}>{savedItems.length}</Text>
-                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.problemsSolved')}</Text>
-              </View>
-              <View style={[styles.statCard, { backgroundColor: '#FFF7ED' }, isDesktop && styles.statCardDesktop]}>
-                <View style={[styles.statIconBox, { backgroundColor: '#F59E0B' }]}>
-                  <Ionicons name="flame" size={20} color="#FFFFFF" />
-                </View>
-                <Text style={styles.statNumber}>{streak}</Text>
-                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.dayStreak')}</Text>
-              </View>
-              <View style={[styles.statCard, { backgroundColor: COLORS.successLight }, isDesktop && styles.statCardDesktop]}>
-                <View style={[styles.statIconBox, { backgroundColor: COLORS.success }]}>
-                  <Ionicons name="book" size={20} color="#FFFFFF" />
-                </View>
-                <Text style={styles.statNumber}>{completedCoursesCount}</Text>
-                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.coursesCompleted')}</Text>
-              </View>
-              <View style={[styles.statCard, { backgroundColor: COLORS.purpleLight }, isDesktop && styles.statCardDesktop]}>
-                <View style={[styles.statIconBox, { backgroundColor: COLORS.purple }]}>
-                  <Ionicons name="trophy" size={20} color="#FFFFFF" />
-                </View>
-                <Text style={styles.statNumber}>{completedQuizzesCount}</Text>
-                <Text style={styles.statLabel} numberOfLines={2} adjustsFontSizeToFit>{t('dashboard.quizzesCompleted')}</Text>
-              </View>
+          {/* Statistics */}
+          <View style={styles.sectionBlock}>
+            <SectionTitle>{t('dashboard.yourStats')}</SectionTitle>
+            <View style={styles.statsGrid}>
+              {stats.map((stat) => (
+                <Card key={stat.icon} style={[styles.statCard, isDesktop && styles.statCardDesktop]}>
+                  <View style={styles.statTop}>
+                    <Ionicons name={stat.icon} size={18} color={stat.color} />
+                    <Text style={styles.statNumber}>{stat.value}</Text>
+                  </View>
+                  <Text style={styles.statLabel} numberOfLines={2}>{stat.label}</Text>
+                </Card>
+              ))}
             </View>
           </View>
 
           {/* Recent Activity */}
-          <View style={styles.activitySection}>
-            <Text style={styles.sectionTitle}>{t('dashboard.recentActivity')}</Text>
+          <View style={styles.sectionBlock}>
+            <SectionTitle>{t('dashboard.recentActivity')}</SectionTitle>
             {recentItems.length === 0 ? (
-              <View style={styles.emptyActivity}>
-                <View style={styles.illustrationContainer}>
-                  <View style={styles.illustrationBgCircle}>
-                    <View style={styles.emptyIconBox}>
-                      <Ionicons name="document-text-outline" size={36} color={COLORS.primaryLight} />
-                    </View>
-                  </View>
-                  <View style={[styles.floatingBubble, styles.floatingTopRight]}>
-                    <Ionicons name="sparkles" size={16} color={COLORS.secondary} />
-                  </View>
-                  <View style={[styles.floatingBubble, styles.floatingBottomLeft]}>
-                    <Ionicons name="pencil" size={14} color={COLORS.primarySoft} />
-                  </View>
+              <Card style={styles.emptyActivity}>
+                <View style={styles.emptyIcon}>
+                  <Ionicons name="document-text-outline" size={28} color={colors.primary} />
                 </View>
-                <Text style={styles.emptyActivityText}>
-                  {t('dashboard.noActivity')}
-                </Text>
-              </View>
+                <Text style={styles.emptyActivityText}>{t('dashboard.noActivity')}</Text>
+              </Card>
             ) : (
-              recentItems.map((item, index) => (
-                <View key={item.id || index} style={styles.activityCard}>
-                  {item.imageData && (
-                    <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.activityThumb} />
-                  )}
-                  <View style={styles.activityContent}>
-                    <Text style={styles.activityTitle} numberOfLines={1}>
-                      {item.answer ? item.answer : t('dashboard.mathProblem')}
-                    </Text>
-                    <Text style={styles.activityTime}>{formatTimeAgo(item.savedAt)}</Text>
-                  </View>
-                  <View style={styles.activityBadge}>
-                    <Ionicons name="checkmark" size={18} color={COLORS.success} />
-                  </View>
-                </View>
-              ))
+              <ListSection style={styles.activityList}>
+                {recentItems.map((item, index) => (
+                  <ListRow
+                    key={item.id || index}
+                    leading={item.imageData ? (
+                      <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.activityThumb} />
+                    ) : (
+                      <IconBadge name="checkmark" color={colors.success} />
+                    )}
+                    title={item.answer ? item.answer : t('dashboard.mathProblem')}
+                    subtitle={formatTimeAgo(item.savedAt)}
+                  />
+                ))}
+              </ListSection>
             )}
           </View>
 
@@ -751,7 +572,7 @@ export default function DashboardScreen() {
         <View style={styles.limitOverlay}>
           <View style={styles.limitModal}>
             <View style={styles.limitIconBox}>
-              <Ionicons name="lock-closed" size={36} color="#F59E0B" />
+              <Ionicons name="lock-closed" size={28} color={colors.secondary} />
             </View>
             <Text style={styles.limitTitle}>
               {limitType === 'free' ? t('rateLimit.freeTitle') : t('rateLimit.title')}
@@ -760,50 +581,30 @@ export default function DashboardScreen() {
               {limitType === 'free' ? t('rateLimit.freeMessage') : t('rateLimit.message')}
             </Text>
 
-            <View style={styles.limitDivider} />
-
             <View style={styles.limitPremiumBox}>
               <View style={styles.limitPremiumHeader}>
-                <Ionicons name="star" size={20} color="#F59E0B" />
+                <Ionicons name="star" size={16} color={colors.secondary} />
                 <Text style={styles.limitPremiumTitle}>{t('rateLimit.premiumTitle')}</Text>
               </View>
               <Text style={styles.limitPremiumDesc}>{t('rateLimit.premiumDesc')}</Text>
             </View>
 
-            <TouchableOpacity
-              style={styles.limitPremiumButton}
+            <Button
+              style={styles.limitButton}
+              tone="warning"
+              icon="star"
+              title={t('rateLimit.upgradePremium')}
               onPress={() => {
                 setShowLimitModal(false);
                 setTimeout(() => setShowPremiumModal(true), 300);
               }}
-            >
-              <LinearGradient
-                colors={['#F59E0B', '#D97706']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={styles.limitPremiumGradient}
-              >
-                <Ionicons name="star" size={18} color="#FFFFFF" />
-                <Text style={styles.limitPremiumButtonText}>{t('rateLimit.upgradePremium')}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-
-            {limitType === 'daily' && (
-              <TouchableOpacity
-                style={styles.limitCloseButton}
-                onPress={() => setShowLimitModal(false)}
-              >
-                <Text style={styles.limitCloseText}>{t('rateLimit.tryTomorrow')}</Text>
-              </TouchableOpacity>
-            )}
-            {limitType === 'free' && (
-              <TouchableOpacity
-                style={styles.limitCloseButton}
-                onPress={() => setShowLimitModal(false)}
-              >
-                <Text style={styles.limitCloseText}>{t('rateLimit.close')}</Text>
-              </TouchableOpacity>
-            )}
+            />
+            <Button
+              style={styles.limitButton}
+              variant="plain"
+              title={limitType === 'daily' ? t('rateLimit.tryTomorrow') : t('rateLimit.close')}
+              onPress={() => setShowLimitModal(false)}
+            />
           </View>
         </View>
       </Modal>
@@ -816,621 +617,246 @@ export default function DashboardScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
+  },
+  content: {
+    paddingHorizontal: SPACING.lg,
+  },
+  block: {
+    marginTop: SPACING.lg,
+  },
+  sectionBlock: {
+    marginTop: SPACING.xxxl,
   },
 
-  // Header Gradient
-  headerGradient: {
-    paddingTop: 56,
-    paddingBottom: 24,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 22,
-    paddingBottom: 20,
-  },
-  headerLeft: {
-    flex: 1,
-  },
-  headerGreeting: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.85)',
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  headerQuestion: {
-    fontSize: 26,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: -0.5,
-  },
-  avatarButton: {
-    marginLeft: 15,
-  },
+  // Header avatar
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 2.5,
-    borderColor: 'rgba(255,255,255,0.4)',
   },
   avatarText: {
-    fontSize: 22,
-    fontWeight: 'bold',
+    ...TYPOGRAPHY.headline,
     color: '#FFFFFF',
   },
 
-  // Quick Stats in Header
-  quickStats: {
+  // Daily Goal
+  goalHeader: {
     flexDirection: 'row',
-    marginHorizontal: 22,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 16,
-    paddingVertical: 14,
-    paddingHorizontal: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.2)',
+    alignItems: 'center',
+    marginBottom: SPACING.md,
   },
-  quickStatItem: {
+  goalTitle: {
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
     flex: 1,
-    alignItems: 'center',
-    gap: 2,
+    marginLeft: SPACING.md,
   },
-  quickStatNumber: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#FFFFFF',
+  goalCount: {
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.primary,
   },
-  quickStatLabel: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.75)',
-    fontWeight: '500',
-    textAlign: 'center',
+  progressTrack: {
+    height: 6,
+    backgroundColor: colors.borderLight,
+    borderRadius: 3,
+    overflow: 'hidden',
   },
-  quickStatDivider: {
-    width: 1,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    marginVertical: 4,
+  progressFill: {
+    height: '100%',
+    borderRadius: 3,
   },
-
-  // Main Content
-  content: {
-    marginTop: -4,
+  goalEncouragement: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginTop: SPACING.sm + 2,
   },
 
-  // Scan Card
-  scanCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    marginHorizontal: 18,
-    marginTop: 16,
-    padding: 20,
-    ...SHADOWS.medium,
-  },
-  tabContainer: {
-    flexDirection: 'row',
-    backgroundColor: COLORS.tabBg,
-    borderRadius: 14,
-    padding: 4,
-    marginBottom: 18,
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 11,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  tabActive: {
-    backgroundColor: COLORS.primarySoft,
-    ...SHADOWS.small,
-  },
-  tabInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  tabText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: COLORS.textSubtle,
-  },
-  tabTextActive: {
-    color: '#FFFFFF',
-  },
-  keyboardMode: {
-    gap: 0,
-  },
-  cameraMode: {},
-  mathDisplayArea: {
-    backgroundColor: COLORS.inputBg,
-    borderWidth: 1.5,
-    borderColor: COLORS.inputBorder,
-    borderRadius: 16,
-    minHeight: 120,
-    maxHeight: 160,
+  // Solve
+  segmented: {
+    marginBottom: SPACING.lg,
   },
   mathTextInput: {
+    ...TYPOGRAPHY.body,
     fontSize: 18,
-    color: COLORS.text,
-    fontFamily: 'System',
     lineHeight: 26,
-    padding: 16,
-    minHeight: 120,
+    color: colors.text,
+    backgroundColor: colors.inputBg,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.lg,
+    minHeight: 112,
     maxHeight: 160,
     outlineStyle: 'none', // Remove focus outline on web
   },
-  mathDisplayScroll: {
-    flex: 1,
-  },
-  mathDisplayText: {
-    fontSize: 20,
-    color: COLORS.text,
-    fontFamily: 'System',
-    lineHeight: 28,
-  },
-  mathDisplayPlaceholder: {
-    fontSize: 15,
-    color: COLORS.textMuted,
-    lineHeight: 22,
-  },
-  mathActionRow: {
+  actionRow: {
     flexDirection: 'row',
-    gap: 10,
-    marginVertical: 12,
+    gap: SPACING.sm + 2,
+    marginVertical: SPACING.md,
   },
-  halfButton: {
+  actionButton: {
     flex: 1,
-    borderRadius: 14,
-    overflow: 'hidden',
-  },
-  halfButtonDisabled: {
-    opacity: 0.5,
   },
   graphButton: {
-    borderRadius: 14,
-    overflow: 'hidden',
-    marginHorizontal: 0,
-    marginTop: 4,
-  },
-  buttonGradient: {
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderRadius: 14,
-  },
-  buttonInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  buttonText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-  analyzeButtonFull: {
-    borderRadius: 14,
-    overflow: 'hidden',
-  },
-  analyzeGradient: {
-    paddingVertical: 16,
-    alignItems: 'center',
-    borderRadius: 14,
-  },
-  analyzeButtonDisabled: {
-    opacity: 0.5,
-  },
-  analyzeButtonInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  analyzeButtonText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: 0.3,
+    marginBottom: SPACING.md,
   },
   uploadRow: {
     flexDirection: 'row',
-    gap: 14,
+    gap: SPACING.md,
   },
-  uploadCard: {
+  uploadTile: {
     flex: 1,
-    backgroundColor: COLORS.inputBg,
-    borderRadius: 18,
-    padding: 20,
-    alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: COLORS.inputBorder,
-    borderStyle: 'dashed',
+    backgroundColor: colors.inputBg,
+    borderRadius: BORDER_RADIUS.md,
+    paddingVertical: SPACING.xxl,
+    paddingHorizontal: SPACING.md,
   },
-  uploadCardInner: {
+  uploadTileInner: {
     alignItems: 'center',
-  },
-  uploadIconBox: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 10,
   },
   uploadLabel: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 3,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.text,
+    marginTop: SPACING.sm + 2,
+    textAlign: 'center',
   },
   uploadSub: {
-    fontSize: 12,
-    color: COLORS.textSubtle,
-  },
-  imagePreviewWrapper: {
-    borderRadius: 16,
-    overflow: 'hidden',
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginTop: 2,
+    textAlign: 'center',
   },
   imagePreview: {
     width: '100%',
     height: 220,
-    backgroundColor: COLORS.borderLight,
-    borderRadius: 16,
-    marginBottom: 12,
-  },
-  imageActions: {
-    flexDirection: 'row',
-    gap: 10,
-  },
-  actionBtn: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 14,
-    alignItems: 'center',
-  },
-  calculateBtn: {
-    flex: 1,
-    backgroundColor: '#006FE6',
-  },
-  analyzeBtn: {
-    flex: 1,
-    backgroundColor: COLORS.primarySoft,
-  },
-  removeBtn: {
-    flex: 1,
-    backgroundColor: COLORS.destructive,
-  },
-  actionBtnInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  actionBtnText: {
-    color: '#FFFFFF',
-    fontSize: 15,
-    fontWeight: 'bold',
-  },
-
-  // Daily Goal
-  goalCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    marginHorizontal: 18,
-    marginTop: 16,
-    padding: 20,
-    ...SHADOWS.medium,
-  },
-  goalHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  goalIconBox: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
-    backgroundColor: '#FFF7ED',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  goalTextContainer: {
-    flex: 1,
-  },
-  goalTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: COLORS.text,
-  },
-  goalCount: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.primarySoft,
-    marginTop: 2,
-  },
-  goalCompleteBadge: {
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    backgroundColor: '#ECFDF5',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  progressBarBg: {
-    height: 10,
-    backgroundColor: COLORS.primaryBg,
-    borderRadius: 5,
-    overflow: 'hidden',
-    marginBottom: 12,
-  },
-  progressBarFill: {
-    height: '100%',
-    borderRadius: 5,
-  },
-  goalEncouragementRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  goalEncouragement: {
-    fontSize: 13,
-    color: COLORS.textSubtle,
-    fontWeight: '600',
+    backgroundColor: colors.inputBg,
+    borderRadius: BORDER_RADIUS.md,
   },
 
   // Statistics
-  statsSection: {
-    marginHorizontal: 18,
-    marginTop: 24,
-  },
-  sectionTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: 14,
-    letterSpacing: -0.26,
-  },
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: SPACING.md,
   },
   statCard: {
-    width: (width - 18 * 2 - 12) / 2,
-    borderRadius: 16,
-    padding: 18,
+    flexBasis: '46%',
+    flexGrow: 1,
+    padding: SPACING.lg,
   },
   statCardDesktop: {
-    width: 'auto',
     flexBasis: '22%',
-    flexGrow: 1,
   },
-  statIconBox: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    justifyContent: 'center',
+  statTop: {
+    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    justifyContent: 'space-between',
+    marginBottom: SPACING.xs,
   },
   statNumber: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: COLORS.text,
-    marginBottom: 4,
-    letterSpacing: -0.5,
+    ...TYPOGRAPHY.h1,
+    color: colors.text,
   },
   statLabel: {
-    fontSize: 12,
-    color: COLORS.textSubtle,
-    fontWeight: '500',
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
   },
 
   // Recent Activity
-  activitySection: {
-    marginHorizontal: 18,
-    marginTop: 24,
-  },
-  emptyActivity: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    padding: 32,
-    alignItems: 'center',
-    ...SHADOWS.soft,
-  },
-  illustrationContainer: {
-    width: 120,
-    height: 120,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  illustrationBgCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: COLORS.primaryBg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.inputBorder,
-  },
-  emptyIconBox: {
-    width: 64,
-    height: 64,
-    borderRadius: 20,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.small,
-  },
-  floatingBubble: {
-    position: 'absolute',
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.small,
-  },
-  floatingTopRight: {
-    top: 2,
-    right: 0,
-  },
-  floatingBottomLeft: {
-    bottom: 2,
-    left: 0,
-  },
-  emptyActivityText: {
-    fontSize: 14,
-    color: COLORS.textSubtle,
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  activityCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 16,
-    padding: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 10,
-    ...SHADOWS.soft,
+  activityList: {
+    marginHorizontal: 0,
+    marginTop: 0,
   },
   activityThumb: {
-    width: 52,
-    height: 52,
-    borderRadius: 14,
-    backgroundColor: COLORS.borderLight,
-    marginRight: 14,
+    width: 30,
+    height: 30,
+    borderRadius: 7,
+    backgroundColor: colors.inputBg,
   },
-  activityContent: {
-    flex: 1,
-  },
-  activityTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: COLORS.text,
-    marginBottom: 4,
-  },
-  activityTime: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-  },
-  activityBadge: {
-    width: 34,
-    height: 34,
-    borderRadius: 12,
-    backgroundColor: COLORS.successLight,
-    justifyContent: 'center',
+  emptyActivity: {
     alignItems: 'center',
-    marginLeft: 10,
+    paddingVertical: SPACING.xxxl,
+  },
+  emptyIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.primaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.md,
+  },
+  emptyActivityText: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
+    textAlign: 'center',
   },
 
   // Daily Limit Modal
   limitOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: colors.overlay,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    padding: SPACING.xxl,
   },
   limitModal: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 20,
-    padding: 28,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.xl,
+    padding: SPACING.xxl,
     width: '100%',
     maxWidth: 360,
     alignItems: 'center',
-    ...SHADOWS.large,
   },
   limitIconBox: {
-    width: 72,
-    height: 72,
-    borderRadius: 36,
-    backgroundColor: '#FFF7ED',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.warningLight,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   limitTitle: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: COLORS.text,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.xs + 2,
   },
   limitMessage: {
-    fontSize: 14,
-    color: COLORS.textSubtle,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 20,
-  },
-  limitDivider: {
-    height: 1,
-    backgroundColor: COLORS.borderLight,
-    width: '100%',
-    marginBottom: 20,
+    marginBottom: SPACING.lg,
   },
   limitPremiumBox: {
-    backgroundColor: '#FFFBEB',
-    borderRadius: 16,
-    padding: 16,
+    backgroundColor: colors.warningLight,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md + 2,
     width: '100%',
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#FDE68A',
+    marginBottom: SPACING.lg,
   },
   limitPremiumHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 6,
+    gap: SPACING.xs + 2,
+    marginBottom: SPACING.xs,
   },
   limitPremiumTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#92400E',
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.text,
   },
   limitPremiumDesc: {
-    fontSize: 13,
-    color: '#A16207',
-    lineHeight: 18,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
   },
-  limitPremiumButton: {
-    width: '100%',
-    borderRadius: 14,
-    overflow: 'hidden',
-    marginBottom: 12,
-  },
-  limitPremiumGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 15,
-    gap: 8,
-    borderRadius: 14,
-  },
-  limitPremiumButtonText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-  limitCloseButton: {
-    paddingVertical: 10,
-  },
-  limitCloseText: {
-    fontSize: 14,
-    color: COLORS.textSubtle,
-    fontWeight: '600',
+  limitButton: {
+    alignSelf: 'stretch',
+    marginTop: SPACING.xs,
   },
 });

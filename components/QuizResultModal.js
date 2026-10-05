@@ -1,10 +1,9 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import {
   Modal,
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   SafeAreaView,
   ScrollView,
   Animated,
@@ -12,11 +11,12 @@ import {
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { Button, Pill } from './ui';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CONFETTI_COUNT = 40;
-const CONFETTI_COLORS = ['#FFD700', '#FF6B6B', '#4ECDC4', '#45B7D1', '#F59E0B', '#8B5CF6', '#10B981', '#EF4444', '#3B82F6'];
 
 // Confetti particle component
 function ConfettiParticle({ delay, color, startX }) {
@@ -92,13 +92,17 @@ function ConfettiParticle({ delay, color, startX }) {
 
 // Confetti overlay
 function ConfettiAnimation() {
+  const { colors } = useTheme();
   const particles = useRef(
-    Array.from({ length: CONFETTI_COUNT }, (_, i) => ({
-      id: i,
-      delay: Math.random() * 800,
-      color: CONFETTI_COLORS[Math.floor(Math.random() * CONFETTI_COLORS.length)],
-      startX: Math.random() * SCREEN_WIDTH,
-    }))
+    (() => {
+      const palette = [colors.warningAccent, colors.error, colors.accent, colors.primary, colors.secondary, colors.purple, colors.success];
+      return Array.from({ length: CONFETTI_COUNT }, (_, i) => ({
+        id: i,
+        delay: Math.random() * 800,
+        color: palette[Math.floor(Math.random() * palette.length)],
+        startX: Math.random() * SCREEN_WIDTH,
+      }));
+    })()
   ).current;
 
   return (
@@ -112,6 +116,8 @@ function ConfettiAnimation() {
 
 export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, isPerfectScore, quizHistory = [] }) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   if (!result || !quizSet) return null;
 
@@ -120,11 +126,11 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
   const percentage = Math.round((correctCount / totalQuestions) * 100);
 
   const getGradeInfo = () => {
-    if (percentage >= 90) return { icon: 'trophy', iconColor: '#FFD700', label: t('quizResult.excellent'), color: '#FFD700', message: t('quizResult.excellentMsg') };
-    if (percentage >= 75) return { icon: 'star', iconColor: COLORS.success, label: t('quizResult.veryGood'), color: COLORS.success, message: t('quizResult.veryGoodMsg') };
-    if (percentage >= 60) return { icon: 'thumbs-up', iconColor: COLORS.info, label: t('quizResult.good'), color: COLORS.info, message: t('quizResult.goodMsg') };
-    if (percentage >= 40) return { icon: 'book', iconColor: '#FF9800', label: t('quizResult.sufficient'), color: '#FF9800', message: t('quizResult.sufficientMsg') };
-    return { icon: 'fitness', iconColor: COLORS.destructive, label: t('quizResult.keepGoing'), color: COLORS.destructive, message: t('quizResult.keepGoingMsg') };
+    if (percentage >= 90) return { icon: 'trophy', iconColor: colors.warningAccent, label: t('quizResult.excellent'), color: colors.warningAccent, message: t('quizResult.excellentMsg') };
+    if (percentage >= 75) return { icon: 'star', iconColor: colors.success, label: t('quizResult.veryGood'), color: colors.success, message: t('quizResult.veryGoodMsg') };
+    if (percentage >= 60) return { icon: 'thumbs-up', iconColor: colors.info, label: t('quizResult.good'), color: colors.info, message: t('quizResult.goodMsg') };
+    if (percentage >= 40) return { icon: 'book', iconColor: colors.warning, label: t('quizResult.sufficient'), color: colors.warning, message: t('quizResult.sufficientMsg') };
+    return { icon: 'fitness', iconColor: colors.destructive, label: t('quizResult.keepGoing'), color: colors.destructive, message: t('quizResult.keepGoingMsg') };
   };
 
   const grade = getGradeInfo();
@@ -135,60 +141,59 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
         {/* Confetti for perfect score */}
         {isPerfectScore && <ConfettiAnimation />}
 
-        {/* Result Header */}
-        <View style={[styles.resultHeader, { backgroundColor: quizSet.color }]}>
-          {isPerfectScore && (
-            <View style={styles.perfectBadge}>
-              <Ionicons name="checkmark-circle" size={16} color="#FFFFFF" />
-              <Text style={styles.perfectBadgeText}>{t('quizResult.perfectScore')}</Text>
+        <ScrollView style={styles.scroll} contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+          {/* Result summary */}
+          <View style={styles.resultHeader}>
+            {isPerfectScore && (
+              <View style={styles.perfectBadge}>
+                <Pill icon="checkmark-circle" label={t('quizResult.perfectScore')} color={colors.success} filled />
+              </View>
+            )}
+            <View style={[styles.gradeIconContainer, { backgroundColor: grade.color + '1F' }]}>
+              <Ionicons name={grade.icon} size={36} color={grade.iconColor} />
             </View>
-          )}
-          <View style={styles.gradeIconContainer}>
-            <Ionicons name={grade.icon} size={42} color={grade.iconColor} />
-          </View>
-          <Text style={styles.gradeLabel}>{grade.label}</Text>
-          <Text style={styles.gradeMessage}>{grade.message}</Text>
+            <Text style={styles.gradeLabel}>{grade.label}</Text>
+            <Text style={styles.gradeMessage}>{grade.message}</Text>
 
-          {/* Score Circle */}
-          <View style={styles.scoreCircle}>
-            <Text style={styles.scorePercentage}>{percentage}%</Text>
-            <Text style={styles.scoreLabel}>{t('quizResult.score')}</Text>
+            {/* Score Circle */}
+            <View style={[styles.scoreCircle, { borderColor: quizSet.color }]}>
+              <Text style={styles.scorePercentage}>{percentage}%</Text>
+              <Text style={styles.scoreLabel}>{t('quizResult.score')}</Text>
+            </View>
           </View>
-        </View>
 
-        {/* Stats */}
-        <View style={styles.statsRow}>
-          <View style={styles.statCard}>
-            <Ionicons name="checkmark-circle" size={20} color={COLORS.success} style={{ marginBottom: 4 }} />
-            <Text style={styles.statValue}>{correctCount}</Text>
-            <Text style={styles.statLabel}>{t('quizResult.correctLabel')}</Text>
+          {/* Stats */}
+          <View style={styles.statsRow}>
+            <View style={styles.statCard}>
+              <Ionicons name="checkmark-circle" size={20} color={colors.success} style={{ marginBottom: 4 }} />
+              <Text style={styles.statValue}>{correctCount}</Text>
+              <Text style={styles.statLabel}>{t('quizResult.correctLabel')}</Text>
+            </View>
+            <View style={[styles.statCard, styles.statCardCenter]}>
+              <Ionicons name="close-circle" size={20} color={colors.error} style={{ marginBottom: 4 }} />
+              <Text style={styles.statValue}>{totalQuestions - correctCount}</Text>
+              <Text style={styles.statLabel}>{t('quizResult.wrongLabel')}</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Ionicons name="layers" size={20} color={colors.primary} style={{ marginBottom: 4 }} />
+              <Text style={styles.statValue}>{totalQuestions}</Text>
+              <Text style={styles.statLabel}>{t('quizResult.totalLabel')}</Text>
+            </View>
           </View>
-          <View style={[styles.statCard, styles.statCardCenter]}>
-            <Ionicons name="close-circle" size={20} color={COLORS.destructive} style={{ marginBottom: 4 }} />
-            <Text style={styles.statValue}>{totalQuestions - correctCount}</Text>
-            <Text style={styles.statLabel}>{t('quizResult.wrongLabel')}</Text>
-          </View>
-          <View style={styles.statCard}>
-            <Ionicons name="layers" size={20} color={COLORS.primary} style={{ marginBottom: 4 }} />
-            <Text style={styles.statValue}>{totalQuestions}</Text>
-            <Text style={styles.statLabel}>{t('quizResult.totalLabel')}</Text>
-          </View>
-        </View>
 
-        {/* Review Answers */}
-        <ScrollView style={styles.reviewContainer} showsVerticalScrollIndicator={false}>
+          {/* Review Answers */}
           <Text style={styles.reviewTitle}>{t('quizResult.reviewAnswers')}</Text>
           {quizSet.questions.map((question, index) => {
             const answer = result[index];
             const isCorrect = answer?.correct;
             return (
-              <View key={question.id} style={[styles.reviewCard, isCorrect ? styles.reviewCardCorrect : styles.reviewCardWrong]}>
+              <View key={question.id} style={styles.reviewCard}>
                 <View style={styles.reviewCardHeader}>
                   <View style={styles.reviewStatusContainer}>
                     <Ionicons
                       name={isCorrect ? 'checkmark-circle' : 'close-circle'}
                       size={18}
-                      color={isCorrect ? COLORS.success : COLORS.destructive}
+                      color={isCorrect ? colors.success : colors.error}
                     />
                     <Text style={[styles.reviewStatus, isCorrect ? styles.reviewStatusCorrect : styles.reviewStatusWrong]}>
                       {isCorrect ? t('quizResult.correctStatus') : t('quizResult.wrongStatus')}
@@ -198,13 +203,19 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
                 </View>
                 <Text style={styles.reviewQuestion}>{question.question}</Text>
                 {!isCorrect && (
-                  <Text style={styles.reviewYourAnswer}>
-                    {t('quizResult.yourAnswer', { answer: question.options[answer?.selected] || '-' })}
-                  </Text>
+                  <View style={[styles.reviewAnswerRow, styles.reviewAnswerRowWrong]}>
+                    <Ionicons name="close" size={15} color={colors.error} style={styles.reviewAnswerIcon} />
+                    <Text style={styles.reviewYourAnswer}>
+                      {t('quizResult.yourAnswer', { answer: question.options[answer?.selected] || '-' })}
+                    </Text>
+                  </View>
                 )}
-                <Text style={styles.reviewCorrectAnswer}>
-                  {t('quizResult.correctAnswer', { answer: question.options[question.correct] })}
-                </Text>
+                <View style={[styles.reviewAnswerRow, styles.reviewAnswerRowCorrect]}>
+                  <Ionicons name="checkmark" size={15} color={colors.success} style={styles.reviewAnswerIcon} />
+                  <Text style={styles.reviewCorrectAnswer}>
+                    {t('quizResult.correctAnswer', { answer: question.options[question.correct] })}
+                  </Text>
+                </View>
                 <Text style={styles.reviewExplanation}>{question.explanation}</Text>
               </View>
             );
@@ -213,15 +224,17 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
           {quizHistory.length > 1 && (
             <View style={styles.historySection}>
               <Text style={styles.historyTitle}>{t('quizResult.history')}</Text>
-              {quizHistory.slice().reverse().slice(0, 5).map((attempt, i) => (
-                <View key={i} style={styles.historyRow}>
-                  <Text style={styles.historyAttempt}>#{quizHistory.length - i}</Text>
-                  <View style={styles.historyBar}>
-                    <View style={[styles.historyBarFill, { width: `${attempt.percentage}%`, backgroundColor: attempt.percentage >= 75 ? COLORS.success : attempt.percentage >= 50 ? COLORS.warning : COLORS.error }]} />
+              <View style={styles.historyCard}>
+                {quizHistory.slice().reverse().slice(0, 5).map((attempt, i) => (
+                  <View key={i} style={styles.historyRow}>
+                    <Text style={styles.historyAttempt}>#{quizHistory.length - i}</Text>
+                    <View style={styles.historyBar}>
+                      <View style={[styles.historyBarFill, { width: `${attempt.percentage}%`, backgroundColor: attempt.percentage >= 75 ? colors.success : attempt.percentage >= 50 ? colors.warning : colors.error }]} />
+                    </View>
+                    <Text style={styles.historyScore}>{attempt.percentage}%</Text>
                   </View>
-                  <Text style={styles.historyScore}>{attempt.percentage}%</Text>
-                </View>
-              ))}
+                ))}
+              </View>
             </View>
           )}
 
@@ -230,99 +243,92 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
 
         {/* Footer Buttons */}
         <View style={styles.footer}>
-          <TouchableOpacity style={styles.retryButton} onPress={onRetry}>
-            <Ionicons name="refresh" size={18} color={COLORS.textSecondary} style={{ marginRight: 6 }} />
-            <Text style={styles.retryButtonText}>{t('quizResult.retry')}</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.closeButton, { backgroundColor: quizSet.color }]} onPress={onClose}>
-            <Ionicons name="checkmark" size={18} color="#FFFFFF" style={{ marginRight: 6 }} />
-            <Text style={styles.closeButtonText}>{t('quizResult.goBack')}</Text>
-          </TouchableOpacity>
+          <Button
+            title={t('quizResult.retry')}
+            icon="refresh"
+            variant="tinted"
+            onPress={onRetry}
+            style={styles.footerButton}
+          />
+          <Button
+            title={t('quizResult.goBack')}
+            icon="checkmark"
+            onPress={onClose}
+            style={[styles.footerButton, { backgroundColor: quizSet.color }]}
+          />
         </View>
       </SafeAreaView>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
+const HAIRLINE = StyleSheet.hairlineWidth;
+
+const makeStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.backgroundAlt,
+    backgroundColor: colors.background,
   },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: SPACING.lg,
+  },
+
+  // Summary
   resultHeader: {
     alignItems: 'center',
-    paddingVertical: 30,
-    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.xxl,
+    paddingBottom: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
   },
   perfectBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginBottom: 12,
-    gap: 6,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.4)',
-  },
-  perfectBadgeText: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: 0.5,
+    marginBottom: SPACING.md,
   },
   gradeIconContainer: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: SPACING.md,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
   },
   gradeLabel: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
-    marginBottom: 6,
+    ...TYPOGRAPHY.h1,
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: SPACING.xs,
   },
   gradeMessage: {
-    fontSize: 14,
-    color: COLORS.textLight,
-    opacity: 0.9,
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
     textAlign: 'center',
     marginBottom: SPACING.xl,
   },
   scoreCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: 'rgba(255,255,255,0.3)',
+    width: 108,
+    height: 108,
+    borderRadius: 54,
+    borderWidth: 6,
+    backgroundColor: colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 3,
-    borderColor: 'rgba(255,255,255,0.6)',
   },
   scorePercentage: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    ...TYPOGRAPHY.h1,
+    color: colors.text,
   },
   scoreLabel: {
-    fontSize: 12,
-    color: COLORS.textLight,
-    opacity: 0.9,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
   },
+
+  // Stats
   statsRow: {
     flexDirection: 'row',
-    backgroundColor: COLORS.surface,
-    marginHorizontal: SPACING.xl,
-    marginTop: -15,
-    borderRadius: 15,
-    ...SHADOWS.medium,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
   },
   statCard: {
     flex: 1,
@@ -330,43 +336,33 @@ const styles = StyleSheet.create({
     paddingVertical: SPACING.lg,
   },
   statCardCenter: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderLeftWidth: HAIRLINE,
+    borderRightWidth: HAIRLINE,
+    borderColor: colors.border,
   },
   statValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.h2,
+    color: colors.text,
   },
   statLabel: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    marginTop: SPACING.xs,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginTop: 2,
   },
-  reviewContainer: {
-    flex: 1,
-    paddingHorizontal: SPACING.xl,
-    marginTop: SPACING.xl,
-  },
+
+  // Review
   reviewTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
-    marginBottom: 15,
+    ...TYPOGRAPHY.h3,
+    fontWeight: '700',
+    color: colors.text,
+    marginTop: SPACING.xxl,
+    marginBottom: SPACING.md,
   },
   reviewCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.lg,
     marginBottom: SPACING.md,
-    borderLeftWidth: 4,
-  },
-  reviewCardCorrect: {
-    borderLeftColor: COLORS.success,
-  },
-  reviewCardWrong: {
-    borderLeftColor: COLORS.destructive,
   },
   reviewCardHeader: {
     flexDirection: 'row',
@@ -380,126 +376,118 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   reviewStatus: {
-    fontSize: 13,
-    fontWeight: 'bold',
+    ...TYPOGRAPHY.captionBold,
   },
   reviewStatusCorrect: {
-    color: COLORS.success,
+    color: colors.success,
   },
   reviewStatusWrong: {
-    color: COLORS.destructive,
+    color: colors.error,
   },
   reviewQuestionNum: {
-    fontSize: 12,
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
   },
   reviewQuestion: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: COLORS.textDark,
-    marginBottom: SPACING.sm,
-    lineHeight: 22,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.text,
+    marginBottom: SPACING.sm + 2,
+  },
+  reviewAnswerRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    borderRadius: BORDER_RADIUS.xs,
+    paddingHorizontal: SPACING.sm + 2,
+    paddingVertical: SPACING.sm - 2,
+    marginBottom: SPACING.xs + 2,
+  },
+  reviewAnswerRowWrong: {
+    backgroundColor: colors.errorLight,
+  },
+  reviewAnswerRowCorrect: {
+    backgroundColor: colors.successLight,
+  },
+  reviewAnswerIcon: {
+    marginRight: SPACING.xs + 2,
+    marginTop: 1,
   },
   reviewYourAnswer: {
-    fontSize: 13,
-    color: COLORS.destructive,
-    marginBottom: SPACING.xs,
+    ...TYPOGRAPHY.footnote,
+    color: colors.text,
+    flex: 1,
   },
   reviewCorrectAnswer: {
-    fontSize: 13,
-    color: COLORS.success,
-    fontWeight: '600',
-    marginBottom: SPACING.sm,
+    ...TYPOGRAPHY.captionBold,
+    color: colors.text,
+    flex: 1,
   },
   reviewExplanation: {
-    fontSize: 13,
-    color: COLORS.textSecondary,
-    lineHeight: 19,
-    backgroundColor: COLORS.backgroundAlt,
-    padding: 10,
-    borderRadius: BORDER_RADIUS.sm,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSecondary,
+    marginTop: SPACING.xs,
   },
-  footer: {
-    flexDirection: 'row',
-    padding: SPACING.xl,
-    paddingBottom: 10,
-    gap: SPACING.md,
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
-  },
-  retryButton: {
-    flex: 1,
-    flexDirection: 'row',
-    backgroundColor: COLORS.borderLight,
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  retryButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.textSecondary,
-  },
-  closeButton: {
-    flex: 1,
-    flexDirection: 'row',
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: 15,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
-  },
+
+  // History
   historySection: {
-    marginHorizontal: SPACING.md,
     marginTop: SPACING.lg,
-    backgroundColor: COLORS.backgroundAlt,
-    borderRadius: BORDER_RADIUS.lg,
-    padding: SPACING.md,
-    borderWidth: 1,
-    borderColor: COLORS.border,
   },
   historyTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: COLORS.textSecondary,
-    marginBottom: SPACING.sm,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    marginLeft: SPACING.lg,
+    marginBottom: SPACING.sm - 2,
+  },
+  historyCard: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.xs,
   },
   historyRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
-    gap: 8,
+    marginBottom: SPACING.sm,
+    gap: SPACING.sm,
   },
   historyAttempt: {
-    fontSize: 12,
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.footnote,
     fontWeight: '600',
+    color: colors.textSubtle,
     width: 28,
   },
   historyBar: {
     flex: 1,
-    height: 8,
-    backgroundColor: COLORS.border,
-    borderRadius: 4,
+    height: 6,
+    backgroundColor: colors.borderLight,
+    borderRadius: 3,
     overflow: 'hidden',
   },
   historyBarFill: {
     height: '100%',
-    borderRadius: 4,
+    borderRadius: 3,
   },
   historyScore: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: COLORS.text,
-    width: 36,
+    ...TYPOGRAPHY.footnote,
+    fontWeight: '600',
+    color: colors.text,
+    width: 40,
     textAlign: 'right',
+  },
+
+  // Footer
+  footer: {
+    flexDirection: 'row',
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.md,
+    gap: SPACING.md,
+    backgroundColor: colors.surface,
+    borderTopWidth: HAIRLINE,
+    borderTopColor: colors.border,
+  },
+  footerButton: {
+    flex: 1,
   },
 });

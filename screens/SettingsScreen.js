@@ -6,11 +6,8 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
-  Switch,
   Alert,
   Modal,
-  ActivityIndicator,
   Platform,
   Linking,
 } from 'react-native';
@@ -20,9 +17,9 @@ import { useStats } from '../context/StatsContext';
 import { useTheme } from '../context/ThemeContext';
 import InfoModal from '../components/InfoModal';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, SHADOWS } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { ScreenHeader, ListSection, ListRow, Button } from '../components/ui';
 import WebContainer from '../components/WebContainer';
 import { useResponsive } from '../utils/responsive';
 
@@ -176,233 +173,138 @@ export default function SettingsScreen() {
     ? user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2)
     : '?';
 
-  const SettingToggle = ({ icon, iconColor, iconBg, title, description, value, onValueChange }) => (
-    <View style={[styles.settingCard, { backgroundColor: colors.surface }]}>
-      <View style={[styles.settingIconBox, { backgroundColor: iconBg }]}>
-        <Ionicons name={icon} size={20} color={iconColor} />
-      </View>
-      <View style={styles.settingTextWrap}>
-        <Text style={[styles.settingTitle, { color: colors.text }]} numberOfLines={1}>{title}</Text>
-        {description && <Text style={[styles.settingDesc, { color: colors.textMuted }]} numberOfLines={2}>{description}</Text>}
-      </View>
-      <Switch
-        value={value}
-        onValueChange={onValueChange}
-        trackColor={{ false: colors.border, true: colors.primary + '60' }}
-        thumbColor={value ? colors.primary : colors.surface}
-        ios_backgroundColor={colors.border}
-      />
-    </View>
-  );
+  const openPrivacy = () => {
+    if (Platform.OS === 'web') {
+      window.open('/privacy', '_blank');
+    } else {
+      Linking.openURL('https://mathhelper.online/privacy');
+    }
+  };
 
-  const MenuItem = ({ icon, iconColor, iconBg, title, subtitle, onPress }) => (
-    <TouchableOpacity
-      style={[styles.menuCard, { backgroundColor: colors.surface }]}
-      onPress={onPress}
-      activeOpacity={0.7}
-    >
-      <View style={[styles.settingIconBox, { backgroundColor: iconBg }]}>
-        <Ionicons name={icon} size={20} color={iconColor} />
-      </View>
-      <View style={styles.menuTextWrap}>
-        <Text style={[styles.menuTitle, { color: colors.text }]}>{title}</Text>
-        {subtitle && <Text style={[styles.menuSubtitle, { color: colors.textMuted }]}>{subtitle}</Text>}
-      </View>
-      <Ionicons name="chevron-forward" size={20} color={colors.textMuted} />
-    </TouchableOpacity>
-  );
+  const openAbout = () => {
+    if (Platform.OS === 'web') {
+      window.open('/about', '_blank');
+    } else {
+      setInfoModal('about');
+    }
+  };
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: colors.background }]} showsVerticalScrollIndicator={false}>
-      {/* Header */}
-      <LinearGradient
-        colors={[colors.primary || COLORS.primary, colors.primarySoft || COLORS.primarySoft, colors.primaryLight || COLORS.primaryLight]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
-      >
-        <Text style={styles.headerTitle}>{t('settings.title')}</Text>
-        <Text style={styles.headerSubtitle}>{t('settings.subtitle')}</Text>
-
-        {/* Profile Card inside header */}
-        <View style={styles.glassProfileCard}>
-          <LinearGradient
-            colors={['rgba(255,255,255,0.25)', 'rgba(255,255,255,0.1)']}
-            style={styles.profileAvatar}
-          >
-            <Text style={styles.profileAvatarText}>{initials}</Text>
-          </LinearGradient>
-          <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>{user?.name || t('settings.user')}</Text>
-            <Text style={styles.profileEmail}>{user?.email || ''}</Text>
-          </View>
-          <View style={styles.profileStats}>
-            <View style={styles.profileStatItem}>
-              <Ionicons name="flame" size={14} color="rgba(255,255,255,0.8)" />
-              <Text style={styles.profileStatText}>{streak}</Text>
-            </View>
-          </View>
-        </View>
-      </LinearGradient>
-
       <WebContainer maxWidth={600}>
-      {/* Preferences Section */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.preferences')}</Text>
+      <ScreenHeader title={t('settings.title')} subtitle={t('settings.subtitle')} />
 
-        <SettingToggle
+      {/* Profile */}
+      <ListSection style={styles.firstSection}>
+        <ListRow
+          leading={
+            <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+              <Text style={styles.avatarText}>{initials}</Text>
+            </View>
+          }
+          title={user?.name || t('settings.user')}
+          subtitle={user?.email || ''}
+          right={
+            <View style={[styles.streakChip, { backgroundColor: colors.warningLight }]}>
+              <Ionicons name="flame" size={14} color={colors.secondary} />
+              <Text style={[styles.streakText, { color: colors.secondary }]}>{streak}</Text>
+            </View>
+          }
+        />
+      </ListSection>
+
+      {/* Preferences */}
+      <ListSection title={t('settings.preferences')}>
+        <ListRow
           icon="notifications"
-          iconColor="#006FE6"
-          iconBg={colors.primaryBg}
+          iconColor={colors.error}
           title={t('settings.notifications')}
-          description={t('settings.notificationsDesc')}
-          value={notifications}
-          onValueChange={handleNotificationsChange}
+          subtitle={t('settings.notificationsDesc')}
+          switchValue={notifications}
+          onSwitchChange={handleNotificationsChange}
         />
-
-        <SettingToggle
+        <ListRow
           icon="moon"
-          iconColor="#8B5CF6"
-          iconBg={colors.purpleLight}
+          iconColor={colors.purple}
           title={t('settings.darkMode')}
-          description={t('settings.darkModeDesc')}
-          value={isDark}
-          onValueChange={toggleTheme}
+          subtitle={t('settings.darkModeDesc')}
+          switchValue={isDark}
+          onSwitchChange={toggleTheme}
         />
-
-        <SettingToggle
+        <ListRow
           icon="volume-high"
-          iconColor="#F59E0B"
-          iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+          iconColor={colors.secondary}
           title={t('settings.soundEffects')}
-          description={t('settings.soundEffectsDesc')}
-          value={soundEffects}
-          onValueChange={handleSoundChange}
+          subtitle={t('settings.soundEffectsDesc')}
+          switchValue={soundEffects}
+          onSwitchChange={handleSoundChange}
         />
-
-        <View style={[styles.settingCard, { backgroundColor: colors.surface }]}>
-          <View style={[styles.settingIconBox, { backgroundColor: isDark ? 'rgba(6,182,212,0.12)' : '#ECFEFF' }]}>
-            <Ionicons name="globe" size={20} color="#06B6D4" />
-          </View>
-          <View style={styles.settingTextWrap}>
-            <Text style={[styles.settingTitle, { color: colors.text }]} numberOfLines={1}>{t('settings.language')}</Text>
-            <Text style={[styles.settingDesc, { color: colors.textMuted }]} numberOfLines={2}>{t('settings.languageDesc')}</Text>
-          </View>
+        <ListRow
+          icon="globe"
+          iconColor={colors.accent}
+          title={t('settings.language')}
+          subtitle={t('settings.languageDesc')}
+          showDivider={false}
+        />
+        <View style={styles.languageRow}>
+          <LanguageSwitcher variant="light" />
         </View>
-        <View style={[styles.languageRow, { backgroundColor: colors.primary || COLORS.primary }]}>
-          <LanguageSwitcher />
-        </View>
-      </View>
+      </ListSection>
 
-      {/* Learning Section */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.learning')}</Text>
-
-        <MenuItem
+      {/* Learning */}
+      <ListSection title={t('settings.learning')}>
+        <ListRow
           icon="flag"
-          iconColor="#F59E0B"
-          iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+          iconColor={colors.secondary}
           title={t('settings.dailyGoals')}
           subtitle={streak > 0 ? t('settings.todayStreak', { streak }) : t('settings.startToday')}
           onPress={() => setInfoModal('goals')}
         />
-        <MenuItem
+        <ListRow
           icon="bar-chart"
-          iconColor="#006FE6"
-          iconBg={colors.primaryBg}
+          iconColor={colors.primary}
           title={t('settings.progressStats')}
           subtitle={t('settings.coursesQuizzes', { courses: completedCoursesCount, quizzes: completedQuizzesCount })}
           onPress={() => setInfoModal('stats')}
         />
-        <MenuItem
+        <ListRow
           icon="trophy"
-          iconColor="#F59E0B"
-          iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+          iconColor={colors.warningAccent}
           title={t('settings.achievements')}
-          subtitle={t('settings.achievementsCount', { count: achievements.length })}
+          value={String(achievements.length)}
           onPress={() => setInfoModal('achievements')}
         />
-      </View>
+      </ListSection>
 
-      {/* Subscription Section (Paddle subscribers only) */}
+      {/* Subscription (Paddle subscribers only) */}
       {user?.tier === 'premium' && hasPaddleSubscription && (
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.subscription')}</Text>
-          <MenuItem
+        <ListSection title={t('settings.subscription')}>
+          <ListRow
             icon="card"
-            iconColor="#D97706"
-            iconBg={isDark ? 'rgba(245,158,11,0.12)' : '#FFF7ED'}
+            iconColor={colors.success}
             title={t('settings.manageSubscription')}
             subtitle={openingPortal ? t('settings.manageSubscriptionOpening') : t('settings.manageSubscriptionDesc')}
-            onPress={openingPortal ? undefined : handleManageSubscription}
+            loading={openingPortal}
+            onPress={handleManageSubscription}
           />
-        </View>
+        </ListSection>
       )}
 
-      {/* Other Section */}
-      <View style={styles.section}>
-        <Text style={[styles.sectionTitle, { color: colors.textMuted }]}>{t('settings.other')}</Text>
+      {/* Other */}
+      <ListSection title={t('settings.other')}>
+        <ListRow icon="help-circle" iconColor={colors.success} title={t('settings.helpSupport')} onPress={() => setInfoModal('help')} />
+        <ListRow icon="document-text" iconColor={colors.textMuted} title={t('settings.termsOfService')} onPress={() => setInfoModal('terms')} />
+        <ListRow icon="shield-checkmark" iconColor={colors.primary} title={t('settings.privacyPolicy')} onPress={openPrivacy} />
+        <ListRow icon="information-circle" iconColor={colors.textMuted} title={t('settings.aboutApp')} onPress={openAbout} />
+      </ListSection>
 
-        <MenuItem
-          icon="help-circle"
-          iconColor="#10B981"
-          iconBg={isDark ? 'rgba(16,185,129,0.12)' : '#ECFDF5'}
-          title={t('settings.helpSupport')}
-          onPress={() => setInfoModal('help')}
-        />
-        <MenuItem
-          icon="document-text"
-          iconColor="#636366"
-          iconBg={isDark ? 'rgba(100,116,139,0.12)' : '#F1F5F9'}
-          title={t('settings.termsOfService')}
-          onPress={() => setInfoModal('terms')}
-        />
-        <MenuItem
-          icon="shield-checkmark"
-          iconColor="#8B5CF6"
-          iconBg={colors.purpleLight}
-          title={t('settings.privacyPolicy')}
-          onPress={() => {
-            if (Platform.OS === 'web') {
-              window.open('/privacy', '_blank');
-            } else {
-              Linking.openURL('https://mathhelper.online/privacy');
-            }
-          }}
-        />
-        <MenuItem
-          icon="information-circle"
-          iconColor="#006FE6"
-          iconBg={colors.primaryBg}
-          title={t('settings.aboutApp')}
-          onPress={() => {
-            if (Platform.OS === 'web') {
-              window.open('/about', '_blank');
-            } else {
-              setInfoModal('about');
-            }
-          }}
-        />
-      </View>
-
-      {/* Logout Button */}
-      <View style={styles.section}>
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.8}>
-          <Ionicons name="log-out-outline" size={20} color="#FFFFFF" />
-          <Text style={styles.logoutText}>{t('settings.logout')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Delete Account — clean list row */}
-      <View style={styles.section}>
-        <TouchableOpacity style={styles.actionRow} onPress={handleDeleteAccount} activeOpacity={0.7}>
-          <View style={[styles.actionIcon, { backgroundColor: '#FFF1F0' }]}>
-            <Ionicons name="person-remove-outline" size={18} color="#EF4444" />
-          </View>
-          <Text style={[styles.actionRowText, { color: '#EF4444' }]}>{t('settings.deleteAccount')}</Text>
-          <Ionicons name="chevron-forward" size={16} color="#EF4444" style={{ opacity: 0.5 }} />
-        </TouchableOpacity>
-      </View>
+      {/* Account */}
+      <ListSection>
+        <ListRow title={t('settings.logout')} centered onPress={handleLogout} />
+      </ListSection>
+      <ListSection style={styles.tightSection}>
+        <ListRow title={t('settings.deleteAccount')} destructive centered onPress={handleDeleteAccount} />
+      </ListSection>
 
       {/* Delete Account Modal */}
       <Modal
@@ -411,59 +313,49 @@ export default function SettingsScreen() {
         animationType="fade"
         onRequestClose={() => !isDeleting && setShowDeleteModal(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.deleteModalCard}>
-            {/* Icon */}
-            <View style={styles.deleteModalIconWrap}>
-              <Ionicons name="person-remove" size={32} color="#EF4444" />
+        <View style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}>
+          <View style={[styles.deleteModalCard, { backgroundColor: colors.surface }]}>
+            <View style={[styles.deleteModalIconWrap, { backgroundColor: colors.errorLight }]}>
+              <Ionicons name="person-remove" size={28} color={colors.destructive} />
             </View>
 
-            <Text style={styles.deleteModalTitle}>{t('settings.deleteAccountConfirmTitle')}</Text>
-            <Text style={styles.deleteModalSubtitle}>{t('settings.deleteAccountConfirm')}</Text>
+            <Text style={[styles.deleteModalTitle, { color: colors.text }]}>{t('settings.deleteAccountConfirmTitle')}</Text>
+            <Text style={[styles.deleteModalSubtitle, { color: colors.textSubtle }]}>{t('settings.deleteAccountConfirm')}</Text>
 
             {/* What gets deleted */}
-            <View style={styles.deleteModalList}>
+            <View style={[styles.deleteModalList, { backgroundColor: colors.background }]}>
               {[
                 { icon: 'bookmark-outline', label: t('settings.deleteWillRemove1') },
                 { icon: 'bar-chart-outline', label: t('settings.deleteWillRemove2') },
                 { icon: 'school-outline', label: t('settings.deleteWillRemove3') },
               ].map((item, i) => (
                 <View key={i} style={styles.deleteModalListRow}>
-                  <Ionicons name={item.icon} size={16} color="#EF4444" />
-                  <Text style={styles.deleteModalListText}>{item.label}</Text>
+                  <Ionicons name={item.icon} size={16} color={colors.destructive} />
+                  <Text style={[styles.deleteModalListText, { color: colors.text }]}>{item.label}</Text>
                 </View>
               ))}
             </View>
 
-            {/* Actions */}
-            <TouchableOpacity
-              style={[styles.deleteConfirmBtn, isDeleting && { opacity: 0.6 }]}
+            <Button
+              title={t('settings.deleteAccount')}
+              tone="destructive"
               onPress={confirmDeleteAccount}
-              disabled={isDeleting}
-              activeOpacity={0.8}
-            >
-              {isDeleting
-                ? <ActivityIndicator color="#fff" size="small" />
-                : <Text style={styles.deleteConfirmBtnText}>{t('settings.deleteAccount')}</Text>
-              }
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={styles.deleteCancelBtn}
+              loading={isDeleting}
+              style={styles.modalButton}
+            />
+            <Button
+              title={t('common.cancel')}
+              variant="plain"
               onPress={() => setShowDeleteModal(false)}
               disabled={isDeleting}
-              activeOpacity={0.7}
-            >
-              <Text style={styles.deleteCancelBtnText}>{t('common.cancel')}</Text>
-            </TouchableOpacity>
+              style={styles.modalButton}
+            />
           </View>
         </View>
       </Modal>
 
       {/* Version */}
-      <View style={styles.versionContainer}>
-        <Text style={[styles.versionText, { color: colors.textMuted }]}>{t('settings.version')}</Text>
-      </View>
+      <Text style={[styles.versionText, { color: colors.textMuted }]}>{t('settings.version')}</Text>
 
       <View style={{ height: isWeb ? 20 : 100 }} />
       </WebContainer>
@@ -553,333 +445,102 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
-  // Header
-  headerGradient: {
-    paddingHorizontal: SPACING.xl,
-    paddingTop: 60,
-    paddingBottom: 24,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+  firstSection: {
+    marginTop: SPACING.lg,
   },
-  headerTitle: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 4,
-    letterSpacing: -0.5,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
-    fontWeight: '500',
-    marginBottom: 20,
+  tightSection: {
+    marginTop: SPACING.md,
   },
 
-  // Glass Profile Card
-  glassProfileCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 18,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.25)',
-  },
-  profileAvatar: {
+  // Profile
+  avatar: {
     width: 52,
     height: 52,
-    borderRadius: 16,
+    borderRadius: 26,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 14,
   },
-  profileAvatarText: {
-    fontSize: 22,
-    fontWeight: '800',
+  avatarText: {
+    ...TYPOGRAPHY.h3,
     color: '#FFFFFF',
   },
-  profileInfo: {
-    flex: 1,
-  },
-  profileName: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#FFFFFF',
-    marginBottom: 2,
-  },
-  profileEmail: {
-    fontSize: 13,
-    color: 'rgba(255,255,255,0.7)',
-    fontWeight: '500',
-  },
-  profileStats: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  profileStatItem: {
+  streakChip: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 10,
+    paddingHorizontal: SPACING.sm + 2,
+    paddingVertical: SPACING.xs + 1,
+    borderRadius: BORDER_RADIUS.round,
+    marginLeft: SPACING.sm,
   },
-  profileStatText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-
-  // Sections
-  section: {
-    paddingHorizontal: SPACING.xl,
-    paddingTop: SPACING.xl,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '600',
-    letterSpacing: 0.6,
-    color: '#8E8E93',
-    marginBottom: 14,
-  },
-
-  // Setting Toggle Card
-  settingCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 10,
-    ...SHADOWS.soft,
-  },
-  settingIconBox: {
-    width: 42,
-    height: 42,
-    borderRadius: 14,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  settingTextWrap: {
-    flex: 1,
-    marginRight: 10,
-  },
-  settingTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  settingDesc: {
-    fontSize: 12,
-    lineHeight: 16,
-  },
-
-  // Sub-notification toggles
-  subNotifContainer: {
-    borderRadius: 12,
-    marginBottom: 10,
-    marginLeft: 16,
-    overflow: 'hidden',
-    ...SHADOWS.soft,
-  },
-  subNotifRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-  },
-  subNotifIconBox: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  subNotifText: {
-    flex: 1,
-    marginRight: 8,
-  },
-  subNotifTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 1,
-  },
-  subNotifDesc: {
-    fontSize: 11,
-    lineHeight: 15,
-  },
-  subNotifDivider: {
-    height: 0.5,
-    marginLeft: 60,
+  streakText: {
+    ...TYPOGRAPHY.subheadBold,
   },
 
   // Language
   languageRow: {
-    borderRadius: 16,
-    padding: 14,
-    marginBottom: 10,
+    paddingHorizontal: SPACING.lg,
+    paddingBottom: SPACING.md,
     alignItems: 'center',
-    ...SHADOWS.medium,
-  },
-
-  // Menu Item
-  menuCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 10,
-    ...SHADOWS.soft,
-  },
-  menuTextWrap: {
-    flex: 1,
-    marginRight: 10,
-  },
-  menuTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    marginBottom: 2,
-  },
-  menuSubtitle: {
-    fontSize: 12,
-  },
-
-  // Logout button
-  logoutButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#EF4444',
-    borderRadius: 14,
-    padding: 18,
-    gap: 8,
-    ...SHADOWS.medium,
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#FFFFFF',
-  },
-
-  // Account action rows
-  actionRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 13,
-    paddingHorizontal: 4,
-    gap: 12,
-  },
-  actionIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  actionRowText: {
-    flex: 1,
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  rowDivider: {
-    height: 0.5,
-    backgroundColor: COLORS.border,
-    marginLeft: 46,
   },
 
   // Delete Account Modal
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 24,
+    padding: SPACING.xxl,
   },
   deleteModalCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 20,
-    padding: 28,
+    borderRadius: BORDER_RADIUS.xl,
+    padding: SPACING.xxl,
     width: '100%',
-    maxWidth: 380,
+    maxWidth: 360,
     alignItems: 'center',
-    ...SHADOWS.large,
   },
   deleteModalIconWrap: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: '#FFF1F0',
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: SPACING.lg,
   },
   deleteModalTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#111',
-    marginBottom: 8,
+    ...TYPOGRAPHY.headline,
     textAlign: 'center',
+    marginBottom: SPACING.xs + 2,
   },
   deleteModalSubtitle: {
-    fontSize: 14,
-    color: '#666',
+    ...TYPOGRAPHY.footnote,
     textAlign: 'center',
-    lineHeight: 20,
-    marginBottom: 20,
+    marginBottom: SPACING.lg,
   },
   deleteModalList: {
     width: '100%',
-    backgroundColor: '#FFF5F5',
-    borderRadius: 12,
-    padding: 14,
-    gap: 10,
-    marginBottom: 24,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.md + 2,
+    gap: SPACING.sm + 2,
+    marginBottom: SPACING.xl,
   },
   deleteModalListRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    gap: SPACING.sm + 2,
   },
   deleteModalListText: {
-    fontSize: 13,
-    color: '#EF4444',
-    fontWeight: '500',
+    ...TYPOGRAPHY.footnote,
+    flex: 1,
   },
-  deleteConfirmBtn: {
-    width: '100%',
-    backgroundColor: '#EF4444',
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  deleteConfirmBtnText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '700',
-  },
-  deleteCancelBtn: {
-    width: '100%',
-    backgroundColor: '#F5F5F5',
-    borderRadius: 14,
-    paddingVertical: 16,
-    alignItems: 'center',
-  },
-  deleteCancelBtnText: {
-    color: '#333',
-    fontSize: 16,
-    fontWeight: '600',
+  modalButton: {
+    alignSelf: 'stretch',
+    marginTop: SPACING.xs,
   },
 
   // Version
-  versionContainer: {
-    alignItems: 'center',
-    paddingVertical: SPACING.xl,
-  },
   versionText: {
-    fontSize: 13,
+    ...TYPOGRAPHY.footnote,
+    textAlign: 'center',
+    paddingVertical: SPACING.xxl,
   },
 });

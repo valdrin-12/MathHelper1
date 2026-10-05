@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,20 +12,22 @@ import {
   Alert,
   Linking,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
 import api from '../services/apiClient';
 import LanguageSwitcher from '../components/LanguageSwitcher';
-import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import { SHADOWS } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
 import WebContainer from '../components/WebContainer';
 
 
 export default function AuthScreen() {
   const { login, register } = useUser();
   const { t, i18n } = useTranslation();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -271,21 +273,16 @@ export default function AuthScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Brand Area — full blue gradient header */}
-        <LinearGradient
-          colors={['#1A3BAA', COLORS.primary]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0.5, y: 1 }}
-          style={styles.brandArea}
-        >
+        <View style={styles.brandArea}>
           <View style={styles.appIconSquircle}>
             <Ionicons name="calculator" size={38} color="#FFFFFF" />
           </View>
           <Text style={styles.appName}>MathHelper</Text>
           <Text style={styles.appTagline}>{t('auth.tagline')}</Text>
           <View style={styles.languageSwitcherTop}>
-            <LanguageSwitcher variant="dark" />
+            <LanguageSwitcher variant="light" />
           </View>
-        </LinearGradient>
+        </View>
 
         {/* Form Card */}
         <WebContainer maxWidth={480}>
@@ -299,7 +296,7 @@ export default function AuthScreen() {
               <Ionicons
                 name="log-in-outline"
                 size={16}
-                color={isLogin ? COLORS.primary : COLORS.textMuted}
+                color={isLogin ? colors.primary : colors.textMuted}
                 style={{ marginRight: 6 }}
               />
               <Text style={[styles.tabText, isLogin && styles.activeTabText]}>{t('auth.login')}</Text>
@@ -311,7 +308,7 @@ export default function AuthScreen() {
               <Ionicons
                 name="person-add-outline"
                 size={16}
-                color={!isLogin ? COLORS.primary : COLORS.textMuted}
+                color={!isLogin ? colors.primary : colors.textMuted}
                 style={{ marginRight: 6 }}
               />
               <Text style={[styles.tabText, !isLogin && styles.activeTabText]}>{t('auth.register')}</Text>
@@ -328,11 +325,11 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.email')}</Text>
                 <View style={[styles.inputWrapper, errors.email && styles.inputWrapperError]}>
-                  <Ionicons name="mail-outline" size={18} color={errors.email ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
+                  <Ionicons name="mail-outline" size={18} color={errors.email ? colors.error : colors.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.emailPlaceholder')}
-                    placeholderTextColor={COLORS.textPlaceholder}
+                    placeholderTextColor={colors.textPlaceholder}
                     value={email}
                     onChangeText={(text) => { setEmail(text); if (errors.email) setErrors({ ...errors, email: null }); }}
                     keyboardType="email-address"
@@ -347,17 +344,17 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.password')}</Text>
                 <View style={[styles.inputWrapper, errors.password && styles.inputWrapperError]}>
-                  <Ionicons name="lock-closed-outline" size={18} color={errors.password ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
+                  <Ionicons name="lock-closed-outline" size={18} color={errors.password ? colors.error : colors.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.passwordPlaceholder')}
-                    placeholderTextColor={COLORS.textPlaceholder}
+                    placeholderTextColor={colors.textPlaceholder}
                     value={password}
                     onChangeText={(text) => { setPassword(text); if (errors.password) setErrors({ ...errors, password: null }); }}
                     secureTextEntry={!showPassword}
                   />
                   <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-                    <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={COLORS.textMuted} />
+                    <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
                 {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
@@ -366,7 +363,7 @@ export default function AuthScreen() {
               {/* Login error message */}
               {loginError ? (
                 <View style={styles.loginErrorBox}>
-                  <Ionicons name="alert-circle" size={16} color="#DC2626" style={{ marginRight: 6 }} />
+                  <Ionicons name="alert-circle" size={16} color={colors.error} style={{ marginRight: 6 }} />
                   <Text style={styles.loginErrorText}>{loginError}</Text>
                 </View>
               ) : null}
@@ -377,12 +374,7 @@ export default function AuthScreen() {
                 onPress={handleLogin}
                 disabled={loading}
               >
-                <LinearGradient
-                  colors={[COLORS.primary, COLORS.primarySoft]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.submitGradient}
-                >
+                <View style={styles.submitGradient}>
                   {loading ? (
                     <ActivityIndicator color="#FFFFFF" size="small" />
                   ) : (
@@ -391,7 +383,7 @@ export default function AuthScreen() {
                       <Text style={styles.submitButtonText}>{t('auth.login')}</Text>
                     </>
                   )}
-                </LinearGradient>
+                </View>
               </TouchableOpacity>
 
               {/* Forgot Password Link */}
@@ -408,11 +400,11 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.name')}</Text>
                 <View style={[styles.inputWrapper, errors.name && styles.inputWrapperError]}>
-                  <Ionicons name="person-outline" size={18} color={errors.name ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
+                  <Ionicons name="person-outline" size={18} color={errors.name ? colors.error : colors.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.namePlaceholder')}
-                    placeholderTextColor={COLORS.textPlaceholder}
+                    placeholderTextColor={colors.textPlaceholder}
                     value={name}
                     onChangeText={(text) => { setName(text); if (errors.name) setErrors({ ...errors, name: null }); }}
                     autoCapitalize="words"
@@ -425,11 +417,11 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.email')}</Text>
                 <View style={[styles.inputWrapper, errors.email && styles.inputWrapperError]}>
-                  <Ionicons name="mail-outline" size={18} color={errors.email ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
+                  <Ionicons name="mail-outline" size={18} color={errors.email ? colors.error : colors.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.emailPlaceholder')}
-                    placeholderTextColor={COLORS.textPlaceholder}
+                    placeholderTextColor={colors.textPlaceholder}
                     value={email}
                     onChangeText={(text) => { setEmail(text); if (errors.email) setErrors({ ...errors, email: null }); }}
                     keyboardType="email-address"
@@ -444,17 +436,17 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.password')}</Text>
                 <View style={[styles.inputWrapper, errors.password && styles.inputWrapperError]}>
-                  <Ionicons name="lock-closed-outline" size={18} color={errors.password ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
+                  <Ionicons name="lock-closed-outline" size={18} color={errors.password ? colors.error : colors.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.minChars')}
-                    placeholderTextColor={COLORS.textPlaceholder}
+                    placeholderTextColor={colors.textPlaceholder}
                     value={password}
                     onChangeText={(text) => { setPassword(text); if (errors.password) setErrors({ ...errors, password: null }); }}
                     secureTextEntry={!showPassword}
                   />
                   <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
-                    <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={COLORS.textMuted} />
+                    <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
                 {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
@@ -464,17 +456,17 @@ export default function AuthScreen() {
               <View style={styles.inputGroup}>
                 <Text style={styles.inputLabel}>{t('auth.confirmPassword')}</Text>
                 <View style={[styles.inputWrapper, errors.confirmPassword && styles.inputWrapperError]}>
-                  <Ionicons name="shield-checkmark-outline" size={18} color={errors.confirmPassword ? COLORS.error : COLORS.textMuted} style={styles.inputIcon} />
+                  <Ionicons name="shield-checkmark-outline" size={18} color={errors.confirmPassword ? colors.error : colors.textMuted} style={styles.inputIcon} />
                   <TextInput
                     style={styles.textInput}
                     placeholder={t('auth.confirmPasswordPlaceholder')}
-                    placeholderTextColor={COLORS.textPlaceholder}
+                    placeholderTextColor={colors.textPlaceholder}
                     value={confirmPassword}
                     onChangeText={(text) => { setConfirmPassword(text); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: null }); }}
                     secureTextEntry={!showConfirmPassword}
                   />
                   <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeButton}>
-                    <Ionicons name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={COLORS.textMuted} />
+                    <Ionicons name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
                 {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
@@ -514,7 +506,7 @@ export default function AuthScreen() {
               {/* Register error message */}
               {registerError ? (
                 <View style={styles.loginErrorBox}>
-                  <Ionicons name="alert-circle" size={16} color="#DC2626" style={{ marginRight: 6 }} />
+                  <Ionicons name="alert-circle" size={16} color={colors.error} style={{ marginRight: 6 }} />
                   <Text style={styles.loginErrorText}>{registerError}</Text>
                 </View>
               ) : null}
@@ -525,12 +517,7 @@ export default function AuthScreen() {
                 onPress={handleRegister}
                 disabled={loading}
               >
-                <LinearGradient
-                  colors={[COLORS.primary, COLORS.primarySoft]}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={styles.submitGradient}
-                >
+                <View style={styles.submitGradient}>
                   {loading ? (
                     <ActivityIndicator color="#FFFFFF" size="small" />
                   ) : (
@@ -539,7 +526,7 @@ export default function AuthScreen() {
                       <Text style={styles.submitButtonText}>{t('auth.register')}</Text>
                     </>
                   )}
-                </LinearGradient>
+                </View>
               </TouchableOpacity>
             </View>
           )}
@@ -564,7 +551,7 @@ export default function AuthScreen() {
 
         {/* Footer */}
         <View style={styles.footerContainer}>
-          <Ionicons name="globe-outline" size={14} color={COLORS.textMuted} style={{ marginRight: 6 }} />
+          <Ionicons name="globe-outline" size={14} color={colors.textMuted} style={{ marginRight: 6 }} />
           <Text style={styles.footerText}>{t('auth.footer')}</Text>
         </View>
 
@@ -577,7 +564,7 @@ export default function AuthScreen() {
               {/* Header */}
               <View style={styles.forgotHeader}>
                 <TouchableOpacity onPress={closeForgotPassword} style={styles.forgotBackButton}>
-                  <Ionicons name="arrow-back" size={22} color={COLORS.text} />
+                  <Ionicons name="arrow-back" size={22} color={colors.text} />
                 </TouchableOpacity>
                 <Text style={styles.forgotTitle}>{t('forgotPassword.title')}</Text>
                 <View style={{ width: 34 }} />
@@ -585,14 +572,14 @@ export default function AuthScreen() {
 
               {forgotError ? (
                 <View style={styles.forgotErrorContainer}>
-                  <Ionicons name="alert-circle" size={16} color={COLORS.error} style={{ marginRight: 6 }} />
+                  <Ionicons name="alert-circle" size={16} color={colors.error} style={{ marginRight: 6 }} />
                   <Text style={styles.forgotErrorText}>{forgotError}</Text>
                 </View>
               ) : null}
 
               {forgotSuccess ? (
                 <View style={styles.forgotSuccessMessageContainer}>
-                  <Ionicons name="checkmark-circle" size={16} color={COLORS.success} style={{ marginRight: 6 }} />
+                  <Ionicons name="checkmark-circle" size={16} color={colors.success} style={{ marginRight: 6 }} />
                   <Text style={styles.forgotSuccessMessageText}>{forgotSuccess}</Text>
                 </View>
               ) : null}
@@ -603,11 +590,11 @@ export default function AuthScreen() {
                   <Text style={styles.forgotStepText}>{t('forgotPassword.emailInstruction')}</Text>
                   <View style={styles.inputGroup}>
                     <View style={styles.inputWrapper}>
-                      <Ionicons name="mail-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <Ionicons name="mail-outline" size={18} color={colors.textMuted} style={styles.inputIcon} />
                       <TextInput
                         style={styles.textInput}
                         placeholder={t('forgotPassword.emailPlaceholder')}
-                        placeholderTextColor={COLORS.textPlaceholder}
+                        placeholderTextColor={colors.textPlaceholder}
                         value={resetEmail}
                         onChangeText={(text) => { setResetEmail(text); setForgotError(''); }}
                         keyboardType="email-address"
@@ -621,18 +608,13 @@ export default function AuthScreen() {
                     onPress={handleSendCode}
                     disabled={forgotLoading}
                   >
-                    <LinearGradient
-                      colors={[COLORS.primary, COLORS.primarySoft]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.submitGradient}
-                    >
+                    <View style={styles.submitGradient}>
                       {forgotLoading ? (
                         <ActivityIndicator color="#FFFFFF" size="small" />
                       ) : (
                         <Text style={styles.submitButtonText}>{t('forgotPassword.sendCode')}</Text>
                       )}
-                    </LinearGradient>
+                    </View>
                   </TouchableOpacity>
                 </View>
               )}
@@ -643,11 +625,11 @@ export default function AuthScreen() {
                   <Text style={styles.forgotStepText}>{t('forgotPassword.codeSent')}</Text>
                   <View style={styles.inputGroup}>
                     <View style={styles.inputWrapper}>
-                      <Ionicons name="keypad-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <Ionicons name="keypad-outline" size={18} color={colors.textMuted} style={styles.inputIcon} />
                       <TextInput
                         style={[styles.textInput, { letterSpacing: 4, fontSize: 20, textAlign: 'center' }]}
                         placeholder={t('forgotPassword.codePlaceholder')}
-                        placeholderTextColor={COLORS.textPlaceholder}
+                        placeholderTextColor={colors.textPlaceholder}
                         value={resetCode}
                         onChangeText={(text) => { setResetCode(text.replace(/[^0-9]/g, '').slice(0, 6)); setForgotError(''); }}
                         keyboardType="number-pad"
@@ -660,14 +642,9 @@ export default function AuthScreen() {
                     style={styles.submitButton}
                     onPress={handleVerifyCode}
                   >
-                    <LinearGradient
-                      colors={[COLORS.primary, COLORS.primarySoft]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.submitGradient}
-                    >
+                    <View style={styles.submitGradient}>
                       <Text style={styles.submitButtonText}>{t('forgotPassword.verifyCode')}</Text>
-                    </LinearGradient>
+                    </View>
                   </TouchableOpacity>
                 </View>
               )}
@@ -678,11 +655,11 @@ export default function AuthScreen() {
                   <View style={styles.inputGroup}>
                     <Text style={styles.inputLabel}>{t('forgotPassword.newPassword')}</Text>
                     <View style={styles.inputWrapper}>
-                      <Ionicons name="lock-closed-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <Ionicons name="lock-closed-outline" size={18} color={colors.textMuted} style={styles.inputIcon} />
                       <TextInput
                         style={styles.textInput}
                         placeholder={t('auth.minChars')}
-                        placeholderTextColor={COLORS.textPlaceholder}
+                        placeholderTextColor={colors.textPlaceholder}
                         value={newPassword}
                         onChangeText={(text) => { setNewPassword(text); setForgotError(''); }}
                         secureTextEntry
@@ -693,11 +670,11 @@ export default function AuthScreen() {
                   <View style={styles.inputGroup}>
                     <Text style={styles.inputLabel}>{t('forgotPassword.confirmPassword')}</Text>
                     <View style={styles.inputWrapper}>
-                      <Ionicons name="shield-checkmark-outline" size={18} color={COLORS.textMuted} style={styles.inputIcon} />
+                      <Ionicons name="shield-checkmark-outline" size={18} color={colors.textMuted} style={styles.inputIcon} />
                       <TextInput
                         style={styles.textInput}
                         placeholder={t('forgotPassword.confirmPassword')}
-                        placeholderTextColor={COLORS.textPlaceholder}
+                        placeholderTextColor={colors.textPlaceholder}
                         value={confirmNewPassword}
                         onChangeText={(text) => { setConfirmNewPassword(text); setForgotError(''); }}
                         secureTextEntry
@@ -709,18 +686,13 @@ export default function AuthScreen() {
                     onPress={handleResetPassword}
                     disabled={forgotLoading}
                   >
-                    <LinearGradient
-                      colors={[COLORS.primary, COLORS.primarySoft]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.submitGradient}
-                    >
+                    <View style={styles.submitGradient}>
                       {forgotLoading ? (
                         <ActivityIndicator color="#FFFFFF" size="small" />
                       ) : (
                         <Text style={styles.submitButtonText}>{t('forgotPassword.resetButton')}</Text>
                       )}
-                    </LinearGradient>
+                    </View>
                   </TouchableOpacity>
                 </View>
               )}
@@ -729,21 +701,16 @@ export default function AuthScreen() {
               {forgotMode === 'success' && (
                 <View style={styles.forgotSuccessContainer}>
                   <View style={styles.forgotSuccessIcon}>
-                    <Ionicons name="checkmark-circle" size={44} color={COLORS.success} />
+                    <Ionicons name="checkmark-circle" size={44} color={colors.success} />
                   </View>
                   <Text style={styles.forgotSuccessText}>{t('forgotPassword.success')}</Text>
                   <TouchableOpacity
                     style={styles.submitButton}
                     onPress={() => { closeForgotPassword(); clearForm(); }}
                   >
-                    <LinearGradient
-                      colors={[COLORS.primary, COLORS.primarySoft]}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.submitGradient}
-                    >
+                    <View style={styles.submitGradient}>
                       <Text style={styles.submitButtonText}>{t('forgotPassword.backToLogin')}</Text>
-                    </LinearGradient>
+                    </View>
                   </TouchableOpacity>
                 </View>
               )}
@@ -755,11 +722,11 @@ export default function AuthScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   // ─── Root ───────────────────────────────────────────────────────────────────
   container: {
     flex: 1,
-    backgroundColor: '#E8ECFA',
+    backgroundColor: colors.background,
   },
   scrollContent: {
     flexGrow: 1,
@@ -769,8 +736,8 @@ const styles = StyleSheet.create({
   // ─── Brand Area ─────────────────────────────────────────────────────────────
   // Apple sign-in pattern: clean background, centered app icon + name
   brandArea: {
-    paddingTop: Platform.OS === 'ios' ? 64 : 52,
-    paddingBottom: 40,
+    paddingTop: Platform.OS === 'ios' ? 72 : 56,
+    paddingBottom: 28,
     alignItems: 'center',
   },
   languageSwitcherTop: {
@@ -781,8 +748,8 @@ const styles = StyleSheet.create({
   appIconSquircle: {
     width: 80,
     height: 80,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255,255,255,0.18)',
+    borderRadius: 18,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 18,
@@ -790,13 +757,13 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: colors.text,
     letterSpacing: -0.38,
     marginBottom: 6,
   },
   appTagline: {
     fontSize: 15,
-    color: 'rgba(255,255,255,0.85)',
+    color: colors.textSubtle,
     fontWeight: '400',
     letterSpacing: -0.24,
   },
@@ -804,18 +771,17 @@ const styles = StyleSheet.create({
   // ─── Form Card ──────────────────────────────────────────────────────────────
   formCard: {
     marginHorizontal: 16,
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     borderRadius: 16,
     padding: 20,
     paddingTop: 24,
-    ...SHADOWS.medium,
   },
 
   // ─── Segmented Control ──────────────────────────────────────────────────────
   // Matches iOS UISegmentedControl exactly: grey pill, white selected chip
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: COLORS.inputBg,
+    backgroundColor: 'rgba(118,118,128,0.12)',
     borderRadius: 9,
     padding: 2,
     marginBottom: 28,
@@ -830,17 +796,17 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   activeTab: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     ...SHADOWS.small,
   },
   tabText: {
     fontSize: 13,
     fontWeight: '600',
-    color: COLORS.textMuted,
+    color: colors.textMuted,
     letterSpacing: -0.08,
   },
   activeTabText: {
-    color: COLORS.text,
+    color: colors.text,
     fontWeight: '600',
   },
 
@@ -849,13 +815,13 @@ const styles = StyleSheet.create({
   formTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: COLORS.text,
+    color: colors.text,
     marginBottom: 4,
     letterSpacing: -0.26,
   },
   formSubtitle: {
     fontSize: 15,
-    color: COLORS.textMuted,
+    color: colors.textMuted,
     marginBottom: 24,
     fontWeight: '400',
     letterSpacing: -0.24,
@@ -867,7 +833,7 @@ const styles = StyleSheet.create({
   inputLabel: {
     fontSize: 13,
     fontWeight: '600',
-    color: COLORS.textMuted,
+    color: colors.textMuted,
     marginBottom: 7,
     letterSpacing: 0.2,
     textTransform: 'uppercase',
@@ -875,28 +841,28 @@ const styles = StyleSheet.create({
   inputWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.inputBg,
+    backgroundColor: colors.inputBg,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: COLORS.borderLight,
+    borderColor: colors.borderLight,
     paddingHorizontal: 14,
   },
   inputWrapperError: {
-    borderColor: COLORS.error,
-    backgroundColor: COLORS.errorLight,
+    borderColor: colors.error,
+    backgroundColor: colors.errorLight,
   },
   inputIcon: { marginRight: 10 },
   textInput: {
     flex: 1,
     fontSize: 17,
-    color: COLORS.text,
+    color: colors.text,
     paddingVertical: 15,
     letterSpacing: -0.43,
   },
   eyeButton: { padding: 8 },
   errorText: {
     fontSize: 12,
-    color: COLORS.error,
+    color: colors.error,
     marginTop: 6,
     marginLeft: 2,
     fontWeight: '500',
@@ -916,30 +882,30 @@ const styles = StyleSheet.create({
     height: 22,
     borderRadius: 6,
     borderWidth: 1.5,
-    borderColor: COLORS.border,
-    backgroundColor: COLORS.inputBg,
+    borderColor: colors.border,
+    backgroundColor: colors.inputBg,
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 1,
     flexShrink: 0,
   },
   checkboxChecked: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
+    backgroundColor: colors.primary,
+    borderColor: colors.primary,
   },
   checkboxError: {
-    borderColor: COLORS.error,
-    backgroundColor: COLORS.errorLight,
+    borderColor: colors.error,
+    backgroundColor: colors.errorLight,
   },
   consentText: {
     flex: 1,
     fontSize: 13,
-    color: COLORS.textSubtle,
+    color: colors.textSubtle,
     lineHeight: 20,
     letterSpacing: -0.08,
   },
   consentLink: {
-    color: COLORS.primary,
+    color: colors.primary,
     fontWeight: '600',
   },
 
@@ -947,7 +913,7 @@ const styles = StyleSheet.create({
   loginErrorBox: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: COLORS.errorLight,
+    backgroundColor: colors.errorLight,
     borderRadius: 10,
     padding: 12,
     marginBottom: 12,
@@ -956,7 +922,7 @@ const styles = StyleSheet.create({
   loginErrorText: {
     flex: 1,
     fontSize: 13,
-    color: COLORS.error,
+    color: colors.error,
     fontWeight: '500',
     lineHeight: 18,
     letterSpacing: -0.08,
@@ -965,18 +931,18 @@ const styles = StyleSheet.create({
   // ─── Primary Button ─────────────────────────────────────────────────────────
   // Apple-style: full-width, prominent, 17pt semibold, 50pt tall
   submitButton: {
-    borderRadius: 14,
+    borderRadius: 12,
     overflow: 'hidden',
     marginTop: 8,
-    ...SHADOWS.primary,
   },
   submitButtonDisabled: { opacity: 0.55 },
   submitGradient: {
     flexDirection: 'row',
-    paddingVertical: 17,
+    paddingVertical: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 14,
+    borderRadius: 12,
+    backgroundColor: colors.primary,
     gap: 8,
   },
   submitButtonText: {
@@ -994,7 +960,7 @@ const styles = StyleSheet.create({
   },
   forgotPasswordText: {
     fontSize: 15,
-    color: COLORS.primary,
+    color: colors.primary,
     fontWeight: '500',
     letterSpacing: -0.24,
   },
@@ -1008,11 +974,11 @@ const styles = StyleSheet.create({
   dividerLine: {
     flex: 1,
     height: 0.5,
-    backgroundColor: COLORS.border,
+    backgroundColor: colors.border,
   },
   dividerText: {
     fontSize: 13,
-    color: COLORS.textMuted,
+    color: colors.textMuted,
     marginHorizontal: 12,
     fontWeight: '400',
     letterSpacing: -0.08,
@@ -1025,11 +991,11 @@ const styles = StyleSheet.create({
   },
   switchModeText: {
     fontSize: 15,
-    color: COLORS.textMuted,
+    color: colors.textMuted,
     letterSpacing: -0.24,
   },
   switchModeLink: {
-    color: COLORS.primary,
+    color: colors.primary,
     fontWeight: '600',
   },
 
@@ -1042,7 +1008,7 @@ const styles = StyleSheet.create({
   },
   footerText: {
     fontSize: 13,
-    color: COLORS.textMuted,
+    color: colors.textMuted,
     fontWeight: '400',
     letterSpacing: -0.08,
   },
@@ -1050,7 +1016,7 @@ const styles = StyleSheet.create({
   // ─── Destructive Action ──────────────────────────────────────────────────────
   clearDataButton: {
     flexDirection: 'row',
-    backgroundColor: COLORS.error,
+    backgroundColor: colors.error,
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 20,
@@ -1075,16 +1041,15 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.40)',
+    backgroundColor: colors.overlay,
     justifyContent: 'flex-end',
   },
   forgotCard: {
-    backgroundColor: COLORS.surface,
+    backgroundColor: colors.surface,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     padding: 24,
     paddingBottom: 40,
-    ...SHADOWS.large,
   },
   forgotHeader: {
     flexDirection: 'row',
@@ -1096,19 +1061,19 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: COLORS.inputBg,
+    backgroundColor: colors.inputBg,
     alignItems: 'center',
     justifyContent: 'center',
   },
   forgotTitle: {
     fontSize: 17,
     fontWeight: '600',
-    color: COLORS.text,
+    color: colors.text,
     letterSpacing: -0.43,
   },
   forgotStepText: {
     fontSize: 15,
-    color: COLORS.textSubtle,
+    color: colors.textSubtle,
     marginBottom: 20,
     lineHeight: 22,
     letterSpacing: -0.24,
@@ -1116,7 +1081,7 @@ const styles = StyleSheet.create({
   forgotErrorContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: COLORS.errorLight,
+    backgroundColor: colors.errorLight,
     borderRadius: 10,
     padding: 12,
     marginBottom: 16,
@@ -1124,7 +1089,7 @@ const styles = StyleSheet.create({
   },
   forgotErrorText: {
     fontSize: 13,
-    color: COLORS.error,
+    color: colors.error,
     fontWeight: '500',
     flex: 1,
     letterSpacing: -0.08,
@@ -1132,7 +1097,7 @@ const styles = StyleSheet.create({
   forgotSuccessMessageContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    backgroundColor: COLORS.successLight,
+    backgroundColor: colors.successLight,
     borderRadius: 10,
     padding: 12,
     marginBottom: 16,
@@ -1140,7 +1105,7 @@ const styles = StyleSheet.create({
   },
   forgotSuccessMessageText: {
     fontSize: 13,
-    color: COLORS.success,
+    color: colors.success,
     fontWeight: '500',
     flex: 1,
     letterSpacing: -0.08,
@@ -1153,7 +1118,7 @@ const styles = StyleSheet.create({
     width: 72,
     height: 72,
     borderRadius: 36,
-    backgroundColor: COLORS.successLight,
+    backgroundColor: colors.successLight,
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 16,
@@ -1161,7 +1126,7 @@ const styles = StyleSheet.create({
   forgotSuccessText: {
     fontSize: 17,
     fontWeight: '600',
-    color: COLORS.text,
+    color: colors.text,
     marginBottom: 24,
     textAlign: 'center',
     letterSpacing: -0.43,

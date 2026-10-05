@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import {
   Modal,
   View,
@@ -13,11 +13,15 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocale } from '../locales/i18n';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { Button } from './ui';
 
 export default function SavedItemDetailModal({ visible, item, onClose, onDelete }) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   if (!item) return null;
 
@@ -43,16 +47,19 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
     >
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-          {/* Header */}
+          {/* Navigation bar: centered title, close on the right */}
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>{t('savedItemDetail.title')}</Text>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={22} color={COLORS.textSecondary} />
-            </TouchableOpacity>
+            <View style={styles.headerSide} />
+            <Text style={styles.headerTitle} numberOfLines={1}>{t('savedItemDetail.title')}</Text>
+            <View style={[styles.headerSide, styles.headerSideRight]}>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={8} activeOpacity={0.6}>
+                <Ionicons name="close" size={18} color={colors.textSubtle} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {/* Content */}
-          <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+          <ScrollView style={styles.content} contentContainerStyle={styles.contentInner} showsVerticalScrollIndicator={false}>
             {/* Image Preview */}
             {imageData && (
               <View style={styles.imageSection}>
@@ -65,7 +72,7 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
             {answer && (
               <View style={styles.answerSection}>
                 <View style={styles.sectionHeader}>
-                  <Text style={styles.sectionIcon}>{'\u2705'}</Text>
+                  <Text style={styles.sectionIcon}>{'✅'}</Text>
                   <Text style={styles.sectionTitle}>{t('savedItemDetail.answer')}</Text>
                 </View>
                 <View style={styles.answerCard}>
@@ -81,14 +88,19 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
                   <Text style={styles.sectionIcon}>{'\u{1F4DD}'}</Text>
                   <Text style={styles.sectionTitle}>{t('savedItemDetail.steps')}</Text>
                 </View>
-                {steps.map((step, index) => (
-                  <View key={index} style={styles.stepCard}>
-                    <View style={styles.stepNumber}>
-                      <Text style={styles.stepNumberText}>{index + 1}</Text>
+                <View style={styles.stepsCard}>
+                  {steps.map((step, index) => (
+                    <View key={index}>
+                      <View style={styles.stepCard}>
+                        <View style={styles.stepNumber}>
+                          <Text style={styles.stepNumberText}>{index + 1}</Text>
+                        </View>
+                        <Text style={styles.stepText}>{step}</Text>
+                      </View>
+                      {index < steps.length - 1 ? <View style={styles.stepDivider} /> : null}
                     </View>
-                    <Text style={styles.stepText}>{step}</Text>
-                  </View>
-                ))}
+                  ))}
+                </View>
               </View>
             )}
 
@@ -105,20 +117,18 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
               </View>
             )}
 
-            <View style={{ height: 100 }} />
+            <View style={{ height: 40 }} />
           </ScrollView>
 
           {/* Footer */}
           <View style={styles.footer}>
-            <TouchableOpacity
-              style={[styles.footerButton, styles.deleteButton]}
+            <Button
+              title={`\u{1F5D1}️ ${t('savedItemDetail.deleteProblem')}`}
+              variant="tinted"
+              tone="destructive"
               onPress={onDelete}
-            >
-              <Text style={styles.footerButtonText}>{'\u{1F5D1}\uFE0F'} {t('savedItemDetail.deleteProblem')}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.footerButton} onPress={onClose}>
-              <Text style={styles.footerButtonText}>{t('common.close')}</Text>
-            </TouchableOpacity>
+            />
+            <Button title={t('common.close')} onPress={onClose} />
           </View>
         </View>
       </SafeAreaView>
@@ -126,154 +136,165 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
   );
 }
 
-const styles = StyleSheet.create({
+const HAIRLINE = StyleSheet.hairlineWidth;
+
+const makeStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.backgroundAlt,
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
   },
+
+  // Header
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: SPACING.xl,
-    paddingTop: 10,
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    backgroundColor: colors.background,
+    borderBottomWidth: HAIRLINE,
+    borderBottomColor: colors.border,
+  },
+  headerSide: {
+    width: 44,
+  },
+  headerSideRight: {
+    alignItems: 'flex-end',
   },
   headerTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
+    flex: 1,
+    textAlign: 'center',
   },
   closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.borderLight,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: colors.inputBg,
     justifyContent: 'center',
     alignItems: 'center',
   },
+
   content: {
     flex: 1,
-    padding: SPACING.xl,
   },
+  contentInner: {
+    padding: SPACING.lg,
+  },
+
+  // Image
   imageSection: {
-    marginBottom: 25,
+    marginBottom: SPACING.xl,
   },
   image: {
     width: '100%',
     height: 250,
-    borderRadius: 15,
-    backgroundColor: COLORS.borderLight,
-    marginBottom: 10,
+    borderRadius: BORDER_RADIUS.lg,
+    backgroundColor: colors.surface,
+    marginBottom: SPACING.sm,
   },
   imageDate: {
-    fontSize: 13,
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
     textAlign: 'center',
   },
+
+  // Sections
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: SPACING.md,
-    marginTop: 10,
+    marginBottom: SPACING.sm,
+    marginTop: SPACING.sm,
   },
   sectionIcon: {
-    fontSize: 24,
-    marginRight: 10,
+    fontSize: 18,
+    marginRight: SPACING.sm,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.h3,
+    fontWeight: '700',
+    color: colors.text,
   },
   answerSection: {
-    marginBottom: 25,
+    marginBottom: SPACING.xl,
   },
   answerCard: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 15,
+    backgroundColor: colors.primary,
+    borderRadius: BORDER_RADIUS.lg,
     padding: SPACING.xl,
-    ...SHADOWS.medium,
   },
   answerText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    ...TYPOGRAPHY.h2,
+    color: '#FFFFFF',
     textAlign: 'center',
   },
+
+  // Steps: one grouped card with inset hairlines
   stepsSection: {
-    marginBottom: 25,
+    marginBottom: SPACING.xl,
+  },
+  stepsCard: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    overflow: 'hidden',
   },
   stepCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: BORDER_RADIUS.md,
-    padding: 15,
-    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'flex-start',
-    ...SHADOWS.small,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md + 2,
+  },
+  stepDivider: {
+    height: HAIRLINE,
+    backgroundColor: colors.border,
+    marginLeft: SPACING.lg + 28 + SPACING.md,
   },
   stepNumber: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: COLORS.primary,
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.primaryBg,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: SPACING.md,
-    marginTop: 2,
   },
   stepNumberText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.primary,
   },
   stepText: {
     flex: 1,
-    fontSize: 16,
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.body,
     lineHeight: 24,
+    color: colors.text,
+    paddingTop: 2,
   },
+
   explanationSection: {
-    marginBottom: 25,
+    marginBottom: SPACING.xl,
   },
   explanationCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 15,
-    padding: SPACING.xl,
-    ...SHADOWS.medium,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
   },
   explanationText: {
-    fontSize: 16,
-    color: COLORS.textSecondary,
-    lineHeight: 26,
+    ...TYPOGRAPHY.body,
+    lineHeight: 24,
+    color: colors.textSecondary,
   },
+
+  // Footer
   footer: {
-    padding: SPACING.xl,
-    paddingBottom: 10,
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.border,
-    gap: 10,
-  },
-  footerButton: {
-    backgroundColor: COLORS.primary,
-    borderRadius: BORDER_RADIUS.md,
-    paddingVertical: SPACING.lg,
-    alignItems: 'center',
-    ...SHADOWS.medium,
-  },
-  deleteButton: {
-    backgroundColor: COLORS.destructive,
-  },
-  footerButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.md,
+    backgroundColor: colors.surface,
+    borderTopWidth: HAIRLINE,
+    borderTopColor: colors.border,
+    gap: SPACING.sm + 2,
   },
 });
