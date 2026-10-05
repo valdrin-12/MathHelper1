@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import {
   Modal,
   View,
@@ -14,7 +14,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalizedCourses, useLocalizedCourseContent } from '../hooks/useLocalizedData';
 import { useStats } from '../context/StatsContext';
-import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY, SHADOWS } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { Button, SectionTitle } from './ui';
 
 const COURSE_PROGRESS_KEY = '@mathhelper_course_progress';
 
@@ -33,6 +35,9 @@ export default function CourseDetailModal({ visible, course, onClose }) {
   const [showResumeMessage, setShowResumeMessage] = useState(false);
   const scrollRef = useRef(null);
   const lessonNavRef = useRef(null);
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const contentStyles = useMemo(() => makeContentStyles(colors), [colors]);
 
   // Load saved progress when modal opens
   useEffect(() => {
@@ -80,6 +85,8 @@ export default function CourseDetailModal({ visible, course, onClose }) {
   const difficulty = difficultyLevels[course.difficulty];
   const content = courseContents[course.id];
   const lessons = content?.lessons || [];
+  // Category colour is the accent for the hero icon, lesson tabs, bullets and the Next button
+  const tint = category?.color || colors.primary;
 
   const handleStartCourse = () => {
     if (savedLesson !== null && savedLesson > 0) {
@@ -134,14 +141,14 @@ export default function CourseDetailModal({ visible, course, onClose }) {
 
     return (
       <SafeAreaView style={contentStyles.safeArea}>
-        {/* Header */}
-        <View style={[contentStyles.header, { backgroundColor: category?.color || COLORS.primary }]}>
-          <TouchableOpacity onPress={handleBackFromContent} style={contentStyles.closeButton}>
-            <Ionicons name="chevron-back" size={24} color={COLORS.textLight} />
+        {/* Nav bar: plain back button, centered title, lesson counter */}
+        <View style={contentStyles.header}>
+          <TouchableOpacity onPress={handleBackFromContent} style={contentStyles.closeButton} hitSlop={8}>
+            <Ionicons name="chevron-back" size={26} color={colors.primary} />
           </TouchableOpacity>
           <View style={contentStyles.headerCenter}>
             <Text style={contentStyles.headerTitle} numberOfLines={1}>{course.title}</Text>
-            <Text style={contentStyles.headerMeta}>{difficulty?.emoji} {difficulty?.name} · {course.duration}</Text>
+            <Text style={contentStyles.headerMeta} numberOfLines={1}>{difficulty?.emoji} {difficulty?.name} · {course.duration}</Text>
           </View>
           <View style={contentStyles.lessonCounter}>
             <Text style={contentStyles.lessonCounterText}>{currentLesson + 1}/{lessons.length}</Text>
@@ -156,10 +163,10 @@ export default function CourseDetailModal({ visible, course, onClose }) {
                 key={index}
                 style={[
                   contentStyles.lessonTab,
-                  currentLesson === index && contentStyles.lessonTabActive,
-                  currentLesson === index && { backgroundColor: category?.color || COLORS.primary },
+                  currentLesson === index && { backgroundColor: tint },
                 ]}
                 onPress={() => handleLessonChange(index)}
+                hitSlop={{ top: 4, bottom: 4 }}
               >
                 <Text style={[contentStyles.lessonTabNum, currentLesson === index && contentStyles.lessonTabNumActive]}>
                   {index + 1}
@@ -172,7 +179,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
         {/* Resume Message */}
         {showResumeMessage && (
           <View style={contentStyles.resumeBanner}>
-            <Ionicons name="bookmark" size={16} color="#D97706" />
+            <Ionicons name="bookmark" size={16} color={colors.warning} />
             <Text style={contentStyles.resumeBannerText}>{t('learn.resumeMessage')}</Text>
           </View>
         )}
@@ -191,7 +198,9 @@ export default function CourseDetailModal({ visible, course, onClose }) {
                 <Text style={contentStyles.sectionIcon}>📖</Text>
                 <Text style={contentStyles.sectionTitle}>{t('courseContent.theory')}</Text>
               </View>
-              <Text style={contentStyles.theoryText}>{lesson.theory}</Text>
+              <View style={contentStyles.card}>
+                <Text style={contentStyles.theoryText}>{lesson.theory}</Text>
+              </View>
             </View>
 
             {/* Key Points */}
@@ -201,10 +210,10 @@ export default function CourseDetailModal({ visible, course, onClose }) {
                   <Text style={contentStyles.sectionIcon}>💡</Text>
                   <Text style={contentStyles.sectionTitle}>{t('courseContent.keyPoints')}</Text>
                 </View>
-                <View style={contentStyles.keyPointsCard}>
+                <View style={[contentStyles.card, contentStyles.keyPointsCard]}>
                   {lesson.keyPoints.map((point, i) => (
                     <View key={i} style={contentStyles.keyPoint}>
-                      <View style={[contentStyles.keyPointDot, { backgroundColor: category?.color || COLORS.primary }]} />
+                      <View style={[contentStyles.keyPointDot, { backgroundColor: tint }]} />
                       <Text style={contentStyles.keyPointText}>{point}</Text>
                     </View>
                   ))}
@@ -220,7 +229,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
                   <Text style={contentStyles.sectionTitle}>{t('courseContent.examples')}</Text>
                 </View>
                 {lesson.examples.map((ex, i) => (
-                  <View key={i} style={contentStyles.exampleCard}>
+                  <View key={i} style={[contentStyles.card, contentStyles.cardSpaced]}>
                     <View style={contentStyles.exampleHeader}>
                       <Text style={contentStyles.exampleLabel}>{t('courseContent.exampleLabel', { number: i + 1 })}</Text>
                     </View>
@@ -241,13 +250,14 @@ export default function CourseDetailModal({ visible, course, onClose }) {
                   <Text style={contentStyles.sectionTitle}>{t('courseContent.practiceProblems')}</Text>
                 </View>
                 {lesson.practice.map((p, i) => (
-                  <View key={i} style={contentStyles.practiceCard}>
+                  <View key={i} style={[contentStyles.card, contentStyles.cardSpaced]}>
                     <Text style={contentStyles.practiceProblem}>{p.problem}</Text>
                     <TouchableOpacity
-                      style={[contentStyles.showSolutionBtn, { borderColor: category?.color || COLORS.primary }]}
+                      style={[contentStyles.showSolutionBtn, { backgroundColor: tint + '1F' }]}
                       onPress={() => togglePractice(i)}
+                      activeOpacity={0.7}
                     >
-                      <Text style={[contentStyles.showSolutionText, { color: category?.color || COLORS.primary }]}>
+                      <Text style={[contentStyles.showSolutionText, { color: tint }]}>
                         {expandedPractice[i] ? `▲ ${t('courseContent.hideSolution')}` : `▼ ${t('courseContent.showSolution')}`}
                       </Text>
                     </TouchableOpacity>
@@ -277,15 +287,16 @@ export default function CourseDetailModal({ visible, course, onClose }) {
           </View>
         )}
 
-        {/* Bottom Navigation */}
+        {/* Bottom toolbar: tinted Previous, progress dots, filled Next / Complete */}
         <View style={contentStyles.bottomNav}>
           <TouchableOpacity
             style={[contentStyles.navButton, currentLesson === 0 && contentStyles.navButtonDisabled]}
             onPress={() => currentLesson > 0 && handleLessonChange(currentLesson - 1)}
             disabled={currentLesson === 0}
+            activeOpacity={0.7}
           >
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-              <Ionicons name="chevron-back" size={18} color={currentLesson === 0 ? COLORS.textMuted : COLORS.textDark} />
+            <View style={contentStyles.navButtonInner}>
+              <Ionicons name="chevron-back" size={18} color={currentLesson === 0 ? colors.textMuted : colors.text} />
               <Text style={[contentStyles.navButtonText, currentLesson === 0 && contentStyles.navButtonTextDisabled]}>{t('courseContent.previous')}</Text>
             </View>
           </TouchableOpacity>
@@ -297,7 +308,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
                   key={realIndex}
                   style={[
                     contentStyles.dot,
-                    realIndex === currentLesson && [contentStyles.dotActive, { backgroundColor: category?.color || COLORS.primary }],
+                    realIndex === currentLesson && [contentStyles.dotActive, { backgroundColor: tint }],
                   ]}
                 />
               );
@@ -307,6 +318,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
             <TouchableOpacity
               style={[contentStyles.navButton, contentStyles.navButtonNext, contentStyles.completeButton]}
               onPress={handleCompleteCourse}
+              activeOpacity={0.7}
             >
               <Text style={contentStyles.navButtonNextText}>
                 {courseCompleted ? `✓ ${t('courseContent.completed')}` : `${t('courseContent.completeCourse')}`}
@@ -314,12 +326,13 @@ export default function CourseDetailModal({ visible, course, onClose }) {
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
-              style={[contentStyles.navButton, contentStyles.navButtonNext, { backgroundColor: category?.color || COLORS.primary }]}
+              style={[contentStyles.navButton, contentStyles.navButtonNext, { backgroundColor: tint }]}
               onPress={() => handleLessonChange(currentLesson + 1)}
+              activeOpacity={0.7}
             >
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View style={contentStyles.navButtonInner}>
                 <Text style={contentStyles.navButtonNextText}>{t('courseContent.next')}</Text>
-                <Ionicons name="chevron-forward" size={18} color={COLORS.textLight} />
+                <Ionicons name="chevron-forward" size={18} color="#FFFFFF" />
               </View>
             </TouchableOpacity>
           )}
@@ -332,21 +345,22 @@ export default function CourseDetailModal({ visible, course, onClose }) {
   const renderDetailView = () => (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
-        {/* Header */}
+        {/* Sheet nav bar: plain back button, centered title */}
         <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <TouchableOpacity onPress={onClose} style={styles.backButton}>
-              <Ionicons name="chevron-back" size={22} color={COLORS.textSecondary} />
-            </TouchableOpacity>
-            <Text style={styles.headerTitle} numberOfLines={1}>{t('courseDetail.title')}</Text>
-          </View>
+          <TouchableOpacity onPress={onClose} style={styles.backButton} hitSlop={8}>
+            <Ionicons name="chevron-back" size={26} color={colors.primary} />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle} numberOfLines={1}>{t('courseDetail.title')}</Text>
+          <View style={styles.headerSpacer} />
         </View>
 
         {/* Content */}
-        <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.content} contentContainerStyle={styles.contentInner} showsVerticalScrollIndicator={false}>
           {/* Course Header */}
-          <View style={[styles.courseHeader, { backgroundColor: category?.color || COLORS.primary }]}>
-            <Text style={styles.categoryIcon}>{category?.icon || '📚'}</Text>
+          <View style={styles.courseHeader}>
+            <View style={[styles.categoryIconBox, { backgroundColor: tint + '1F' }]}>
+              <Text style={styles.categoryIcon}>{category?.icon || '📚'}</Text>
+            </View>
             <Text style={styles.courseTitle} numberOfLines={2}>{course.title}</Text>
             <Text style={styles.categoryName}>{category?.name}</Text>
           </View>
@@ -356,54 +370,68 @@ export default function CourseDetailModal({ visible, course, onClose }) {
             <View style={styles.metaItem}>
               <Text style={styles.metaIcon}>{difficulty?.emoji}</Text>
               <Text style={styles.metaLabel}>{t('courseDetail.level')}</Text>
-              <Text style={styles.metaValue}>{difficulty?.name}</Text>
+              <Text style={styles.metaValue} numberOfLines={1}>{difficulty?.name}</Text>
             </View>
+            <View style={styles.metaDivider} />
             <View style={styles.metaItem}>
               <Text style={styles.metaIcon}>⏱</Text>
               <Text style={styles.metaLabel}>{t('courseDetail.duration')}</Text>
-              <Text style={styles.metaValue}>{course.duration}</Text>
+              <Text style={styles.metaValue} numberOfLines={1}>{course.duration}</Text>
             </View>
+            <View style={styles.metaDivider} />
             <View style={styles.metaItem}>
               <Text style={styles.metaIcon}>📚</Text>
               <Text style={styles.metaLabel}>{t('courseDetail.lessons')}</Text>
-              <Text style={styles.metaValue}>{course.lessons}</Text>
+              <Text style={styles.metaValue} numberOfLines={1}>{course.lessons}</Text>
             </View>
           </View>
 
           {/* Description */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('courseDetail.description')}</Text>
-            <Text style={styles.descriptionText}>{course.description}</Text>
+            <SectionTitle style={styles.sectionTitle}>{t('courseDetail.description')}</SectionTitle>
+            <View style={styles.card}>
+              <Text style={styles.descriptionText}>{course.description}</Text>
+            </View>
           </View>
 
           {/* Topics Covered */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>{t('courseDetail.whatYouLearn')}</Text>
-            {course.topics.map((topic, index) => (
-              <View key={index} style={styles.topicItem}>
-                <Text style={styles.topicBullet}>•</Text>
-                <Text style={styles.topicText}>{topic}</Text>
-              </View>
-            ))}
+            <SectionTitle style={styles.sectionTitle}>{t('courseDetail.whatYouLearn')}</SectionTitle>
+            <View style={styles.listCard}>
+              {course.topics.map((topic, index) => (
+                <View key={index}>
+                  <View style={styles.listItem}>
+                    <Text style={[styles.topicBullet, { color: tint }]}>•</Text>
+                    <Text style={styles.listItemText}>{topic}</Text>
+                  </View>
+                  {index < course.topics.length - 1 && <View style={styles.listDivider} />}
+                </View>
+              ))}
+            </View>
           </View>
 
           {/* Learning Outcomes */}
           {course.learningOutcomes && course.learningOutcomes.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>{t('courseDetail.learningOutcomes')}</Text>
-              {course.learningOutcomes.map((outcome, index) => (
-                <View key={index} style={styles.outcomeItem}>
-                  <Text style={styles.outcomeIcon}>✓</Text>
-                  <Text style={styles.outcomeText}>{outcome}</Text>
-                </View>
-              ))}
+              <SectionTitle style={styles.sectionTitle}>{t('courseDetail.learningOutcomes')}</SectionTitle>
+              <View style={styles.listCard}>
+                {course.learningOutcomes.map((outcome, index) => (
+                  <View key={index}>
+                    <View style={styles.listItem}>
+                      <Text style={styles.outcomeIcon}>✓</Text>
+                      <Text style={styles.listItemText}>{outcome}</Text>
+                    </View>
+                    {index < course.learningOutcomes.length - 1 && <View style={styles.listDivider} />}
+                  </View>
+                ))}
+              </View>
             </View>
           )}
 
           {/* Prerequisites */}
           {course.prerequisites && course.prerequisites.length > 0 && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>{t('courseDetail.prerequisites')}</Text>
+              <SectionTitle style={styles.sectionTitle}>{t('courseDetail.prerequisites')}</SectionTitle>
               <View style={styles.prerequisitesCard}>
                 <Text style={styles.prerequisitesIcon}>⚠️</Text>
                 <Text style={styles.prerequisitesText}>
@@ -418,12 +446,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <TouchableOpacity
-            style={styles.startButton}
-            onPress={handleStartCourse}
-          >
-            <Text style={styles.startButtonText}>{t('courseDetail.startCourse')}</Text>
-          </TouchableOpacity>
+          <Button title={t('courseDetail.startCourse')} onPress={handleStartCourse} />
         </View>
       </View>
     </SafeAreaView>
@@ -441,505 +464,502 @@ export default function CourseDetailModal({ visible, course, onClose }) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.backgroundAlt,
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
   },
+
+  // Sheet nav bar
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 20,
-    paddingTop: 10,
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.border,
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 15,
+    minHeight: 56,
+    paddingHorizontal: SPACING.xs,
+    backgroundColor: colors.surface,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
   },
   backButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.borderLight,
+    width: 44,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.headline,
+    flex: 1,
+    textAlign: 'center',
+    color: colors.text,
+  },
+  headerSpacer: {
+    width: 44,
   },
   content: {
     flex: 1,
   },
+  contentInner: {
+    paddingHorizontal: SPACING.lg,
+  },
+
+  // Hero
   courseHeader: {
-    padding: 30,
     alignItems: 'center',
+    paddingTop: SPACING.xxl,
+    paddingBottom: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
+  },
+  categoryIconBox: {
+    width: 72,
+    height: 72,
+    borderRadius: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.lg,
   },
   categoryIcon: {
-    fontSize: 50,
-    marginBottom: 15,
+    fontSize: 36,
   },
   courseTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    ...TYPOGRAPHY.h2,
+    color: colors.text,
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.xs,
   },
   categoryName: {
-    fontSize: 16,
-    color: COLORS.textLight,
-    opacity: 0.9,
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
+    textAlign: 'center',
   },
+
+  // Meta card: three columns split by hairlines
   metaContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    padding: 20,
-    backgroundColor: COLORS.surface,
-    marginTop: -20,
-    marginHorizontal: 20,
-    borderRadius: 15,
-    ...SHADOWS.medium,
+    alignItems: 'center',
+    paddingVertical: SPACING.lg,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
   },
   metaItem: {
+    flex: 1,
     alignItems: 'center',
+    paddingHorizontal: SPACING.xs,
+  },
+  metaDivider: {
+    width: StyleSheet.hairlineWidth,
+    alignSelf: 'stretch',
+    backgroundColor: colors.border,
   },
   metaIcon: {
-    fontSize: 24,
-    marginBottom: 5,
+    fontSize: 22,
+    marginBottom: SPACING.xs,
   },
   metaLabel: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    marginBottom: 3,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginBottom: 2,
   },
   metaValue: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.text,
   },
+
+  // Sections
   section: {
-    padding: 20,
+    marginTop: SPACING.xxl,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
-    marginBottom: 15,
+    marginLeft: SPACING.xs,
+    marginBottom: SPACING.sm,
+  },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.lg,
   },
   descriptionText: {
-    fontSize: 16,
-    color: COLORS.textSecondary,
+    ...TYPOGRAPHY.body,
     lineHeight: 24,
+    color: colors.textSecondary,
   },
-  topicItem: {
+  listCard: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    overflow: 'hidden',
+  },
+  listItem: {
     flexDirection: 'row',
-    marginBottom: 12,
-    paddingLeft: 10,
+    alignItems: 'flex-start',
+    minHeight: 44,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+  },
+  listDivider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.border,
+    marginLeft: SPACING.lg + 24,
   },
   topicBullet: {
-    fontSize: 18,
-    color: COLORS.primary,
-    marginRight: 12,
-    fontWeight: 'bold',
-  },
-  topicText: {
-    flex: 1,
-    fontSize: 15,
-    color: COLORS.textDark,
+    width: 24,
+    fontSize: 20,
     lineHeight: 22,
-  },
-  outcomeItem: {
-    flexDirection: 'row',
-    marginBottom: 12,
-    backgroundColor: COLORS.backgroundAlt,
-    padding: 12,
-    borderRadius: 10,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.accent,
+    fontWeight: '700',
   },
   outcomeIcon: {
-    fontSize: 18,
-    color: COLORS.accent,
-    marginRight: 12,
-    fontWeight: 'bold',
+    width: 24,
+    ...TYPOGRAPHY.bodyBold,
+    color: colors.success,
   },
-  outcomeText: {
+  listItemText: {
     flex: 1,
-    fontSize: 15,
-    color: COLORS.textDark,
-    lineHeight: 22,
+    ...TYPOGRAPHY.body,
+    color: colors.text,
   },
   prerequisitesCard: {
     flexDirection: 'row',
-    backgroundColor: COLORS.warningBg,
-    padding: 15,
-    borderRadius: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: COLORS.warningAccent,
+    alignItems: 'flex-start',
+    backgroundColor: colors.warningLight,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
   },
   prerequisitesIcon: {
-    fontSize: 20,
-    marginRight: 12,
+    fontSize: 18,
+    marginRight: SPACING.md,
   },
   prerequisitesText: {
     flex: 1,
-    fontSize: 14,
-    color: COLORS.textSecondary,
-    lineHeight: 20,
+    ...TYPOGRAPHY.subhead,
+    color: colors.text,
   },
+
+  // Footer
   footer: {
-    padding: 20,
-    paddingBottom: 10,
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.border,
-  },
-  startButton: {
-    backgroundColor: COLORS.primary,
-    borderRadius: 12,
-    paddingVertical: 16,
-    alignItems: 'center',
-    ...SHADOWS.medium,
-  },
-  startButtonText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.md,
+    paddingBottom: SPACING.md,
+    backgroundColor: colors.surface,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
   },
 });
 
 // Course content styles
-const contentStyles = StyleSheet.create({
+const makeContentStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.backgroundAlt,
+    backgroundColor: colors.background,
   },
+
+  // Nav bar
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
+    minHeight: 56,
+    paddingHorizontal: SPACING.xs,
+    paddingRight: SPACING.lg,
+    backgroundColor: colors.surface,
+    gap: SPACING.xs,
   },
   closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.25)',
+    width: 44,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
   },
   headerCenter: {
     flex: 1,
+    alignItems: 'center',
   },
   headerTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
   },
   headerMeta: {
-    fontSize: 12,
-    color: COLORS.textLight,
-    opacity: 0.85,
-    marginTop: 2,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginTop: 1,
   },
   lessonCounter: {
-    backgroundColor: 'rgba(255,255,255,0.25)',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 10,
+    minWidth: 44,
+    alignItems: 'center',
+    backgroundColor: colors.inputBg,
+    paddingHorizontal: SPACING.sm + 2,
+    paddingVertical: SPACING.xs,
+    borderRadius: BORDER_RADIUS.round,
   },
   lessonCounterText: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    ...TYPOGRAPHY.captionBold,
+    color: colors.textSubtle,
   },
+
+  // Resume banner
   resumeBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FEF3C7',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    gap: 8,
+    backgroundColor: colors.warningLight,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.sm + 2,
+    gap: SPACING.sm,
   },
   resumeBannerText: {
     flex: 1,
-    fontSize: 13,
+    ...TYPOGRAPHY.footnote,
     fontWeight: '600',
-    color: '#92400E',
+    color: colors.text,
   },
+
+  // Lesson tabs
   lessonNav: {
-    backgroundColor: COLORS.surface,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
-    paddingVertical: 10,
+    backgroundColor: colors.surface,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: colors.border,
+    paddingBottom: SPACING.sm + 2,
   },
   lessonNavContent: {
-    paddingHorizontal: 16,
-    gap: 8,
+    paddingHorizontal: SPACING.lg,
+    gap: SPACING.sm,
   },
   lessonTab: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: COLORS.borderLight,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: colors.inputBg,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  lessonTabActive: {
-    ...SHADOWS.medium,
-  },
   lessonTabNum: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.textSubtle,
   },
   lessonTabNumActive: {
-    color: COLORS.textLight,
+    color: '#FFFFFF',
   },
+
+  // Lesson body
   content: {
     flex: 1,
   },
   lessonHeader: {
-    padding: 20,
-    paddingBottom: 5,
+    paddingHorizontal: SPACING.xl,
+    paddingTop: SPACING.xxl,
+    paddingBottom: SPACING.xs,
   },
   lessonNumber: {
-    fontSize: 13,
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.footnote,
     fontWeight: '600',
+    color: colors.textSubtle,
     textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: 6,
+    letterSpacing: 0.5,
+    marginBottom: SPACING.xs,
   },
   lessonTitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
-    lineHeight: 30,
+    ...TYPOGRAPHY.h2,
+    color: colors.text,
   },
   section: {
-    padding: 20,
-    paddingTop: 15,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.xl,
   },
   sectionHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    marginBottom: 12,
+    gap: SPACING.sm,
+    marginBottom: SPACING.sm,
+    paddingHorizontal: SPACING.xs,
   },
   sectionIcon: {
-    fontSize: 18,
+    fontSize: 17,
   },
   sectionTitle: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
+  },
+  card: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    padding: SPACING.lg,
+  },
+  cardSpaced: {
+    marginBottom: SPACING.md,
   },
   theoryText: {
-    fontSize: 15,
-    color: '#444',
-    lineHeight: 24,
+    ...TYPOGRAPHY.body,
+    lineHeight: 25,
+    color: colors.text,
   },
   keyPointsCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 12,
-    padding: 16,
-    gap: 10,
-    ...SHADOWS.soft,
+    gap: SPACING.md,
   },
   keyPoint: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
+    gap: SPACING.md,
   },
   keyPointDot: {
-    width: 8,
-    height: 8,
+    width: 7,
+    height: 7,
     borderRadius: 4,
-    marginTop: 6,
+    marginTop: 7,
   },
   keyPointText: {
     flex: 1,
-    fontSize: 14,
-    color: COLORS.textDark,
-    lineHeight: 20,
-  },
-  exampleCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.primary,
-    ...SHADOWS.soft,
+    ...TYPOGRAPHY.subhead,
+    color: colors.text,
   },
   exampleHeader: {
-    marginBottom: 8,
+    marginBottom: SPACING.xs,
   },
   exampleLabel: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: COLORS.primary,
+    ...TYPOGRAPHY.footnote,
+    fontWeight: '600',
+    color: colors.textSubtle,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
-    marginBottom: 4,
+    letterSpacing: 0.3,
+    marginBottom: SPACING.xs,
   },
   exampleProblem: {
-    fontSize: 15,
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.body,
     fontWeight: '500',
-    marginBottom: 10,
+    color: colors.text,
+    marginBottom: SPACING.md,
   },
   exampleDivider: {
-    height: 1,
-    backgroundColor: COLORS.borderLight,
-    marginBottom: 10,
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: colors.border,
+    marginBottom: SPACING.md,
   },
   exampleSolution: {
-    fontSize: 15,
-    color: '#4CAF50',
+    ...TYPOGRAPHY.body,
     fontWeight: '600',
-    lineHeight: 22,
-  },
-  practiceCard: {
-    backgroundColor: COLORS.surface,
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    ...SHADOWS.soft,
+    color: colors.success,
   },
   practiceProblem: {
-    fontSize: 15,
-    color: COLORS.textDark,
+    ...TYPOGRAPHY.body,
     fontWeight: '600',
-    lineHeight: 22,
-    marginBottom: 12,
+    color: colors.text,
+    marginBottom: SPACING.md,
   },
   showSolutionBtn: {
-    borderWidth: 1.5,
-    borderRadius: 8,
-    paddingVertical: 9,
+    minHeight: 44,
+    borderRadius: BORDER_RADIUS.sm,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   showSolutionText: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    ...TYPOGRAPHY.subheadBold,
   },
   solutionContainer: {
-    marginTop: 12,
-    backgroundColor: '#F8FFF8',
-    borderRadius: 10,
-    padding: 14,
+    marginTop: SPACING.md,
+    backgroundColor: colors.successLight,
+    borderRadius: BORDER_RADIUS.sm,
+    padding: SPACING.md + 2,
   },
   solutionAnswer: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    color: '#2E7D32',
-    marginBottom: 10,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.success,
+    marginBottom: SPACING.sm,
   },
   stepRow: {
     flexDirection: 'row',
-    gap: 8,
-    marginBottom: 6,
+    gap: SPACING.sm,
+    marginBottom: SPACING.xs + 2,
   },
   stepNumber: {
-    fontSize: 13,
-    fontWeight: 'bold',
-    color: '#4CAF50',
-    width: 16,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.success,
+    minWidth: 18,
   },
   stepText: {
     flex: 1,
-    fontSize: 13,
-    color: COLORS.textSecondary,
-    lineHeight: 19,
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSecondary,
   },
+
+  // Empty state
   noContent: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
+    padding: SPACING.huge,
   },
   noContentIcon: {
-    fontSize: 60,
-    marginBottom: 15,
+    fontSize: 48,
+    marginBottom: SPACING.md,
   },
   noContentTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: COLORS.textDark,
-    marginBottom: 8,
+    ...TYPOGRAPHY.h3,
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: SPACING.xs,
   },
   noContentText: {
-    fontSize: 14,
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
     textAlign: 'center',
-    lineHeight: 22,
   },
+
+  // Bottom toolbar
   bottomNav: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
-    gap: 12,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    backgroundColor: colors.surface,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+    gap: SPACING.md,
   },
   navButton: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 10,
-    backgroundColor: COLORS.borderLight,
+    minHeight: 44,
+    justifyContent: 'center',
+    paddingHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: colors.inputBg,
+  },
+  navButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xs,
   },
   navButtonDisabled: {
-    opacity: 0.3,
+    opacity: 0.4,
   },
   navButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.textSecondary,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.text,
   },
   navButtonTextDisabled: {
-    color: COLORS.textMuted,
+    color: colors.textMuted,
   },
   navButtonNext: {
-    paddingHorizontal: 20,
+    paddingHorizontal: SPACING.xl,
   },
   completeButton: {
-    backgroundColor: COLORS.success,
+    backgroundColor: colors.success,
   },
   navButtonNextText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: COLORS.textLight,
+    ...TYPOGRAPHY.subheadBold,
+    color: '#FFFFFF',
   },
   progressDots: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 6,
+    gap: SPACING.xs + 2,
   },
   dot: {
-    width: 8,
-    height: 8,
+    width: 7,
+    height: 7,
     borderRadius: 4,
-    backgroundColor: COLORS.border,
+    backgroundColor: colors.border,
   },
   dotActive: {
-    width: 10,
-    height: 10,
+    width: 9,
+    height: 9,
     borderRadius: 5,
   },
 });

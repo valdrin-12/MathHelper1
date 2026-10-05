@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -6,11 +6,10 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
-  SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { COLORS, SHADOWS } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
 
 // ─── Keyboard Type Definitions ───
 const KEYBOARD_TYPES = [
@@ -155,6 +154,8 @@ const KEYBOARD_LAYOUTS = {
 // ─── Keyboard Type Selector Modal ───
 function KeyboardTypeSelector({ visible, onClose, onSelect, currentType }) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const selectorStyles = useMemo(() => makeSelectorStyles(colors), [colors]);
 
   return (
     <Modal
@@ -183,7 +184,7 @@ function KeyboardTypeSelector({ visible, onClose, onSelect, currentType }) {
                 <Ionicons
                   name={type.icon}
                   size={22}
-                  color={currentType === type.id ? COLORS.primarySoft : COLORS.textSubtle}
+                  color={currentType === type.id ? colors.primary : colors.textSubtle}
                 />
                 <Text
                   style={[
@@ -194,7 +195,7 @@ function KeyboardTypeSelector({ visible, onClose, onSelect, currentType }) {
                   {t(type.translationKey)}
                 </Text>
                 {currentType === type.id && (
-                  <Ionicons name="checkmark-circle" size={22} color={COLORS.primarySoft} />
+                  <Ionicons name="checkmark-circle" size={22} color={colors.primary} />
                 )}
               </TouchableOpacity>
             ))}
@@ -209,6 +210,8 @@ function KeyboardTypeSelector({ visible, onClose, onSelect, currentType }) {
 // ─── Main MathKeyboard Component ───
 export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [keyboardType, setKeyboardType] = useState('basic');
   const [showSelector, setShowSelector] = useState(false);
 
@@ -262,12 +265,12 @@ export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
         <Ionicons
           name={currentTypeInfo?.icon || 'add'}
           size={18}
-          color={COLORS.primarySoft}
+          color={colors.primary}
         />
         <Text style={styles.selectorText}>
           {t(currentTypeInfo?.translationKey || 'mathKeyboard.basicMath')}
         </Text>
-        <Ionicons name="chevron-down" size={18} color={COLORS.textSubtle} />
+        <Ionicons name="chevron-down" size={18} color={colors.textSubtle} />
       </TouchableOpacity>
 
       {/* Quick Tabs (if keyboard has them) */}
@@ -302,13 +305,13 @@ export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
             <Text style={styles.keyTextAction}>{t('mathKeyboard.clearAll')}</Text>
           </TouchableOpacity>
           <TouchableOpacity style={[styles.key, styles.keyAction, { flex: 0.5 }]} onPress={() => onKeyPress && onKeyPress(' ')}>
-            <Ionicons name="space-outline" size={18} color={COLORS.textSubtle} />
+            <Ionicons name="space-outline" size={18} color={colors.textSubtle} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.key, styles.keyNavigation]}
             onPress={onBackspace}
           >
-            <Ionicons name="backspace-outline" size={22} color={COLORS.primarySoft} />
+            <Ionicons name="backspace-outline" size={22} color={colors.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -325,138 +328,122 @@ export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
 }
 
 // ─── Styles ───
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   container: {
-    backgroundColor: COLORS.surface,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
-    ...SHADOWS.medium,
+    marginTop: 4,
   },
   selectorBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
+    paddingHorizontal: 4,
     paddingVertical: 10,
     gap: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
   },
   selectorText: {
     flex: 1,
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
-    color: COLORS.text,
+    color: colors.text,
   },
   tabsRow: {
     flexDirection: 'row',
-    paddingHorizontal: 8,
-    paddingVertical: 6,
+    paddingBottom: 6,
     gap: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.borderLight,
   },
   tabButton: {
     flex: 1,
     paddingVertical: 8,
-    backgroundColor: COLORS.inputBg,
+    backgroundColor: colors.primaryBg,
     borderRadius: 8,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.inputBorder,
   },
   tabText: {
     fontSize: 15,
     fontWeight: '600',
-    color: COLORS.textSecondary,
+    color: colors.primary,
     fontStyle: 'italic',
   },
   keysContainer: {
-    padding: 4,
-    gap: 4,
+    gap: 6,
   },
   row: {
     flexDirection: 'row',
-    gap: 4,
+    gap: 6,
   },
   key: {
     height: 46,
-    borderRadius: 8,
-    backgroundColor: COLORS.inputBg,
+    borderRadius: 10,
+    backgroundColor: colors.inputBg,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: COLORS.inputBorder,
     minWidth: 0,
   },
   keyHighlight: {
-    backgroundColor: COLORS.primaryBg,
-    borderColor: COLORS.primarySoft,
+    backgroundColor: colors.primaryBg,
   },
   keyVariable: {
-    backgroundColor: COLORS.primaryBg,
+    backgroundColor: colors.inputBg,
   },
   keyText: {
-    fontSize: 18,
-    fontWeight: '500',
-    color: COLORS.text,
+    fontSize: 20,
+    fontWeight: '400',
+    color: colors.text,
   },
   keyTextHighlight: {
-    color: COLORS.primarySoft,
-    fontWeight: '700',
+    color: colors.primary,
+    fontWeight: '600',
   },
   keyTextVariable: {
-    color: COLORS.primarySoft,
+    color: colors.primary,
     fontStyle: 'italic',
-    fontWeight: '600',
+    fontWeight: '500',
   },
   keyTextSmall: {
-    fontSize: 13,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
   },
   keyAction: {
     flex: 1,
-    backgroundColor: COLORS.background,
-    borderColor: COLORS.borderLight,
+    backgroundColor: colors.borderLight,
   },
   keyTextAction: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: COLORS.textSubtle,
+    fontSize: 13,
+    fontWeight: '600',
+    color: colors.textSubtle,
   },
   keyNavigation: {
     flex: 0.8,
-    backgroundColor: COLORS.background,
-    borderColor: COLORS.borderLight,
+    backgroundColor: colors.borderLight,
   },
 });
 
-const selectorStyles = StyleSheet.create({
+const makeSelectorStyles = (colors) => StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
+    backgroundColor: colors.overlay,
     justifyContent: 'flex-end',
   },
   container: {
-    backgroundColor: COLORS.surface,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    backgroundColor: colors.surface,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
     maxHeight: '70%',
     paddingBottom: 20,
   },
   handle: {
-    width: 40,
-    height: 4,
-    borderRadius: 2,
-    backgroundColor: COLORS.borderLight,
+    width: 36,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: colors.border,
     alignSelf: 'center',
-    marginTop: 10,
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 14,
   },
   title: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: COLORS.text,
-    paddingHorizontal: 20,
+    fontSize: 17,
+    fontWeight: '600',
+    color: colors.text,
+    textAlign: 'center',
     marginBottom: 12,
   },
   list: {
@@ -465,23 +452,22 @@ const selectorStyles = StyleSheet.create({
   option: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 14,
+    paddingVertical: 13,
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: 10,
     gap: 14,
-    marginBottom: 2,
   },
   optionActive: {
-    backgroundColor: COLORS.primaryBg,
+    backgroundColor: colors.primaryBg,
   },
   optionText: {
     flex: 1,
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.text,
+    fontSize: 17,
+    fontWeight: '400',
+    color: colors.text,
   },
   optionTextActive: {
-    color: COLORS.primarySoft,
-    fontWeight: '700',
+    color: colors.primary,
+    fontWeight: '600',
   },
 });

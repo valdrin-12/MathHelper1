@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -15,11 +15,11 @@ import { useLanguage } from '../context/LanguageContext';
 import { getLocale } from '../locales/i18n';
 import { useSavedItems } from '../context/SavedItemsContext';
 import SavedItemDetailModal from '../components/SavedItemDetailModal';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import { SPACING, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { ScreenHeader, ListSection, ListRow, Button, EmptyState } from '../components/ui';
 import WebContainer from '../components/WebContainer';
-import PressableCard from '../components/PressableCard';
 import { useResponsive } from '../utils/responsive';
 
 export default function SavedScreen() {
@@ -128,49 +128,11 @@ export default function SavedScreen() {
     return answer.length > 50 ? answer.substring(0, 50) + '...' : answer;
   };
 
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
+
   return (
     <View style={styles.container}>
-      {/* Header with Gradient */}
-      <LinearGradient
-        colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
-      >
-        <View style={styles.headerRow}>
-          <View>
-            <Text style={styles.headerTitle}>{t('saved.title')}</Text>
-            <Text style={styles.headerSubtitle}>
-              {t('saved.itemCount', { count: savedItems.length })}
-            </Text>
-          </View>
-          {savedItems.length > 0 && (
-            <TouchableOpacity onPress={toggleSelectionMode} style={styles.headerIconBox}>
-              <Ionicons name={selectionMode ? 'close' : 'checkmark-done'} size={22} color="rgba(255,255,255,0.9)" />
-            </TouchableOpacity>
-          )}
-        </View>
-
-        {/* Glass stats */}
-        <View style={styles.glassStatsRow}>
-          <View style={styles.glassStatCard}>
-            <Ionicons name="camera-outline" size={18} color="rgba(255,255,255,0.9)" />
-            <Text style={styles.glassStatValue}>
-              {savedItems.filter(i => i.imageData).length}
-            </Text>
-            <Text style={styles.glassStatLabel}>{t('saved.photoItem')}</Text>
-          </View>
-          <View style={styles.glassStatCard}>
-            <Ionicons name="keypad-outline" size={18} color="rgba(255,255,255,0.9)" />
-            <Text style={styles.glassStatValue}>
-              {savedItems.filter(i => i.problemText).length}
-            </Text>
-            <Text style={styles.glassStatLabel}>{t('saved.textItem')}</Text>
-          </View>
-        </View>
-      </LinearGradient>
-
-      {/* Content */}
       <ScrollView
         style={styles.contentContainer}
         showsVerticalScrollIndicator={false}
@@ -179,128 +141,82 @@ export default function SavedScreen() {
         }
       >
         <WebContainer>
-        {savedItems.length === 0 ? (
-          <View style={styles.emptyContainer}>
-            <View style={styles.illustrationContainer}>
-              <View style={styles.illustrationBgCircle}>
-                <View style={styles.emptyIconBox}>
-                  <Ionicons name="bookmarks-outline" size={36} color={COLORS.primaryLight} />
-                </View>
-              </View>
-              <View style={[styles.floatingBubble, styles.floatingTopRight]}>
-                <Ionicons name="bookmark" size={16} color={COLORS.primarySoft} />
-              </View>
-              <View style={[styles.floatingBubble, styles.floatingBottomLeft]}>
-                <Ionicons name="star" size={14} color={COLORS.secondary} />
-              </View>
-            </View>
-            <Text style={styles.emptyTitle}>{t('saved.noSavedItems')}</Text>
-            <Text style={styles.emptyText}>
-              {t('saved.savedItemsHint')}
-            </Text>
-            <TouchableOpacity style={styles.emptyHintButton} onPress={() => navigation.navigate('Dashboard')}>
-              <Ionicons name="arrow-forward-circle" size={18} color={COLORS.primarySoft} />
-              <Text style={styles.emptyHint}>
-                {t('saved.goToDashboard')}
-              </Text>
+        <ScreenHeader
+          title={t('saved.title')}
+          subtitle={t('saved.itemCount', { count: savedItems.length })}
+          right={savedItems.length > 0 ? (
+            <TouchableOpacity onPress={toggleSelectionMode} style={styles.headerButton} activeOpacity={0.7}>
+              <Ionicons name={selectionMode ? 'close' : 'checkmark-done'} size={20} color={colors.primary} />
             </TouchableOpacity>
+          ) : null}
+        />
+
+        {savedItems.length === 0 ? (
+          <View>
+            <EmptyState icon="bookmarks-outline" title={t('saved.noSavedItems')} message={t('saved.savedItemsHint')} />
+            <Button
+              style={styles.emptyButton}
+              variant="tinted"
+              title={t('saved.goToDashboard')}
+              onPress={() => navigation.navigate('Dashboard')}
+            />
           </View>
         ) : (
           <>
           {selectionMode && (
             <View style={styles.selectionBar}>
-              <TouchableOpacity onPress={selectAll} style={styles.selectionBarBtn}>
-                <Ionicons name="checkmark-done" size={16} color={COLORS.primary} />
-                <Text style={styles.selectionBarBtnText}>{t('saved.selectAll')}</Text>
-              </TouchableOpacity>
+              <Button variant="plain" icon="checkmark-done" title={t('saved.selectAll')} onPress={selectAll} style={styles.selectionButton} />
               <Text style={styles.selectionCount}>{t('saved.selectedCount', { count: selectedIds.size })}</Text>
-              <TouchableOpacity onPress={handleBulkDelete} style={[styles.selectionBarBtn, styles.deleteBtn]}>
-                <Ionicons name="trash" size={16} color="#fff" />
-                <Text style={[styles.selectionBarBtnText, { color: '#fff' }]}>{t('common.delete')}</Text>
-              </TouchableOpacity>
+              <Button
+                variant="tinted"
+                tone="destructive"
+                icon="trash"
+                title={t('common.delete')}
+                onPress={handleBulkDelete}
+                disabled={selectedIds.size === 0}
+                style={styles.selectionButton}
+              />
             </View>
           )}
-          <View style={[styles.itemsList, isDesktop && { flexDirection: 'row', flexWrap: 'wrap', gap: 16 }]}>
-            {savedItems.map((item) => (
-              <PressableCard
-                key={item.id}
-                style={[styles.glassItemCard, isDesktop && { flexBasis: '48%', flexGrow: 0 }, selectionMode && selectedIds.has(item.id) && { borderWidth: 2, borderColor: COLORS.primary }]}
-                onPress={() => selectionMode ? toggleSelectItem(item.id) : handleViewItem(item)}
-                onLongPress={() => { if (!selectionMode) { setSelectionMode(true); toggleSelectItem(item.id); } }}
-              >
-              {selectionMode && (
-                <View style={styles.checkboxOverlay}>
-                  <Ionicons name={selectedIds.has(item.id) ? 'checkmark-circle' : 'ellipse-outline'} size={24} color={selectedIds.has(item.id) ? COLORS.primary : COLORS.textMuted} />
-                </View>
-              )}
-                {/* Glass layer */}
-                <View style={styles.glassLayer} />
-
-                {/* Image or Text Preview */}
-                {item.imageData ? (
-                  <Image
-                    source={{ uri: `data:image/jpeg;base64,${item.imageData}` }}
-                    style={styles.itemImage}
-                    onError={() => {/* silently fall through to text preview below */}}
-                  />
-                ) : item.problemText ? (
-                  <View style={styles.textPreviewBox}>
-                    <Ionicons name="keypad" size={22} color={COLORS.primarySoft} style={{ marginBottom: 8 }} />
-                    <Text style={styles.textPreviewText} numberOfLines={3}>
-                      {item.problemText}
-                    </Text>
-                  </View>
-                ) : null}
-
-                {/* Content */}
-                <View style={styles.itemContent}>
-                  <View style={styles.itemHeader}>
-                    <View style={styles.itemTypeRow}>
-                      <Ionicons
-                        name={item.imageData ? 'camera' : 'keypad'}
-                        size={16}
-                        color={COLORS.primarySoft}
-                      />
-                      <Text style={styles.itemTitle} numberOfLines={1}>
-                        {item.imageData ? t('saved.photoItem') : t('saved.textItem')}
-                      </Text>
-                    </View>
-                    <Text style={styles.itemDate}>{formatDate(item.savedAt)}</Text>
-                  </View>
-
-                  {item.answer && (
-                    <View style={styles.answerPreview}>
-                      <View style={styles.answerLabelRow}>
-                        <Ionicons name="checkmark-circle" size={14} color={COLORS.primarySoft} />
-                        <Text style={styles.answerLabel}>{t('saved.answer')}</Text>
-                      </View>
-                      <Text style={styles.answerPreviewText}>
-                        {getPreviewText(item.answer)}
-                      </Text>
+          <ListSection style={styles.list}>
+            {savedItems.map((item) => {
+              const selected = selectedIds.has(item.id);
+              const meta = [
+                item.imageData ? t('saved.photoItem') : t('saved.textItem'),
+                formatDate(item.savedAt),
+                item.steps?.length ? t('saved.stepsCount', { count: item.steps.length }) : null,
+              ].filter(Boolean).join('  ·  ');
+              return (
+                <ListRow
+                  key={item.id}
+                  leadingWidth={52}
+                  leading={item.imageData ? (
+                    <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.thumb} />
+                  ) : (
+                    <View style={styles.textThumb}>
+                      <Ionicons name="keypad" size={20} color={colors.primary} />
                     </View>
                   )}
-
-                  {item.steps && item.steps.length > 0 && (
-                    <View style={styles.stepsInfo}>
-                      <Ionicons name="list" size={14} color={COLORS.textSubtle} />
-                      <Text style={styles.stepsCount}>
-                        {t('saved.stepsCount', { count: item.steps.length })}
-                      </Text>
-                    </View>
-                  )}
-
-                  <View style={styles.itemFooter}>
-                    <Text style={styles.viewButtonText}>{t('saved.viewDetails')}</Text>
-                    <Ionicons name="arrow-forward" size={16} color={COLORS.primarySoft} />
-                  </View>
-                </View>
-              </PressableCard>
-            ))}
-
-            <View style={{ height: SPACING.xl }} />
-          </View>
+                  title={item.answer ? getPreviewText(item.answer) : item.problemText || t('saved.noAnswer')}
+                  subtitle={meta}
+                  right={selectionMode ? (
+                    <Ionicons
+                      name={selected ? 'checkmark-circle' : 'ellipse-outline'}
+                      size={24}
+                      color={selected ? colors.primary : colors.textPlaceholder}
+                      style={styles.check}
+                    />
+                  ) : null}
+                  onPress={() => selectionMode ? toggleSelectItem(item.id) : handleViewItem(item)}
+                  onLongPress={() => { if (!selectionMode) { setSelectionMode(true); toggleSelectItem(item.id); } }}
+                />
+              );
+            })}
+          </ListSection>
           </>
         )}
+
+        <View style={{ height: isWeb ? 20 : 100 }} />
         </WebContainer>
       </ScrollView>
 
@@ -318,302 +234,58 @@ export default function SavedScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
   },
-
-  // Header Gradient
-  headerGradient: {
-    paddingHorizontal: SPACING.xl,
-    paddingTop: 60,
-    paddingBottom: 20,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  headerTitle: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 4,
-    letterSpacing: -0.5,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
-    fontWeight: '500',
-  },
-  headerIconBox: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.25)',
-  },
-
-  // Glass Stats
-  glassStatsRow: {
-    flexDirection: 'row',
-    gap: SPACING.md,
-  },
-  glassStatCard: {
-    flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    borderRadius: 14,
-    padding: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.25)',
-    gap: 4,
-  },
-  glassStatValue: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-  glassStatLabel: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.75)',
-    fontWeight: '600',
-  },
-
   contentContainer: {
     flex: 1,
   },
-  itemsList: {
-    padding: SPACING.xl,
+  headerButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primaryBg,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-
+  emptyButton: {
+    marginHorizontal: SPACING.xl,
+  },
   selectionBar: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.sm,
-    backgroundColor: COLORS.background,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.glassBorder,
-    marginBottom: SPACING.md,
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.md,
   },
-  selectionBarBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  selectionBarBtnText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: COLORS.primary,
-  },
-  deleteBtn: {
-    backgroundColor: COLORS.error,
-    borderRadius: 8,
+  selectionButton: {
+    minHeight: 36,
+    paddingHorizontal: SPACING.md,
   },
   selectionCount: {
-    fontSize: 13,
-    color: COLORS.textMuted,
-    fontWeight: '500',
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
   },
-  checkboxOverlay: {
-    position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 10,
+  list: {
+    marginTop: SPACING.md,
   },
-
-  // Glassmorphism Item Card
-  glassItemCard: {
-    borderRadius: 16,
-    marginBottom: SPACING.lg,
-    overflow: 'hidden',
-    backgroundColor: COLORS.glassBackground,
-    borderWidth: 1,
-    borderColor: COLORS.glassBorder,
-    ...SHADOWS.glass,
+  thumb: {
+    width: 52,
+    height: 52,
+    borderRadius: 10,
+    backgroundColor: colors.inputBg,
   },
-  glassLayer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: COLORS.glassBackgroundDark,
-    borderRadius: 16,
-  },
-  itemImage: {
-    width: '100%',
-    height: 200,
-    backgroundColor: COLORS.borderLight,
-  },
-  textPreviewBox: {
-    width: '100%',
-    minHeight: 100,
-    backgroundColor: COLORS.glassBackgroundDark,
-    padding: SPACING.lg,
-  },
-  textPreviewText: {
-    fontSize: 14,
-    color: COLORS.textSubtle,
-    lineHeight: 20,
-    fontFamily: 'System',
-  },
-  itemContent: {
-    padding: SPACING.lg,
-  },
-  itemHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: SPACING.md,
-  },
-  itemTypeRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  itemTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: COLORS.text,
-  },
-  itemDate: {
-    fontSize: 13,
-    color: COLORS.textMuted,
-    fontWeight: '500',
-  },
-  answerPreview: {
-    backgroundColor: COLORS.glassBackgroundDark,
-    borderLeftWidth: 3,
-    borderLeftColor: COLORS.primarySoft,
-    padding: SPACING.md,
-    borderRadius: BORDER_RADIUS.sm,
-    marginBottom: SPACING.md,
-  },
-  answerLabelRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    marginBottom: 4,
-  },
-  answerLabel: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: COLORS.primarySoft,
-  },
-  answerPreviewText: {
-    fontSize: 15,
-    color: COLORS.text,
-    lineHeight: 22,
-  },
-  stepsInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-    marginBottom: SPACING.md,
-  },
-  stepsCount: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: COLORS.textSubtle,
-  },
-  itemFooter: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    borderTopWidth: 1,
-    borderTopColor: COLORS.glassBorder,
-    paddingTop: SPACING.md,
-    gap: 4,
-  },
-  viewButtonText: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.primarySoft,
-  },
-
-  // Empty State
-  emptyContainer: {
-    flex: 1,
+  textThumb: {
+    width: 52,
+    height: 52,
+    borderRadius: 10,
+    backgroundColor: colors.primaryBg,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 40,
-    marginTop: 60,
   },
-  illustrationContainer: {
-    width: 120,
-    height: 120,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
-  },
-  illustrationBgCircle: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    backgroundColor: COLORS.primaryBg,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: COLORS.inputBorder,
-  },
-  emptyIconBox: {
-    width: 64,
-    height: 64,
-    borderRadius: 20,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.small,
-  },
-  floatingBubble: {
-    position: 'absolute',
-    width: 36,
-    height: 36,
-    borderRadius: 12,
-    backgroundColor: COLORS.surface,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.small,
-  },
-  floatingTopRight: {
-    top: 2,
-    right: 0,
-  },
-  floatingBottomLeft: {
-    bottom: 2,
-    left: 0,
-  },
-  emptyTitle: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: SPACING.md,
-    textAlign: 'center',
-  },
-  emptyText: {
-    fontSize: 15,
-    color: COLORS.textSubtle,
-    textAlign: 'center',
-    lineHeight: 22,
-    marginBottom: SPACING.lg,
-  },
-  emptyHintButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  emptyHint: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.primarySoft,
+  check: {
+    marginLeft: SPACING.sm,
   },
 });

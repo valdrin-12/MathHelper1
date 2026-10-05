@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Modal,
   View,
@@ -14,7 +14,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, SHADOWS, BORDER_RADIUS, SPACING } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { Button, SegmentedControl } from './ui';
 import { useUser } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
 import * as purchaseService from '../services/purchaseService';
@@ -25,6 +27,8 @@ export default function PremiumModal({ visible, onClose }) {
   const { t } = useTranslation();
   const { user, refresh } = useUser();
   const { language } = useLanguage();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(false);
   const [restoring, setRestoring] = useState(false);
@@ -176,25 +180,26 @@ export default function PremiumModal({ visible, onClose }) {
       onRequestClose={onClose}
     >
       <SafeAreaView style={styles.safeArea}>
+        {/* Sheet nav bar: close only */}
+        <View style={styles.navBar}>
+          <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+            <Ionicons name="close" size={24} color={colors.primary} />
+          </TouchableOpacity>
+        </View>
+
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-          {/* Header */}
+          {/* Hero — the single subtle gradient, reserved for the Premium highlight */}
           <LinearGradient
-            colors={['#F59E0B', '#D97706', '#B45309']}
+            colors={[colors.warningLight, colors.surface]}
             start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
+            end={{ x: 0, y: 1 }}
             style={styles.header}
           >
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={22} color="rgba(255,255,255,0.9)" />
-            </TouchableOpacity>
-
-            <View style={styles.headerContent}>
-              <View style={styles.crownBox}>
-                <Ionicons name="star" size={40} color="#FDE68A" />
-              </View>
-              <Text style={styles.headerTitle}>{t('premium.title')}</Text>
-              <Text style={styles.headerSubtitle}>{t('premium.subtitle')}</Text>
+            <View style={styles.crownBox}>
+              <Ionicons name="star" size={34} color="#FFFFFF" />
             </View>
+            <Text style={styles.headerTitle}>{t('premium.title')}</Text>
+            <Text style={styles.headerSubtitle}>{t('premium.subtitle')}</Text>
           </LinearGradient>
 
           {/* Comparison Cards */}
@@ -202,13 +207,13 @@ export default function PremiumModal({ visible, onClose }) {
             {/* Free Plan */}
             <View style={styles.planCard}>
               <View style={styles.planHeader}>
-                <Ionicons name="person" size={18} color={COLORS.textSubtle} />
+                <Ionicons name="person" size={18} color={colors.textSubtle} />
                 <Text style={styles.planName}>{t('premium.freePlan')}</Text>
               </View>
               <View style={styles.planBenefits}>
                 {freeBenefits.map((b, i) => (
                   <View key={i} style={styles.benefitRow}>
-                    <Ionicons name={b.icon} size={16} color={COLORS.textSubtle} />
+                    <Ionicons name={b.icon} size={16} color={colors.textSubtle} />
                     <Text style={styles.benefitText}>{b.text}</Text>
                   </View>
                 ))}
@@ -217,43 +222,33 @@ export default function PremiumModal({ visible, onClose }) {
 
             {/* Premium Plan */}
             <View style={[styles.planCard, styles.premiumPlanCard]}>
-              <LinearGradient
-                colors={['#FFFBEB', '#FEF3C7']}
-                style={styles.premiumPlanBg}
-              >
-                <View style={styles.planHeader}>
-                  <Ionicons name="star" size={18} color="#D97706" />
-                  <Text style={[styles.planName, styles.premiumPlanName]}>{t('premium.premiumPlan')}</Text>
-                </View>
-                <View style={styles.planBenefits}>
-                  {premiumBenefits.map((b, i) => (
-                    <View key={i} style={styles.benefitRow}>
-                      <Ionicons name={b.icon} size={16} color="#D97706" />
-                      <Text style={[styles.benefitText, styles.premiumBenefitText]}>{b.text}</Text>
-                    </View>
-                  ))}
-                </View>
-              </LinearGradient>
+              <View style={styles.planHeader}>
+                <Ionicons name="star" size={18} color={colors.secondary} />
+                <Text style={[styles.planName, styles.premiumPlanName]}>{t('premium.premiumPlan')}</Text>
+              </View>
+              <View style={styles.planBenefits}>
+                {premiumBenefits.map((b, i) => (
+                  <View key={i} style={styles.benefitRow}>
+                    <Ionicons name={b.icon} size={16} color={colors.secondary} />
+                    <Text style={[styles.benefitText, styles.premiumBenefitText]}>{b.text}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
           </View>
 
           {/* Price */}
           {isWeb ? (
             <View style={styles.priceSection}>
-              <View style={styles.intervalRow}>
-                {BILLING_INTERVALS.map((i) => (
-                  <TouchableOpacity
-                    key={i}
-                    style={[styles.intervalChip, billingInterval === i && styles.intervalChipActive]}
-                    onPress={() => setBillingInterval(i)}
-                    activeOpacity={0.8}
-                  >
-                    <Text style={[styles.intervalChipText, billingInterval === i && styles.intervalChipTextActive]}>
-                      {t(i === 'month' ? 'premium.monthly' : 'premium.yearly')}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
+              <SegmentedControl
+                segments={BILLING_INTERVALS.map((i) => ({
+                  value: i,
+                  label: t(i === 'month' ? 'premium.monthly' : 'premium.yearly'),
+                }))}
+                value={billingInterval}
+                onChange={setBillingInterval}
+                style={styles.intervalControl}
+              />
 
               {selectedWebPrice ? (
                 <>
@@ -271,11 +266,11 @@ export default function PremiumModal({ visible, onClose }) {
                   <Text style={styles.priceNote}>{t('premium.cancelAnytime')}</Text>
                 </>
               ) : priceError ? (
-                <TouchableOpacity onPress={loadWebPrices}>
+                <TouchableOpacity onPress={loadWebPrices} style={styles.retryBtn}>
                   <Text style={styles.priceNote}>{t('premium.priceLoadError')}</Text>
                 </TouchableOpacity>
               ) : (
-                <ActivityIndicator color={COLORS.textSubtle} />
+                <ActivityIndicator color={colors.textSubtle} />
               )}
             </View>
           ) : (
@@ -289,42 +284,25 @@ export default function PremiumModal({ visible, onClose }) {
           )}
 
           {/* Buy Button */}
-          <TouchableOpacity
-            style={styles.buyButton}
+          <Button
+            title={t('premium.purchaseButton')}
+            icon="star"
+            tone="warning"
             onPress={handleBuyPremium}
-            disabled={loading || (isWeb && !selectedWebPrice)}
-            activeOpacity={0.8}
-          >
-            <LinearGradient
-              colors={loading || (isWeb && !selectedWebPrice) ? ['#D4D4D4', '#D4D4D4'] : ['#F59E0B', '#D97706']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 0 }}
-              style={styles.buyGradient}
-            >
-              {loading ? (
-                <ActivityIndicator color="#FFFFFF" />
-              ) : (
-                <>
-                  <Ionicons name="star" size={20} color="#FFFFFF" />
-                  <Text style={styles.buyText}>{t('premium.purchaseButton')}</Text>
-                </>
-              )}
-            </LinearGradient>
-          </TouchableOpacity>
+            loading={loading}
+            disabled={isWeb && !selectedWebPrice}
+            style={styles.buyButton}
+          />
 
           {/* Restore - mobile only */}
           {!isWeb && (
-            <TouchableOpacity
-              style={styles.restoreButton}
+            <Button
+              title={t('premium.restorePurchases')}
+              variant="plain"
               onPress={handleRestore}
-              disabled={restoring}
-            >
-              {restoring ? (
-                <ActivityIndicator size="small" color={COLORS.textSubtle} />
-              ) : (
-                <Text style={styles.restoreText}>{t('premium.restorePurchases')}</Text>
-              )}
-            </TouchableOpacity>
+              loading={restoring}
+              style={styles.restoreButton}
+            />
           )}
 
           <View style={{ height: 40 }} />
@@ -334,210 +312,150 @@ export default function PremiumModal({ visible, onClose }) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
   },
   container: {
     flex: 1,
   },
 
-  // Header
-  header: {
-    paddingTop: Platform.OS === 'ios' ? 10 : 40,
-    paddingBottom: 30,
-    borderBottomLeftRadius: 28,
-    borderBottomRightRadius: 28,
-    alignItems: 'center',
+  // Sheet nav bar
+  navBar: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: SPACING.sm,
+    paddingTop: Platform.OS === 'android' ? SPACING.xxl : 0,
   },
   closeBtn: {
-    position: 'absolute',
-    top: Platform.OS === 'ios' ? 14 : 44,
-    right: 18,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    width: 44,
+    height: 44,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex: 10,
   },
-  headerContent: {
+
+  // Hero (Premium highlight)
+  header: {
+    marginHorizontal: SPACING.lg,
+    borderRadius: BORDER_RADIUS.xl,
+    paddingVertical: SPACING.xxl,
+    paddingHorizontal: SPACING.xl,
     alignItems: 'center',
-    paddingTop: 20,
   },
   crownBox: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: 'rgba(255,255,255,0.2)',
+    width: 64,
+    height: 64,
+    borderRadius: 16,
+    backgroundColor: colors.secondary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 16,
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.3)',
+    marginBottom: SPACING.lg,
   },
   headerTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: -0.5,
-    marginBottom: 6,
+    ...TYPOGRAPHY.h1,
+    color: colors.text,
+    textAlign: 'center',
+    marginBottom: SPACING.xs + 2,
   },
   headerSubtitle: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.85)',
-    fontWeight: '500',
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
     textAlign: 'center',
-    paddingHorizontal: 40,
   },
 
   // Plan Comparison
   cardsRow: {
     flexDirection: 'row',
-    paddingHorizontal: 18,
-    gap: 12,
-    marginTop: -16,
+    paddingHorizontal: SPACING.lg,
+    gap: SPACING.md,
+    marginTop: SPACING.lg,
   },
   planCard: {
     flex: 1,
-    backgroundColor: COLORS.surface,
-    borderRadius: 18,
-    padding: 16,
-    ...SHADOWS.medium,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
   },
   premiumPlanCard: {
-    padding: 0,
-    overflow: 'hidden',
-    borderWidth: 2,
-    borderColor: '#FDE68A',
-  },
-  premiumPlanBg: {
-    padding: 16,
-    borderRadius: 16,
+    borderWidth: 1.5,
+    borderColor: colors.secondary,
   },
   planHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginBottom: 14,
+    gap: SPACING.xs + 2,
+    marginBottom: SPACING.md,
   },
   planName: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: COLORS.textSubtle,
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.textSubtle,
   },
   premiumPlanName: {
-    color: '#92400E',
+    color: colors.secondary,
   },
   planBenefits: {
-    gap: 10,
+    gap: SPACING.sm + 2,
   },
   benefitRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: SPACING.sm,
   },
   benefitText: {
-    fontSize: 12,
-    color: COLORS.textSubtle,
-    fontWeight: '500',
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
     flex: 1,
   },
   premiumBenefitText: {
-    color: '#78350F',
-    fontWeight: '600',
+    color: colors.text,
+    fontWeight: '500',
   },
 
   // Price
   priceSection: {
     alignItems: 'center',
-    marginTop: 28,
-    marginBottom: 20,
+    marginTop: SPACING.xxl,
+    marginBottom: SPACING.xl,
+    paddingHorizontal: SPACING.lg,
+  },
+  intervalControl: {
+    alignSelf: 'stretch',
+    marginBottom: SPACING.lg,
   },
   priceLabel: {
-    fontSize: 13,
-    color: COLORS.textSubtle,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
     fontWeight: '600',
-    marginBottom: 6,
+    marginBottom: SPACING.xs + 2,
   },
   price: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: COLORS.text,
-    letterSpacing: -1,
+    ...TYPOGRAPHY.largeTitle,
+    color: colors.text,
   },
   pricePeriod: {
-    fontSize: 16,
+    ...TYPOGRAPHY.callout,
     fontWeight: '600',
-    color: COLORS.textSubtle,
+    color: colors.textSubtle,
     letterSpacing: 0,
   },
   priceNote: {
-    fontSize: 12,
-    color: COLORS.textMuted,
-    marginTop: 4,
+    ...TYPOGRAPHY.footnote,
+    color: colors.textMuted,
+    marginTop: SPACING.xs,
+    textAlign: 'center',
   },
-
-  // Billing interval toggle (web)
-  intervalRow: {
-    flexDirection: 'row',
-    gap: SPACING.sm,
-    marginBottom: 16,
-  },
-  intervalChip: {
-    paddingHorizontal: 16,
-    paddingVertical: 7,
-    borderRadius: BORDER_RADIUS.round,
-    backgroundColor: COLORS.surface,
-    borderWidth: 1.5,
-    borderColor: COLORS.glassBorder,
-  },
-  intervalChipActive: {
-    backgroundColor: '#D97706',
-    borderColor: '#D97706',
-  },
-  intervalChipText: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: COLORS.textSecondary,
-  },
-  intervalChipTextActive: {
-    color: '#FFFFFF',
-  },
-
-  // Buy Button
-  buyButton: {
-    marginHorizontal: 18,
-    borderRadius: 16,
-    overflow: 'hidden',
-    ...SHADOWS.medium,
-  },
-  buyGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  retryBtn: {
+    minHeight: 44,
     justifyContent: 'center',
-    paddingVertical: 18,
-    gap: 10,
-    borderRadius: 16,
-  },
-  buyText: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#FFFFFF',
   },
 
-  // Restore
-  restoreButton: {
-    alignItems: 'center',
-    paddingVertical: 16,
-    marginTop: 8,
+  // Actions
+  buyButton: {
+    marginHorizontal: SPACING.lg,
   },
-  restoreText: {
-    fontSize: 14,
-    color: COLORS.textSubtle,
-    fontWeight: '600',
-    textDecorationLine: 'underline',
+  restoreButton: {
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.sm,
   },
 });

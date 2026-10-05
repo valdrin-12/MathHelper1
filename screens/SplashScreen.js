@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SHADOWS } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
 
 export default function SplashScreen({ onFinish }) {
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const iconScale = useRef(new Animated.Value(0.72)).current;
   const iconOpacity = useRef(new Animated.Value(0)).current;
   const textOpacity = useRef(new Animated.Value(0)).current;
@@ -79,14 +80,9 @@ export default function SplashScreen({ onFinish }) {
           { opacity: iconOpacity, transform: [{ scale: iconScale }] },
         ]}
       >
-        <LinearGradient
-          colors={[COLORS.primary, COLORS.primarySoft]}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.squircle}
-        >
+        <View style={styles.squircle}>
           <Ionicons name="calculator" size={52} color="#FFFFFF" />
-        </LinearGradient>
+        </View>
       </Animated.View>
 
       {/* App Name */}
@@ -112,10 +108,10 @@ export default function SplashScreen({ onFinish }) {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -123,12 +119,12 @@ const styles = StyleSheet.create({
   // ── App Icon ─────────────────────────────────────────────────────────────────
   iconWrapper: {
     marginBottom: 28,
-    ...SHADOWS.large,
   },
   squircle: {
     width: 112,
     height: 112,
     borderRadius: Platform.OS === 'ios' ? 28 : 24,
+    backgroundColor: colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -142,18 +138,18 @@ const styles = StyleSheet.create({
   appName: {
     fontSize: 34,
     fontWeight: '700',
-    color: COLORS.text,
+    color: colors.text,
     letterSpacing: 0.37,
   },
   cursor: {
     fontSize: 34,
     fontWeight: '200',
-    color: COLORS.textMuted,
+    color: colors.textMuted,
   },
   tagline: {
     fontSize: 15,
     fontWeight: '400',
-    color: COLORS.textSubtle,
+    color: colors.textSubtle,
     letterSpacing: -0.24,
   },
 
@@ -169,12 +165,12 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: COLORS.border,
+    backgroundColor: colors.border,
   },
   dotActive: {
     width: 20,
     height: 6,
     borderRadius: 3,
-    backgroundColor: COLORS.primary,
+    backgroundColor: colors.primary,
   },
 });

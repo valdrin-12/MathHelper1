@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import {
   View,
   Text,
@@ -8,99 +8,18 @@ import {
   FlatList,
   Animated,
 } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
-import { COLORS } from '../theme/constants';
+import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { Button } from '../components/ui';
 
 const { width, height } = Dimensions.get('window');
 
-function IllustrationCircle({ icon, color, secondaryIcon }) {
-  return (
-    <View style={illustStyles.container}>
-      {/* Outer ring */}
-      <View style={[illustStyles.outerRing, { borderColor: color + '25' }]}>
-        {/* Middle ring */}
-        <View style={[illustStyles.middleRing, { borderColor: color + '15' }]}>
-          {/* Inner circle */}
-          <LinearGradient
-            colors={[color, color + 'CC']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={illustStyles.innerCircle}
-          >
-            <Ionicons name={icon} size={56} color="#FFFFFF" />
-          </LinearGradient>
-        </View>
-      </View>
-      {/* Floating accent icons */}
-      <View style={[illustStyles.floatingIcon, illustStyles.floatingTopRight]}>
-        <View style={[illustStyles.floatingBubble, { backgroundColor: color + '20' }]}>
-          <Ionicons name={secondaryIcon || 'sparkles'} size={20} color={color} />
-        </View>
-      </View>
-      <View style={[illustStyles.floatingIcon, illustStyles.floatingBottomLeft]}>
-        <View style={[illustStyles.floatingBubble, { backgroundColor: color + '15' }]}>
-          <Ionicons name="star" size={16} color={color} />
-        </View>
-      </View>
-    </View>
-  );
-}
-
-const illustStyles = StyleSheet.create({
-  container: {
-    width: 220,
-    height: 220,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 40,
-  },
-  outerRing: {
-    width: 200,
-    height: 200,
-    borderRadius: 100,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  middleRing: {
-    width: 168,
-    height: 168,
-    borderRadius: 84,
-    borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  innerCircle: {
-    width: 128,
-    height: 128,
-    borderRadius: 64,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  floatingIcon: {
-    position: 'absolute',
-  },
-  floatingTopRight: {
-    top: 10,
-    right: 5,
-  },
-  floatingBottomLeft: {
-    bottom: 15,
-    left: 10,
-  },
-  floatingBubble: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
-
 export default function OnboardingScreen({ onComplete }) {
   const { t } = useTranslation();
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
   const flatListRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -109,7 +28,7 @@ export default function OnboardingScreen({ onComplete }) {
     {
       icon: 'camera',
       secondaryIcon: 'scan',
-      color: '#2563EB',
+      color: colors.primary,
       title: t('onboarding.slide1Title'),
       description: t('onboarding.slide1Desc'),
       features: [
@@ -121,7 +40,7 @@ export default function OnboardingScreen({ onComplete }) {
     {
       icon: 'school',
       secondaryIcon: 'book',
-      color: '#10B981',
+      color: colors.success,
       title: t('onboarding.slide2Title'),
       description: t('onboarding.slide2Desc'),
       features: [
@@ -133,7 +52,7 @@ export default function OnboardingScreen({ onComplete }) {
     {
       icon: 'trophy',
       secondaryIcon: 'flame',
-      color: '#F59E0B',
+      color: colors.secondary,
       title: t('onboarding.slide3Title'),
       description: t('onboarding.slide3Desc'),
       features: [
@@ -145,7 +64,7 @@ export default function OnboardingScreen({ onComplete }) {
     {
       icon: 'diamond',
       secondaryIcon: 'star',
-      color: '#8B5CF6',
+      color: colors.purple,
       title: t('onboarding.slide4Title'),
       description: t('onboarding.slide4Desc'),
       features: [
@@ -166,18 +85,17 @@ export default function OnboardingScreen({ onComplete }) {
 
   const renderSlide = ({ item }) => (
     <View style={styles.slide}>
-      <IllustrationCircle
-        icon={item.icon}
-        color={item.color}
-        secondaryIcon={item.secondaryIcon}
-      />
+      <View style={[styles.iconSquircle, { backgroundColor: item.color }]}>
+        <Ionicons name={item.icon} size={52} color="#FFFFFF" />
+      </View>
       <Text style={styles.slideTitle}>{item.title}</Text>
       <Text style={styles.slideDescription}>{item.description}</Text>
       {item.features && (
         <View style={styles.featureList}>
           {item.features.map((feature, i) => (
-            <View key={i} style={[styles.featureRow, { borderColor: item.color + '30' }]}>
-              <Text style={[styles.featureText, { color: item.color }]}>{feature}</Text>
+            <View key={i} style={[styles.featureRow, i > 0 && styles.featureRowDivider]}>
+              <Ionicons name="checkmark-circle" size={20} color={item.color} />
+              <Text style={styles.featureText}>{feature}</Text>
             </View>
           ))}
         </View>
@@ -207,7 +125,7 @@ export default function OnboardingScreen({ onComplete }) {
               {
                 width: dotWidth,
                 opacity: dotOpacity,
-                backgroundColor: slides[currentIndex].color,
+                backgroundColor: colors.primary,
               },
             ]}
           />
@@ -248,110 +166,97 @@ export default function OnboardingScreen({ onComplete }) {
       {renderPagination()}
 
       <View style={styles.bottomSection}>
-        <TouchableOpacity
-          style={[styles.nextButton, { backgroundColor: slides[currentIndex].color }]}
+        <Button
+          title={currentIndex === slides.length - 1 ? t('onboarding.getStarted') : t('onboarding.next')}
           onPress={handleNext}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.nextButtonText}>
-            {currentIndex === slides.length - 1
-              ? t('onboarding.getStarted')
-              : t('onboarding.next')}
-          </Text>
-          <Ionicons
-            name={currentIndex === slides.length - 1 ? 'rocket' : 'arrow-forward'}
-            size={20}
-            color="#FFFFFF"
-          />
-        </TouchableOpacity>
+        />
       </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: colors.background,
   },
   skipButton: {
     position: 'absolute',
     top: 56,
-    right: 24,
+    right: SPACING.lg,
     zIndex: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.md,
   },
   skipText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: COLORS.textMuted,
+    ...TYPOGRAPHY.body,
+    color: colors.primary,
   },
   slide: {
     width,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 40,
-    paddingTop: height * 0.15,
+    paddingHorizontal: SPACING.xxxl,
+    paddingTop: height * 0.12,
+  },
+  iconSquircle: {
+    width: 104,
+    height: 104,
+    borderRadius: 26,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: SPACING.xxxl,
   },
   slideTitle: {
-    fontSize: 28,
-    fontWeight: '800',
-    color: COLORS.text,
+    ...TYPOGRAPHY.h1,
+    color: colors.text,
     textAlign: 'center',
-    marginBottom: 14,
-    letterSpacing: -0.5,
+    marginBottom: SPACING.md,
   },
   slideDescription: {
-    fontSize: 16,
-    color: COLORS.textSubtle,
+    ...TYPOGRAPHY.body,
+    color: colors.textSubtle,
     textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 10,
+  },
+  featureList: {
+    marginTop: SPACING.xxl,
+    width: '100%',
+    maxWidth: 420,
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.lg,
+  },
+  featureRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.md,
+    paddingVertical: SPACING.md,
+  },
+  featureRowDivider: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+  },
+  featureText: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.text,
+    flex: 1,
   },
   pagination: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
-    marginBottom: 30,
+    gap: SPACING.sm,
+    marginBottom: SPACING.xxl,
   },
   dot: {
     height: 8,
     borderRadius: 4,
   },
   bottomSection: {
-    paddingHorizontal: 30,
-    paddingBottom: 50,
-  },
-  nextButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18,
-    borderRadius: 16,
-    gap: 8,
-  },
-  nextButtonText: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-  featureList: {
-    marginTop: 20,
-    gap: 10,
+    paddingHorizontal: SPACING.xxl,
+    paddingBottom: SPACING.massive,
     width: '100%',
-  },
-  featureRow: {
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    borderWidth: 1,
-    backgroundColor: '#F9F5FF',
-  },
-  featureText: {
-    fontSize: 15,
-    fontWeight: '600',
-    textAlign: 'center',
+    maxWidth: 480,
+    alignSelf: 'center',
   },
 });

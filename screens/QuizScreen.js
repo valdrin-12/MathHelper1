@@ -1,11 +1,10 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  TouchableOpacity,
   Animated,
 } from 'react-native';
 import { useLocalizedQuizzes } from '../hooks/useLocalizedData';
@@ -17,9 +16,10 @@ import PremiumModal from '../components/PremiumModal';
 import { useTranslation } from 'react-i18next';
 import { useStats } from '../context/StatsContext';
 import { useUser } from '../context/UserContext';
-import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { COLORS, SPACING, BORDER_RADIUS, SHADOWS } from '../theme/constants';
+import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
+import { useTheme } from '../context/ThemeContext';
+import { ScreenHeader, Chip, Pill, IconBadge, Button } from '../components/ui';
 import WebContainer from '../components/WebContainer';
 import PressableCard from '../components/PressableCard';
 import { useResponsive } from '../utils/responsive';
@@ -92,26 +92,16 @@ export default function QuizScreen() {
   }, [todayDateKey]);
 
   // Animations
-  const streakPulse = useRef(new Animated.Value(1)).current;
   const challengeSlide = useRef(new Animated.Value(30)).current;
   const challengeOpacity = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Streak pulse animation
-    if (streak > 0) {
-      Animated.loop(
-        Animated.sequence([
-          Animated.timing(streakPulse, { toValue: 1.1, duration: 800, useNativeDriver: true }),
-          Animated.timing(streakPulse, { toValue: 1, duration: 800, useNativeDriver: true }),
-        ])
-      ).start();
-    }
     // Challenge section slide in
     Animated.parallel([
       Animated.timing(challengeSlide, { toValue: 0, duration: 500, useNativeDriver: true }),
       Animated.timing(challengeOpacity, { toValue: 1, duration: 500, useNativeDriver: true }),
     ]).start();
-  }, [streak, streakPulse, challengeSlide, challengeOpacity]);
+  }, [challengeSlide, challengeOpacity]);
 
   const difficulties = ['all', 'beginner', 'intermediate', 'advanced'];
 
@@ -201,260 +191,129 @@ export default function QuizScreen() {
     return icons[d] || null;
   };
 
-  const beginnerCount = quizSets.filter(q => q.difficulty === 'beginner').length;
-  const intermediateCount = quizSets.filter(q => q.difficulty === 'intermediate').length;
-  const advancedCount = quizSets.filter(q => q.difficulty === 'advanced').length;
+  const { colors } = useTheme();
+  const styles = useMemo(() => makeStyles(colors), [colors]);
 
   return (
     <View style={styles.container}>
-      {/* Header with Gradient */}
-      <LinearGradient
-        colors={[COLORS.primary, COLORS.primarySoft, COLORS.primaryLight]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={[styles.headerGradient, isWeb && { paddingTop: 20 }]}
-      >
-        {/* Title Row with Streak Badge */}
-        <View style={styles.headerTitleRow}>
-          <View style={{ flex: 1 }}>
-            <Text style={styles.headerTitle}>{t('quiz.title')}</Text>
-            <Text style={styles.headerSubtitle}>{t('quiz.quizzesAvailable', { count: quizSets.length })}</Text>
-          </View>
-          {/* Streak Badge */}
-          {streak > 0 && (
-            <Animated.View style={[styles.streakBadge, { transform: [{ scale: streakPulse }] }]}>
-              <Ionicons name="flame" size={18} color="#FF6B35" />
-              <Text style={styles.streakBadgeText}>{streak}</Text>
-            </Animated.View>
-          )}
-        </View>
-
-        {/* Glass Stats Row */}
-        <View style={styles.glassStatsRow}>
-          <View style={styles.glassStatCard}>
-            <Ionicons name="star" size={16} color={COLORS.success} style={{ marginBottom: 4 }} />
-            <Text style={styles.glassStatValue}>{beginnerCount}</Text>
-            <Text style={styles.glassStatLabel}>{t('difficulty.beginner')}</Text>
-            <View style={[styles.glassStatAccent, { backgroundColor: COLORS.success }]} />
-          </View>
-          <View style={styles.glassStatCard}>
-            <Ionicons name="flash" size={16} color={COLORS.warning} style={{ marginBottom: 4 }} />
-            <Text style={styles.glassStatValue}>{intermediateCount}</Text>
-            <Text style={styles.glassStatLabel}>{t('difficulty.intermediate')}</Text>
-            <View style={[styles.glassStatAccent, { backgroundColor: COLORS.warning }]} />
-          </View>
-          <View style={styles.glassStatCard}>
-            <Ionicons name="flame" size={16} color={COLORS.error} style={{ marginBottom: 4 }} />
-            <Text style={styles.glassStatValue}>{advancedCount}</Text>
-            <Text style={styles.glassStatLabel}>{t('difficulty.advanced')}</Text>
-            <View style={[styles.glassStatAccent, { backgroundColor: COLORS.error }]} />
-          </View>
-        </View>
-      </LinearGradient>
-
       <ScrollView showsVerticalScrollIndicator={false}>
         <WebContainer>
+        <ScreenHeader
+          title={t('quiz.title')}
+          subtitle={t('quiz.quizzesAvailable', { count: quizSets.length })}
+          right={streak > 0 ? (
+            <View style={styles.streakChip}>
+              <Ionicons name="flame" size={15} color={colors.secondary} />
+              <Text style={styles.streakText}>{streak}</Text>
+            </View>
+          ) : null}
+        />
+
         {/* Challenge of the Day */}
         {dailyChallenge && (
-          <Animated.View style={[
-            styles.challengeSection,
-            { transform: [{ translateY: challengeSlide }], opacity: challengeOpacity }
-          ]}>
-            <View style={styles.challengeHeader}>
-              <View style={styles.challengeTitleRow}>
-                <Ionicons name="trophy" size={20} color="#F59E0B" />
-                <Text style={styles.challengeTitle}>{t('quiz.challengeOfDay')}</Text>
+          <Animated.View style={{ transform: [{ translateY: challengeSlide }], opacity: challengeOpacity }}>
+            <PressableCard style={styles.challengeCard} onPress={() => handleStartQuiz(dailyChallenge)}>
+              <View style={styles.challengeHeader}>
+                <Text style={styles.challengeEyebrow}>{t('quiz.challengeOfDay')}</Text>
+                {challengeCompletedToday ? (
+                  <Pill icon="checkmark-circle" label={t('quiz.completed')} color={colors.success} />
+                ) : (
+                  <Pill icon="today" label={t('quiz.daily')} color={colors.primary} />
+                )}
               </View>
-              {challengeCompletedToday ? (
-                <View style={[styles.challengeDailyBadge, { backgroundColor: COLORS.successLight }]}>
-                  <Ionicons name="checkmark-circle" size={12} color={COLORS.success} />
-                  <Text style={[styles.challengeDailyText, { color: COLORS.success }]}>{t('quiz.completed')}</Text>
-                </View>
-              ) : (
-                <View style={styles.challengeDailyBadge}>
-                  <Ionicons name="today" size={12} color={COLORS.primary} />
-                  <Text style={styles.challengeDailyText}>{t('quiz.daily')}</Text>
-                </View>
-              )}
-            </View>
-            <TouchableOpacity
-              style={styles.challengeCard}
-              onPress={() => handleStartQuiz(dailyChallenge)}
-              activeOpacity={0.85}
-            >
-              <LinearGradient
-                colors={['#FEF3C7', '#FDE68A', '#FCD34D']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.challengeGradient}
-              >
-                <View style={styles.challengeIconContainer}>
-                  <Ionicons name="trophy" size={28} color="#D97706" />
-                </View>
+              <View style={styles.challengeBody}>
+                <IconBadge name="trophy" color={colors.secondary} size={44} />
                 <View style={styles.challengeInfo}>
-                  <Text style={styles.challengeQuizTitle} numberOfLines={1}>{dailyChallenge.title}</Text>
-                  <View style={styles.challengeMeta}>
-                    <DifficultyIcon difficulty={dailyChallenge.difficulty} size={14} />
-                    <Text style={styles.challengeMetaText}>{getDifficultyLabel(dailyChallenge.difficulty)}</Text>
-                    <Text style={styles.challengeMetaDot}>·</Text>
-                    <Ionicons name="help-circle-outline" size={14} color="#92400E" />
-                    <Text style={styles.challengeMetaText}>
-                      {t('quiz.questions', { count: dailyChallenge.questions.length })}
+                  <Text style={styles.challengeTitle} numberOfLines={1}>{dailyChallenge.title}</Text>
+                  <View style={styles.metaRow}>
+                    <Text style={styles.metaText}>
+                      {getDifficultyLabel(dailyChallenge.difficulty)}  ·  {t('quiz.questions', { count: dailyChallenge.questions.length })}
                     </Text>
                   </View>
                 </View>
-                <View style={styles.challengePlayButton}>
-                  <Ionicons name="play" size={20} color="#FFFFFF" />
+                <View style={styles.playButton}>
+                  <Ionicons name="play" size={18} color="#FFFFFF" />
                 </View>
-              </LinearGradient>
-            </TouchableOpacity>
+              </View>
+            </PressableCard>
           </Animated.View>
         )}
 
         {/* Difficulty Filter */}
-        <View style={styles.filterSection}>
-          <Text style={styles.filterLabel}>{t('quiz.filterByLevel')}</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}>
-            {difficulties.map((d) => (
-              <TouchableOpacity
-                key={d}
-                style={[
-                  styles.filterChip,
-                  selectedDifficulty === d && styles.filterChipActive,
-                  selectedDifficulty === d && d !== 'all' && { backgroundColor: getDifficultyColor(d), borderColor: getDifficultyColor(d) },
-                ]}
-                onPress={() => setSelectedDifficulty(d)}
-              >
-                {d !== 'all' && (
-                  <Ionicons
-                    name={getDifficultyFilterIcon(d)}
-                    size={14}
-                    color={selectedDifficulty === d ? '#FFFFFF' : getDifficultyColor(d)}
-                    style={{ marginRight: 4 }}
-                  />
-                )}
-                <Text style={[
-                  styles.filterChipText,
-                  selectedDifficulty === d && styles.filterChipTextActive,
-                ]}>
-                  {getDifficultyFilterLabel(d)}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </ScrollView>
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContent}>
+          {difficulties.map((d) => (
+            <Chip
+              key={d}
+              icon={d === 'all' ? 'layers' : getDifficultyFilterIcon(d)}
+              label={getDifficultyFilterLabel(d)}
+              color={d === 'all' ? undefined : getDifficultyColor(d)}
+              active={selectedDifficulty === d}
+              onPress={() => setSelectedDifficulty(d)}
+            />
+          ))}
+        </ScrollView>
 
-        {/* Quiz Cards - Glassmorphism */}
-        <View style={[styles.quizList, isDesktop && { flexDirection: 'row', flexWrap: 'wrap', gap: 16 }]}>
-          <Text style={[styles.sectionTitle, isDesktop && { width: '100%' }]}>
-            {t('quiz.quizCount', { count: filteredQuizzes.length })}
-          </Text>
+        <Text style={styles.sectionLabel}>{t('quiz.quizCount', { count: filteredQuizzes.length })}</Text>
+
+        {/* Quiz Cards */}
+        <View style={[styles.quizList, isDesktop && styles.quizListDesktop]}>
           {filteredQuizzes.map((quizSet) => {
             const bestScore = getBestScore(quizSet.id);
             const locked = isQuizLocked(quizSet.id);
             return (
               <PressableCard
                 key={quizSet.id}
-                style={[
-                  styles.glassQuizCard,
-                  isDesktop && { flexBasis: '48%', flexGrow: 0 },
-                  locked && { opacity: 0.75 },
-                ]}
+                style={[styles.quizCard, isDesktop && styles.quizCardDesktop]}
                 onPress={() => handleStartQuiz(quizSet)}
               >
-                {/* Glass background layer */}
-                <View style={styles.glassLayer} />
-
-                {/* Colored accent bar */}
-                <View style={[styles.quizCardAccentBar, { backgroundColor: quizSet.color }]} />
-
-                <View style={styles.quizCardContent}>
-                  {/* Icon + Title + Progress Ring */}
-                  <View style={styles.quizCardHeader}>
-                    <View style={[styles.glassIconContainer, { backgroundColor: quizSet.color + '18' }]}>
-                      {locked ? (
-                        <Ionicons name="lock-closed" size={26} color={quizSet.color} />
-                      ) : (
-                        <DifficultyIcon difficulty={quizSet.difficulty} size={26} />
-                      )}
-                    </View>
-                    <View style={styles.quizTitleContainer}>
-                      <Text style={styles.quizTitle} numberOfLines={2}>{quizSet.title}</Text>
-                      <Text style={styles.quizCategory} numberOfLines={1}>{quizSet.category}</Text>
-                    </View>
-                    {/* PRO badge for locked quizzes */}
+                <View style={styles.quizHeader}>
+                  <View style={[styles.quizIconBox, { backgroundColor: quizSet.color + '1F' }]}>
                     {locked ? (
-                      <View style={styles.proBadge}>
-                        <Ionicons name="lock-closed" size={11} color="#FFFFFF" />
-                        <Text style={styles.proBadgeText}>PRO</Text>
-                      </View>
-                    ) : bestScore !== null ? (
-                      <MiniProgressRing
-                        progress={bestScore / 100}
-                        color={bestScore >= 80 ? COLORS.success : bestScore >= 50 ? COLORS.warning : COLORS.error}
-                      />
-                    ) : null}
-                  </View>
-
-                  {/* Difficulty Badge */}
-                  <View style={styles.badgeRow}>
-                    <View style={[styles.glassDifficultyBadge, { backgroundColor: getDifficultyColor(quizSet.difficulty) + '15' }]}>
-                      <DifficultyIcon difficulty={quizSet.difficulty} size={12} />
-                      <Text style={[styles.glassDifficultyText, { color: getDifficultyColor(quizSet.difficulty) }]}>
-                        {getDifficultyLabel(quizSet.difficulty)}
-                      </Text>
-                    </View>
-                    {!locked && bestScore !== null && (
-                      <View style={[styles.bestScoreBadge, {
-                        backgroundColor: bestScore === 100 ? COLORS.success + '15' : COLORS.primary + '10',
-                      }]}>
-                        <Ionicons
-                          name={bestScore === 100 ? 'checkmark-circle' : 'stats-chart'}
-                          size={12}
-                          color={bestScore === 100 ? COLORS.success : COLORS.primary}
-                        />
-                        <Text style={[styles.bestScoreText, {
-                          color: bestScore === 100 ? COLORS.success : COLORS.primary,
-                        }]}>
-                          {t('quiz.bestScore', { score: bestScore })}
-                        </Text>
-                      </View>
+                      <Ionicons name="lock-closed" size={22} color={quizSet.color} />
+                    ) : (
+                      <DifficultyIcon difficulty={quizSet.difficulty} size={22} />
                     )}
                   </View>
-
-                  {/* Meta */}
-                  <View style={styles.quizMeta}>
-                    <View style={styles.glassMetaItem}>
-                      <Ionicons name="help-circle-outline" size={16} color={COLORS.textSubtle} />
-                      <Text style={styles.metaText}>{t('quiz.questions', { count: quizSet.questions.length })}</Text>
-                    </View>
-                    <View style={styles.glassMetaItem}>
-                      <Ionicons name="time-outline" size={16} color={COLORS.textSubtle} />
-                      <Text style={styles.metaText}>{quizSet.duration}</Text>
-                    </View>
+                  <View style={styles.quizTitleContainer}>
+                    <Text style={styles.quizTitle} numberOfLines={2}>{quizSet.title}</Text>
+                    <Text style={styles.quizCategory} numberOfLines={1}>{quizSet.category}</Text>
                   </View>
-
-                  {/* Start / Unlock Button */}
-                  <TouchableOpacity
-                    style={styles.glassStartButton}
-                    onPress={() => handleStartQuiz(quizSet)}
-                    activeOpacity={0.85}
-                  >
-                    <LinearGradient
-                      colors={locked ? ['#F59E0B', '#D97706'] : [quizSet.color, quizSet.color + 'CC']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.startGradient}
-                    >
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-                        {locked && <Ionicons name="lock-closed" size={16} color="#FFFFFF" />}
-                        <Text style={styles.startButtonText}>
-                          {locked ? t('premium.unlockPro') : t('quiz.startQuiz')}
-                        </Text>
-                      </View>
-                    </LinearGradient>
-                  </TouchableOpacity>
+                  {locked ? (
+                    <Pill icon="lock-closed" label="PRO" color={colors.secondary} filled />
+                  ) : bestScore !== null ? (
+                    <MiniProgressRing
+                      progress={bestScore / 100}
+                      color={bestScore >= 80 ? colors.success : bestScore >= 50 ? colors.warning : colors.error}
+                    />
+                  ) : null}
                 </View>
+
+                <View style={styles.quizMeta}>
+                  <Text style={[styles.metaText, { color: getDifficultyColor(quizSet.difficulty) }]}>
+                    {getDifficultyLabel(quizSet.difficulty)}
+                  </Text>
+                  <Text style={styles.metaText}>
+                    {'  ·  '}{t('quiz.questions', { count: quizSet.questions.length })}{'  ·  '}{quizSet.duration}
+                  </Text>
+                </View>
+                {!locked && bestScore !== null && (
+                  <View style={styles.bestScoreRow}>
+                    <Pill
+                      icon={bestScore === 100 ? 'checkmark-circle' : 'stats-chart'}
+                      label={t('quiz.bestScore', { score: bestScore })}
+                      color={bestScore === 100 ? colors.success : colors.primary}
+                    />
+                  </View>
+                )}
+
+                <Button
+                  style={styles.startButton}
+                  variant={locked ? 'filled' : 'tinted'}
+                  tone={locked ? 'warning' : 'primary'}
+                  icon={locked ? 'lock-closed' : undefined}
+                  title={locked ? t('premium.unlockPro') : t('quiz.startQuiz')}
+                  onPress={() => handleStartQuiz(quizSet)}
+                />
               </PressableCard>
             );
           })}
@@ -492,95 +351,32 @@ export default function QuizScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const makeStyles = (colors) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.background,
+    backgroundColor: colors.background,
   },
-
-  // Header Gradient
-  headerGradient: {
-    paddingHorizontal: SPACING.xl,
-    paddingTop: 60,
-    paddingBottom: 24,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
-  },
-  headerTitleRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
-  },
-  headerTitle: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 6,
-    letterSpacing: -0.5,
-  },
-  headerSubtitle: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.8)',
-    fontWeight: '500',
-    marginBottom: 20,
-  },
-
-  // Streak Badge
-  streakBadge: {
+  streakChip: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.3)',
     gap: 4,
+    backgroundColor: colors.warningLight,
+    paddingHorizontal: SPACING.sm + 2,
+    paddingVertical: SPACING.xs + 1,
+    borderRadius: BORDER_RADIUS.round,
   },
-  streakBadgeText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-
-  // Glass Stats in Header
-  glassStatsRow: {
-    flexDirection: 'row',
-    gap: SPACING.md,
-  },
-  glassStatCard: {
-    flex: 1,
-    backgroundColor: 'rgba(255,255,255,0.18)',
-    borderRadius: 16,
-    padding: 14,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.25)',
-    overflow: 'hidden',
-  },
-  glassStatValue: {
-    fontSize: 24,
-    fontWeight: '800',
-    color: '#FFFFFF',
-  },
-  glassStatLabel: {
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.8)',
-    marginTop: 4,
-    fontWeight: '600',
-  },
-  glassStatAccent: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 3,
+  streakText: {
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.secondary,
   },
 
-  // Challenge of the Day
-  challengeSection: {
-    paddingHorizontal: SPACING.xl,
-    paddingTop: SPACING.xl,
+  // Challenge
+  challengeCard: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.lg,
   },
   challengeHeader: {
     flexDirection: 'row',
@@ -588,274 +384,114 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: SPACING.md,
   },
-  challengeTitleRow: {
+  challengeEyebrow: {
+    ...TYPOGRAPHY.footnote,
+    fontWeight: '600',
+    textTransform: 'uppercase',
+    color: colors.textSubtle,
+  },
+  challengeBody: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-  },
-  challengeTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: COLORS.text,
-    letterSpacing: -0.3,
-  },
-  challengeDailyBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: COLORS.primaryBg,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  challengeDailyText: {
-    fontSize: 11,
-    fontWeight: '700',
-    color: COLORS.primary,
-  },
-  challengeCard: {
-    borderRadius: 16,
-    overflow: 'hidden',
-    ...SHADOWS.medium,
-  },
-  challengeGradient: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    gap: 14,
-  },
-  challengeIconContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: 'rgba(217, 119, 6, 0.15)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(217, 119, 6, 0.25)',
   },
   challengeInfo: {
     flex: 1,
+    marginHorizontal: SPACING.md,
   },
-  challengeQuizTitle: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: '#78350F',
-    marginBottom: 4,
+  challengeTitle: {
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
+    marginBottom: 2,
   },
-  challengeMeta: {
+  playButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: 2,
+  },
+  metaRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  challengeMetaText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#92400E',
-  },
-  challengeMetaDot: {
-    fontSize: 12,
-    color: '#92400E',
-    marginHorizontal: 2,
-  },
-  challengePlayButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#D97706',
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...SHADOWS.small,
+  metaText: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.textMuted,
   },
 
-  // Filter Section
-  filterSection: {
-    paddingHorizontal: SPACING.xl,
-    paddingTop: SPACING.xl,
-    paddingBottom: SPACING.sm,
-  },
-  filterLabel: {
-    fontSize: 15,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: SPACING.md,
-  },
+  // Filters
   filterScroll: {
     flexGrow: 0,
+    marginTop: SPACING.xl,
   },
-  filterChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: BORDER_RADIUS.round,
-    backgroundColor: COLORS.glassBackground,
-    borderWidth: 1.5,
-    borderColor: COLORS.glassBorder,
-    marginRight: SPACING.sm + 2,
-    ...SHADOWS.small,
+  filterContent: {
+    paddingHorizontal: SPACING.lg,
   },
-  filterChipActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-    ...SHADOWS.primary,
-  },
-  filterChipText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: COLORS.textSecondary,
-  },
-  filterChipTextActive: {
-    color: '#FFFFFF',
+  sectionLabel: {
+    ...TYPOGRAPHY.footnote,
+    textTransform: 'uppercase',
+    color: colors.textSubtle,
+    marginHorizontal: SPACING.xl,
+    marginTop: SPACING.lg,
+    marginBottom: SPACING.sm,
   },
 
-  // Quiz List
+  // Quiz cards
   quizList: {
-    paddingHorizontal: SPACING.xl,
-    paddingTop: SPACING.md,
-  },
-  sectionTitle: {
-    fontSize: 17,
-    fontWeight: '800',
-    color: COLORS.text,
-    marginBottom: SPACING.lg,
-    letterSpacing: -0.3,
-  },
-
-  // Glassmorphism Quiz Card
-  glassQuizCard: {
-    marginBottom: SPACING.lg,
-    borderRadius: 16,
-    overflow: 'hidden',
-    backgroundColor: COLORS.glassBackground,
-    borderWidth: 1,
-    borderColor: COLORS.glassBorder,
-    ...SHADOWS.glass,
-  },
-  glassLayer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: COLORS.glassBackgroundDark,
-    borderRadius: 16,
-  },
-  quizCardAccentBar: {
-    height: 4,
-  },
-  quizCardContent: {
-    padding: 20,
-  },
-  quizCardHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 14,
+    paddingHorizontal: SPACING.lg,
     gap: SPACING.md,
   },
-  glassIconContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    justifyContent: 'center',
+  quizListDesktop: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  quizCard: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
+  },
+  quizCardDesktop: {
+    flexBasis: '48%',
+    flexGrow: 0,
+  },
+  quizHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.5)',
+  },
+  quizIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: SPACING.md,
   },
   quizTitleContainer: {
     flex: 1,
+    marginRight: SPACING.sm,
   },
   quizTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: COLORS.text,
-    marginBottom: 3,
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
   },
   quizCategory: {
-    fontSize: 13,
-    color: COLORS.textMuted,
-    fontWeight: '500',
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginTop: 1,
   },
-
-  // PRO Badge for locked quizzes
-  proBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(245, 158, 11, 0.9)',
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: BORDER_RADIUS.round,
-    gap: 4,
-  },
-  proBadgeText: {
-    fontSize: 11,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: 0.5,
-  },
-
-  // Badge
-  badgeRow: {
-    flexDirection: 'row',
-    marginBottom: 14,
-    gap: 8,
-  },
-  glassDifficultyBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: BORDER_RADIUS.round,
-    gap: 6,
-  },
-  glassDifficultyText: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-  bestScoreBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: BORDER_RADIUS.round,
-    gap: 4,
-  },
-  bestScoreText: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-
-  // Meta
   quizMeta: {
     flexDirection: 'row',
-    gap: SPACING.xl,
-    marginBottom: 16,
-    paddingVertical: 12,
-    paddingHorizontal: 14,
-    backgroundColor: COLORS.glassBackgroundDark,
-    borderRadius: 12,
+    flexWrap: 'wrap',
+    marginTop: SPACING.md,
   },
-  glassMetaItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.xs + 2,
+  bestScoreRow: {
+    marginTop: SPACING.sm,
   },
-  metaText: {
-    fontSize: 13,
-    color: COLORS.textSubtle,
-    fontWeight: '600',
-  },
-
-  // Start Button
-  glassStartButton: {
-    borderRadius: 14,
-    overflow: 'hidden',
-  },
-  startGradient: {
-    paddingVertical: 14,
-    alignItems: 'center',
-    borderRadius: 14,
-  },
-  startButtonText: {
-    fontSize: 16,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    letterSpacing: 0.3,
+  startButton: {
+    marginTop: SPACING.md,
+    minHeight: 44,
   },
 });
