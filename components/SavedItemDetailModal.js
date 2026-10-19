@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import {
   Modal,
   View,
@@ -6,26 +6,73 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   Image,
+  ActivityIndicator,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../context/LanguageContext';
 import { getLocale } from '../locales/i18n';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
-import { Button } from './ui';
+import { useSavedItems } from '../context/SavedItemsContext';
+import { Button, getErrorMessage } from './ui';
+
+const toImageUri = (imageData) =>
+  imageData.startsWith('data:') ? imageData : `data:image/jpeg;base64,${imageData}`;
 
 export default function SavedItemDetailModal({ visible, item, onClose, onDelete }) {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
+  const { getItem } = useSavedItems();
+  // getItem is recreated on every provider render; keep it in a ref so it doesn't retrigger loads
+  const getItemRef = useRef(getItem);
+  getItemRef.current = getItem;
+  const inlineImageRef = useRef(null);
+  inlineImageRef.current = item?.imageData || null;
+  const requestId = useRef(0);
+
+  // List items only carry `hasImage`; the full item (with imageData) is fetched on open
+  const [imageData, setImageData] = useState(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [imageError, setImageError] = useState(null);
+
+  const itemId = item?.id;
+  const needsImage = !!item && (item.hasImage || !!item.imageData);
+
+  const loadImage = useCallback(async () => {
+    if (!itemId) return;
+    if (inlineImageRef.current) {
+      setImageData(inlineImageRef.current);
+      return;
+    }
+    const id = ++requestId.current;
+    setImageLoading(true);
+    setImageError(null);
+    try {
+      const full = await getItemRef.current(itemId);
+      if (id === requestId.current) setImageData(full?.imageData || null);
+    } catch (e) {
+      if (id === requestId.current) setImageError(getErrorMessage(e, t('savedItemDetail.imageLoadError'), t));
+    } finally {
+      if (id === requestId.current) setImageLoading(false);
+    }
+  }, [itemId, t]);
+
+  useEffect(() => {
+    requestId.current += 1; // ignore responses for a previously shown item
+    setImageData(null);
+    setImageError(null);
+    setImageLoading(false);
+    if (visible && needsImage) loadImage();
+  }, [visible, itemId, needsImage, loadImage]);
 
   if (!item) return null;
 
-  const { imageData, answer, steps, explanation, savedAt } = item;
+  const { answer, steps, explanation, savedAt } = item;
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -52,7 +99,7 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
             <View style={styles.headerSide} />
             <Text style={styles.headerTitle} numberOfLines={1}>{t('savedItemDetail.title')}</Text>
             <View style={[styles.headerSide, styles.headerSideRight]}>
-              <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={8} activeOpacity={0.6}>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={8} activeOpacity={0.6} accessibilityRole="button" accessibilityLabel={t('a11y.close')}>
                 <Ionicons name="close" size={18} color={colors.textSubtle} />
               </TouchableOpacity>
             </View>
@@ -61,9 +108,25 @@ export default function SavedItemDetailModal({ visible, item, onClose, onDelete 
           {/* Content */}
           <ScrollView style={styles.content} contentContainerStyle={styles.contentInner} showsVerticalScrollIndicator={false}>
             {/* Image Preview */}
-            {imageData && (
+            {needsImage && (
               <View style={styles.imageSection}>
-                <Image source={{ uri: `data:image/jpeg;base64,${imageData}` }} style={styles.image} />
+                {imageData ? (
+                  <Image source={{ uri: toImageUri(imageData) }} style={styles.image} accessibilityIgnoresInvertColors />
+                ) : (
+                  <View style={[styles.image, styles.imagePlaceholder]}>
+                    {imageLoading ? (
+                      <ActivityIndicator color={colors.textMuted} />
+                    ) : imageError ? (
+                      <>
+                        <Ionicons name="image-outline" size={32} color={colors.textMuted} />
+                        <Text style={styles.imageErrorText}>{imageError}</Text>
+                        <Button title={t('common.retry')} variant="plain" onPress={loadImage} />
+                      </>
+                    ) : (
+                      <Ionicons name="image-outline" size={32} color={colors.textMuted} />
+                    )}
+                  </View>
+                )}
                 <Text style={styles.imageDate}>{t('savedItemDetail.savedAt', { date: formatDate(savedAt) })}</Text>
               </View>
             )}
@@ -195,6 +258,17 @@ const makeStyles = (colors) => StyleSheet.create({
     borderRadius: BORDER_RADIUS.lg,
     backgroundColor: colors.surface,
     marginBottom: SPACING.sm,
+  },
+  imagePlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: SPACING.sm,
+    padding: SPACING.lg,
+  },
+  imageErrorText: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    textAlign: 'center',
   },
   imageDate: {
     ...TYPOGRAPHY.footnote,

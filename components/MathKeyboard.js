@@ -237,6 +237,8 @@ export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
           { flex: 1 },
         ]}
         onPress={() => handleKeyPress(key)}
+        accessibilityRole="button"
+        accessibilityLabel={key.label}
         activeOpacity={0.6}
       >
         <Text
@@ -261,6 +263,8 @@ export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
       <TouchableOpacity
         style={styles.selectorBar}
         onPress={() => setShowSelector(true)}
+        accessibilityRole="button"
+        accessibilityLabel={t('mathKeyboard.selectKeyboard')}
       >
         <Ionicons
           name={currentTypeInfo?.icon || 'add'}
@@ -281,6 +285,8 @@ export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
               key={i}
               style={styles.tabButton}
               onPress={() => onKeyPress && onKeyPress(tab.value)}
+              accessibilityRole="button"
+              accessibilityLabel={tab.label}
             >
               <Text style={styles.tabText}>{tab.label}</Text>
             </TouchableOpacity>
@@ -301,15 +307,18 @@ export default function MathKeyboard({ onKeyPress, onBackspace, onClear }) {
           <TouchableOpacity
             style={[styles.key, styles.keyAction]}
             onPress={onClear}
+            accessibilityRole="button"
           >
             <Text style={styles.keyTextAction}>{t('mathKeyboard.clearAll')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.key, styles.keyAction, { flex: 0.5 }]} onPress={() => onKeyPress && onKeyPress(' ')}>
+          <TouchableOpacity style={[styles.key, styles.keyAction, { flex: 0.5 }]} onPress={() => onKeyPress && onKeyPress(' ')} accessibilityRole="button" accessibilityLabel={t('a11y.space')}>
             <Ionicons name="space-outline" size={18} color={colors.textSubtle} />
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.key, styles.keyNavigation]}
             onPress={onBackspace}
+            accessibilityRole="button"
+            accessibilityLabel={t('a11y.backspace')}
           >
             <Ionicons name="backspace-outline" size={22} color={colors.primary} />
           </TouchableOpacity>

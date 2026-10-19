@@ -1,15 +1,15 @@
 import { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import api from '../services/apiClient';
 import {
   View,
   Text,
   StyleSheet,
   ScrollView,
-  Alert,
   Modal,
   Platform,
   Linking,
+  TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { useTranslation } from 'react-i18next';
@@ -20,23 +20,21 @@ import InfoModal from '../components/InfoModal';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
-import { ScreenHeader, ListSection, ListRow, Button } from '../components/ui';
+import { ScreenHeader, ListSection, ListRow, Button, showAlert, confirmAction, getErrorMessage } from '../components/ui';
 import WebContainer from '../components/WebContainer';
 import { useResponsive } from '../utils/responsive';
 
 export default function SettingsScreen() {
   const { isWeb } = useResponsive();
   const { t } = useTranslation();
-  const { user, logout } = useUser();
-  const { completedCoursesCount, completedQuizzesCount, streak, achievements } = useStats();
+  const { user, logout, deleteAccount } = useUser();
+  const { completedCoursesCount, completedQuizzesCount, streak, achievements, earnedAchievementsCount } = useStats();
   const { isDark, toggleTheme, colors } = useTheme();
-  const [notifications, setNotifications] = useState(true);
-  const [emailNotifications, setEmailNotifications] = useState(true);
-  const [pushNotifications, setPushNotifications] = useState(true);
-  const [soundEffects, setSoundEffects] = useState(true);
   const [infoModal, setInfoModal] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deletePassword, setDeletePassword] = useState('');
+  const [deleteError, setDeleteError] = useState('');
   const [hasPaddleSubscription, setHasPaddleSubscription] = useState(!!user?.hasPaddleSubscription);
   const [openingPortal, setOpeningPortal] = useState(false);
 
@@ -50,72 +48,6 @@ export default function SettingsScreen() {
       .then((data) => setHasPaddleSubscription(!!data.user?.hasPaddleSubscription))
       .catch((e) => console.error('[SettingsScreen] Failed to load subscription status:', e));
   }, [user?.id, user?.tier]);
-
-  useEffect(() => {
-    const loadSettings = async () => {
-      try {
-        const [notif, emailNotif, pushNotif, sound] = await Promise.all([
-          AsyncStorage.getItem('@mathhelper_notifications'),
-          AsyncStorage.getItem('@mathhelper_email_notifications'),
-          AsyncStorage.getItem('@mathhelper_push_notifications'),
-          AsyncStorage.getItem('@mathhelper_sound'),
-        ]);
-        if (notif !== null) setNotifications(notif === 'true');
-        if (emailNotif !== null) setEmailNotifications(emailNotif === 'true');
-        if (pushNotif !== null) setPushNotifications(pushNotif === 'true');
-        if (sound !== null) setSoundEffects(sound === 'true');
-      } catch (e) {
-        console.error('[SettingsScreen] Failed to load settings from storage:', e);
-        // Defaults remain in place — non-critical, no user-visible error needed
-      }
-    };
-    loadSettings();
-  }, []);
-
-  const handleNotificationsChange = async (value) => {
-    setNotifications(value);
-    // When master toggle is turned off, disable sub-notifications too
-    if (!value) {
-      setEmailNotifications(false);
-      setPushNotifications(false);
-      await AsyncStorage.multiSet([
-        ['@mathhelper_notifications', 'false'],
-        ['@mathhelper_email_notifications', 'false'],
-        ['@mathhelper_push_notifications', 'false'],
-      ]);
-    } else {
-      await AsyncStorage.setItem('@mathhelper_notifications', 'true');
-    }
-  };
-
-  const handleEmailNotificationsChange = async (value) => {
-    setEmailNotifications(value);
-    if (value && !notifications) setNotifications(true);
-    try {
-      await AsyncStorage.setItem('@mathhelper_email_notifications', String(value));
-    } catch (e) {
-      console.error('[SettingsScreen] Failed to save email notifications setting:', e);
-    }
-  };
-
-  const handlePushNotificationsChange = async (value) => {
-    setPushNotifications(value);
-    if (value && !notifications) setNotifications(true);
-    try {
-      await AsyncStorage.setItem('@mathhelper_push_notifications', String(value));
-    } catch (e) {
-      console.error('[SettingsScreen] Failed to save push notifications setting:', e);
-    }
-  };
-
-  const handleSoundChange = async (value) => {
-    setSoundEffects(value);
-    try {
-      await AsyncStorage.setItem('@mathhelper_sound', String(value));
-    } catch (e) {
-      console.error('[SettingsScreen] Failed to save sound setting:', e);
-    }
-  };
 
   const handleManageSubscription = async () => {
     setOpeningPortal(true);
@@ -136,47 +68,48 @@ export default function SettingsScreen() {
     } catch (e) {
       console.error('[SettingsScreen] Failed to open billing portal:', e);
       portalTab?.close();
-      // Alert.alert buttons are a no-op on react-native-web
-      if (Platform.OS === 'web') window.alert(t('settings.manageSubscriptionError'));
-      else Alert.alert(t('common.error'), t('settings.manageSubscriptionError'));
+      showAlert(t('common.error'), t('settings.manageSubscriptionError'));
     } finally {
       setOpeningPortal(false);
     }
   };
 
-  const handleDeleteAccount = () => setShowDeleteModal(true);
+  const handleDeleteAccount = () => {
+    setDeletePassword('');
+    setDeleteError('');
+    setShowDeleteModal(true);
+  };
+
+  const closeDeleteModal = () => {
+    if (isDeleting) return;
+    setShowDeleteModal(false);
+    setDeletePassword('');
+    setDeleteError('');
+  };
 
   const confirmDeleteAccount = async () => {
-    setIsDeleting(true);
-    try {
-      await api.delete('/api/auth/account');
-      setShowDeleteModal(false);
-      await logout();
-    } catch (e) {
-      setIsDeleting(false);
-      setShowDeleteModal(false);
-      Alert.alert(t('common.error'), t('settings.deleteAccountError'));
+    if (!deletePassword) {
+      setDeleteError(getErrorMessage('PASSWORD_REQUIRED', undefined, t));
+      return;
     }
+    setDeleteError('');
+    setIsDeleting(true);
+    // On success UserContext clears the session, which unmounts this screen
+    const result = await deleteAccount(deletePassword);
+    if (result?.success) return;
+    setIsDeleting(false);
+    setDeleteError(getErrorMessage(result?.code, t('settings.deleteAccountError'), t));
   };
 
   const handleLogout = async () => {
-    // Alert.alert buttons are a no-op on react-native-web
-    if (Platform.OS === 'web') {
-      if (window.confirm(t('settings.logoutConfirm'))) await logout();
-      return;
-    }
-    Alert.alert(
-      t('settings.logoutConfirmTitle'),
-      t('settings.logoutConfirm'),
-      [
-        { text: t('common.cancel'), style: 'cancel' },
-        {
-          text: t('settings.logout'),
-          style: 'destructive',
-          onPress: async () => await logout(),
-        },
-      ]
-    );
+    const confirmed = await confirmAction({
+      title: t('settings.logoutConfirmTitle'),
+      message: t('settings.logoutConfirm'),
+      confirmText: t('settings.logout'),
+      cancelText: t('common.cancel'),
+      destructive: true,
+    });
+    if (confirmed) await logout();
   };
 
   const initials = user?.name
@@ -226,28 +159,12 @@ export default function SettingsScreen() {
       {/* Preferences */}
       <ListSection title={t('settings.preferences')}>
         <ListRow
-          icon="notifications"
-          iconColor={colors.error}
-          title={t('settings.notifications')}
-          subtitle={t('settings.notificationsDesc')}
-          switchValue={notifications}
-          onSwitchChange={handleNotificationsChange}
-        />
-        <ListRow
           icon="moon"
           iconColor={colors.purple}
           title={t('settings.darkMode')}
           subtitle={t('settings.darkModeDesc')}
           switchValue={isDark}
           onSwitchChange={toggleTheme}
-        />
-        <ListRow
-          icon="volume-high"
-          iconColor={colors.secondary}
-          title={t('settings.soundEffects')}
-          subtitle={t('settings.soundEffectsDesc')}
-          switchValue={soundEffects}
-          onSwitchChange={handleSoundChange}
         />
         <ListRow
           icon="globe"
@@ -281,7 +198,7 @@ export default function SettingsScreen() {
           icon="trophy"
           iconColor={colors.warningAccent}
           title={t('settings.achievements')}
-          value={String(achievements.length)}
+          value={`${earnedAchievementsCount}/${achievements.length}`}
           onPress={() => setInfoModal('achievements')}
         />
       </ListSection>
@@ -321,9 +238,12 @@ export default function SettingsScreen() {
         visible={showDeleteModal}
         transparent
         animationType="fade"
-        onRequestClose={() => !isDeleting && setShowDeleteModal(false)}
+        onRequestClose={closeDeleteModal}
       >
-        <View style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+          style={[styles.modalOverlay, { backgroundColor: colors.overlay }]}
+        >
           <View style={[styles.deleteModalCard, { backgroundColor: colors.surface }]}>
             <View style={[styles.deleteModalIconWrap, { backgroundColor: colors.errorLight }]}>
               <Ionicons name="person-remove" size={28} color={colors.destructive} />
@@ -346,22 +266,47 @@ export default function SettingsScreen() {
               ))}
             </View>
 
+            {/* Re-authentication: the server requires the current password */}
+            <Text style={[styles.deletePasswordLabel, { color: colors.textSubtle }]}>{t('settings.deletePasswordLabel')}</Text>
+            <TextInput
+              style={[
+                styles.deletePasswordInput,
+                { backgroundColor: colors.background, color: colors.text, borderColor: deleteError ? colors.destructive : 'transparent' },
+              ]}
+              value={deletePassword}
+              onChangeText={(v) => { setDeletePassword(v); if (deleteError) setDeleteError(''); }}
+              placeholder={t('settings.deletePasswordPlaceholder')}
+              placeholderTextColor={colors.textMuted}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+              autoComplete="current-password"
+              textContentType="password"
+              editable={!isDeleting}
+              onSubmitEditing={confirmDeleteAccount}
+              accessibilityLabel={t('settings.deletePasswordLabel')}
+            />
+            {deleteError ? (
+              <Text style={[styles.deleteErrorText, { color: colors.destructive }]} accessibilityLiveRegion="polite">{deleteError}</Text>
+            ) : null}
+
             <Button
               title={t('settings.deleteAccount')}
               tone="destructive"
               onPress={confirmDeleteAccount}
               loading={isDeleting}
-              style={styles.modalButton}
+              disabled={!deletePassword}
+              style={[styles.modalButton, { marginTop: SPACING.lg }]}
             />
             <Button
               title={t('common.cancel')}
               variant="plain"
-              onPress={() => setShowDeleteModal(false)}
+              onPress={closeDeleteModal}
               disabled={isDeleting}
               style={styles.modalButton}
             />
           </View>
-        </View>
+        </KeyboardAvoidingView>
       </Modal>
 
       {/* Version */}
@@ -399,18 +344,6 @@ export default function SettingsScreen() {
         onClose={() => setInfoModal(null)}
       />
       <InfoModal
-        visible={infoModal === 'privacy'}
-        title={t('infoContent.privacy.title')}
-        content={[
-          { heading: t('infoContent.privacy.version.heading'), text: t('infoContent.privacy.version.text') },
-          { heading: t('infoContent.privacy.dataCollected.heading'), text: t('infoContent.privacy.dataCollected.text') },
-          { heading: t('infoContent.privacy.dataUsage.heading'), text: t('infoContent.privacy.dataUsage.text') },
-          { heading: t('infoContent.privacy.security.heading'), text: t('infoContent.privacy.security.text') },
-          { heading: t('infoContent.privacy.deletion.heading'), text: t('infoContent.privacy.deletion.text') },
-        ]}
-        onClose={() => setInfoModal(null)}
-      />
-      <InfoModal
         visible={infoModal === 'about'}
         title={t('infoContent.about.title')}
         content={[
@@ -426,7 +359,7 @@ export default function SettingsScreen() {
         title={t('infoContent.goals.title')}
         content={[
           { heading: t('infoContent.goals.dailyGoal.heading'), text: t('infoContent.goals.dailyGoal.text') },
-          { heading: 'Streak', text: t('infoContent.goals.currentStreak', { streak }) },
+          { heading: t('settings.streak'), text: t('infoContent.goals.currentStreak', { streak }) },
         ]}
         onClose={() => setInfoModal(null)}
       />
@@ -441,10 +374,21 @@ export default function SettingsScreen() {
       <InfoModal
         visible={infoModal === 'achievements'}
         title={t('settings.achievements')}
-        content={achievements.length > 0
-          ? achievements.map(a => ({ heading: `${a.emoji} ${t(`achievements.${a.id}.title`)}`, text: t(`achievements.${a.id}.desc`) }))
-          : [{ heading: t('achievements.startEarning'), text: t('achievements.startEarningDesc') }]
-        }
+        content={[
+          ...(earnedAchievementsCount === 0
+            ? [{ heading: t('achievements.startEarning'), text: t('achievements.startEarningDesc') }]
+            : []),
+          // Full catalogue; locked items are dimmed AND marked with a lock icon + progress text
+          ...achievements.map((a) => ({
+            heading: `${a.emoji} ${t(`achievements.${a.id}.title`)}`,
+            text: `${t(`achievements.${a.id}.desc`)}\n${a.earned
+              ? t('achievements.earned')
+              : t('achievements.lockedProgress', { progress: Math.min(a.progress ?? 0, a.threshold), threshold: a.threshold })}`,
+            icon: a.earned ? 'checkmark-circle' : 'lock-closed',
+            iconColor: a.earned ? colors.success : colors.textMuted,
+            muted: !a.earned,
+          })),
+        ]}
         onClose={() => setInfoModal(null)}
       />
     </ScrollView>
@@ -531,7 +475,7 @@ const styles = StyleSheet.create({
     borderRadius: BORDER_RADIUS.md,
     padding: SPACING.md + 2,
     gap: SPACING.sm + 2,
-    marginBottom: SPACING.xl,
+    marginBottom: SPACING.lg,
   },
   deleteModalListRow: {
     flexDirection: 'row',
@@ -541,6 +485,24 @@ const styles = StyleSheet.create({
   deleteModalListText: {
     ...TYPOGRAPHY.footnote,
     flex: 1,
+  },
+  deletePasswordLabel: {
+    ...TYPOGRAPHY.footnote,
+    alignSelf: 'stretch',
+    marginBottom: SPACING.xs + 2,
+  },
+  deletePasswordInput: {
+    alignSelf: 'stretch',
+    minHeight: 44,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 1,
+    paddingHorizontal: SPACING.md,
+    ...TYPOGRAPHY.body,
+  },
+  deleteErrorText: {
+    ...TYPOGRAPHY.footnote,
+    alignSelf: 'stretch',
+    marginTop: SPACING.xs + 2,
   },
   modalButton: {
     alignSelf: 'stretch',

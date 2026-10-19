@@ -6,7 +6,6 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
-  Alert,
   Modal,
   TextInput,
   Platform,
@@ -27,27 +26,32 @@ import MathKeyboard from '../components/MathKeyboard';
 import { useSavedItems } from '../context/SavedItemsContext';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
-
-function isNetworkError(err) {
-  if (!err || !err.message) return false;
-  const msg = err.message.toLowerCase();
-  return (
-    msg.includes('network request failed') ||
-    msg.includes('failed to fetch') ||
-    msg.includes('networkerror') ||
-    msg.includes('econnrefused') ||
-    msg.includes('timeout') ||
-    msg.includes('internet')
-  );
-}
+import { useLanguage } from '../context/LanguageContext';
+import { isNetworkError as isApiNetworkError } from '../services/apiClient';
 import ProfileModal from '../components/ProfileModal';
+import SavedItemDetailModal from '../components/SavedItemDetailModal';
 import PremiumModal from '../components/PremiumModal';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
-import { ScreenHeader, Card, SectionTitle, ListSection, ListRow, IconBadge, Button, SegmentedControl } from '../components/ui';
+import {
+  ScreenHeader, Card, SectionTitle, ListSection, ListRow, IconBadge, Button, SegmentedControl,
+  showAlert, confirmAction, getErrorMessage, getErrorCodeOf,
+} from '../components/ui';
 import WebContainer from '../components/WebContainer';
 import { useResponsive } from '../utils/responsive';
+
+const LIMIT_CODES = ['FREE_LIMIT_REACHED', 'DAILY_LIMIT_REACHED'];
+
+const getLimitCode = (error) => {
+  if (LIMIT_CODES.includes(error?.code)) return error.code;
+  if (LIMIT_CODES.includes(error?.message)) return error.message;
+  return null;
+};
+
+// Offline / timeout (services wrap network errors and keep the code)
+const isConnectivityError = (error) =>
+  isApiNetworkError(error) || ['NETWORK_ERROR', 'TIMEOUT'].includes(getErrorCodeOf(error));
 
 const getGreeting = (t) => {
   const hour = new Date().getHours();
@@ -58,8 +62,9 @@ const getGreeting = (t) => {
 
 export default function DashboardScreen() {
   const { t } = useTranslation();
-  const { addItem, savedItems } = useSavedItems();
+  const { addItem, savedItems, removeItem } = useSavedItems();
   const { user } = useUser();
+  const { language } = useLanguage();
   const { todayProblems, completedCoursesCount, completedQuizzesCount, streak, recordProblemSolved, refresh } = useStats();
 
   useFocusEffect(
@@ -71,7 +76,10 @@ export default function DashboardScreen() {
   const [inputMode, setInputMode] = useState('keyboard');
   const [mathProblemText, setMathProblemText] = useState('');
   const [selectedImage, setSelectedImage] = useState(null);
+  // Picker asset dimensions, passed to the image service so it can skip an extra decode
+  const [selectedImageSize, setSelectedImageSize] = useState(null);
   const [lastBase64, setLastBase64] = useState(null);
+  const [activityItem, setActivityItem] = useState(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
   const [showResultModal, setShowResultModal] = useState(false);
@@ -114,7 +122,7 @@ export default function DashboardScreen() {
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (permissionResult.granted === false) {
-      Alert.alert(t('dashboard.permissionNeeded'), t('dashboard.galleryPermission'));
+      showAlert(t('dashboard.permissionNeeded'), t('dashboard.galleryPermission'));
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
@@ -124,14 +132,20 @@ export default function DashboardScreen() {
       quality: 1,
     });
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      selectAsset(result.assets[0]);
     }
+  };
+
+  const selectAsset = (asset) => {
+    setSelectedImage(asset.uri);
+    setSelectedImageSize(asset.width && asset.height ? { width: asset.width, height: asset.height } : null);
+    setLastBase64(null);
   };
 
   const takePhoto = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
     if (permissionResult.granted === false) {
-      Alert.alert(t('dashboard.permissionNeeded'), t('dashboard.cameraPermission'));
+      showAlert(t('dashboard.permissionNeeded'), t('dashboard.cameraPermission'));
       return;
     }
     const result = await ImagePicker.launchCameraAsync({
@@ -140,150 +154,158 @@ export default function DashboardScreen() {
       quality: 1,
     });
     if (!result.canceled) {
-      setSelectedImage(result.assets[0].uri);
+      selectAsset(result.assets[0]);
     }
   };
 
   const removeImage = () => {
     setSelectedImage(null);
+    setSelectedImageSize(null);
     setLastBase64(null);
   };
 
-  // Calculate locally (try calculator first, fallback to AI if needed)
+  // Validate the current input; returns false (and tells the user) when there is nothing to solve
+  const validateInput = () => {
+    if (inputMode === 'keyboard' && !mathProblemText.trim()) {
+      showAlert(t('common.attention'), t('dashboard.enterProblem'));
+      return false;
+    }
+    if (inputMode === 'camera' && !selectedImage) {
+      showAlert(t('common.attention'), t('dashboard.selectPhoto'));
+      return false;
+    }
+    return true;
+  };
+
+  const showResult = (result, solverType) => {
+    setAnalysisResult({ ...result, solverType });
+    setShowResultModal(true);
+  };
+
+  // Read + downscale the selected photo (never counted against the analysis limit)
+  const readSelectedImage = async () => {
+    const image = await imageService.convertImageToBase64(selectedImage, selectedImageSize || undefined);
+    setLastBase64(image.base64);
+    return image;
+  };
+
+  // Shared error handling for both solve flows
+  const reportError = async (error, retry) => {
+    const limitCode = getLimitCode(error);
+    if (limitCode) {
+      setLimitType(limitCode === 'FREE_LIMIT_REACHED' ? 'free' : 'daily');
+      setShowLimitModal(true);
+      return;
+    }
+    if (isConnectivityError(error)) {
+      const shouldRetry = await confirmAction({
+        title: t('common.noInternet'),
+        message: getErrorCodeOf(error) === 'TIMEOUT' ? t('errors.TIMEOUT') : t('common.noInternetDesc'),
+        confirmText: t('common.retry'),
+        cancelText: t('common.ok'),
+      });
+      if (shouldRetry) retry();
+      return;
+    }
+    showAlert(t('common.error'), getErrorMessage(error, error?.message || t('dashboard.analysisError'), t));
+  };
+
+  // "Calculate": local calculator first (free, not counted). Only if it can't solve the problem is
+  // ONE analysis recorded; Wolfram and then AI run with that ticket, and the analysis is refunded
+  // if the whole chain fails.
   const handleCalculate = async () => {
     setAnalysisResult(null); // reset so modal never shows stale data
+    if (!validateInput()) return;
+    setIsAnalyzing(true);
+    let ticket = null;
     try {
       let problemText = mathProblemText;
-      let imageBase64 = null; // Store base64 for AI fallback
-      let imageMimeType = 'image/jpeg';
+      let image = null;
 
-      // Get input (keyboard or image)
-      if (inputMode === 'keyboard') {
-        if (!problemText.trim()) {
-          Alert.alert(t('common.attention'), t('dashboard.enterProblem'));
-          return;
-        }
-      } else {
-        if (!selectedImage) {
-          Alert.alert(t('common.attention'), t('dashboard.selectPhoto'));
-          return;
-        }
-        // For images, use OCR-only to extract text (doesn't count against daily limit!)
-        setIsAnalyzing(true);
-        const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
-        setLastBase64(base64);
-
-        // Store for AI fallback (don't rely on state which is async)
-        imageBase64 = base64;
-        imageMimeType = mimeType;
-
+      if (inputMode === 'camera') {
+        image = await readSelectedImage();
+        // OCR-only text extraction (doesn't count against the daily limit)
         try {
-          problemText = await geminiService.extractTextFromImage(base64, mimeType);
+          problemText = await geminiService.extractTextFromImage(image.base64, image.mimeType);
         } catch (ocrError) {
+          if (isConnectivityError(ocrError) || getErrorCodeOf(ocrError) === 'OCR_RATE_LIMITED') throw ocrError;
           throw new Error(t('dashboard.ocrFailed'));
         }
       }
 
-      setIsAnalyzing(true);
-
-      const localResult = await mathCalculatorService.solveMathProblem(
-        problemText,
-        t('common.locale')
-      );
-
-      if (localResult.success) {
-        // Count 1 analysis for local solve
-        await geminiService.recordAnalysis();
-        setAnalysisResult({ ...localResult, solverType: 'local' });
-        setShowResultModal(true);
-      } else {
-        // Count 1 analysis ONCE before the wolfram→AI chain
-        await geminiService.recordAnalysis();
-
-        // Try wolfram (no additional counting)
-        let wolframSucceeded = false;
+      // 1) Local calculator — free
+      if (problemText && problemText.trim()) {
+        let localResult = null;
         try {
-          const wolframResult = await geminiService.analyzeWithWolfram(problemText);
-          setAnalysisResult({ ...wolframResult, solverType: 'wolfram' });
-          setShowResultModal(true);
-          wolframSucceeded = true;
+          localResult = await mathCalculatorService.solveMathProblem(problemText, language);
+        } catch (localError) {
+          localResult = null;
+        }
+        if (localResult?.success) {
+          showResult(localResult, 'local');
+          return;
+        }
+      }
+
+      // 2) Counted chain: Wolfram → AI, one ticket for the whole chain
+      ticket = await geminiService.recordAnalysis();
+      let lastError = null;
+
+      if (problemText && problemText.trim()) {
+        try {
+          const wolframResult = await geminiService.analyzeWithWolfram(problemText, ticket);
+          showResult(wolframResult, 'wolfram');
+          return;
         } catch (wolframError) {
-          // Wolfram failed, fall back to AI (no additional counting)
-        }
-
-        if (!wolframSucceeded) {
-          const aiResult = inputMode === 'keyboard'
-            ? await geminiService.analyzeMathProblemFromText(problemText)
-            : await geminiService.analyzeMathProblem(imageBase64, imageMimeType);
-
-          setAnalysisResult({ ...aiResult, solverType: 'ai' });
-          setShowResultModal(true);
+          lastError = wolframError; // fall back to AI with the same ticket
         }
       }
+
+      try {
+        const aiResult = image
+          ? await geminiService.analyzeMathProblem(image.base64, image.mimeType, ticket)
+          : await geminiService.analyzeMathProblemFromText(problemText, ticket);
+        showResult(aiResult, 'ai');
+        return;
+      } catch (aiError) {
+        lastError = aiError;
+      }
+
+      // Everything failed: give the analysis back
+      await geminiService.refundAnalysis(ticket);
+      throw lastError;
     } catch (error) {
-      if (error.message === 'DAILY_LIMIT_REACHED' || error.message === 'FREE_LIMIT_REACHED') {
-        setLimitType(error.message === 'FREE_LIMIT_REACHED' ? 'free' : 'daily');
-        setShowLimitModal(true);
-      } else if (isNetworkError(error)) {
-        Alert.alert(t('common.noInternet'), t('common.noInternetDesc'), [
-          { text: t('common.retry'), onPress: handleCalculate },
-          { text: t('common.ok') },
-        ]);
-      } else {
-        Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
-      }
+      reportError(error, handleCalculate); // not awaited: a retry must start after this run finishes
     } finally {
       setIsAnalyzing(false);
     }
   };
 
-  // Analyze with AI (always use AI, no local calculator)
+  // "Analyze with AI": always AI. One analysis is recorded up front and refunded on failure.
   const handleAnalyzeWithAI = async () => {
     setAnalysisResult(null); // reset so modal never shows stale data
+    if (!validateInput()) return;
+    setIsAnalyzing(true);
     try {
-      if (inputMode === 'keyboard') {
-        if (!mathProblemText.trim()) {
-          Alert.alert(t('common.attention'), t('dashboard.enterProblem'));
-          return;
-        }
-        setIsAnalyzing(true);
-        // Count 1 analysis before calling AI
-        await geminiService.recordAnalysis();
-        const result = await geminiService.analyzeMathProblemFromText(mathProblemText);
-        setAnalysisResult({ ...result, solverType: 'ai' });
-        setShowResultModal(true);
-      } else {
-        if (!selectedImage) {
-          Alert.alert(t('common.attention'), t('dashboard.selectPhoto'));
-          return;
-        }
-        setIsAnalyzing(true);
-        const { base64, mimeType } = await imageService.convertImageToBase64(selectedImage);
-        setLastBase64(base64);
-        // Count 1 analysis before calling AI
-        await geminiService.recordAnalysis();
-        const result = await geminiService.analyzeMathProblem(base64, mimeType);
-        setAnalysisResult({ ...result, solverType: 'ai' });
-        setShowResultModal(true);
+      // Read the photo before recording so image errors never consume an analysis
+      const image = inputMode === 'camera' ? await readSelectedImage() : null;
+      const ticket = await geminiService.recordAnalysis();
+      let result;
+      try {
+        result = image
+          ? await geminiService.analyzeMathProblem(image.base64, image.mimeType, ticket)
+          : await geminiService.analyzeMathProblemFromText(mathProblemText, ticket);
+      } catch (aiError) {
+        await geminiService.refundAnalysis(ticket);
+        throw aiError;
       }
+      showResult(result, 'ai');
     } catch (error) {
-      if (error.message === 'FREE_LIMIT_REACHED' || error.message === 'DAILY_LIMIT_REACHED') {
-        setShowLimitModal(true);
-      } else if (isNetworkError(error)) {
-        Alert.alert(t('common.noInternet'), t('common.noInternetDesc'), [
-          { text: t('common.retry'), onPress: handleAnalyzeWithAI },
-          { text: t('common.ok') },
-        ]);
-      } else {
-        Alert.alert(t('common.error'), error.message || t('dashboard.analysisError'));
-      }
+      reportError(error, handleAnalyzeWithAI); // not awaited: a retry must start after this run finishes
     } finally {
       setIsAnalyzing(false);
     }
   };
-
-  // Keep old function name for backward compatibility (redirect to AI)
-  const handleAnalyzeProblem = handleAnalyzeWithAI;
 
   const handleSaveResult = async () => {
     try {
@@ -302,6 +324,24 @@ export default function DashboardScreen() {
     } catch (error) {
       console.error('Gabim gjate ruajtjes:', error);
       throw error;
+    }
+  };
+
+  const handleDeleteActivityItem = async () => {
+    if (!activityItem) return;
+    const confirmed = await confirmAction({
+      title: t('saved.confirmDelete'),
+      message: t('saved.confirmDeleteMessage'),
+      confirmText: t('common.delete'),
+      cancelText: t('common.cancel'),
+      destructive: true,
+    });
+    if (!confirmed) return;
+    try {
+      await removeItem(activityItem.id);
+      setActivityItem(null);
+    } catch (e) {
+      showAlert(t('common.error'), getErrorMessage(e, t('saved.deleteError'), t));
     }
   };
 
@@ -344,7 +384,13 @@ export default function DashboardScreen() {
           eyebrow={`${greeting}, ${displayName}!`}
           title={t('dashboard.readyToLearn')}
           right={
-            <TouchableOpacity style={styles.avatar} onPress={() => setShowProfile(true)} activeOpacity={0.7}>
+            <TouchableOpacity
+              style={styles.avatar}
+              onPress={() => setShowProfile(true)}
+              activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={t('a11y.profile')}
+            >
               <Text style={styles.avatarText}>{user?.name ? user.name[0].toUpperCase() : '?'}</Text>
             </TouchableOpacity>
           }
@@ -522,13 +568,14 @@ export default function DashboardScreen() {
                 {recentItems.map((item, index) => (
                   <ListRow
                     key={item.id || index}
-                    leading={item.imageData ? (
-                      <Image source={{ uri: `data:image/jpeg;base64,${item.imageData}` }} style={styles.activityThumb} />
+                    leading={item.hasImage ? (
+                      <IconBadge name="image" color={colors.success} />
                     ) : (
                       <IconBadge name="checkmark" color={colors.success} />
                     )}
                     title={item.answer ? item.answer : t('dashboard.mathProblem')}
                     subtitle={formatTimeAgo(item.savedAt)}
+                    onPress={() => setActivityItem(item)}
                   />
                 ))}
               </ListSection>
@@ -554,6 +601,13 @@ export default function DashboardScreen() {
         visible={showGraphModal}
         functionText={mathProblemText}
         onClose={() => setShowGraphModal(false)}
+      />
+
+      <SavedItemDetailModal
+        visible={!!activityItem}
+        item={activityItem}
+        onClose={() => setActivityItem(null)}
+        onDelete={handleDeleteActivityItem}
       />
 
       <ProfileModal
@@ -771,12 +825,6 @@ const makeStyles = (colors) => StyleSheet.create({
   activityList: {
     marginHorizontal: 0,
     marginTop: 0,
-  },
-  activityThumb: {
-    width: 30,
-    height: 30,
-    borderRadius: 7,
-    backgroundColor: colors.inputBg,
   },
   emptyActivity: {
     alignItems: 'center',

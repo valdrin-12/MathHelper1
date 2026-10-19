@@ -4,11 +4,11 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   ScrollView,
   Animated,
   Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
@@ -24,10 +24,13 @@ function ConfettiParticle({ delay, color, startX }) {
   const opacityAnim = useRef(new Animated.Value(1)).current;
   const rotateAnim = useRef(new Animated.Value(0)).current;
   const swayAnim = useRef(new Animated.Value(0)).current;
+  // Shape is picked once per particle so it does not flicker between renders
+  const isSquare = useRef(Math.random() > 0.5).current;
 
   useEffect(() => {
+    let animation = null;
     const timeout = setTimeout(() => {
-      Animated.parallel([
+      animation = Animated.parallel([
         Animated.timing(fallAnim, {
           toValue: SCREEN_HEIGHT + 50,
           duration: 2500 + Math.random() * 1500,
@@ -51,10 +54,15 @@ function ConfettiParticle({ delay, color, startX }) {
             Animated.timing(swayAnim, { toValue: -1, duration: 500 + Math.random() * 300, useNativeDriver: true }),
           ])
         ),
-      ]).start();
+      ]);
+      animation.start();
     }, delay);
 
-    return () => clearTimeout(timeout);
+    // Stop the infinite loops when the particle unmounts (modal closed)
+    return () => {
+      clearTimeout(timeout);
+      if (animation) animation.stop();
+    };
   }, [delay, fallAnim, opacityAnim, rotateAnim, swayAnim]);
 
   const rotate = rotateAnim.interpolate({
@@ -66,8 +74,6 @@ function ConfettiParticle({ delay, color, startX }) {
     inputRange: [-1, 1],
     outputRange: [-15, 15],
   });
-
-  const isSquare = Math.random() > 0.5;
 
   return (
     <Animated.View
@@ -122,8 +128,13 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
   if (!result || !quizSet) return null;
 
   const totalQuestions = quizSet.questions.length;
-  const correctCount = result.filter(a => a.correct).length;
-  const percentage = Math.round((correctCount / totalQuestions) * 100);
+  const correctCount = result.filter(a => a?.correct).length;
+  const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+  const attemptPercentage = (attempt) => (
+    typeof attempt?.percentage === 'number'
+      ? attempt.percentage
+      : attempt?.total > 0 ? Math.round((attempt.score / attempt.total) * 100) : 0
+  );
 
   const getGradeInfo = () => {
     if (percentage >= 90) return { icon: 'trophy', iconColor: colors.warningAccent, label: t('quizResult.excellent'), color: colors.warningAccent, message: t('quizResult.excellentMsg') };
@@ -229,9 +240,9 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
                   <View key={i} style={styles.historyRow}>
                     <Text style={styles.historyAttempt}>#{quizHistory.length - i}</Text>
                     <View style={styles.historyBar}>
-                      <View style={[styles.historyBarFill, { width: `${attempt.percentage}%`, backgroundColor: attempt.percentage >= 75 ? colors.success : attempt.percentage >= 50 ? colors.warning : colors.error }]} />
+                      <View style={[styles.historyBarFill, { width: `${attemptPercentage(attempt)}%`, backgroundColor: attemptPercentage(attempt) >= 75 ? colors.success : attemptPercentage(attempt) >= 50 ? colors.warning : colors.error }]} />
                     </View>
-                    <Text style={styles.historyScore}>{attempt.percentage}%</Text>
+                    <Text style={styles.historyScore}>{attemptPercentage(attempt)}%</Text>
                   </View>
                 ))}
               </View>

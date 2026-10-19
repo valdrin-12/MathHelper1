@@ -1,10 +1,12 @@
 import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Animated, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from 'react-i18next';
 import { useTheme } from '../context/ThemeContext';
 
 export default function SplashScreen({ onFinish }) {
   const { colors } = useTheme();
+  const { t } = useTranslation();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const iconScale = useRef(new Animated.Value(0.72)).current;
   const iconOpacity = useRef(new Animated.Value(0)).current;
@@ -30,6 +32,7 @@ export default function SplashScreen({ onFinish }) {
     ]).start();
 
     // Phase 2: App name types in after icon settles
+    let typingTimer = null;
     const typingDelay = setTimeout(() => {
       Animated.timing(textOpacity, {
         toValue: 1,
@@ -38,7 +41,7 @@ export default function SplashScreen({ onFinish }) {
       }).start();
 
       let charIndex = 0;
-      const typingTimer = setInterval(() => {
+      typingTimer = setInterval(() => {
         if (charIndex < fullText.length) {
           setTypedText(fullText.substring(0, charIndex + 1));
           charIndex++;
@@ -46,8 +49,6 @@ export default function SplashScreen({ onFinish }) {
           clearInterval(typingTimer);
         }
       }, 90);
-
-      return () => clearInterval(typingTimer);
     }, 300);
 
     // Phase 3: Subtitle fades in
@@ -66,6 +67,7 @@ export default function SplashScreen({ onFinish }) {
 
     return () => {
       clearTimeout(typingDelay);
+      if (typingTimer) clearInterval(typingTimer);
       clearTimeout(subtitleTimer);
       clearTimeout(finishTimer);
     };
@@ -95,7 +97,7 @@ export default function SplashScreen({ onFinish }) {
 
       {/* Tagline */}
       <Animated.View style={{ opacity: subtitleOpacity }}>
-        <Text style={styles.tagline}>Your AI Math Assistant</Text>
+        <Text style={styles.tagline}>{t('splash.tagline')}</Text>
       </Animated.View>
 
       {/* Bottom indicator */}

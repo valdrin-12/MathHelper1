@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   Modal,
   View,
@@ -6,38 +6,51 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
-import { Button, Pill } from './ui';
+import { Button, Pill, getErrorMessage } from './ui';
 
 export default function ResultsModal({ visible, result, onClose, onSave, imageUri }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const [isSaving, setIsSaving] = useState(false);
+  // Once saved, a result stays "saved" until a NEW result is shown, so it can't be saved twice
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [saveError, setSaveError] = useState(false);
+  const [saveError, setSaveError] = useState(null);
+  const savingRef = useRef(false);
+  const errorTimer = useRef(null);
+
+  useEffect(() => {
+    setSaveSuccess(false);
+    setSaveError(null);
+    setIsSaving(false);
+    savingRef.current = false;
+  }, [result]);
+
+  useEffect(() => () => clearTimeout(errorTimer.current), []);
 
   if (!result) return null;
 
   const { answer, steps, explanation, solverType } = result;
 
   const handleSave = async () => {
-    if (!onSave) return;
-
+    if (!onSave || savingRef.current || saveSuccess) return;
+    savingRef.current = true;
     try {
       setIsSaving(true);
-      setSaveError(false);
+      setSaveError(null);
       await onSave();
       setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
     } catch (error) {
-      setSaveError(true);
-      setTimeout(() => setSaveError(false), 3000);
+      savingRef.current = false;
+      setSaveError(getErrorMessage(error, t('results.savedError'), t));
+      clearTimeout(errorTimer.current);
+      errorTimer.current = setTimeout(() => setSaveError(null), 4000);
     } finally {
       setIsSaving(false);
     }
@@ -60,7 +73,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
             <View style={styles.headerSide} />
             <Text style={styles.headerTitle} numberOfLines={1}>{t('results.title')}</Text>
             <View style={[styles.headerSide, styles.headerSideRight]}>
-              <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={8} activeOpacity={0.6}>
+              <TouchableOpacity onPress={onClose} style={styles.closeButton} hitSlop={8} activeOpacity={0.6} accessibilityRole="button" accessibilityLabel={t('a11y.close')}>
                 <Ionicons name="close" size={18} color={colors.textSubtle} />
               </TouchableOpacity>
             </View>
@@ -148,7 +161,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
             )}
             {saveError && (
               <View style={styles.errorBanner}>
-                <Text style={styles.errorBannerText}>❌ {t('results.savedError')}</Text>
+                <Text style={styles.errorBannerText}>❌ {saveError}</Text>
               </View>
             )}
             <Button

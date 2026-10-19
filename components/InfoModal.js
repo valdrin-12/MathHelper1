@@ -6,14 +6,17 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTranslation } from 'react-i18next';
+import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../context/ThemeContext';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 
 export default function InfoModal({ visible, title, content, onClose }) {
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
+  const { t } = useTranslation();
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -23,7 +26,7 @@ export default function InfoModal({ visible, title, content, onClose }) {
           <View style={styles.headerSide} />
           <Text style={styles.title} numberOfLines={1}>{title}</Text>
           <View style={[styles.headerSide, styles.headerSideRight]}>
-            <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={8}>
+            <TouchableOpacity onPress={onClose} style={styles.closeBtn} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('a11y.close')}>
               <Text style={styles.closeBtnText}>&#x2715;</Text>
             </TouchableOpacity>
           </View>
@@ -32,8 +35,15 @@ export default function InfoModal({ visible, title, content, onClose }) {
         <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent} showsVerticalScrollIndicator={false}>
           {Array.isArray(content) ? (
             content.map((section, i) => (
-              <View key={i} style={styles.section}>
-                {section.heading && <Text style={styles.heading}>{section.heading}</Text>}
+              <View key={i} style={[styles.section, section.muted && styles.sectionMuted]}>
+                {section.heading ? (
+                  <View style={styles.headingRow}>
+                    {section.icon ? (
+                      <Ionicons name={section.icon} size={16} color={section.iconColor || colors.textSubtle} style={styles.headingIcon} />
+                    ) : null}
+                    <Text style={styles.heading}>{section.heading}</Text>
+                  </View>
+                ) : null}
                 <Text style={styles.text}>{section.text}</Text>
               </View>
             ))
@@ -90,6 +100,9 @@ const makeStyles = (colors) => StyleSheet.create({
     padding: SPACING.lg,
     marginBottom: SPACING.md,
   },
-  heading: { ...TYPOGRAPHY.headline, color: colors.text, marginBottom: SPACING.sm - 2 },
+  sectionMuted: { opacity: 0.6 },
+  headingRow: { flexDirection: 'row', alignItems: 'center', marginBottom: SPACING.sm - 2 },
+  headingIcon: { marginRight: SPACING.xs + 2 },
+  heading: { ...TYPOGRAPHY.headline, color: colors.text, flexShrink: 1 },
   text: { ...TYPOGRAPHY.subhead, lineHeight: 22, color: colors.textSecondary },
 });

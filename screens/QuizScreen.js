@@ -23,6 +23,8 @@ import { ScreenHeader, Chip, Pill, IconBadge, Button } from '../components/ui';
 import WebContainer from '../components/WebContainer';
 import PressableCard from '../components/PressableCard';
 import { useResponsive } from '../utils/responsive';
+import { getUserScopedKey, CHALLENGE_KEY_PREFIX } from '../utils/userStorage';
+import { getLocalDateKey } from '../utils/localDate';
 
 // Mini circular progress for quiz cards
 function MiniProgressRing({ progress, size = 44, strokeWidth = 3, color }) {
@@ -83,13 +85,16 @@ export default function QuizScreen() {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [challengeCompletedToday, setChallengeCompletedToday] = useState(false);
 
-  const todayDateKey = new Date().toISOString().slice(0, 10);
+  // Device-local calendar date (not UTC) so the challenge flips at local midnight
+  const todayDateKey = getLocalDateKey();
+  const challengeKey = getUserScopedKey(`${CHALLENGE_KEY_PREFIX}${todayDateKey}`, user?.id);
 
   useEffect(() => {
-    AsyncStorage.getItem(`@mathhelper_challenge_${todayDateKey}`)
+    setChallengeCompletedToday(false);
+    AsyncStorage.getItem(challengeKey)
       .then(val => { if (val === 'done') setChallengeCompletedToday(true); })
       .catch(() => {});
-  }, [todayDateKey]);
+  }, [challengeKey]);
 
   // Animations
   const challengeSlide = useRef(new Animated.Value(30)).current;
@@ -118,12 +123,13 @@ export default function QuizScreen() {
   };
 
   // Get daily challenge quiz (deterministic based on date)
-  // Uses days-since-epoch so each calendar date maps to a unique index,
+  // Uses days-since-epoch of the *local* date so each calendar date maps to a unique index,
   // avoiding the leap-year collision of the old dayOfYear approach.
   const getDailyChallenge = () => {
     const pool = isPremium ? quizSets : quizSets.filter(q => FREE_QUIZ_IDS.includes(q.id));
     if (pool.length === 0) return null;
-    const daysSinceEpoch = Math.floor(Date.now() / 86400000);
+    const [y, m, d] = todayDateKey.split('-').map(Number);
+    const daysSinceEpoch = Math.floor(Date.UTC(y, m - 1, d) / 86400000);
     return pool[daysSinceEpoch % pool.length];
   };
 
@@ -145,7 +151,7 @@ export default function QuizScreen() {
     setCompletedQuizSet(quizSet);
     setShowQuiz(false);
     setShowResult(true);
-    const correct = answers ? answers.filter(a => a?.isCorrect).length : 0;
+    const correct = answers ? answers.filter(a => a?.correct).length : 0;
     const total = quizSet?.questions?.length || 0;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     setLastScore(percentage);
@@ -155,7 +161,7 @@ export default function QuizScreen() {
     }
     // Mark daily challenge as completed
     if (dailyChallenge && quizSet?.id === dailyChallenge.id) {
-      AsyncStorage.setItem(`@mathhelper_challenge_${todayDateKey}`, 'done')
+      AsyncStorage.setItem(challengeKey, 'done')
         .then(() => setChallengeCompletedToday(true))
         .catch(() => {});
     }

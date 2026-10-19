@@ -21,8 +21,7 @@ import { ScreenHeader, SearchField, Chip, Pill, EmptyState } from '../components
 import WebContainer from '../components/WebContainer';
 import PressableCard from '../components/PressableCard';
 import { useResponsive } from '../utils/responsive';
-
-const COURSE_PROGRESS_KEY = '@mathhelper_course_progress';
+import { getUserScopedKey, COURSE_PROGRESS_KEY } from '../utils/userStorage';
 
 export default function LearnScreen() {
   const { isWeb, isDesktop } = useResponsive();
@@ -38,15 +37,21 @@ export default function LearnScreen() {
   const [showCourseModal, setShowCourseModal] = useState(false);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [courseProgress, setCourseProgress] = useState({});
+  // Per-user key so progress never leaks between accounts on a shared device
+  const progressKey = getUserScopedKey(COURSE_PROGRESS_KEY, user?.id);
 
   // Load course progress from AsyncStorage
   const loadCourseProgress = useCallback(async () => {
     try {
-      const data = await AsyncStorage.getItem(COURSE_PROGRESS_KEY);
-      if (data) setCourseProgress(JSON.parse(data));
+      const data = await AsyncStorage.getItem(progressKey);
+      setCourseProgress(data ? JSON.parse(data) : {});
     } catch (e) {
       console.error('Error loading course progress:', e);
     }
+  }, [progressKey]);
+
+  const handleProgressChange = useCallback((courseId, lessonIndex) => {
+    setCourseProgress((prev) => ({ ...prev, [courseId]: lessonIndex }));
   }, []);
 
   useEffect(() => {
@@ -217,6 +222,7 @@ export default function LearnScreen() {
         visible={showCourseModal}
         course={selectedCourse}
         onClose={handleCloseModal}
+        onProgressChange={handleProgressChange}
       />
 
       {/* Premium Upsell Modal */}

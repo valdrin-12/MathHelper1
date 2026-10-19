@@ -7,7 +7,11 @@ import { View, Text, TouchableOpacity, Switch, ActivityIndicator, TextInput, Sty
 import { SafeAreaInsetsContext } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '../../context/ThemeContext';
+import i18n from '../../locales/i18n';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../../theme/constants';
+
+export { showAlert, confirmAction } from './dialog';
+export { getErrorMessage, getErrorCodeOf } from './errors';
 
 const HAIRLINE = StyleSheet.hairlineWidth;
 
@@ -59,6 +63,7 @@ export function ListSection({ title, footer, children, style }) {
 export function ListRow({
   icon, iconColor, leading, title, subtitle, value, right,
   switchValue, onSwitchChange, onPress, onLongPress, destructive, centered, loading, showDivider, leadingWidth = 30,
+  accessibilityLabel, accessibilityHint, accessibilityState, selected,
 }) {
   const { colors } = useTheme();
   const hasSwitch = typeof switchValue === 'boolean';
@@ -78,6 +83,9 @@ export function ListRow({
       {right}
       {hasSwitch ? (
         <Switch
+          accessibilityRole="switch"
+          accessibilityLabel={typeof title === 'string' ? title : undefined}
+          accessibilityState={{ checked: switchValue }}
           value={switchValue}
           onValueChange={onSwitchChange}
           trackColor={{ false: colors.borderLight, true: colors.primary }}
@@ -93,7 +101,18 @@ export function ListRow({
   return (
     <View>
       {onPress ? (
-        <TouchableOpacity onPress={onPress} onLongPress={onLongPress} activeOpacity={0.6} disabled={loading}>{content}</TouchableOpacity>
+        <TouchableOpacity
+          onPress={onPress}
+          onLongPress={onLongPress}
+          activeOpacity={0.6}
+          disabled={loading}
+          accessibilityRole="button"
+          accessibilityLabel={accessibilityLabel || (typeof title === 'string' ? [title, typeof subtitle === 'string' ? subtitle : null].filter(Boolean).join(', ') : undefined)}
+          accessibilityHint={accessibilityHint}
+          accessibilityState={{ disabled: !!loading, busy: !!loading, ...(selected !== undefined ? { selected: !!selected } : null), ...accessibilityState }}
+        >
+          {content}
+        </TouchableOpacity>
       ) : content}
       {showDivider ? <View style={[styles.divider, { marginLeft: insetLeft, backgroundColor: colors.border }]} /> : null}
     </View>
@@ -113,7 +132,7 @@ export function SectionTitle({ children, style }) {
 }
 
 // Buttons: filled (primary action), tinted (secondary), plain (text only)
-export function Button({ title, icon, onPress, variant = 'filled', tone = 'primary', disabled, loading, style }) {
+export function Button({ title, icon, onPress, variant = 'filled', tone = 'primary', disabled, loading, style, accessibilityLabel, accessibilityHint }) {
   const { colors } = useTheme();
   const toneColor = {
     primary: colors.primary,
@@ -138,6 +157,10 @@ export function Button({ title, icon, onPress, variant = 'filled', tone = 'prima
       onPress={onPress}
       disabled={isDisabled}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel || (typeof title === 'string' ? title : undefined)}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled: !!isDisabled, busy: !!loading }}
     >
       {loading ? (
         <ActivityIndicator size="small" color={fg} />
@@ -155,7 +178,7 @@ export function Button({ title, icon, onPress, variant = 'filled', tone = 'prima
 export function SegmentedControl({ segments, value, onChange, style }) {
   const { colors, isDark } = useTheme();
   return (
-    <View style={[styles.segmented, { backgroundColor: isDark ? colors.inputBg : 'rgba(118,118,128,0.12)' }, style]}>
+    <View accessibilityRole="tablist" style={[styles.segmented, { backgroundColor: isDark ? colors.inputBg : 'rgba(118,118,128,0.12)' }, style]}>
       {segments.map((seg) => {
         const active = seg.value === value;
         return (
@@ -164,6 +187,9 @@ export function SegmentedControl({ segments, value, onChange, style }) {
             style={[styles.segment, active && [styles.segmentActive, { backgroundColor: isDark ? '#636366' : '#FFFFFF' }]]}
             onPress={() => onChange(seg.value)}
             activeOpacity={0.7}
+            accessibilityRole="tab"
+            accessibilityLabel={seg.label}
+            accessibilityState={{ selected: active }}
           >
             {seg.icon ? <Ionicons name={seg.icon} size={15} color={colors.text} /> : null}
             <Text style={[styles.segmentText, { color: colors.text }, active && styles.segmentTextActive]}>{seg.label}</Text>
@@ -187,9 +213,10 @@ export function SearchField({ value, onChangeText, placeholder, style }) {
         placeholder={placeholder}
         placeholderTextColor={colors.textMuted}
         returnKeyType="search"
+        accessibilityLabel={placeholder}
       />
       {value ? (
-        <TouchableOpacity onPress={() => onChangeText('')} hitSlop={8}>
+        <TouchableOpacity onPress={() => onChangeText('')} hitSlop={8} accessibilityRole="button" accessibilityLabel={i18n.t('a11y.clearSearch')}>
           <Ionicons name="close-circle" size={17} color={colors.textMuted} />
         </TouchableOpacity>
       ) : null}
@@ -206,6 +233,9 @@ export function Chip({ label, icon, emoji, active, color, onPress }) {
       style={[styles.chip, { backgroundColor: active ? activeColor : colors.surface }]}
       onPress={onPress}
       activeOpacity={0.7}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: !!active }}
     >
       {emoji ? <Text style={styles.chipEmoji}>{emoji}</Text> : null}
       {icon ? <Ionicons name={icon} size={13} color={active ? '#FFFFFF' : colors.textSubtle} /> : null}
@@ -236,7 +266,60 @@ export function EmptyState({ icon, title, message, style }) {
   );
 }
 
+// Icon-only round button (close, back, select…). `label` is required for screen readers.
+export function IconButton({ name, label, onPress, size = 18, color, style, hitSlop = 8, disabled }) {
+  const { colors } = useTheme();
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={style}
+      hitSlop={hitSlop}
+      activeOpacity={0.6}
+      disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={label}
+      accessibilityState={{ disabled: !!disabled }}
+    >
+      <Ionicons name={name} size={size} color={color || colors.textSubtle} />
+    </TouchableOpacity>
+  );
+}
+
+// Small non-blocking banner for offline / load errors with an optional Retry action
+export function StatusBanner({ message, icon = 'cloud-offline-outline', tone = 'warning', actionLabel, onAction, loading, style }) {
+  const { colors } = useTheme();
+  const fg = tone === 'error' ? colors.destructive : colors.secondary;
+  const bg = tone === 'error' ? colors.errorLight : colors.warningLight;
+  return (
+    <View style={[styles.banner, { backgroundColor: bg }, style]} accessibilityRole="alert" accessibilityLiveRegion="polite">
+      <Ionicons name={icon} size={16} color={fg} />
+      <Text style={[styles.bannerText, { color: colors.text }]} numberOfLines={2}>{message}</Text>
+      {onAction ? (
+        loading ? (
+          <ActivityIndicator size="small" color={fg} />
+        ) : (
+          <TouchableOpacity onPress={onAction} hitSlop={8} accessibilityRole="button" accessibilityLabel={actionLabel}>
+            <Text style={[styles.bannerAction, { color: fg }]}>{actionLabel}</Text>
+          </TouchableOpacity>
+        )
+      ) : null}
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
+  banner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.sm,
+    paddingHorizontal: SPACING.md,
+    paddingVertical: SPACING.sm,
+    borderRadius: BORDER_RADIUS.md,
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.sm,
+  },
+  bannerText: { ...TYPOGRAPHY.footnote, flex: 1 },
+  bannerAction: { ...TYPOGRAPHY.footnote, fontWeight: '600' },
   search: {
     flexDirection: 'row',
     alignItems: 'center',

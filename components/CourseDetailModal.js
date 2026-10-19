@@ -6,25 +6,28 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
-  Alert,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useLocalizedCourses, useLocalizedCourseContent } from '../hooks/useLocalizedData';
 import { useStats } from '../context/StatsContext';
+import { useUser } from '../context/UserContext';
+import { getUserScopedKey, COURSE_PROGRESS_KEY } from '../utils/userStorage';
 import { useTheme } from '../context/ThemeContext';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
-import { Button, SectionTitle } from './ui';
+import { Button, SectionTitle, showAlert } from './ui';
 
-const COURSE_PROGRESS_KEY = '@mathhelper_course_progress';
-
-export default function CourseDetailModal({ visible, course, onClose }) {
+export default function CourseDetailModal({ visible, course, onClose, onProgressChange }) {
   const { t } = useTranslation();
   const { categories, difficultyLevels } = useLocalizedCourses();
   const { courseContents } = useLocalizedCourseContent();
   const { recordCourseCompleted } = useStats();
+  const { user } = useUser();
+  // Course progress is per user so it never leaks between accounts on a shared device
+  const progressKey = getUserScopedKey(COURSE_PROGRESS_KEY, user?.id);
+  const [completing, setCompleting] = useState(false);
   const [showContent, setShowContent] = useState(false);
 
   // Course content state
@@ -51,12 +54,14 @@ export default function CourseDetailModal({ visible, course, onClose }) {
       setCourseCompleted(false);
       setSavedLesson(null);
       setShowResumeMessage(false);
+      setCompleting(false);
     }
-  }, [visible, course]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [visible, course, progressKey]);
 
   const loadCourseProgress = async () => {
     try {
-      const data = await AsyncStorage.getItem(COURSE_PROGRESS_KEY);
+      const data = await AsyncStorage.getItem(progressKey);
       if (data) {
         const progress = JSON.parse(data);
         if (progress[course.id] !== undefined && progress[course.id] > 0) {
@@ -70,10 +75,11 @@ export default function CourseDetailModal({ visible, course, onClose }) {
 
   const saveCourseProgress = async (lessonIndex) => {
     try {
-      const data = await AsyncStorage.getItem(COURSE_PROGRESS_KEY);
+      const data = await AsyncStorage.getItem(progressKey);
       const progress = data ? JSON.parse(data) : {};
       progress[course.id] = lessonIndex;
-      await AsyncStorage.setItem(COURSE_PROGRESS_KEY, JSON.stringify(progress));
+      await AsyncStorage.setItem(progressKey, JSON.stringify(progress));
+      onProgressChange?.(course.id, lessonIndex);
     } catch (e) {
       console.error('Error saving course progress:', e);
     }
@@ -114,20 +120,26 @@ export default function CourseDetailModal({ visible, course, onClose }) {
     setExpandedPractice({});
     scrollRef.current?.scrollTo({ y: 0, animated: true });
     lessonNavRef.current?.scrollTo({ x: index * 48, animated: true });
+    // Keep the in-memory resume point in sync so "Continue" reopens the latest lesson
+    setSavedLesson(index > 0 ? index : null);
     saveCourseProgress(index);
   };
 
   const handleCompleteCourse = async () => {
-    await recordCourseCompleted(course.id, course.title);
+    if (completing || courseCompleted) return;
+    setCompleting(true);
+    const ok = await recordCourseCompleted(course.id, course.title);
+    setCompleting(false);
+    if (!ok) {
+      showAlert(t('common.error'), t('courseContent.completeError'));
+      return;
+    }
     setCourseCompleted(true);
+    const title = course.title;
     // Close the course modal immediately, then show success alert
     onClose();
     setTimeout(() => {
-      Alert.alert(
-        `${t('courseContent.courseCompleted')}`,
-        t('courseContent.courseCompletedMessage', { title: course.title }),
-        [{ text: t('common.ok') }]
-      );
+      showAlert(t('courseContent.courseCompleted'), t('courseContent.courseCompletedMessage', { title }));
     }, 300);
   };
 
@@ -143,7 +155,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
       <SafeAreaView style={contentStyles.safeArea}>
         {/* Nav bar: plain back button, centered title, lesson counter */}
         <View style={contentStyles.header}>
-          <TouchableOpacity onPress={handleBackFromContent} style={contentStyles.closeButton} hitSlop={8}>
+          <TouchableOpacity onPress={handleBackFromContent} style={contentStyles.closeButton} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('a11y.back')}>
             <Ionicons name="chevron-back" size={26} color={colors.primary} />
           </TouchableOpacity>
           <View style={contentStyles.headerCenter}>
@@ -318,7 +330,10 @@ export default function CourseDetailModal({ visible, course, onClose }) {
             <TouchableOpacity
               style={[contentStyles.navButton, contentStyles.navButtonNext, contentStyles.completeButton]}
               onPress={handleCompleteCourse}
+              disabled={completing}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityState={{ disabled: completing, busy: completing }}
             >
               <Text style={contentStyles.navButtonNextText}>
                 {courseCompleted ? `✓ ${t('courseContent.completed')}` : `${t('courseContent.completeCourse')}`}
@@ -347,7 +362,7 @@ export default function CourseDetailModal({ visible, course, onClose }) {
       <View style={styles.container}>
         {/* Sheet nav bar: plain back button, centered title */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={onClose} style={styles.backButton} hitSlop={8}>
+          <TouchableOpacity onPress={onClose} style={styles.backButton} hitSlop={8} accessibilityRole="button" accessibilityLabel={t('a11y.back')}>
             <Ionicons name="chevron-back" size={26} color={colors.primary} />
           </TouchableOpacity>
           <Text style={styles.headerTitle} numberOfLines={1}>{t('courseDetail.title')}</Text>
@@ -446,7 +461,10 @@ export default function CourseDetailModal({ visible, course, onClose }) {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Button title={t('courseDetail.startCourse')} onPress={handleStartCourse} />
+          <Button
+            title={savedLesson !== null && savedLesson > 0 ? t('common.continue') : t('courseDetail.startCourse')}
+            onPress={handleStartCourse}
+          />
         </View>
       </View>
     </SafeAreaView>
