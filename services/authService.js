@@ -1,48 +1,71 @@
-import api from './apiClient';
+import api, { isRecoverableError } from './apiClient';
+
+/**
+ * Extract a stable error code for the UI to translate.
+ * Server codes (INVALID_CREDENTIALS, CURRENT_PASSWORD_REQUIRED, ...) win; otherwise
+ * NETWORK_ERROR / TIMEOUT / SERVER_ERROR / AUTH_LOST, falling back to `fallback`.
+ */
+export const getErrorCode = (error, fallback = 'UNKNOWN_ERROR') =>
+  error?.data?.code || error?.code || (error?.status >= 500 ? 'SERVER_ERROR' : fallback);
+
+const failure = (error, fallbackCode) => {
+  const code = getErrorCode(error, fallbackCode);
+  return { success: false, user: null, error: error?.data?.error || error?.message || code, code };
+};
 
 /**
  * Register new user
- * @param {Object} params - { name, email, password }
- * @returns {Promise<{ success: boolean, user: Object|null, error: string|null }>}
+ * @param {Object} params - { name, email, password, language }
+ * @returns {Promise<{ success: boolean, user: Object|null, error: string|null, code?: string }>}
  */
 export const registerUser = async ({ name, email, password, language }) => {
   try {
     const data = await api.post('/api/auth/register', { name, email, password, language });
     await api.storeTokens(data.accessToken, data.refreshToken);
-    return { success: true, user: data.user, error: null };
+    return { success: true, user: data.user, error: null, code: null };
   } catch (error) {
-    return { success: false, user: null, error: error.message || 'Registration failed' };
+    return failure(error, 'REGISTRATION_FAILED');
   }
 };
 
 /**
- * Login with email and password
- * @param {Object} params - { email, password }
- * @returns {Promise<{ success: boolean, user: Object|null, error: string|null }>}
+ * Login with email and password.
+ * Wrong email and wrong password both yield code 'INVALID_CREDENTIALS'.
+ * @returns {Promise<{ success: boolean, user: Object|null, error: string|null, code: string|null }>}
  */
 export const loginUser = async ({ email, password }) => {
   try {
     const data = await api.post('/api/auth/login', { email, password });
     await api.storeTokens(data.accessToken, data.refreshToken);
-    return { success: true, user: data.user, error: null };
+    return { success: true, user: data.user, error: null, code: null };
   } catch (error) {
-    return { success: false, user: null, error: error.message || 'Login failed', code: error.data?.code || null };
+    return failure(error, 'LOGIN_FAILED');
   }
 };
 
 /**
- * Get current user from backend
+ * Get current user from backend.
+ *
+ * - Resolves with the user when the session is valid.
+ * - Resolves with null when there is no session or the server rejected it (tokens cleared).
+ * - REJECTS with a recoverable error (NetworkError / TimeoutError / 5xx ApiError, all with
+ *   `isRecoverableError(err) === true`) when the server could not be reached. Tokens are KEPT
+ *   so the caller can stay logged in offline and retry later.
  * @returns {Promise<Object|null>}
  */
 export const getCurrentUser = async () => {
-  try {
-    const hasToken = await api.hasTokens();
-    if (!hasToken) return null;
+  const hasToken = await api.hasTokens();
+  if (!hasToken) return null;
 
+  try {
     const data = await api.get('/api/auth/me');
-    return data.user;
+    return data.user || null;
   } catch (error) {
-    console.error('[authService] Error getting user:', error);
+    if (isRecoverableError(error)) {
+      throw error;
+    }
+    // 401 (session lost — apiClient already cleared tokens) or 404 (user deleted)
+    console.warn('[authService] Session invalid:', error?.code || error?.status);
     await api.clearTokens();
     return null;
   }
@@ -57,28 +80,50 @@ const LOGOUT_TIMEOUT_MS = 5000;
 export const logoutUser = async () => {
   try {
     // Revoking refresh tokens is best-effort: don't keep the user waiting on a slow/cold server
-    await Promise.race([
-      api.post('/api/auth/logout'),
-      new Promise((_, reject) => setTimeout(() => reject(new Error('Logout request timed out')), LOGOUT_TIMEOUT_MS)),
-    ]);
+    await api.post('/api/auth/logout', null, { timeoutMs: LOGOUT_TIMEOUT_MS });
   } catch (error) {
-    console.error('Logout API error:', error);
+    console.warn('Logout API error:', error?.code || error?.message);
   }
   await api.clearTokens();
   return true;
 };
 
 /**
- * Update user profile
- * @param {Object} updates - Data to update
- * @returns {Promise<{ success: boolean, user: Object|null, error: string|null }>}
+ * Update user profile.
+ * Changing `email` or `password` requires `currentPassword` in `updates`.
+ * When the server rotates tokens (email/password change) they are stored automatically.
+ * Error codes: CURRENT_PASSWORD_REQUIRED, INVALID_CURRENT_PASSWORD, NETWORK_ERROR, TIMEOUT,
+ * SERVER_ERROR, UPDATE_FAILED (+ any other server `code`).
+ * @param {Object} updates - e.g. { name } or { email, currentPassword } or { password, currentPassword }
+ * @returns {Promise<{ success: boolean, user: Object|null, error: string|null, code: string|null }>}
  */
 export const updateUser = async (updates) => {
   try {
     const data = await api.put('/api/auth/profile', updates);
-    return { success: true, user: data.user, error: null };
+    if (data.accessToken && data.refreshToken) {
+      await api.storeTokens(data.accessToken, data.refreshToken);
+    }
+    return { success: true, user: data.user, error: null, code: null };
   } catch (error) {
-    return { success: false, user: null, error: error.message || 'Update failed' };
+    return failure(error, 'UPDATE_FAILED');
+  }
+};
+
+/**
+ * Permanently delete the account. Requires the user's password.
+ * Error codes: PASSWORD_REQUIRED, INVALID_PASSWORD, SUBSCRIPTION_CANCEL_FAILED, NETWORK_ERROR,
+ * TIMEOUT, SERVER_ERROR, DELETE_FAILED.
+ * @param {string} password
+ * @returns {Promise<{ success: boolean, error: string|null, code: string|null }>}
+ */
+export const deleteAccount = async (password) => {
+  try {
+    await api.delete('/api/auth/account', { password });
+    await api.clearTokens();
+    return { success: true, error: null, code: null };
+  } catch (error) {
+    const { error: message, code } = failure(error, 'DELETE_FAILED');
+    return { success: false, error: message, code };
   }
 };
 
@@ -88,4 +133,6 @@ export default {
   getCurrentUser,
   logoutUser,
   updateUser,
+  deleteAccount,
+  getErrorCode,
 };

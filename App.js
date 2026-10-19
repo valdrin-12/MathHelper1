@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 import { View, Text, Platform, Pressable, StyleSheet, useWindowDimensions } from 'react-native';
 import { BlurView } from 'expo-blur';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Font from 'expo-font';
-import { SavedItemsProvider } from './context/SavedItemsContext';
+import { SavedItemsProvider, useSavedItems } from './context/SavedItemsContext';
 import { UserProvider, useUser } from './context/UserContext';
-import { StatsProvider } from './context/StatsContext';
+import { StatsProvider, useStats } from './context/StatsContext';
 import { LanguageProvider } from './context/LanguageContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { TYPOGRAPHY } from './theme/constants';
@@ -24,7 +25,8 @@ import SettingsScreen from './screens/SettingsScreen';
 import AuthScreen from './screens/AuthScreen';
 import SplashScreen from './screens/SplashScreen';
 import OnboardingScreen from './screens/OnboardingScreen';
-import LoadingOverlay from './components/LoadingOverlay';
+import { TabNavigationProvider } from './components/TabNavigationContext';
+import { StatusBanner } from './components/ui';
 
 const Tab = createBottomTabNavigator();
 
@@ -157,6 +159,9 @@ function SidebarItem({ isActive, iconName, label, onPress }) {
       onPress={onPress}
       onHoverIn={() => setHovered(true)}
       onHoverOut={() => setHovered(false)}
+      accessibilityRole="tab"
+      accessibilityLabel={label}
+      accessibilityState={{ selected: isActive }}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -230,8 +235,59 @@ function DesktopLayout({ colors, isDark, t }) {
     <View style={{ flex: 1, flexDirection: 'row', backgroundColor: colors.background }}>
       <SidebarNav activeTab={activeTab} setActiveTab={handleTabChange} t={t} />
       <View style={{ flex: 1, marginLeft: SIDEBAR_WIDTH }}>
-        <ActiveScreen />
+        <TabNavigationProvider value={handleTabChange}>
+          <ActiveScreen />
+        </TabNavigationProvider>
+        <ConnectionBanner bottomOffset={16} />
       </View>
+    </View>
+  );
+}
+
+// Non-blocking banner shown when the session is offline or a data context failed to load.
+// Floats above the tab bar so it never shifts screen content.
+function ConnectionBanner({ bottomOffset }) {
+  const { t } = useTranslation();
+  const { offline, refreshUser } = useUser();
+  const { error: statsError, retry: retryStats } = useStats();
+  const { error: savedError, retry: retrySaved } = useSavedItems();
+  const [retrying, setRetrying] = useState(false);
+
+  if (!offline && !statsError && !savedError) return null;
+
+  const message = offline
+    ? t('banner.offline')
+    : savedError
+      ? t('banner.savedError')
+      : t('banner.statsError');
+
+  const handleRetry = async () => {
+    setRetrying(true);
+    try {
+      await Promise.all([
+        offline ? refreshUser({ silent: true }) : null,
+        statsError ? retryStats() : null,
+        savedError ? retrySaved() : null,
+      ]);
+    } finally {
+      setRetrying(false);
+    }
+  };
+
+  return (
+    <View
+      pointerEvents="box-none"
+      style={{ position: 'absolute', left: 0, right: 0, bottom: bottomOffset, alignItems: 'center' }}
+    >
+      <StatusBanner
+        style={{ maxWidth: 560, alignSelf: 'stretch' }}
+        icon={offline ? 'cloud-offline-outline' : 'alert-circle-outline'}
+        tone={offline ? 'warning' : 'error'}
+        message={message}
+        actionLabel={t('common.retry')}
+        onAction={handleRetry}
+        loading={retrying}
+      />
     </View>
   );
 }
@@ -259,13 +315,15 @@ function MainApp() {
     }
   }, [loading, user]);
 
+  const handleSplashFinish = useCallback(() => setShowSplash(false), []);
+
   const handleOnboardingComplete = async () => {
     await AsyncStorage.setItem('@mathhelper_onboarding_done', 'true');
     setShowOnboarding(false);
   };
 
   if (showSplash) {
-    return <SplashScreen onFinish={() => setShowSplash(false)} />;
+    return <SplashScreen onFinish={handleSplashFinish} />;
   }
 
   if (loading) {
@@ -338,6 +396,7 @@ function MainApp() {
           <Tab.Screen name="Quiz" component={QuizScreen} options={{ tabBarLabel: t('navigation.quiz') }} />
           <Tab.Screen name="Settings" component={SettingsScreen} options={{ tabBarLabel: t('navigation.settings') }} />
         </Tab.Navigator>
+        <ConnectionBanner bottomOffset={(Platform.OS === 'ios' ? 85 : 68) + 8} />
       </NavigationContainer>
     </SavedItemsProvider>
     </StatsProvider>
@@ -364,13 +423,17 @@ export default function App() {
     return <View style={{ flex: 1, backgroundColor: '#0F172A' }} />; // Show loading with dark bg
   }
 
+  // One SafeAreaProvider at the root so safe-area-context's SafeAreaView / insets work
+  // everywhere, including modals and the desktop-web layout (which has no tab navigator).
   return (
-    <LanguageProvider>
-      <ThemeProvider>
-        <UserProvider>
-          <MainApp />
-        </UserProvider>
-      </ThemeProvider>
-    </LanguageProvider>
+    <SafeAreaProvider>
+      <LanguageProvider>
+        <ThemeProvider>
+          <UserProvider>
+            <MainApp />
+          </UserProvider>
+        </ThemeProvider>
+      </LanguageProvider>
+    </SafeAreaProvider>
   );
 }

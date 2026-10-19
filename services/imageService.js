@@ -1,154 +1,118 @@
 // Shërbim për përpunimin e imazheve
-import { Platform } from 'react-native';
+// Images are downscaled (longest side ≤ 1600px) and re-encoded as JPEG (quality 0.7) before
+// upload. Errors carry a stable `code` (also used as `message`) that the UI translates.
+import { ImageManipulator, SaveFormat } from 'expo-image-manipulator';
 import GEMINI_CONFIG from '../config/gemini.config';
 
+export const MAX_IMAGE_DIMENSION = 1600;
+export const JPEG_QUALITY = 0.7;
+
+export const IMAGE_ERROR_CODES = {
+  IMAGE_NOT_FOUND: 'IMAGE_NOT_FOUND', // no URI / file missing
+  IMAGE_READ_FAILED: 'IMAGE_READ_FAILED', // could not decode/compress the image
+  IMAGE_TOO_LARGE: 'IMAGE_TOO_LARGE', // still above the limit after compression; details: { sizeMB, maxMB }
+};
+
+const imageError = (code, details = {}, cause = null) => {
+  const err = new Error(code);
+  err.code = code;
+  err.details = details;
+  if (cause) err.cause = cause;
+  return err;
+};
+
+/** Approximate decoded byte size of a base64 string. */
+const base64Bytes = (b64) => {
+  const padding = b64.endsWith('==') ? 2 : b64.endsWith('=') ? 1 : 0;
+  return Math.floor((b64.length * 3) / 4) - padding;
+};
+
+const release = (ref) => {
+  try {
+    ref?.release?.();
+  } catch {
+    // ignore
+  }
+};
+
 /**
- * Konverton URI-në e imazhit në base64 për Gemini API
+ * Resize (longest side ≤ MAX_IMAGE_DIMENSION) and compress to JPEG.
+ * @param {string} imageUri
+ * @param {{ width?: number, height?: number }} [hint] - picker asset dimensions, if known
+ */
+const compressImage = async (imageUri, hint = {}) => {
+  let { width, height } = hint;
+  let probe = null;
+  if (!width || !height) {
+    probe = await ImageManipulator.manipulate(imageUri).renderAsync();
+    width = probe.width;
+    height = probe.height;
+  }
+
+  let ref = probe;
+  if (Math.max(width, height) > MAX_IMAGE_DIMENSION) {
+    const size = width >= height ? { width: MAX_IMAGE_DIMENSION } : { height: MAX_IMAGE_DIMENSION };
+    ref = await ImageManipulator.manipulate(imageUri).resize(size).renderAsync();
+    release(probe);
+  } else if (!ref) {
+    ref = await ImageManipulator.manipulate(imageUri).renderAsync();
+  }
+
+  try {
+    return await ref.saveAsync({ base64: true, compress: JPEG_QUALITY, format: SaveFormat.JPEG });
+  } finally {
+    release(ref);
+  }
+};
+
+/**
+ * Konverton URI-në e imazhit në base64 (JPEG i kompresuar) për analizë.
  * @param {string} imageUri - URI-ja e imazhit nga expo-image-picker
- * @returns {Promise<{base64: string, mimeType: string}>}
+ * @param {{ width?: number, height?: number }} [hint] - optional asset dimensions (skips a decode)
+ * @returns {Promise<{ base64: string, mimeType: 'image/jpeg', width: number, height: number }>}
+ * @throws Error with `code` in IMAGE_ERROR_CODES
  */
-export const convertImageToBase64 = async (imageUri) => {
-  try {
-    // Për web, përdor fetch për të lexuar blob
-    if (Platform.OS === 'web') {
-      return await convertImageToBase64Web(imageUri);
-    }
+export const convertImageToBase64 = async (imageUri, hint) => {
+  if (!imageUri) throw imageError(IMAGE_ERROR_CODES.IMAGE_NOT_FOUND);
 
-    // Për native (iOS/Android), përdor expo-file-system
-    return await convertImageToBase64Native(imageUri);
+  let result;
+  try {
+    result = await compressImage(imageUri, hint);
   } catch (error) {
-    console.error('Error converting image:', error);
-    if (error.message.includes('Fotografia')) {
-      throw error;
-    }
-    throw new Error('Gabim gjatë leximit të fotografisë. Ju lutemi provoni përsëri.');
+    console.error('Error converting image:', error?.message);
+    throw imageError(IMAGE_ERROR_CODES.IMAGE_READ_FAILED, {}, error);
   }
-};
 
-/**
- * Konverton imazhin në base64 për web platform
- */
-const convertImageToBase64Web = async (imageUri) => {
-  try {
-    // Fetch blob nga URI
-    const response = await fetch(imageUri);
-    const blob = await response.blob();
+  if (!result?.base64) {
+    throw imageError(IMAGE_ERROR_CODES.IMAGE_READ_FAILED);
+  }
 
-    // Kontrollo madhësinë
-    const fileSizeInMB = blob.size / (1024 * 1024);
-    if (fileSizeInMB > GEMINI_CONFIG.maxImageSizeMB) {
-      throw new Error(
-        `Fotografia është shumë e madhe (${fileSizeInMB.toFixed(1)}MB). Maksimumi është ${GEMINI_CONFIG.maxImageSizeMB}MB.`
-      );
-    }
-
-    // Konverto në base64
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result.split(',')[1];
-        const mimeType = blob.type || 'image/jpeg';
-        resolve({ base64: base64String, mimeType });
-      };
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
+  const sizeMB = base64Bytes(result.base64) / (1024 * 1024);
+  const maxMB = GEMINI_CONFIG.maxImageSizeMB;
+  if (sizeMB > maxMB) {
+    throw imageError(IMAGE_ERROR_CODES.IMAGE_TOO_LARGE, {
+      sizeMB: Number(sizeMB.toFixed(1)),
+      maxMB,
     });
-  } catch (error) {
-    throw new Error('Gabim gjatë leximit të fotografisë në web. Ju lutemi provoni përsëri.');
   }
+
+  return { base64: result.base64, mimeType: 'image/jpeg', width: result.width, height: result.height };
 };
 
 /**
- * Konverton imazhin në base64 për native platform (iOS/Android)
- */
-const convertImageToBase64Native = async (imageUri) => {
-  // Import dynamically për të shmangur errors në web
-  const FileSystem = require('expo-file-system');
-
-  const fileInfo = await FileSystem.getInfoAsync(imageUri);
-
-  if (!fileInfo.exists) {
-    throw new Error('Fotografia nuk u gjet. Ju lutemi provoni përsëri.');
-  }
-
-  const fileSizeInMB = fileInfo.size / (1024 * 1024);
-  if (fileSizeInMB > GEMINI_CONFIG.maxImageSizeMB) {
-    throw new Error(
-      `Fotografia është shumë e madhe (${fileSizeInMB.toFixed(1)}MB). Maksimumi është ${GEMINI_CONFIG.maxImageSizeMB}MB.`
-    );
-  }
-
-  const base64 = await FileSystem.readAsStringAsync(imageUri, {
-    encoding: FileSystem.EncodingType.Base64,
-  });
-
-  const mimeType = getMimeType(imageUri);
-
-  return { base64, mimeType };
-};
-
-/**
- * Valido imazhin para se të dërgohet në Gemini
- * @param {string} imageUri - URI-ja e imazhit
+ * Valido imazhin para se të dërgohet. Any format the platform can decode is accepted because it
+ * is re-encoded to JPEG by convertImageToBase64.
+ * @param {string} imageUri
  * @returns {Promise<boolean>}
+ * @throws Error with code IMAGE_NOT_FOUND
  */
 export const validateImage = async (imageUri) => {
-  try {
-    if (Platform.OS === 'web') {
-      // Për web, thjesht kontrollo nëse URI ekziston
-      if (!imageUri) {
-        throw new Error('Fotografia nuk ekziston.');
-      }
-      return true;
-    }
-
-    // Për native, përdor FileSystem
-    const FileSystem = require('expo-file-system');
-    const fileInfo = await FileSystem.getInfoAsync(imageUri);
-
-    if (!fileInfo.exists) {
-      throw new Error('Fotografia nuk ekziston.');
-    }
-
-    const fileSizeInMB = fileInfo.size / (1024 * 1024);
-    if (fileSizeInMB > GEMINI_CONFIG.maxImageSizeMB) {
-      throw new Error(
-        `Fotografia është shumë e madhe. Maksimumi është ${GEMINI_CONFIG.maxImageSizeMB}MB.`
-      );
-    }
-
-    const mimeType = getMimeType(imageUri);
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
-
-    if (!validTypes.includes(mimeType)) {
-      throw new Error('Formati i fotografisë nuk mbështetet. Përdorni JPG, PNG ose WebP.');
-    }
-
-    return true;
-  } catch (error) {
-    throw error;
-  }
-};
-
-/**
- * Përcakto MIME type bazuar në prapashtesën e skedarit
- * @param {string} uri - URI-ja e skedarit
- * @returns {string} - MIME type
- */
-const getMimeType = (uri) => {
-  const extension = uri.split('.').pop()?.toLowerCase() || '';
-
-  const mimeTypes = {
-    'jpg': 'image/jpeg',
-    'jpeg': 'image/jpeg',
-    'png': 'image/png',
-    'webp': 'image/webp',
-  };
-
-  return mimeTypes[extension] || 'image/jpeg';
+  if (!imageUri) throw imageError(IMAGE_ERROR_CODES.IMAGE_NOT_FOUND);
+  return true;
 };
 
 export default {
   convertImageToBase64,
   validateImage,
+  IMAGE_ERROR_CODES,
 };

@@ -5,18 +5,17 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
-  Alert,
   ActivityIndicator,
   Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
-import { Button, SegmentedControl } from './ui';
+import { Button, SegmentedControl, showAlert } from './ui';
 import { useUser } from '../context/UserContext';
 import { useLanguage } from '../context/LanguageContext';
 import * as purchaseService from '../services/purchaseService';
@@ -25,7 +24,7 @@ import { PREMIUM_PLAN, BILLING_INTERVALS } from '../config/plans';
 
 export default function PremiumModal({ visible, onClose }) {
   const { t } = useTranslation();
-  const { user, refresh } = useUser();
+  const { user, refreshUser } = useUser();
   const { language } = useLanguage();
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -72,7 +71,8 @@ export default function PremiumModal({ visible, onClose }) {
 
       purchaseService.setupPurchaseListeners(
         handlePurchaseSuccess,
-        handlePurchaseError
+        handlePurchaseError,
+        handlePurchaseCancel,
       );
     }
   };
@@ -81,44 +81,51 @@ export default function PremiumModal({ visible, onClose }) {
     try {
       setLoading(true);
       await purchaseService.validateAndUpgrade(purchase);
-      await refresh();
+      // Silent refresh: don't flash the app-wide loader
+      await refreshUser({ silent: true });
       setLoading(false);
       onClose();
       setTimeout(() => {
-        Alert.alert(t('premium.purchaseSuccess'), t('premium.purchaseSuccessDesc'));
+        showAlert(t('premium.purchaseSuccess'), t('premium.purchaseSuccessDesc'));
       }, 300);
     } catch (error) {
       setLoading(false);
-      Alert.alert(t('common.error'), t('premium.purchaseError'));
+      showAlert(t('common.error'), t('premium.purchaseError'));
     }
   };
 
   const handlePurchaseError = (error) => {
     setLoading(false);
-    console.error('Purchase error:', error);
-    Alert.alert(t('common.error'), t('premium.purchaseError'));
+    console.error('Purchase error:', error?.code || error?.message);
+    showAlert(t('common.error'), t('premium.purchaseError'));
+  };
+
+  // User dismissed the store sheet: just clear the spinner
+  const handlePurchaseCancel = () => {
+    setLoading(false);
   };
 
   const handleBuyPremium = async () => {
     if (isWeb) {
       // Web: Paddle overlay checkout. The webhook matches the payment to the user via user_id.
       if (!user?.id) {
-        Alert.alert(t('common.attention'), t('premium.signInRequired'));
+        showAlert(t('common.attention'), t('premium.signInRequired'));
         return;
       }
       try {
         setLoading(true);
-        // Close our modal first so it doesn't sit on top of Paddle's overlay
-        onClose();
         await paddleService.openCheckout({
           priceId: PREMIUM_PLAN.priceId[billingInterval],
           email: user.email,
           userId: user.id,
           language,
         });
+        // Checkout opened: close our modal so it doesn't sit on top of Paddle's overlay
+        onClose();
       } catch (error) {
-        console.error('Paddle checkout error:', error);
-        Alert.alert(t('common.error'), t('premium.purchaseError'));
+        // Keep the modal open so the user still has context (and can retry) after the alert
+        console.error('Paddle checkout error:', error?.message);
+        showAlert(t('common.error'), t('premium.purchaseError'));
       } finally {
         setLoading(false);
       }
@@ -133,7 +140,7 @@ export default function PremiumModal({ visible, onClose }) {
     } catch (error) {
       setLoading(false);
       if (!error.cancelled) {
-        Alert.alert(t('common.error'), t('premium.purchaseError'));
+        showAlert(t('common.error'), t('premium.purchaseError'));
       }
     }
   };
@@ -143,16 +150,16 @@ export default function PremiumModal({ visible, onClose }) {
       setRestoring(true);
       const result = await purchaseService.restorePurchases();
       if (result.restored) {
-        await refresh();
+        await refreshUser({ silent: true });
         onClose();
         setTimeout(() => {
-          Alert.alert(t('common.success'), t('premium.restoreSuccess'));
+          showAlert(t('common.success'), t('premium.restoreSuccess'));
         }, 300);
       } else {
-        Alert.alert(t('common.attention'), t('premium.restoreNone'));
+        showAlert(t('common.attention'), t('premium.restoreNone'));
       }
     } catch (error) {
-      Alert.alert(t('common.error'), t('premium.purchaseError'));
+      showAlert(t('common.error'), t('premium.purchaseError'));
     } finally {
       setRestoring(false);
     }
@@ -182,7 +189,7 @@ export default function PremiumModal({ visible, onClose }) {
       <SafeAreaView style={styles.safeArea}>
         {/* Sheet nav bar: close only */}
         <View style={styles.navBar}>
-          <TouchableOpacity onPress={onClose} style={styles.closeBtn}>
+          <TouchableOpacity onPress={onClose} style={styles.closeBtn} accessibilityRole="button" accessibilityLabel={t('a11y.close')}>
             <Ionicons name="close" size={24} color={colors.primary} />
           </TouchableOpacity>
         </View>
@@ -274,9 +281,9 @@ export default function PremiumModal({ visible, onClose }) {
               )}
             </View>
           ) : (
-            product?.localizedPrice ? (
+            product?.price ? (
               <View style={styles.priceSection}>
-                <Text style={styles.price}>{product.localizedPrice}</Text>
+                <Text style={styles.price}>{product.price}</Text>
               </View>
             ) : (
               <View style={{ height: 28 }} />

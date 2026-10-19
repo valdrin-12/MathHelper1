@@ -6,13 +6,11 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   TextInput,
-  Alert,
-  Platform,
   Animated,
   Dimensions,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../context/UserContext';
@@ -21,7 +19,7 @@ import { useSavedItems } from '../context/SavedItemsContext';
 import { useTheme } from '../context/ThemeContext';
 import { isPremiumActive } from '../utils/isPremium';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
-import { ListSection, ListRow, Card, Pill, Button } from './ui';
+import { ListSection, ListRow, Card, Pill, Button, showAlert, confirmAction, getErrorMessage } from './ui';
 
 const { width } = Dimensions.get('window');
 const HAIRLINE = StyleSheet.hairlineWidth;
@@ -77,7 +75,6 @@ function WeeklyChart({ dailyActivity }) {
   const { colors } = useTheme();
   const chartStyles = useMemo(() => makeChartStyles(colors), [colors]);
   const days = [];
-  const dayLabels = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
 
   for (let i = 6; i >= 0; i--) {
     const d = new Date();
@@ -85,7 +82,8 @@ function WeeklyChart({ dailyActivity }) {
     const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     const activity = dailyActivity?.[key];
     const total = (activity?.problems || 0) + (activity?.courses || 0) + (activity?.quizzes || 0);
-    days.push({ label: dayLabels[d.getDay() === 0 ? 6 : d.getDay() - 1], value: total, isToday: i === 0 });
+    // Localized short weekday names, keyed by Date.getDay() (0 = Sunday)
+    days.push({ label: t(`weekdaysShort.${d.getDay()}`), value: total, isToday: i === 0 });
   }
 
   const maxValue = Math.max(...days.map(d => d.value), 1);
@@ -119,6 +117,9 @@ function WeeklyChart({ dailyActivity }) {
 // ─── Achievement Badge ───
 function AchievementBadge({ achievement, earned }) {
   const { colors } = useTheme();
+  const { t } = useTranslation();
+  const title = t(`achievements.${achievement.id}.title`);
+  const progress = Math.min(achievement.progress ?? 0, achievement.threshold ?? 0);
   const badgeStyles = useMemo(() => makeBadgeStyles(colors), [colors]);
   const iconMap = {
     first_problem: 'checkmark-circle',
@@ -145,25 +146,43 @@ function AchievementBadge({ achievement, earned }) {
   const tint = colorMap[achievement.id] || colors.primary;
 
   return (
-    <View style={[badgeStyles.container, !earned && badgeStyles.locked]}>
+    <View
+      style={[badgeStyles.container, !earned && badgeStyles.locked]}
+      accessible
+      accessibilityLabel={`${title}, ${t(`achievements.${achievement.id}.desc`)}, ${earned
+        ? t('achievements.earned')
+        : t('achievements.lockedProgress', { progress, threshold: achievement.threshold })}`}
+    >
       <View style={[badgeStyles.iconCircle, { backgroundColor: earned ? tint + '20' : colors.borderLight }]}>
         <Ionicons
           name={iconMap[achievement.id] || 'medal'}
           size={22}
           color={earned ? tint : colors.textMuted}
         />
+        {/* Locked state is not colour-only: a lock glyph sits on the badge */}
+        {!earned && (
+          <View style={[badgeStyles.lockBadge, { backgroundColor: colors.surface }]}>
+            <Ionicons name="lock-closed" size={11} color={colors.textMuted} />
+          </View>
+        )}
       </View>
-      <Text style={[badgeStyles.title, !earned && badgeStyles.lockedText]} numberOfLines={1}>
-        {achievement.title}
+      <Text style={[badgeStyles.title, !earned && badgeStyles.lockedText]} numberOfLines={2}>
+        {title}
       </Text>
-      {earned && <Ionicons name="checkmark-circle" size={14} color={colors.success} />}
+      {earned ? (
+        <Ionicons name="checkmark-circle" size={14} color={colors.success} />
+      ) : (
+        <Text style={badgeStyles.progressText}>{progress}/{achievement.threshold}</Text>
+      )}
     </View>
   );
 }
 
 export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const { user, logout, updateProfile } = useUser();
-  const { completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, stats } = useStats();
+  const {
+    completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, earnedAchievementsCount, stats, todayKey,
+  } = useStats();
   const { savedItems } = useSavedItems();
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -193,6 +212,8 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const [editEmail, setEditEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [editError, setEditError] = useState('');
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -201,8 +222,12 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
       setEditEmail(user.email || '');
       setNewPassword('');
       setConfirmPassword('');
+      setCurrentPassword('');
+      setEditError('');
     }
-  }, [user, showEdit]);
+    // Only reset the form when the edit view opens, not on every user refresh
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showEdit]);
 
   useEffect(() => {
     if (!visible) setShowEdit(false);
@@ -217,68 +242,76 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const handleEditProfile = () => setShowEdit(true);
   const handleBackFromEdit = () => setShowEdit(false);
 
-  const handleSaveProfile = async () => {
-    try {
-      if (!editName.trim() || editName.trim().length < 2) {
-        Alert.alert(t('common.error'), t('auth.validation.nameMinLength'));
-        return;
-      }
-      if (!editEmail.trim() || !editEmail.includes('@')) {
-        Alert.alert(t('common.error'), t('auth.validation.emailInvalidShort'));
-        return;
-      }
-      if (newPassword || confirmPassword) {
-        if (newPassword.length < 8) {
-          Alert.alert(t('common.error'), t('editProfile.newPasswordMinLength'));
-          return;
-        }
-        if (newPassword !== confirmPassword) {
-          Alert.alert(t('common.error'), t('auth.validation.passwordsMismatch'));
-          return;
-        }
-      }
+  // Changing the email or the password requires re-authentication with the current password
+  const emailChanged = editEmail.trim().toLowerCase() !== (user.email || '').trim().toLowerCase();
+  const passwordChanging = !!(newPassword || confirmPassword);
+  const needsCurrentPassword = emailChanged || passwordChanging;
 
-      setSaving(true);
-      const updates = { name: editName.trim(), email: editEmail.trim() };
+  const handleSaveProfile = async () => {
+    setEditError('');
+    if (!editName.trim() || editName.trim().length < 2) {
+      showAlert(t('common.error'), t('auth.validation.nameMinLength'));
+      return;
+    }
+    if (!editEmail.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(editEmail.trim())) {
+      showAlert(t('common.error'), t('auth.validation.emailInvalidShort'));
+      return;
+    }
+    if (passwordChanging) {
+      if (newPassword.length < 8) {
+        showAlert(t('common.error'), t('editProfile.newPasswordMinLength'));
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        showAlert(t('common.error'), t('auth.validation.passwordsMismatch'));
+        return;
+      }
+    }
+    if (needsCurrentPassword && !currentPassword) {
+      setEditError(getErrorMessage('CURRENT_PASSWORD_REQUIRED', undefined, t));
+      return;
+    }
+
+    setSaving(true);
+    try {
+      const updates = { name: editName.trim() };
+      if (emailChanged) updates.email = editEmail.trim();
       if (newPassword) updates.password = newPassword;
+      if (needsCurrentPassword) updates.currentPassword = currentPassword;
 
       const result = await updateProfile(updates);
       if (result.success) {
+        setCurrentPassword('');
+        setNewPassword('');
+        setConfirmPassword('');
         setShowSuccessPopup(true);
       } else {
-        Alert.alert(t('common.error'), result.error || t('auth.validation.profileUpdateError'));
+        setEditError(getErrorMessage(result.code, t('auth.validation.profileUpdateError'), t));
       }
     } catch (error) {
-      console.error('Profile update error:', error);
-      Alert.alert(t('common.error'), t('auth.validation.somethingWrong'));
+      console.error('Profile update error:', error?.code || error?.message);
+      setEditError(t('auth.validation.somethingWrong'));
     } finally {
       setSaving(false);
     }
   };
 
   const handleLogout = async () => {
-    if (Platform.OS === 'web') {
-      const confirmed = window.confirm(t('profileModal.logoutConfirm'));
-      if (confirmed) { await logout(); onClose(); }
-    } else {
-      Alert.alert(
-        t('profileModal.logoutAction'),
-        t('profileModal.logoutConfirm'),
-        [
-          { text: t('common.cancel'), style: 'cancel' },
-          { text: t('profileModal.logoutAction'), style: 'destructive', onPress: async () => { await logout(); onClose(); } },
-        ]
-      );
+    const confirmed = await confirmAction({
+      title: t('profileModal.logoutAction'),
+      message: t('profileModal.logoutConfirm'),
+      confirmText: t('profileModal.logoutAction'),
+      cancelText: t('common.cancel'),
+      destructive: true,
+    });
+    if (confirmed) {
+      await logout();
+      onClose();
     }
   };
 
-  // Achievement data
-  const earnedAchievements = achievements.filter(a => a.earned);
-  const allAchievements = achievements;
-
   // Progress calculations
   const dailyGoal = 10;
-  const todayKey = (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
   const todayProblems = stats?.dailyActivity?.[todayKey]?.problems || 0;
   const dailyProgress = Math.min(todayProblems / dailyGoal, 1);
 
@@ -286,7 +319,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const renderEditView = () => (
     <>
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={handleBackFromEdit} style={styles.navButton}>
+        <TouchableOpacity onPress={handleBackFromEdit} style={styles.navButton} accessibilityRole="button" accessibilityLabel={t('a11y.back')}>
           <Ionicons name="chevron-back" size={26} color={colors.primary} />
         </TouchableOpacity>
         <Text style={styles.navTitle} numberOfLines={1}>{t('editProfile.title')}</Text>
@@ -297,25 +330,53 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
           <Text style={styles.formSectionTitle}>{t('editProfile.personalInfo')}</Text>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>{t('editProfile.fullName')}</Text>
-            <TextInput style={styles.input} value={editName} onChangeText={setEditName} placeholder={t('editProfile.namePlaceholder')} placeholderTextColor={colors.textMuted} />
+            <TextInput style={styles.input} value={editName} onChangeText={setEditName} placeholder={t('editProfile.namePlaceholder')} placeholderTextColor={colors.textMuted} accessibilityLabel={t('editProfile.fullName')} />
           </View>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>{t('auth.email')}</Text>
-            <TextInput style={styles.input} value={editEmail} onChangeText={setEditEmail} placeholder="email@example.com" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" />
+            <TextInput style={styles.input} value={editEmail} onChangeText={(v) => { setEditEmail(v); setEditError(''); }} placeholder="email@example.com" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} accessibilityLabel={t('auth.email')} />
           </View>
         </View>
         <View style={styles.formSection}>
           <Text style={styles.formSectionTitle}>{t('editProfile.changePassword')}</Text>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>{t('editProfile.newPassword')}</Text>
-            <TextInput style={styles.input} value={newPassword} onChangeText={setNewPassword} placeholder={t('editProfile.newPasswordPlaceholder')} placeholderTextColor={colors.textMuted} secureTextEntry />
+            <TextInput style={styles.input} value={newPassword} onChangeText={(v) => { setNewPassword(v); setEditError(''); }} placeholder={t('editProfile.newPasswordPlaceholder')} placeholderTextColor={colors.textMuted} secureTextEntry autoCapitalize="none" accessibilityLabel={t('editProfile.newPassword')} />
           </View>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>{t('editProfile.confirmPassword')}</Text>
-            <TextInput style={styles.input} value={confirmPassword} onChangeText={setConfirmPassword} placeholder={t('editProfile.confirmPlaceholder')} placeholderTextColor={colors.textMuted} secureTextEntry />
+            <TextInput style={styles.input} value={confirmPassword} onChangeText={(v) => { setConfirmPassword(v); setEditError(''); }} placeholder={t('editProfile.confirmPlaceholder')} placeholderTextColor={colors.textMuted} secureTextEntry autoCapitalize="none" accessibilityLabel={t('editProfile.confirmPassword')} />
           </View>
           <Text style={styles.hint}>{t('editProfile.passwordHint')}</Text>
         </View>
+        {needsCurrentPassword && (
+          <View style={styles.formSection}>
+            <Text style={styles.formSectionTitle}>{t('editProfile.confirmIdentity')}</Text>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>{t('editProfile.currentPassword')}</Text>
+              <TextInput
+                style={styles.input}
+                value={currentPassword}
+                onChangeText={(v) => { setCurrentPassword(v); setEditError(''); }}
+                placeholder={t('editProfile.currentPasswordPlaceholder')}
+                placeholderTextColor={colors.textMuted}
+                secureTextEntry
+                autoCapitalize="none"
+                autoCorrect={false}
+                textContentType="password"
+                autoComplete="current-password"
+                accessibilityLabel={t('editProfile.currentPassword')}
+              />
+            </View>
+            <Text style={styles.hint}>{t('editProfile.currentPasswordHint')}</Text>
+          </View>
+        )}
+        {editError ? (
+          <View style={styles.editErrorBox} accessibilityLiveRegion="polite">
+            <Ionicons name="alert-circle" size={16} color={colors.destructive} />
+            <Text style={styles.editErrorText}>{editError}</Text>
+          </View>
+        ) : null}
         <View style={{ height: 100 }} />
       </ScrollView>
       <View style={styles.footer}>
@@ -330,11 +391,11 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
     <>
       {/* Sheet nav bar */}
       <View style={styles.navBar}>
-        <TouchableOpacity onPress={onClose} style={styles.navButton}>
+        <TouchableOpacity onPress={onClose} style={styles.navButton} accessibilityRole="button" accessibilityLabel={t('a11y.close')}>
           <Ionicons name="chevron-back" size={26} color={colors.primary} />
         </TouchableOpacity>
         <Text style={styles.navTitle} numberOfLines={1}>{t('profileModal.title')}</Text>
-        <TouchableOpacity onPress={handleEditProfile} style={styles.navButton}>
+        <TouchableOpacity onPress={handleEditProfile} style={styles.navButton} accessibilityRole="button" accessibilityLabel={t('profileModal.editProfile')}>
           <Ionicons name="create-outline" size={22} color={colors.primary} />
         </TouchableOpacity>
       </View>
@@ -348,7 +409,7 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
           <View style={styles.userNameRow}>
             <Text style={styles.userName}>{user.name}</Text>
             <Pill
-              label={isPremium ? 'Premium' : 'Free'}
+              label={isPremium ? t('profileModal.premiumBadge') : t('profileModal.freeBadge')}
               icon={isPremium ? 'star' : 'person'}
               color={isPremium ? colors.secondary : colors.textSubtle}
             />
@@ -414,10 +475,10 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
         <View style={styles.achievementsSection}>
           <View style={styles.achievementsHeader}>
             <Text style={styles.sectionTitle}>{t('profileModal.achievements')}</Text>
-            <Text style={styles.achievementCountText}>{earnedAchievements.length}/{allAchievements.length}</Text>
+            <Text style={styles.achievementCountText}>{earnedAchievementsCount}/{achievements.length}</Text>
           </View>
           <View style={styles.achievementsGrid}>
-            {allAchievements.map((a) => (
+            {achievements.map((a) => (
               <AchievementBadge key={a.id} achievement={a} earned={a.earned} />
             ))}
           </View>
@@ -589,6 +650,12 @@ const makeStyles = (colors) => StyleSheet.create({
     color: colors.text,
   },
   hint: { ...TYPOGRAPHY.footnote, color: colors.textSubtle, marginTop: SPACING.xs, marginHorizontal: SPACING.lg },
+  editErrorBox: {
+    flexDirection: 'row', alignItems: 'center', gap: SPACING.xs + 2,
+    marginHorizontal: SPACING.lg, marginTop: SPACING.lg,
+    padding: SPACING.md, borderRadius: BORDER_RADIUS.md, backgroundColor: colors.errorLight,
+  },
+  editErrorText: { ...TYPOGRAPHY.footnote, color: colors.destructive, flex: 1 },
   footer: {
     padding: SPACING.lg, paddingBottom: SPACING.sm,
     backgroundColor: colors.background,
@@ -694,5 +761,13 @@ const makeBadgeStyles = (colors) => StyleSheet.create({
   },
   lockedText: {
     color: colors.textMuted,
+  },
+  lockBadge: {
+    position: 'absolute', right: -2, bottom: -2,
+    width: 18, height: 18, borderRadius: 9,
+    alignItems: 'center', justifyContent: 'center',
+  },
+  progressText: {
+    ...TYPOGRAPHY.small, fontSize: 10, color: colors.textMuted,
   },
 });

@@ -153,6 +153,7 @@
     "bestScore": "Best: {{score}}%"
   },
   "saved": {
+    "loadErrorTitle": "Couldn't Load Saved Problems",
     "title": "Saved",
     "itemCount_one": "{{count}} saved problem",
     "itemCount_other": "{{count}} saved problems",
@@ -175,6 +176,9 @@
     "confirmBulkDelete": "Are you sure you want to delete {{count}} problems?"
   },
   "settings": {
+    "streak": "Streak",
+    "deletePasswordLabel": "Enter your password to confirm",
+    "deletePasswordPlaceholder": "Your current password",
     "title": "Settings",
     "subtitle": "Customize your app",
     "profile": "Profile",
@@ -250,6 +254,7 @@
     "startCourse": "Start Course"
   },
   "courseContent": {
+    "completeError": "Could not save your course completion. Please check your connection and try again.",
     "lessonLabel": "Lesson {{number}}",
     "theory": "Theory",
     "keyPoints": "Key Points",
@@ -305,6 +310,8 @@
     "history": "Previous attempts"
   },
   "profileModal": {
+    "premiumBadge": "Premium",
+    "freeBadge": "Free",
     "title": "My Profile",
     "memberSince": "Member since {{date}}",
     "stats": "Statistics",
@@ -325,6 +332,10 @@
     "upgradePremiumDesc": "10 analyses/day - Solve more problems!"
   },
   "editProfile": {
+    "confirmIdentity": "Confirm it's you",
+    "currentPassword": "Current Password",
+    "currentPasswordPlaceholder": "Enter your current password",
+    "currentPasswordHint": "Required to change your email or password.",
     "title": "Edit Profile",
     "personalInfo": "Personal Information",
     "fullName": "Full Name",
@@ -340,6 +351,7 @@
     "newPasswordMinLength": "New password must be at least 8 characters."
   },
   "savedItemDetail": {
+    "imageLoadError": "Could not load the photo.",
     "title": "Problem Details",
     "savedAt": "Saved on: {{date}}",
     "answer": "Answer",
@@ -372,6 +384,8 @@
     "8": "September", "9": "October", "10": "November", "11": "December"
   },
   "achievements": {
+    "earned": "✓ Earned",
+    "lockedProgress": "Locked · {{progress}}/{{threshold}}",
     "first_problem": { "title": "First Solver", "desc": "Solve your first problem" },
     "ten_problems": { "title": "Ten Problems", "desc": "10 problems solved" },
     "fifty_problems": { "title": "Great Challenger", "desc": "50 problems solved" },
@@ -509,7 +523,7 @@
     "emailPlaceholder": "Enter your email",
     "sendCode": "Send Code",
     "emailInstruction": "Enter the email you registered with on MathHelper",
-    "codeSent": "Code sent! Check your email",
+    "codeSent": "Enter the 6-digit code from the email",
     "codePlaceholder": "Enter 6-digit code",
     "verifyCode": "Verify Code",
     "newPassword": "New Password",
@@ -518,10 +532,10 @@
     "success": "Password reset successfully!",
     "backToLogin": "Back to Login",
     "codeExpired": "Code expired. Please request a new one.",
-    "invalidCode": "Invalid code. Please try again.",
+    "invalidCode": "Invalid or expired code. Please try again or request a new code.",
     "passwordMismatch": "Passwords don't match",
     "noAccountFound": "No account found with this email.",
-    "codeSentSuccess": "Code sent successfully to your email"
+    "codeSentSuccess": "If an account exists for this email, we've sent a 6-digit code to it."
   },
   "privacy": {
     "consentText": "I agree to the",
@@ -553,5 +567,69 @@
     "skip": "Skip",
     "next": "Next",
     "getStarted": "Get Started"
+  },
+  "splash": {
+    "tagline": "Your AI Math Assistant"
+  },
+  "graph": {
+    "title": "Graph",
+    "noInternet": "No internet connection",
+    "noInternetDesc": "The graph needs an internet connection to load. Please check your connection and try again.",
+    "plotError": "Could not plot:"
+  },
+  "weekdaysShort": {
+    "0": "Su",
+    "1": "Mo",
+    "2": "Tu",
+    "3": "We",
+    "4": "Th",
+    "5": "Fr",
+    "6": "Sa"
+  },
+  "banner": {
+    "offline": "You're offline. Some data may be out of date.",
+    "savedError": "Couldn't load your saved problems.",
+    "statsError": "Couldn't load your statistics."
+  },
+  "a11y": {
+    "close": "Close",
+    "back": "Back",
+    "profile": "Open profile",
+    "select": "Select problems",
+    "cancelSelection": "Cancel selection",
+    "clearSearch": "Clear search",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "space": "Space",
+    "backspace": "Delete"
+  },
+  "errors": {
+    "NETWORK_ERROR": "No internet connection. Please check your connection and try again.",
+    "TIMEOUT": "The server is taking too long to respond. Please try again.",
+    "SERVER_ERROR": "Something went wrong on our side. Please try again later.",
+    "AUTH_LOST": "Your session has expired. Please log in again.",
+    "UNEXPECTED_ERROR": "An unexpected error occurred. Please try again.",
+    "UNKNOWN_ERROR": "Something went wrong. Please try again.",
+    "LOGIN_FAILED": "Login failed. Please try again.",
+    "REGISTRATION_FAILED": "Registration failed. Please try again.",
+    "UPDATE_FAILED": "Could not update your profile. Please try again.",
+    "DELETE_FAILED": "Could not delete your account. Please try again.",
+    "INVALID_CREDENTIALS": "Incorrect email or password.",
+    "CURRENT_PASSWORD_REQUIRED": "Please enter your current password.",
+    "INVALID_CURRENT_PASSWORD": "Your current password is incorrect.",
+    "PASSWORD_REQUIRED": "Please enter your password.",
+    "INVALID_PASSWORD": "Incorrect password.",
+    "SUBSCRIPTION_CANCEL_FAILED": "We couldn't cancel your subscription, so your account was not deleted. Please try again or manage your subscription first.",
+    "STATS_LOAD_FAILED": "Could not load your statistics.",
+    "SAVED_ITEMS_LOAD_FAILED": "Could not load your saved problems.",
+    "IMAGE_NOT_FOUND": "The photo could not be found. Please choose it again.",
+    "IMAGE_READ_FAILED": "The photo could not be read. Please try a different photo.",
+    "IMAGE_TOO_LARGE": "The photo is too large. Please choose a smaller one.",
+    "IMAGE_TOO_LARGE_DETAILS": "The photo is too large ({{sizeMB}} MB). The maximum is {{maxMB}} MB.",
+    "OCR_RATE_LIMITED": "Too many photo scans. Please wait a moment and try again.",
+    "INVALID_TICKET": "The analysis session expired. Please try again.",
+    "USAGE_CHECK_FAILED": "Could not check your usage limit. Please try again.",
+    "SAVED_LIMIT": "You have reached the maximum number of saved problems. Delete some to save new ones.",
+    "INVALID_CODE": "Invalid or expired code. Please try again or request a new code."
   }
 }

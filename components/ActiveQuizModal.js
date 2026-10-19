@@ -5,10 +5,10 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   Animated,
   ScrollView,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
@@ -102,7 +102,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
       <SafeAreaView style={styles.safeArea}>
         {/* Navigation bar: close · centered title · quiz glyph */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={handleQuit} style={styles.quitButton} hitSlop={8} activeOpacity={0.6}>
+          <TouchableOpacity onPress={handleQuit} style={styles.quitButton} hitSlop={8} activeOpacity={0.6} accessibilityRole="button" accessibilityLabel={t('activeQuiz.quitTitle')}>
             <Ionicons name="close" size={18} color={colors.textSubtle} />
           </TouchableOpacity>
           <View style={styles.headerCenter}>

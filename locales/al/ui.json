@@ -153,6 +153,7 @@
     "bestScore": "Më i miri: {{score}}%"
   },
   "saved": {
+    "loadErrorTitle": "Problemet e ruajtura nuk u ngarkuan",
     "title": "Të Ruajtura",
     "itemCount_one": "{{count}} problem i ruajtur",
     "itemCount_other": "{{count}} probleme të ruajtura",
@@ -175,6 +176,9 @@
     "confirmBulkDelete": "Jeni i sigurt që doni të fshini {{count}} probleme?"
   },
   "settings": {
+    "streak": "Seria",
+    "deletePasswordLabel": "Shkruani fjalëkalimin për ta konfirmuar",
+    "deletePasswordPlaceholder": "Fjalëkalimi juaj aktual",
     "title": "Cilësimet",
     "subtitle": "Personalizoni aplikacionin tuaj",
     "profile": "Profili",
@@ -250,6 +254,7 @@
     "startCourse": "Fillo Kursin"
   },
   "courseContent": {
+    "completeError": "Përfundimi i kursit nuk u ruajt. Kontrolloni lidhjen dhe provoni përsëri.",
     "lessonLabel": "Mësimi {{number}}",
     "theory": "Teoria",
     "keyPoints": "Pikat Kryesore",
@@ -305,6 +310,8 @@
     "history": "Tentativa të mëparshme"
   },
   "profileModal": {
+    "premiumBadge": "Premium",
+    "freeBadge": "Falas",
     "title": "Profili Im",
     "memberSince": "Anëtar që nga {{date}}",
     "stats": "Statistikat",
@@ -325,6 +332,10 @@
     "upgradePremiumDesc": "10 analiza/ditë - Zgjidh më shumë probleme!"
   },
   "editProfile": {
+    "confirmIdentity": "Konfirmoni identitetin",
+    "currentPassword": "Fjalëkalimi aktual",
+    "currentPasswordPlaceholder": "Shkruani fjalëkalimin aktual",
+    "currentPasswordHint": "Nevojitet për të ndryshuar email-in ose fjalëkalimin.",
     "title": "Edito Profilin",
     "personalInfo": "Informacionet Personale",
     "fullName": "Emri i Plotë",
@@ -340,6 +351,7 @@
     "newPasswordMinLength": "Fjalëkalimi i ri duhet të ketë të paktën 8 karaktere."
   },
   "savedItemDetail": {
+    "imageLoadError": "Fotoja nuk u ngarkua.",
     "title": "Detajet e Problemit",
     "savedAt": "Ruajtur më: {{date}}",
     "answer": "Përgjigja",
@@ -381,6 +393,8 @@
     "11": "Dhjetor"
   },
   "achievements": {
+    "earned": "✓ E fituar",
+    "lockedProgress": "E kyçur · {{progress}}/{{threshold}}",
     "first_problem": {
       "title": "Zgjidhësi i Parë",
       "desc": "Zgjidhe problemin e parë"
@@ -614,7 +628,7 @@
     "emailPlaceholder": "Shkruani emailin tuaj",
     "sendCode": "Dërgo Kodin",
     "emailInstruction": "Shkruaje emailin me të cilin jeni regjistruar në MathHelper",
-    "codeSent": "Kodi u dërgua! Kontrolloni emailin",
+    "codeSent": "Shkruani kodin 6-shifror nga emaili",
     "codePlaceholder": "Shkruani kodin 6-shifror",
     "verifyCode": "Verifiko Kodin",
     "newPassword": "Fjalëkalimi i Ri",
@@ -623,10 +637,10 @@
     "success": "Fjalëkalimi u rivendos me sukses!",
     "backToLogin": "Kthehu te Kyçja",
     "codeExpired": "Kodi ka skaduar. Kërkoni një të ri.",
-    "invalidCode": "Kod i pavlefshëm. Provoni përsëri.",
+    "invalidCode": "Kodi është i pavlefshëm ose ka skaduar. Provoni përsëri ose kërkoni një kod të ri.",
     "passwordMismatch": "Fjalëkalimet nuk përputhen",
     "noAccountFound": "Nuk u gjet asnjë llogari me këtë email.",
-    "codeSentSuccess": "Kodi u dërgua me sukses në emailin tuaj"
+    "codeSentSuccess": "Nëse ekziston një llogari me këtë email, ju kemi dërguar një kod 6-shifror."
   },
   "privacy": {
     "consentText": "Jam dakord me",
@@ -658,5 +672,69 @@
     "skip": "Kalo",
     "next": "Vazhdo",
     "getStarted": "Fillo Tani"
+  },
+  "splash": {
+    "tagline": "Asistenti juaj i matematikës me AI"
+  },
+  "graph": {
+    "title": "Grafik",
+    "noInternet": "Nuk ka lidhje me internetin",
+    "noInternetDesc": "Grafiku ka nevojë për internet që të ngarkohet. Kontrolloni lidhjen dhe provoni përsëri.",
+    "plotError": "Grafiku nuk u vizatua:"
+  },
+  "weekdaysShort": {
+    "0": "Di",
+    "1": "Hë",
+    "2": "Ma",
+    "3": "Më",
+    "4": "En",
+    "5": "Pr",
+    "6": "Sh"
+  },
+  "banner": {
+    "offline": "Jeni jashtë linje. Disa të dhëna mund të mos jenë të përditësuara.",
+    "savedError": "Problemet e ruajtura nuk u ngarkuan.",
+    "statsError": "Statistikat nuk u ngarkuan."
+  },
+  "a11y": {
+    "close": "Mbyll",
+    "back": "Kthehu",
+    "profile": "Hap profilin",
+    "select": "Zgjidh problemet",
+    "cancelSelection": "Anulo zgjedhjen",
+    "clearSearch": "Pastro kërkimin",
+    "showPassword": "Shfaq fjalëkalimin",
+    "hidePassword": "Fshih fjalëkalimin",
+    "space": "Hapësirë",
+    "backspace": "Fshi"
+  },
+  "errors": {
+    "NETWORK_ERROR": "Nuk ka lidhje me internetin. Kontrolloni lidhjen dhe provoni përsëri.",
+    "TIMEOUT": "Serveri po vonohet të përgjigjet. Provoni përsëri.",
+    "SERVER_ERROR": "Diçka shkoi keq nga ana jonë. Provoni përsëri më vonë.",
+    "AUTH_LOST": "Seanca juaj ka skaduar. Ju lutemi kyçuni përsëri.",
+    "UNEXPECTED_ERROR": "Ndodhi një gabim i papritur. Provoni përsëri.",
+    "UNKNOWN_ERROR": "Diçka shkoi keq. Provoni përsëri.",
+    "LOGIN_FAILED": "Kyçja dështoi. Provoni përsëri.",
+    "REGISTRATION_FAILED": "Regjistrimi dështoi. Provoni përsëri.",
+    "UPDATE_FAILED": "Profili nuk u përditësua. Provoni përsëri.",
+    "DELETE_FAILED": "Llogaria nuk u fshi. Provoni përsëri.",
+    "INVALID_CREDENTIALS": "Email-i ose fjalëkalimi është i pasaktë.",
+    "CURRENT_PASSWORD_REQUIRED": "Ju lutemi shkruani fjalëkalimin aktual.",
+    "INVALID_CURRENT_PASSWORD": "Fjalëkalimi aktual është i pasaktë.",
+    "PASSWORD_REQUIRED": "Ju lutemi shkruani fjalëkalimin.",
+    "INVALID_PASSWORD": "Fjalëkalimi është i pasaktë.",
+    "SUBSCRIPTION_CANCEL_FAILED": "Abonimi nuk u anulua, prandaj llogaria nuk u fshi. Provoni përsëri ose menaxhoni fillimisht abonimin.",
+    "STATS_LOAD_FAILED": "Statistikat nuk u ngarkuan.",
+    "SAVED_ITEMS_LOAD_FAILED": "Problemet e ruajtura nuk u ngarkuan.",
+    "IMAGE_NOT_FOUND": "Fotoja nuk u gjet. Ju lutemi zgjidheni përsëri.",
+    "IMAGE_READ_FAILED": "Fotoja nuk u lexua. Provoni një foto tjetër.",
+    "IMAGE_TOO_LARGE": "Fotoja është shumë e madhe. Zgjidhni një më të vogël.",
+    "IMAGE_TOO_LARGE_DETAILS": "Fotoja është shumë e madhe ({{sizeMB}} MB). Maksimumi është {{maxMB}} MB.",
+    "OCR_RATE_LIMITED": "Shumë skanime fotosh njëherësh. Prisni pak dhe provoni përsëri.",
+    "INVALID_TICKET": "Seanca e analizës skadoi. Provoni përsëri.",
+    "USAGE_CHECK_FAILED": "Kufiri i përdorimit nuk u kontrollua. Provoni përsëri.",
+    "SAVED_LIMIT": "Keni arritur numrin maksimal të problemeve të ruajtura. Fshini disa për të ruajtur të reja.",
+    "INVALID_CODE": "Kodi është i pavlefshëm ose ka skaduar. Provoni përsëri ose kërkoni një kod të ri."
   }
 }

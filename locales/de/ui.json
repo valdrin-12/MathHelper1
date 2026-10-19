@@ -85,7 +85,7 @@
     "camera": "Kamera",
     "inputPlaceholder": "Geben Sie das Mathe-Problem hier ein...\n\nBeispiel: Löse 2x + 5 = 13",
     "calculate": "Berechnen",
-    "graphButton": "Graph",
+    "graphButton": "Graph zeichnen",
     "analyzeAI": "Mit KI analysieren",
     "analyzing": "Analysiere...",
     "calculatedLocally": "Lokal berechnet",
@@ -153,6 +153,7 @@
     "bestScore": "Beste: {{score}}%"
   },
   "saved": {
+    "loadErrorTitle": "Gespeicherte Aufgaben konnten nicht geladen werden",
     "title": "Gespeichert",
     "itemCount_one": "{{count}} gespeicherte Aufgabe",
     "itemCount_other": "{{count}} gespeicherte Aufgaben",
@@ -175,6 +176,9 @@
     "confirmBulkDelete": "Möchten Sie wirklich {{count}} Aufgaben löschen?"
   },
   "settings": {
+    "streak": "Serie",
+    "deletePasswordLabel": "Geben Sie zur Bestätigung Ihr Passwort ein",
+    "deletePasswordPlaceholder": "Ihr aktuelles Passwort",
     "title": "Einstellungen",
     "subtitle": "Passen Sie Ihre App an",
     "profile": "Profil",
@@ -250,6 +254,7 @@
     "startCourse": "Kurs starten"
   },
   "courseContent": {
+    "completeError": "Der Kursabschluss konnte nicht gespeichert werden. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
     "lessonLabel": "Lektion {{number}}",
     "theory": "Theorie",
     "keyPoints": "Kernpunkte",
@@ -305,6 +310,8 @@
     "history": "Frühere Versuche"
   },
   "profileModal": {
+    "premiumBadge": "Premium",
+    "freeBadge": "Kostenlos",
     "title": "Mein Profil",
     "memberSince": "Mitglied seit {{date}}",
     "stats": "Statistiken",
@@ -325,6 +332,10 @@
     "upgradePremiumDesc": "10 Analysen/Tag - Löse mehr Aufgaben!"
   },
   "editProfile": {
+    "confirmIdentity": "Bestätigen Sie Ihre Identität",
+    "currentPassword": "Aktuelles Passwort",
+    "currentPasswordPlaceholder": "Aktuelles Passwort eingeben",
+    "currentPasswordHint": "Erforderlich, um E-Mail oder Passwort zu ändern.",
     "title": "Profil bearbeiten",
     "personalInfo": "Persönliche Informationen",
     "fullName": "Vollständiger Name",
@@ -340,6 +351,7 @@
     "newPasswordMinLength": "Das neue Passwort muss mindestens 8 Zeichen lang sein."
   },
   "savedItemDetail": {
+    "imageLoadError": "Das Foto konnte nicht geladen werden.",
     "title": "Aufgabendetails",
     "savedAt": "Gespeichert am: {{date}}",
     "answer": "Antwort",
@@ -372,6 +384,8 @@
     "8": "September", "9": "Oktober", "10": "November", "11": "Dezember"
   },
   "achievements": {
+    "earned": "✓ Erreicht",
+    "lockedProgress": "Gesperrt · {{progress}}/{{threshold}}",
     "first_problem": { "title": "Erster Löser", "desc": "Löse dein erstes Problem" },
     "ten_problems": { "title": "Zehn Aufgaben", "desc": "10 Aufgaben gelöst" },
     "fifty_problems": { "title": "Große Herausforderung", "desc": "50 Aufgaben gelöst" },
@@ -509,7 +523,7 @@
     "emailPlaceholder": "Geben Sie Ihre E-Mail ein",
     "sendCode": "Code senden",
     "emailInstruction": "Geben Sie die E-Mail ein, mit der Sie sich bei MathHelper registriert haben",
-    "codeSent": "Code gesendet! Überprüfen Sie Ihre E-Mail",
+    "codeSent": "Geben Sie den 6-stelligen Code aus der E-Mail ein",
     "codePlaceholder": "6-stelligen Code eingeben",
     "verifyCode": "Code überprüfen",
     "newPassword": "Neues Passwort",
@@ -518,10 +532,10 @@
     "success": "Passwort erfolgreich zurückgesetzt!",
     "backToLogin": "Zurück zur Anmeldung",
     "codeExpired": "Code abgelaufen. Bitte fordern Sie einen neuen an.",
-    "invalidCode": "Ungültiger Code. Bitte versuchen Sie es erneut.",
+    "invalidCode": "Ungültiger oder abgelaufener Code. Bitte versuchen Sie es erneut oder fordern Sie einen neuen Code an.",
     "passwordMismatch": "Passwörter stimmen nicht überein",
     "noAccountFound": "Kein Konto mit dieser E-Mail gefunden.",
-    "codeSentSuccess": "Code wurde erfolgreich an Ihre E-Mail gesendet"
+    "codeSentSuccess": "Falls ein Konto mit dieser E-Mail existiert, haben wir einen 6-stelligen Code gesendet."
   },
   "privacy": {
     "consentText": "Ich stimme der",
@@ -553,5 +567,69 @@
     "skip": "Überspringen",
     "next": "Weiter",
     "getStarted": "Los geht's"
+  },
+  "splash": {
+    "tagline": "Ihr KI-Mathe-Assistent"
+  },
+  "graph": {
+    "title": "Funktionsgraph",
+    "noInternet": "Keine Internetverbindung",
+    "noInternetDesc": "Der Graph benötigt eine Internetverbindung. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "plotError": "Graph konnte nicht gezeichnet werden:"
+  },
+  "weekdaysShort": {
+    "0": "So",
+    "1": "Mo",
+    "2": "Di",
+    "3": "Mi",
+    "4": "Do",
+    "5": "Fr",
+    "6": "Sa"
+  },
+  "banner": {
+    "offline": "Sie sind offline. Einige Daten sind eventuell nicht aktuell.",
+    "savedError": "Gespeicherte Aufgaben konnten nicht geladen werden.",
+    "statsError": "Statistiken konnten nicht geladen werden."
+  },
+  "a11y": {
+    "close": "Schließen",
+    "back": "Zurück",
+    "profile": "Profil öffnen",
+    "select": "Aufgaben auswählen",
+    "cancelSelection": "Auswahl abbrechen",
+    "clearSearch": "Suche löschen",
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen",
+    "space": "Leerzeichen",
+    "backspace": "Löschen"
+  },
+  "errors": {
+    "NETWORK_ERROR": "Keine Internetverbindung. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "TIMEOUT": "Der Server antwortet zu langsam. Bitte versuchen Sie es erneut.",
+    "SERVER_ERROR": "Bei uns ist etwas schiefgelaufen. Bitte versuchen Sie es später erneut.",
+    "AUTH_LOST": "Ihre Sitzung ist abgelaufen. Bitte melden Sie sich erneut an.",
+    "UNEXPECTED_ERROR": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+    "UNKNOWN_ERROR": "Etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+    "LOGIN_FAILED": "Anmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "REGISTRATION_FAILED": "Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "UPDATE_FAILED": "Profil konnte nicht aktualisiert werden. Bitte versuchen Sie es erneut.",
+    "DELETE_FAILED": "Konto konnte nicht gelöscht werden. Bitte versuchen Sie es erneut.",
+    "INVALID_CREDENTIALS": "E-Mail oder Passwort ist falsch.",
+    "CURRENT_PASSWORD_REQUIRED": "Bitte geben Sie Ihr aktuelles Passwort ein.",
+    "INVALID_CURRENT_PASSWORD": "Ihr aktuelles Passwort ist falsch.",
+    "PASSWORD_REQUIRED": "Bitte geben Sie Ihr Passwort ein.",
+    "INVALID_PASSWORD": "Falsches Passwort.",
+    "SUBSCRIPTION_CANCEL_FAILED": "Ihr Abo konnte nicht gekündigt werden, daher wurde Ihr Konto nicht gelöscht. Bitte versuchen Sie es erneut oder verwalten Sie zuerst Ihr Abo.",
+    "STATS_LOAD_FAILED": "Statistiken konnten nicht geladen werden.",
+    "SAVED_ITEMS_LOAD_FAILED": "Gespeicherte Aufgaben konnten nicht geladen werden.",
+    "IMAGE_NOT_FOUND": "Das Foto wurde nicht gefunden. Bitte wählen Sie es erneut aus.",
+    "IMAGE_READ_FAILED": "Das Foto konnte nicht gelesen werden. Bitte versuchen Sie ein anderes Foto.",
+    "IMAGE_TOO_LARGE": "Das Foto ist zu groß. Bitte wählen Sie ein kleineres.",
+    "IMAGE_TOO_LARGE_DETAILS": "Das Foto ist zu groß ({{sizeMB}} MB). Maximal erlaubt sind {{maxMB}} MB.",
+    "OCR_RATE_LIMITED": "Zu viele Foto-Scans. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
+    "INVALID_TICKET": "Die Analysesitzung ist abgelaufen. Bitte versuchen Sie es erneut.",
+    "USAGE_CHECK_FAILED": "Ihr Nutzungslimit konnte nicht geprüft werden. Bitte versuchen Sie es erneut.",
+    "SAVED_LIMIT": "Sie haben die maximale Anzahl gespeicherter Aufgaben erreicht. Löschen Sie einige, um neue zu speichern.",
+    "INVALID_CODE": "Ungültiger oder abgelaufener Code. Bitte versuchen Sie es erneut oder fordern Sie einen neuen Code an."
   }
 }

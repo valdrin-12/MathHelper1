@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -15,9 +15,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.valdrin.mathhelper",
       "infoPlist": {
-        "NSCameraUsageDescription": "MathHelper uses the camera to scan math problems from books, notebooks, or whiteboards. The photo is analyzed by AI to provide step-by-step solutions.",
-        "NSPhotoLibraryUsageDescription": "MathHelper accesses your photo library to upload images of math problems. Images are used only to solve the problem and are never stored on any server.",
-        "NSMicrophoneUsageDescription": "MathHelper does not use the microphone. This permission is required only by the camera framework."
+        "NSCameraUsageDescription": "MathHelper uses the camera so you can photograph a math problem. The photo is sent to our server, where it is analyzed by an AI service to produce a solution. It is stored only if you choose to save the result.",
+        "NSPhotoLibraryUsageDescription": "MathHelper accesses your photo library so you can choose a picture of a math problem. The selected photo is sent to our server, where it is analyzed by an AI service to produce a solution. It is stored only if you choose to save the result."
       }
     },
     "android": {
@@ -32,9 +31,12 @@
       },
       "permissions": [
         "CAMERA",
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
         "com.android.vending.BILLING"
+      ],
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -53,7 +55,15 @@
     "plugins": [
       "react-native-iap",
       "expo-secure-store",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "MathHelper accesses your photo library so you can choose a picture of a math problem. The selected photo is sent to our server, where it is analyzed by an AI service to produce a solution. It is stored only if you choose to save the result.",
+          "cameraPermission": "MathHelper uses the camera so you can photograph a math problem. The photo is sent to our server, where it is analyzed by an AI service to produce a solution. It is stored only if you choose to save the result.",
+          "microphonePermission": false
+        }
+      ]
     ]
   }
 }

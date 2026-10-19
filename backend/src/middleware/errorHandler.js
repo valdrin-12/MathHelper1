@@ -4,9 +4,11 @@ function errorHandler(err, req, res, _next) {
     console.error(err.stack);
   }
 
-  const statusCode = err.statusCode || 500;
+  const statusCode = err.statusCode || err.status || 500;
+  // body-parser messages can quote the submitted body; return fixed messages instead
+  const parserMessages = { 'entity.parse.failed': 'Invalid JSON body', 'entity.too.large': 'Request body too large' };
   res.status(statusCode).json({
-    error: statusCode === 500 ? 'Internal server error' : err.message,
+    error: statusCode >= 500 ? 'Internal server error' : (parserMessages[err.type] || err.message),
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 }

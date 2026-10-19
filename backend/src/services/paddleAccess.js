@@ -28,4 +28,40 @@ function grantsAccess(status, currentPeriodEndsAt, now = new Date()) {
   return !currentPeriodEndsAt || new Date(currentPeriodEndsAt) > now;
 }
 
-module.exports = { accessForSubscription, grantsAccess };
+/**
+ * Combined access over ALL of a user's mirrored Paddle subscriptions, so cancelling one of
+ * two subscriptions does not revoke the other's premium.
+ * rows: [{ status, current_period_ends_at }]
+ * Returns { tier, expiresAt } with the same null = "leave unchanged" convention as accessForSubscription.
+ */
+function accessForSubscriptions(rows, now = new Date()) {
+  let premium = false;
+  let latestEnd = null;
+  let hasOpenPeriod = false;
+  let pastDue = false;
+
+  for (const row of rows || []) {
+    const { tier, expiresAt } = accessForSubscription(row.status, row.current_period_ends_at, now);
+    if (tier === 'premium') {
+      premium = true;
+      if (!expiresAt) {
+        hasOpenPeriod = true;
+      } else if (!latestEnd || new Date(expiresAt) > latestEnd) {
+        latestEnd = new Date(expiresAt);
+      }
+    } else if (row.status === 'past_due') {
+      pastDue = true;
+    }
+  }
+
+  if (premium) {
+    // An active subscription without a known period end: grant premium, keep the current expiry
+    if (hasOpenPeriod && !latestEnd) return { tier: 'premium', expiresAt: null };
+    return { tier: 'premium', expiresAt: latestEnd.toISOString() };
+  }
+  if (pastDue) return { tier: null, expiresAt: null };
+  if ((rows || []).length === 0) return { tier: null, expiresAt: null };
+  return { tier: 'free', expiresAt: now.toISOString() };
+}
+
+module.exports = { accessForSubscription, accessForSubscriptions, grantsAccess };

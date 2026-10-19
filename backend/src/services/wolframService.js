@@ -118,7 +118,8 @@ async function solveWithWolfram(query) {
   }
 
   try {
-    console.log('🐺 [Wolfram] Querying:', query);
+    // Problem text and answers are user content: log only sizes, never the text
+    console.log('🐺 [Wolfram] Querying (chars):', String(query || '').length);
     const data = await callWolframAPI(query);
     const queryResult = data.queryresult;
 
@@ -127,7 +128,7 @@ async function solveWithWolfram(query) {
     }
 
     if (queryResult.success === false || queryResult.success === 'false') {
-      console.log('🐺 [Wolfram] Could not solve:', query);
+      console.log('🐺 [Wolfram] Could not solve the query');
       return { success: false, reason: 'Wolfram could not solve the problem' };
     }
 
@@ -137,7 +138,7 @@ async function solveWithWolfram(query) {
       return { success: false, reason: 'No answer found in Wolfram response' };
     }
 
-    console.log('✅ [Wolfram] Answer:', answer);
+    console.log('✅ [Wolfram] Answer received, steps:', steps.length);
     return {
       success: true,
       answer,

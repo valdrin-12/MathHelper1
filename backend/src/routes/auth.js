@@ -1,6 +1,6 @@
 const express = require('express');
 const { body } = require('express-validator');
-const rateLimit = require('express-rate-limit');
+const { rateLimit, ipKeyGenerator } = require('express-rate-limit');
 const validate = require('../middleware/validate');
 const authMiddleware = require('../middleware/auth');
 const authController = require('../controllers/authController');
@@ -32,6 +32,29 @@ const passwordResetLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Generous limit on token refresh (normal clients refresh at most every few minutes)
+const refreshLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 60,
+  message: { success: false, error: 'Too many requests. Please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// Second limiter for forgot/reset keyed by target email + client IP, so one IP cannot hammer one
+// account and resets for one account are throttled independently of the per-IP limiter above
+const passwordResetEmailLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5,
+  keyGenerator: (req) => {
+    const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : '';
+    return `${email}|${ipKeyGenerator(req.ip || '')}`;
+  },
+  message: { success: false, error: 'Too many password reset attempts. Please try again in 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 router.post('/register', registerLimiter, [
   body('name').trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
   body('email').isEmail().withMessage('Valid email is required'),
@@ -52,23 +75,25 @@ router.put('/profile', authMiddleware, [
   body('name').optional().trim().isLength({ min: 2 }).withMessage('Name must be at least 2 characters'),
   body('email').optional().isEmail().withMessage('Valid email is required'),
   body('password').optional().isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
+  body('currentPassword').optional().isString().withMessage('Current password must be a string'),
   validate,
 ], authController.updateProfile);
 
-router.post('/refresh', authController.refreshTokens);
+router.post('/refresh', refreshLimiter, authController.refreshTokens);
 
-router.post('/forgot-password', passwordResetLimiter, [
+router.post('/forgot-password', passwordResetLimiter, passwordResetEmailLimiter, [
   body('email').isEmail().withMessage('Valid email is required'),
   validate,
 ], authController.forgotPassword);
 
-router.post('/reset-password', passwordResetLimiter, [
+router.post('/reset-password', passwordResetLimiter, passwordResetEmailLimiter, [
   body('email').isEmail().withMessage('Valid email is required'),
-  body('code').isLength({ min: 6, max: 6 }).withMessage('6-digit code is required'),
+  body('code').isString().matches(/^\d{6}$/).withMessage('6-digit code is required'),
   body('newPassword').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   validate,
 ], authController.resetPassword);
 
+// Requires { password } in the body for re-authentication (checked in the controller)
 router.delete('/account', authMiddleware, authController.deleteAccount);
 
 module.exports = router;

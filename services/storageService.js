@@ -1,17 +1,27 @@
 import api from './apiClient';
 
 /**
- * Get all saved items from backend
- * @returns {Promise<Array>}
+ * Get all saved items (list view). Items do NOT include `imageData`; use `hasImage` to know
+ * whether a photo exists and `getSavedItem(id)` to load it. Errors PROPAGATE.
+ * @returns {Promise<Array<{ id, problemText, answer, steps, explanation, savedAt, hasImage: boolean }>>}
  */
 export const getSavedItems = async () => {
-  try {
-    const data = await api.get('/api/saved-items');
-    return data.items || [];
-  } catch (error) {
-    console.error('Error fetching saved items:', error);
-    return [];
-  }
+  const data = await api.get('/api/saved-items');
+  return (data.items || []).map((item) => ({
+    ...item,
+    hasImage: item.hasImage ?? !!item.imageData,
+  }));
+};
+
+/**
+ * Get a single saved item including `imageData` (base64). Errors propagate.
+ * @param {string} id
+ * @returns {Promise<Object>}
+ */
+export const getSavedItem = async (id) => {
+  const data = await api.get(`/api/saved-items/${encodeURIComponent(id)}`);
+  const item = data.item || data;
+  return { ...item, hasImage: item.hasImage ?? !!item.imageData };
 };
 
 /**
@@ -20,19 +30,14 @@ export const getSavedItems = async () => {
  * @returns {Promise<boolean>}
  */
 export const saveItem = async (item) => {
-  try {
-    await api.post('/api/saved-items', {
-      imageData: item.imageData || null,
-      problemText: item.problemText || null,
-      answer: item.answer,
-      steps: item.steps,
-      explanation: item.explanation,
-    });
-    return true;
-  } catch (error) {
-    console.error('Error saving item:', error);
-    throw new Error(error.message || 'Failed to save item');
-  }
+  await api.post('/api/saved-items', {
+    imageData: item.imageData || null,
+    problemText: item.problemText || null,
+    answer: item.answer,
+    steps: item.steps,
+    explanation: item.explanation,
+  });
+  return true;
 };
 
 /**
@@ -41,13 +46,8 @@ export const saveItem = async (item) => {
  * @returns {Promise<boolean>}
  */
 export const deleteItem = async (id) => {
-  try {
-    await api.delete(`/api/saved-items/${id}`);
-    return true;
-  } catch (error) {
-    console.error('Error deleting item:', error);
-    throw new Error(error.message || 'Failed to delete item');
-  }
+  await api.delete(`/api/saved-items/${encodeURIComponent(id)}`);
+  return true;
 };
 
 /**
@@ -60,6 +60,7 @@ export const isItemSaved = async () => {
 
 export default {
   getSavedItems,
+  getSavedItem,
   saveItem,
   deleteItem,
   isItemSaved,

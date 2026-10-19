@@ -9,11 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
-  Alert,
   Linking,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUser } from '../context/UserContext';
 import { useTranslation } from 'react-i18next';
 import api from '../services/apiClient';
@@ -21,6 +19,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { SHADOWS } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
 import WebContainer from '../components/WebContainer';
+import { getErrorMessage } from '../components/ui';
 
 
 export default function AuthScreen() {
@@ -119,12 +118,8 @@ export default function AuthScreen() {
     try {
       const result = await login(email.trim(), password);
       if (!result.success) {
-        const msg = result.code === 'EMAIL_NOT_FOUND'
-          ? t('auth.userNotFound')
-          : result.code === 'INVALID_PASSWORD'
-            ? t('auth.wrongPassword')
-            : t('auth.loginFailed');
-        setLoginError(msg);
+        // Unknown email and wrong password share one generic code (no account enumeration)
+        setLoginError(getErrorMessage(result.code, t('auth.loginFailed'), t));
       }
     } finally {
       setLoading(false);
@@ -137,10 +132,11 @@ export default function AuthScreen() {
     try {
       const result = await register(name.trim(), email.trim(), password, i18n.language);
       if (!result.success) {
-        if (result.error && (result.error.toLowerCase().includes('already') || result.error === 'EMAIL_EXISTS')) {
+        const raw = typeof result.error === 'string' ? result.error : '';
+        if (result.code === 'EMAIL_EXISTS' || raw === 'EMAIL_EXISTS' || raw.toLowerCase().includes('already')) {
           setRegisterError(t('auth.emailAlreadyExists'));
         } else {
-          setRegisterError(result.error || t('auth.registerFailed'));
+          setRegisterError(getErrorMessage(result.code, t('auth.registerFailed'), t));
         }
       }
     } finally {
@@ -155,11 +151,13 @@ export default function AuthScreen() {
     setNewPassword('');
     setConfirmNewPassword('');
     setForgotError('');
+    setForgotSuccess('');
   };
 
   const closeForgotPassword = () => {
     setForgotMode(false);
     setForgotError('');
+    setForgotSuccess('');
   };
 
   const handleSendCode = async () => {
@@ -170,18 +168,14 @@ export default function AuthScreen() {
     setForgotLoading(true);
     setForgotError('');
     try {
+      // The server answers the same way whether or not the email is registered
       await api.post('/api/auth/forgot-password', { email: resetEmail.trim(), language: i18n.language });
       setForgotSuccess(t('forgotPassword.codeSentSuccess'));
       setForgotError('');
       setForgotMode('code');
     } catch (err) {
       setForgotSuccess('');
-      // Check if error is about email not found
-      if (err.status === 404 || (err.data?.error && err.data.error.includes('not found'))) {
-        setForgotError(t('forgotPassword.noAccountFound'));
-      } else {
-        setForgotError(err.message || t('common.error'));
-      }
+      setForgotError(getErrorMessage(err, t('auth.validation.somethingWrong'), t));
     } finally {
       setForgotLoading(false);
     }
@@ -215,50 +209,18 @@ export default function AuthScreen() {
       });
       setForgotMode('success');
     } catch (err) {
-      const msg = err.data?.error || err.message;
-      if (msg.includes('expired')) {
-        setForgotError(t('forgotPassword.codeExpired'));
-      } else if (msg.includes('Invalid')) {
+      const code = err?.data?.code || err?.code;
+      if (code === 'INVALID_CODE') {
+        // Invalid, expired or used up: send the user back to re-enter / request a code
+        setForgotSuccess('');
+        setResetCode('');
+        setForgotMode('code');
         setForgotError(t('forgotPassword.invalidCode'));
       } else {
-        setForgotError(msg || t('common.error'));
+        setForgotError(getErrorMessage(err, t('auth.validation.somethingWrong'), t));
       }
     } finally {
       setForgotLoading(false);
-    }
-  };
-
-  const handleClearAllData = async () => {
-    const confirmMessage = t('auth.clearAllConfirm');
-    const confirmed = Platform.OS === 'web'
-      ? window.confirm(confirmMessage)
-      : await new Promise(resolve => {
-          Alert.alert(
-            t('auth.clearAllTitle'),
-            confirmMessage,
-            [
-              { text: t('common.cancel'), style: 'cancel', onPress: () => resolve(false) },
-              { text: t('common.delete'), style: 'destructive', onPress: () => resolve(true) }
-            ]
-          );
-        });
-
-    if (!confirmed) return;
-
-    try {
-      await AsyncStorage.clear();
-      const successMessage = t('auth.clearAllSuccess');
-      if (Platform.OS === 'web') {
-        alert(successMessage);
-        window.location.reload();
-      } else {
-        Alert.alert(t('common.success'), successMessage, [
-          { text: t('common.ok'), onPress: () => clearForm() }
-        ]);
-      }
-    } catch (error) {
-      console.error('[AuthScreen] Error clearing data:', error);
-      Alert.alert(t('common.error'), t('auth.clearAllError'));
     }
   };
 
@@ -353,7 +315,7 @@ export default function AuthScreen() {
                     onChangeText={(text) => { setPassword(text); if (errors.password) setErrors({ ...errors, password: null }); }}
                     secureTextEntry={!showPassword}
                   />
-                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton} accessibilityRole="button" accessibilityLabel={showPassword ? t('a11y.hidePassword') : t('a11y.showPassword')}>
                     <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
@@ -445,7 +407,7 @@ export default function AuthScreen() {
                     onChangeText={(text) => { setPassword(text); if (errors.password) setErrors({ ...errors, password: null }); }}
                     secureTextEntry={!showPassword}
                   />
-                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton}>
+                  <TouchableOpacity onPress={() => setShowPassword(!showPassword)} style={styles.eyeButton} accessibilityRole="button" accessibilityLabel={showPassword ? t('a11y.hidePassword') : t('a11y.showPassword')}>
                     <Ionicons name={showPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
@@ -465,7 +427,7 @@ export default function AuthScreen() {
                     onChangeText={(text) => { setConfirmPassword(text); if (errors.confirmPassword) setErrors({ ...errors, confirmPassword: null }); }}
                     secureTextEntry={!showConfirmPassword}
                   />
-                  <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeButton}>
+                  <TouchableOpacity onPress={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeButton} accessibilityRole="button" accessibilityLabel={showConfirmPassword ? t('a11y.hidePassword') : t('a11y.showPassword')}>
                     <Ionicons name={showConfirmPassword ? 'eye-off-outline' : 'eye-outline'} size={18} color={colors.textMuted} />
                   </TouchableOpacity>
                 </View>
@@ -563,7 +525,7 @@ export default function AuthScreen() {
             <View style={styles.forgotCard}>
               {/* Header */}
               <View style={styles.forgotHeader}>
-                <TouchableOpacity onPress={closeForgotPassword} style={styles.forgotBackButton}>
+                <TouchableOpacity onPress={closeForgotPassword} style={styles.forgotBackButton} accessibilityRole="button" accessibilityLabel={t('a11y.back')}>
                   <Ionicons name="arrow-back" size={22} color={colors.text} />
                 </TouchableOpacity>
                 <Text style={styles.forgotTitle}>{t('forgotPassword.title')}</Text>
