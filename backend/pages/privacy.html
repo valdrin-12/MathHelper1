@@ -2,165 +2,197 @@
 <html lang="sq">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
   <title>MathHelper - Privacy Policy</title>
   <link rel="icon" href="/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
+    /* Matches the app's iOS design system (theme/constants.js); light + dark */
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --primary: #1E3A8A;
-      --primary-light: #3B82F6;
-      --primary-bg: #EFF6FF;
-      --text: #0F172A;
-      --text-secondary: #475569;
-      --text-muted: #94A3B8;
-      --bg: #F0F4FF;
+      --primary: #006FE6;
+      --primary-bg: #EBF3FF;
+      --text: #000000;
+      --text-secondary: #3A3A3C;
+      --text-muted: #8E8E93;
+      --bg: #F2F2F7;
       --surface: #FFFFFF;
-      --border: #E2E8F0;
+      --segment-track: rgba(118,118,128,0.12);
+      --segment-active: #FFFFFF;
+      --separator: rgba(60,60,67,0.18);
     }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #0A84FF;
+        --primary-bg: rgba(10,132,255,0.16);
+        --text: #FFFFFF;
+        --text-secondary: #EBEBF5;
+        --text-muted: #8E8E93;
+        --bg: #000000;
+        --surface: #1C1C1E;
+        --segment-track: #2C2C2E;
+        --segment-active: #636366;
+        --separator: rgba(84,84,88,0.6);
+      }
+    }
+    html { -webkit-text-size-adjust: 100%; }
     body {
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Plus Jakarta Sans', system-ui, sans-serif;
       color: var(--text);
       background: var(--bg);
-      line-height: 1.7;
+      line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      overflow-wrap: break-word;
     }
 
     /* NAV */
     nav {
-      background: rgba(255,255,255,0.9);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 32px;
-      display: flex; align-items: center; justify-content: space-between;
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid var(--separator);
+      padding: 12px 20px;
+      padding-top: max(12px, env(safe-area-inset-top));
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
       position: sticky; top: 0; z-index: 100;
     }
     .nav-logo {
-      display: flex; align-items: center; gap: 10px;
+      display: flex; align-items: center; gap: 10px; min-width: 0;
       text-decoration: none; color: var(--text);
-      font-size: 18px; font-weight: 800;
+      font-size: 17px; font-weight: 600;
     }
     .nav-logo-icon {
-      width: 36px; height: 36px; border-radius: 10px;
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
       background: var(--primary); color: #fff;
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px;
+      font-size: 16px;
     }
+    /* Language switcher as an iOS segmented control */
     .lang-row {
-      display: flex; gap: 8px;
+      display: flex; flex-shrink: 0;
+      background: var(--segment-track); border-radius: 9px; padding: 2px;
     }
     .lang-btn {
-      padding: 6px 16px; border-radius: 100px;
-      border: 2px solid var(--border); background: #fff;
-      font-size: 13px; font-weight: 700; cursor: pointer;
-      color: var(--text-secondary); transition: all 0.2s;
-      font-family: inherit;
+      padding: 6px 12px; border-radius: 7px; border: none; background: transparent;
+      font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+      color: var(--text); min-height: 32px;
     }
-    .lang-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .lang-btn.active {
+      background: var(--segment-active); font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+    }
+    .lang-btn .short { display: none; }
 
     /* CONTENT */
     .container {
-      max-width: 780px; margin: 0 auto;
-      padding: 60px 32px 100px;
+      max-width: 720px; margin: 0 auto;
+      padding: 40px 20px 80px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(80px, env(safe-area-inset-bottom));
     }
     .page-badge {
       display: inline-flex; align-items: center; gap: 6px;
-      background: var(--primary-bg); border: 1px solid rgba(59,130,246,0.2);
-      padding: 6px 16px; border-radius: 100px;
-      font-size: 13px; font-weight: 600; color: var(--primary-light);
-      margin-bottom: 20px;
+      background: var(--primary-bg);
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; color: var(--primary);
+      margin-bottom: 12px;
     }
     h1 {
-      font-size: clamp(28px, 4vw, 42px);
-      font-weight: 900; color: var(--text);
-      letter-spacing: -1px; margin-bottom: 12px; line-height: 1.15;
+      font-size: clamp(28px, 7vw, 34px);
+      font-weight: 700; color: var(--text);
+      letter-spacing: 0.37px; margin-bottom: 6px; line-height: 1.2;
+      hyphens: auto; -webkit-hyphens: auto;
     }
     .last-updated {
-      font-size: 14px; color: var(--text-muted);
-      margin-bottom: 48px;
+      font-size: 15px; color: var(--text-muted);
+      margin-bottom: 24px;
     }
     .section {
       background: var(--surface);
-      border-radius: 16px; padding: 28px 32px;
-      margin-bottom: 16px;
-      border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px;
+      margin-bottom: 12px;
     }
     .section h2 {
-      font-size: 18px; font-weight: 800;
-      color: var(--text); margin-bottom: 12px;
-      display: flex; align-items: center; gap: 10px;
+      font-size: 17px; font-weight: 600; line-height: 1.3;
+      color: var(--text); margin-bottom: 8px;
+      display: flex; align-items: flex-start; gap: 8px;
+      hyphens: auto; -webkit-hyphens: auto;
     }
-    .section h2 .icon { font-size: 20px; }
+    .section h2 .icon { font-size: 18px; line-height: 1.3; }
     .section p {
       font-size: 15px; color: var(--text-secondary);
-      margin-bottom: 10px; line-height: 1.7;
+      margin-bottom: 8px; line-height: 1.55;
     }
     .section p:last-child { margin-bottom: 0; }
-    .section ul {
-      list-style: none; margin: 10px 0;
-    }
+    .section ul { list-style: none; margin: 8px 0; }
     .section ul li {
       font-size: 15px; color: var(--text-secondary);
-      padding: 4px 0 4px 20px; position: relative;
+      padding: 4px 0 4px 18px; position: relative; line-height: 1.5;
     }
     .section ul li::before {
-      content: '•'; color: var(--primary-light);
-      position: absolute; left: 0; font-weight: 700;
+      content: '•'; color: var(--primary);
+      position: absolute; left: 2px; font-weight: 700;
     }
     .highlight-box {
       background: var(--primary-bg);
-      border-left: 4px solid var(--primary-light);
-      border-radius: 0 12px 12px 0;
-      padding: 16px 20px; margin-top: 12px;
-      font-size: 14px; color: var(--primary);
-      font-weight: 600;
+      border-radius: 10px;
+      padding: 12px 14px; margin-top: 12px;
+      font-size: 14px; color: var(--text);
+      font-weight: 500;
     }
     .contact-box {
-      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
-      border-radius: 16px; padding: 28px 32px;
-      color: #fff; margin-top: 32px;
+      background: var(--surface);
+      border-radius: 12px; padding: 16px;
+      margin-top: 24px;
     }
-    .contact-box h2 { color: #fff; font-size: 18px; margin-bottom: 10px; }
-    .contact-box p { color: rgba(255,255,255,0.85); font-size: 15px; }
-    .contact-box a { color: #fff; font-weight: 700; }
+    .contact-box h2 { color: var(--text); font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .contact-box p { color: var(--text-secondary); font-size: 15px; }
+    .contact-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
 
-    /* POLICY TABS */
+    /* POLICY TABS — iOS segmented control */
     .policy-tabs {
-      display: flex; gap: 8px; margin-bottom: 36px;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 0;
+      display: flex; gap: 0; margin-bottom: 24px;
+      background: var(--segment-track); border-radius: 9px; padding: 2px;
     }
     .policy-tab {
-      padding: 10px 24px;
-      border: none; background: none;
-      font-family: inherit; font-size: 15px; font-weight: 700;
-      color: var(--text-muted); cursor: pointer;
-      border-bottom: 3px solid transparent;
-      margin-bottom: -2px; transition: all 0.2s;
+      flex: 1 1 0; min-width: 0; min-height: 36px;
+      padding: 7px 10px; border: none; border-radius: 7px; background: transparent;
+      font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.25;
+      color: var(--text); cursor: pointer;
+      hyphens: auto; -webkit-hyphens: auto;
     }
     .policy-tab.active {
-      color: var(--primary);
-      border-bottom-color: var(--primary);
+      background: var(--segment-active); font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
     }
-    .policy-tab:hover:not(.active) { color: var(--text-secondary); }
+
+    .cookie-title {
+      font-size: clamp(22px, 6vw, 28px); font-weight: 700; line-height: 1.2;
+      color: var(--text); margin-bottom: 20px;
+      hyphens: auto; -webkit-hyphens: auto;
+    }
 
     /* COOKIE SECTION SEPARATOR */
     .cookie-section-header {
       display: flex; align-items: center; gap: 12px;
-      margin: 48px 0 24px;
+      margin: 32px 0 16px;
     }
     .cookie-section-header .page-badge { margin-bottom: 0; }
     .cookie-separator {
-      border: none; border-top: 2px solid var(--border);
-      margin: 48px 0 32px;
+      border: none; border-top: 0.5px solid var(--separator);
+      margin: 32px 0 24px;
     }
 
     @media (max-width: 600px) {
-      .container { padding: 40px 20px 80px; }
-      .section { padding: 20px; }
-      nav { padding: 14px 20px; }
+      .container { padding-top: 24px; }
+      nav { padding-left: 16px; padding-right: 16px; }
+      .lang-btn { padding: 6px 10px; }
+      .lang-btn .full { display: none; }
+      .lang-btn .short { display: inline; }
     }
   </style>
 </head>
@@ -172,9 +204,9 @@
     MathHelper
   </a>
   <div class="lang-row">
-    <button class="lang-btn active" data-lang="al">Shqip</button>
-    <button class="lang-btn" data-lang="en">English</button>
-    <button class="lang-btn" data-lang="de">Deutsch</button>
+    <button class="lang-btn active" data-lang="al" aria-label="Shqip"><span class="full">Shqip</span><span class="short">AL</span></button>
+    <button class="lang-btn" data-lang="en" aria-label="English"><span class="full">English</span><span class="short">EN</span></button>
+    <button class="lang-btn" data-lang="de" aria-label="Deutsch"><span class="full">Deutsch</span><span class="short">DE</span></button>
   </div>
 </nav>
 
@@ -590,8 +622,8 @@ function render(lang) {
   const cookieContent = document.getElementById('cookieContent');
   const ck = t.cookie;
   cookieContent.innerHTML = `
-    <div class="page-badge" style="margin-bottom:24px;">&#x1F36A; ${ck.badge}</div>
-    <h2 style="font-size:clamp(22px,3vw,32px);font-weight:900;letter-spacing:-0.5px;margin-bottom:32px;color:var(--text);">${ck.title}</h2>
+    <div class="page-badge">&#x1F36A; ${ck.badge}</div>
+    <h2 class="cookie-title">${ck.title}</h2>
   ` + ck.sections.map(s => `
     <div class="section">
       <h2><span class="icon">${s.icon}</span> ${s.title}</h2>
@@ -599,7 +631,7 @@ function render(lang) {
       ${s.list ? `<ul>${s.list.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
     </div>
   `).join('') + `
-    <div class="contact-box" style="margin-top:32px;">
+    <div class="contact-box">
       <h2>${t.contact.title}</h2>
       <p>${t.contact.body}<br><a href="mailto:${t.contact.email}">${t.contact.email}</a></p>
     </div>
