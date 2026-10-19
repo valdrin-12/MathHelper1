@@ -10,12 +10,18 @@ const MIN_SECRET_LENGTH = 32;
  */
 function assertJwtSecret() {
   const secret = process.env.JWT_SECRET || '';
-  if (process.env.NODE_ENV === 'production' && secret.length < MIN_SECRET_LENGTH) {
-    console.error(
-      `[FATAL] JWT_SECRET is ${secret ? `too short (${secret.length} chars)` : 'missing'}; ` +
-      `production requires at least ${MIN_SECRET_LENGTH} characters. Refusing to start.`
-    );
+  if (process.env.NODE_ENV !== 'production') return;
+  // Without a secret no token can be signed or verified, so starting would be pointless
+  if (!secret) {
+    console.error('[FATAL] JWT_SECRET is missing. Refusing to start.');
     process.exit(1);
+  }
+  // A short secret keeps working (existing sessions stay valid); only warn
+  if (secret.length < MIN_SECRET_LENGTH) {
+    console.warn(
+      `[WARN] JWT_SECRET is only ${secret.length} characters; ` +
+      `at least ${MIN_SECRET_LENGTH} are recommended.`
+    );
   }
 }
 
