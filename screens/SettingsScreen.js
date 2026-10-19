@@ -11,6 +11,7 @@ import {
   Platform,
   Linking,
 } from 'react-native';
+import * as WebBrowser from 'expo-web-browser';
 import { useTranslation } from 'react-i18next';
 import { useUser } from '../context/UserContext';
 import { useStats } from '../context/StatsContext';
@@ -118,17 +119,26 @@ export default function SettingsScreen() {
 
   const handleManageSubscription = async () => {
     setOpeningPortal(true);
+    // The Paddle portal has no way back to the app, so never replace the app with it:
+    // web gets a new tab (opened now, while still inside the click, so popup blockers allow it),
+    // native gets an in-app browser sheet that the user closes with "Done".
+    const portalTab = Platform.OS === 'web' ? window.open('', '_blank') : null;
+    if (portalTab) portalTab.opener = null;
     try {
       // Customer is resolved server-side from the session; we never send a customer ID
       const data = await api.post('/api/paddle/portal-session', {});
       if (Platform.OS === 'web') {
-        window.location.href = data.url;
+        if (portalTab) portalTab.location.href = data.url;
+        else window.location.href = data.url; // popups blocked entirely: fall back to same tab
       } else {
-        await Linking.openURL(data.url);
+        await WebBrowser.openBrowserAsync(data.url);
       }
     } catch (e) {
       console.error('[SettingsScreen] Failed to open billing portal:', e);
-      Alert.alert(t('common.error'), t('settings.manageSubscriptionError'));
+      portalTab?.close();
+      // Alert.alert buttons are a no-op on react-native-web
+      if (Platform.OS === 'web') window.alert(t('settings.manageSubscriptionError'));
+      else Alert.alert(t('common.error'), t('settings.manageSubscriptionError'));
     } finally {
       setOpeningPortal(false);
     }
