@@ -15,7 +15,7 @@ services:
       - key: GEMINI_API_KEY
         sync: false
       - key: WOLFRAM_APP_ID
-        value: J8JKYUJVJ6
+        sync: false
       - key: SMTP_USER
         sync: false
       - key: SMTP_PASS

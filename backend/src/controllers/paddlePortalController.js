@@ -11,9 +11,9 @@ async function createPortalSession(req, res) {
   try {
     paddle = getPaddleClient();
   } catch (err) {
+    // err.message never contains the key itself, only which variable/prefix is wrong; keep it server-side
     console.error('[Paddle] Portal not configured:', err.message);
-    // err.message never contains the key itself, only which variable/prefix is wrong
-    return res.status(503).json({ success: false, error: 'Billing portal not configured', configError: err.message });
+    return res.status(503).json({ success: false, error: 'Billing portal not configured' });
   }
 
   try {
@@ -48,13 +48,11 @@ async function createPortalSession(req, res) {
       updatePaymentMethodUrl: subscriptionUrls?.updateSubscriptionPaymentMethod || null,
     });
   } catch (err) {
-    console.error('[Paddle] Portal session error:', err);
-    // Paddle's error code (e.g. "forbidden", "authentication_malformed") is not sensitive and
-    // makes misconfigured API keys diagnosable without server log access
+    // Paddle error details (e.g. "forbidden", "authentication_malformed") stay in the server log only
+    console.error('[Paddle] Portal session error:', err?.code || '', err?.message || err);
     res.status(500).json({
       success: false,
       error: 'Failed to create billing portal session',
-      paddleError: err?.code || null,
     });
   }
 }

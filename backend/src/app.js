@@ -1,9 +1,14 @@
 const express = require('express');
+const crypto = require('crypto');
 const path = require('path');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 const errorHandler = require('./middleware/errorHandler');
+const { assertJwtSecret } = require('./utils/tokens');
+
+// Refuse to boot in production without a strong JWT secret
+assertJwtSecret();
 
 const authRoutes = require('./routes/auth');
 const savedItemsRoutes = require('./routes/savedItems');
@@ -49,7 +54,34 @@ app.use(cors({
   credentials: true,
 }));
 app.use(morgan('dev'));
-app.use(express.json({ limit: '10mb' }));
+// Body limits: image payloads (base64) only on the routes that need them; everything else stays small.
+// The Paddle webhook above keeps its own raw parser. Route-specific parsers must come before the global one.
+const LARGE_JSON_LIMIT = '6mb';
+app.use('/api/analyze', express.json({ limit: LARGE_JSON_LIMIT }));
+app.use('/api/saved-items', express.json({ limit: LARGE_JSON_LIMIT }));
+// Base64 App Store receipts grow with purchase history and can exceed 100kb
+app.use('/api/purchases', express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '100kb' }));
+
+// CSP for the server-rendered marketing/legal/checkout pages (not the Expo web app, see SPA fallback below).
+// They use inline scripts/styles/handlers, Google Fonts and QR images from api.qrserver.com (+ Google Charts fallback).
+const STATIC_PAGE_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https://api.qrserver.com https://chart.googleapis.com",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+].join('; ');
+
+function staticPageCsp(req, res, next) {
+  res.setHeader('Content-Security-Policy', STATIC_PAGE_CSP);
+  next();
+}
 
 // Health check
 app.get('/api/health', (req, res) => {
@@ -65,25 +97,25 @@ app.use('/api/purchases', purchaseRoutes);
 app.use('/api/paddle', paddleRoutes);
 
 // Landing page (About)
-app.get('/', (req, res) => {
+app.get('/', staticPageCsp, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
 });
-app.get('/about', (req, res) => {
+app.get('/about', staticPageCsp, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
 });
 
 // QR Code printable sticker page
-app.get('/qr', (req, res) => {
+app.get('/qr', staticPageCsp, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'qr.html'));
 });
 
 // Privacy Policy page
-app.get('/privacy', (req, res) => {
+app.get('/privacy', staticPageCsp, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'privacy.html'));
 });
 
 // Paddle checkout success page (Paddle.Checkout successUrl)
-app.get('/premium/success', (req, res) => {
+app.get('/premium/success', staticPageCsp, (req, res) => {
   const appUrl = process.env.APP_URL || 'https://mathhelper.online';
   res.send(`<!DOCTYPE html>
 <html lang="en">
@@ -163,21 +195,91 @@ app.get('/premium/success', (req, res) => {
 // Screenshots static files
 app.use('/screenshots', express.static(path.join(__dirname, '..', 'pages', 'screenshots')));
 
-// Graph rendering endpoint — serves self-contained HTML with function-plot
+// Graph rendering endpoint — serves self-contained HTML with function-plot.
+// The expression is never turned into JS by us: it is embedded as JSON data and parsed by
+// function-plot's own math parser. The bootstrap script is static, so its CSP hash is constant.
+const GRAPH_CDN_SCRIPTS = [
+  {
+    src: 'https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js',
+    integrity: 'sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i',
+  },
+  {
+    src: 'https://cdn.jsdelivr.net/npm/function-plot@1.22.2/dist/function-plot.js',
+    integrity: 'sha384-UilSOASrT7yOa5JE6wuicoPA1pUNIESPx2lUHG+jmeU0o/P0Rcs8Dwy5tA9JpsUM',
+  },
+];
+
+const GRAPH_BOOTSTRAP_SCRIPT = `
+(function(){
+  var expr = JSON.parse(document.getElementById('expr-data').textContent);
+  document.getElementById('legend').textContent = 'y = ' + expr.replace(/\\*/g, '\\u00b7');
+  try {
+    // Sample with function-plot's own evaluator (no eval of the raw expression) to pick a y-range
+    var datum = { fn: expr };
+    var yMin = Infinity, yMax = -Infinity;
+    for (var xi = -10; xi <= 10; xi += 0.2) {
+      var y;
+      try { y = functionPlot.$eval.builtIn(datum, 'fn', { x: xi }); } catch (e) { y = NaN; }
+      if (typeof y === 'number' && isFinite(y)) { yMin = Math.min(yMin, y); yMax = Math.max(yMax, y); }
+    }
+    var yDomain = [-10, 10];
+    if (isFinite(yMin) && isFinite(yMax)) {
+      var pad = Math.max((yMax - yMin) * 0.2, 1);
+      yDomain = [yMin - pad, yMax + pad];
+    }
+    functionPlot({
+      target: '#plot',
+      width: window.innerWidth,
+      height: window.innerHeight - 52,
+      xAxis: { domain: [-10, 10] },
+      yAxis: { domain: yDomain },
+      grid: true,
+      data: [{ fn: expr, color: '#6C47FF', graphType: 'polyline' }]
+    });
+    var svg = document.querySelector('#plot svg');
+    if (svg) svg.style.background = '#FDF6EC';
+  } catch (e) {
+    document.getElementById('plot').style.display = 'none';
+    var el = document.getElementById('err');
+    el.style.display = 'block';
+    el.textContent = 'Gabim: ' + e.message;
+  }
+})();
+`;
+
+const GRAPH_BOOTSTRAP_HASH = crypto.createHash('sha256').update(GRAPH_BOOTSTRAP_SCRIPT).digest('base64');
+
+// 'unsafe-eval' is required by function-plot's math parser (math-codegen compiles the parsed AST with
+// new Function); the input is restricted to the allowlist below. 'unsafe-inline' is ignored by CSP3
+// browsers when a hash is present and only acts as a fallback for old engines.
+const GRAPH_CSP = [
+  "default-src 'none'",
+  `script-src https://cdn.jsdelivr.net 'sha256-${GRAPH_BOOTSTRAP_HASH}' 'unsafe-inline' 'unsafe-eval'`,
+  "style-src 'unsafe-inline'",
+  'img-src data:',
+  "frame-ancestors 'self'",
+].join('; ');
+
 app.get('/graph', (req, res) => {
-  const rawExpr = (req.query.expr || '').slice(0, 500);
+  const rawExpr = String(req.query.expr || '').slice(0, 500);
   // Basic sanitization: only allow safe math characters
   const expr = rawExpr.replace(/[^0-9x+\-*/^().sincotaqrple, ]/gi, '');
   if (!expr) return res.status(400).send('Missing expr');
 
-  res.setHeader('Content-Type', 'text/html');
+  // JSON data block (not executed); escape '<' so the content can never close the tag
+  const exprJson = JSON.stringify(expr).replace(/</g, '\\u003c');
+  const cdnScripts = GRAPH_CDN_SCRIPTS
+    .map((s) => `<script src="${s.src}" integrity="${s.integrity}" crossorigin="anonymous"></script>`)
+    .join('\n  ');
+
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Content-Security-Policy', GRAPH_CSP);
   res.send(`<!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-  <script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/function-plot@1.22.2/dist/function-plot.js"></script>
+  ${cdnScripts}
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
     html,body{width:100%;height:100%;background:#FDF6EC;overflow:hidden}
@@ -192,37 +294,9 @@ app.get('/graph', (req, res) => {
 <body>
 <div id="plot"></div>
 <div id="err"></div>
-<div id="legend">y = ${expr.replace(/\*/g, '·')}</div>
-<script>
-(function(){
-  var expr = ${JSON.stringify(expr)};
-  try {
-    var fn = new Function('x','with(Math){return ('+expr+')}');
-    var yMin=Infinity,yMax=-Infinity;
-    for(var xi=-10;xi<=10;xi+=0.2){
-      var y=fn(xi);
-      if(isFinite(y)){yMin=Math.min(yMin,y);yMax=Math.max(yMax,y);}
-    }
-    var pad=Math.max((yMax-yMin)*0.2,1);
-    functionPlot({
-      target:'#plot',
-      width:window.innerWidth,
-      height:window.innerHeight-52,
-      xAxis:{domain:[-10,10]},
-      yAxis:{domain:[yMin-pad,yMax+pad]},
-      grid:true,
-      data:[{fn:expr,color:'#6C47FF',graphType:'polyline'}]
-    });
-    var svg=document.querySelector('#plot svg');
-    if(svg)svg.style.background='#FDF6EC';
-  } catch(e) {
-    document.getElementById('plot').style.display='none';
-    var el=document.getElementById('err');
-    el.style.display='block';
-    el.textContent='Gabim: '+e.message;
-  }
-})();
-</script>
+<div id="legend"></div>
+<script type="application/json" id="expr-data">${exprJson}</script>
+<script>${GRAPH_BOOTSTRAP_SCRIPT}</script>
 </body>
 </html>`);
 });

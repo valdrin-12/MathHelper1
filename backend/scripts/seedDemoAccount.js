@@ -2,11 +2,11 @@
  * seedDemoAccount.js
  *
  * Creates a demo/reviewer account in the database for App Store & Google Play reviewers.
- * Run once on production: node backend/scripts/seedDemoAccount.js
+ * Run once on production:
+ *   DEMO_ACCOUNT_EMAIL=... DEMO_ACCOUNT_PASSWORD=... node backend/scripts/seedDemoAccount.js
  *
- * Demo credentials (put these in App Store Connect > Notes for Reviewer):
- *   Email:    reviewer@mathhelper.online
- *   Password: MathHelper2024!
+ * Credentials come from the environment (or backend/.env) and are never hardcoded or printed.
+ * Put the same values in App Store Connect > Notes for Reviewer.
  */
 
 require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
@@ -14,9 +14,18 @@ require('dotenv').config({ path: require('path').join(__dirname, '../.env') });
 const pool = require('../src/config/database');
 const bcrypt = require('bcrypt');
 
-const DEMO_EMAIL = 'reviewer@mathhelper.online';
-const DEMO_PASSWORD = 'MathHelper2024!';
+const DEMO_EMAIL = (process.env.DEMO_ACCOUNT_EMAIL || '').trim().toLowerCase();
+const DEMO_PASSWORD = process.env.DEMO_ACCOUNT_PASSWORD || '';
 const DEMO_NAME = 'App Reviewer';
+
+if (!DEMO_EMAIL || !DEMO_PASSWORD) {
+  console.error('❌ DEMO_ACCOUNT_EMAIL and DEMO_ACCOUNT_PASSWORD must be set (env or backend/.env).');
+  process.exit(1);
+}
+if (DEMO_PASSWORD.length < 8) {
+  console.error('❌ DEMO_ACCOUNT_PASSWORD must be at least 8 characters.');
+  process.exit(1);
+}
 
 async function seedDemoAccount() {
   try {
@@ -49,12 +58,9 @@ async function seedDemoAccount() {
 
     console.log('✅ Demo account created:');
     console.log('   Email   :', DEMO_EMAIL);
-    console.log('   Password:', DEMO_PASSWORD);
     console.log('   User ID :', result.rows[0].id);
     console.log('');
-    console.log('📋 Paste this in App Store Connect > Notes for Reviewer:');
-    console.log('   Test Account Email:    ' + DEMO_EMAIL);
-    console.log('   Test Account Password: ' + DEMO_PASSWORD);
+    console.log('📋 Put DEMO_ACCOUNT_EMAIL / DEMO_ACCOUNT_PASSWORD in App Store Connect > Notes for Reviewer.');
 
     await pool.end();
   } catch (err) {

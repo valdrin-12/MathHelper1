@@ -1,6 +1,6 @@
 const { Webhooks, NodeRuntime } = require('@paddle/paddle-node-sdk');
 const pool = require('../config/database');
-const { accessForSubscription } = require('../services/paddleAccess');
+const { accessForSubscriptions } = require('../services/paddleAccess');
 
 // Signature verification needs the Node crypto provider; new Paddle() normally sets it,
 // but we only need webhooks here (no API key), so initialize it directly.
@@ -44,6 +44,22 @@ async function linkCustomer(db, customerId, userId) {
        user_id = COALESCE(paddle_customers.user_id, EXCLUDED.user_id),
        updated_at = NOW()`,
     [customerId, userId]
+  );
+}
+
+/** Keep a subscription event we couldn't attach to a user, for manual reconciliation. */
+async function recordUnlinkedEvent(db, event, sub) {
+  await db.query(
+    `INSERT INTO paddle_unlinked_events (
+       event_id, event_type, paddle_subscription_id, paddle_customer_id, custom_user_id, payload, occurred_at)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     ON CONFLICT (event_id) DO NOTHING`,
+    [
+      event.eventId || null, event.eventType, sub.id, sub.customerId || null,
+      sub.customData?.user_id ? String(sub.customData.user_id).slice(0, 100) : null,
+      JSON.stringify({ status: sub.status, customData: sub.customData || null }),
+      event.occurredAt || null,
+    ]
   );
 }
 
@@ -103,24 +119,55 @@ async function handleSubscriptionEvent(event) {
       return;
     }
     if (!userId) {
-      console.error(`[Paddle] No user for subscription ${sub.id} (${event.eventType})`);
+      // Acknowledge (200) instead of making Paddle retry forever: a retry can't find the user either.
+      // Keep the event for manual reconciliation.
+      console.error(
+        `[Paddle] UNLINKED ${event.eventType} for subscription ${sub.id} (customer ${sub.customerId}, `
+        + `customData.user_id=${sub.customData?.user_id || 'none'}) - stored in paddle_unlinked_events`
+      );
+      await recordUnlinkedEvent(db, event, sub);
       return;
     }
 
     await linkCustomer(db, sub.customerId, userId);
 
-    const { tier, expiresAt } = accessForSubscription(sub.status, periodEndsAt);
+    // Access is computed from ALL of the user's subscriptions (each row is already
+    // guarded against out-of-order events), so one canceled sub can't revoke another active one.
+    const { rows: subs } = await db.query(
+      'SELECT status, current_period_ends_at FROM paddle_subscriptions WHERE user_id = $1',
+      [userId]
+    );
+    let { tier, expiresAt } = accessForSubscriptions(subs);
+
+    // Don't let Paddle state cut short a still-valid in-app purchase
+    const { rows: iapRows } = await db.query(
+      `SELECT MAX(expires_at) AS expires_at FROM purchases
+       WHERE user_id = $1 AND status = 'completed' AND expires_at > NOW()`,
+      [userId]
+    );
+    const iapExpiresAt = iapRows[0]?.expires_at;
+    if (iapExpiresAt && (tier === 'free' || (tier === 'premium' && expiresAt && new Date(iapExpiresAt) > new Date(expiresAt)))) {
+      tier = 'premium';
+      expiresAt = new Date(iapExpiresAt).toISOString();
+    }
+
     await db.query(
       `UPDATE users SET
          tier = COALESCE($2, tier),
          premium_expires_at = COALESCE($3::timestamptz, premium_expires_at),
-         paddle_customer_id = $4,
-         paddle_subscription_id = $5,
-         paddle_subscription_status = $6,
-         paddle_event_at = $7,
          updated_at = NOW()
-       WHERE id = $1 AND (paddle_event_at IS NULL OR paddle_event_at < $7)`,
-      [userId, tier, expiresAt, sub.customerId, sub.id, sub.status, event.occurredAt]
+       WHERE id = $1`,
+      [userId, tier, expiresAt]
+    );
+    // The per-user "latest subscription" columns still only move forward in time
+    await db.query(
+      `UPDATE users SET
+         paddle_customer_id = $2,
+         paddle_subscription_id = $3,
+         paddle_subscription_status = $4,
+         paddle_event_at = $5
+       WHERE id = $1 AND (paddle_event_at IS NULL OR paddle_event_at < $5)`,
+      [userId, sub.customerId, sub.id, sub.status, event.occurredAt]
     );
     console.log(`[Paddle] ${event.eventType}: user ${userId} -> ${sub.status}`);
   });

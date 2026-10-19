@@ -1,4 +1,10 @@
 const { Resend } = require('resend');
+const { escapeHtml, maskEmail } = require('../utils/security');
+
+/** Plain-text-safe value for email subjects: no control chars/newlines, bounded length. */
+function sanitizeSubjectText(value) {
+  return String(value ?? '').replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, 60);
+}
 
 function getResendClient() {
   const apiKey = process.env.RESEND_API_KEY;
@@ -9,7 +15,7 @@ function getResendClient() {
 async function sendEmail(to, subject, html) {
   const resend = getResendClient();
   if (!resend) {
-    console.log('[Email] Resend not configured, skipping email to', to);
+    console.log('[Email] Resend not configured, skipping email to', maskEmail(to));
     return;
   }
 
@@ -132,7 +138,7 @@ function getWelcomeEmailHtml(userName, lang) {
           </tr>
           <tr>
             <td style="padding:40px;">
-              <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">${t.title(userName)}</h2>
+              <h2 style="margin:0 0 8px;color:#1a1a2e;font-size:22px;">${t.title(escapeHtml(userName))}</h2>
               <p style="margin:0 0 24px;color:#6b7280;font-size:15px;line-height:24px;">${t.body}</p>
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                 <tr>
@@ -225,7 +231,7 @@ function getPasswordResetEmailHtml(code, lang) {
               <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
                 <tr>
                   <td align="center" style="padding:24px;background-color:#f0f4ff;border-radius:12px;">
-                    <div style="font-size:36px;font-weight:bold;letter-spacing:8px;color:#667eea;font-family:monospace;">${code}</div>
+                    <div style="font-size:36px;font-weight:bold;letter-spacing:8px;color:#667eea;font-family:monospace;">${escapeHtml(code)}</div>
                   </td>
                 </tr>
               </table>
@@ -252,10 +258,10 @@ async function sendWelcomeEmail(toEmail, userName, lang = 'al') {
     const t = getTranslation(lang).welcome;
     await sendEmail(
       toEmail,
-      t.subject(userName),
+      t.subject(sanitizeSubjectText(userName)),
       getWelcomeEmailHtml(userName, lang)
     );
-    console.log('[Email] Welcome email sent to', toEmail, 'lang:', lang);
+    console.log('[Email] Welcome email sent to', maskEmail(toEmail), 'lang:', lang);
   } catch (error) {
     console.error('[Email] Failed to send welcome email:', error.message);
   }
@@ -269,7 +275,7 @@ async function sendPasswordResetEmail(toEmail, code, lang = 'al') {
       t.subject,
       getPasswordResetEmailHtml(code, lang)
     );
-    console.log('[Email] Password reset email sent to', toEmail, 'lang:', lang);
+    console.log('[Email] Password reset email sent to', maskEmail(toEmail), 'lang:', lang);
   } catch (error) {
     console.error('[Email] Failed to send reset email:', error.message);
   }

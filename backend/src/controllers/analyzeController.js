@@ -1,5 +1,6 @@
 const { getModel } = require('../config/gemini');
 const { solveWithWolfram } = require('../services/wolframService');
+const { markTicketSucceeded, refundTicket, UUID_RE } = require('../middleware/rateLimit');
 
 const MAX_IMAGE_BYTES = 4 * 1024 * 1024; // 4 MB (base64 decoded)
 const MAX_TEXT_LENGTH = 2000;            // 2000 characters
@@ -170,6 +171,7 @@ async function analyzeImage(req, res) {
     const text = response.text();
     const parsed = parseGeminiResponse(text);
 
+    await markTicketSucceeded(req);
     res.json({ success: true, ...parsed });
   } catch (error) {
     console.error('Image analysis error:', error);
@@ -205,6 +207,7 @@ async function analyzeText(req, res) {
     const text = response.text();
     const parsed = parseGeminiResponse(text);
 
+    await markTicketSucceeded(req);
     res.json({ success: true, ...parsed });
   } catch (error) {
     console.error('Text analysis error:', error);
@@ -307,6 +310,7 @@ async function analyzeWithWolfram(req, res) {
       return res.status(422).json({ success: false, error: result.reason || 'Wolfram could not solve this problem' });
     }
 
+    await markTicketSucceeded(req);
     res.json({
       success: true,
       answer: result.answer,
@@ -320,9 +324,41 @@ async function analyzeWithWolfram(req, res) {
   }
 }
 
-// Record a local solve attempt (rate limiter already ran and incremented counter)
+// Record an analysis: the rate limiter already consumed one credit and issued a ticket
 async function recordAnalysis(req, res) {
-  res.json({ success: true });
+  const ticket = req.analysisTicket;
+  res.json({
+    success: true,
+    ticket: ticket.id,
+    ticketExpiresAt: ticket.expiresAt,
+    tier: ticket.tier,
+    limit: ticket.limit,
+    remaining: ticket.remaining,
+  });
 }
 
-module.exports = { analyzeImage, analyzeText, extractTextFromImage, analyzeWithWolfram, recordAnalysis };
+// Refund the credit behind a ticket that never produced a result (idempotent)
+async function refundAnalysis(req, res) {
+  const { ticket } = req.body || {};
+  if (typeof ticket !== 'string' || !UUID_RE.test(ticket)) {
+    return res.status(400).json({ success: false, error: 'ticket is required', code: 'INVALID_TICKET' });
+  }
+
+  try {
+    const outcome = await refundTicket(req.userId, ticket);
+    if (outcome === 'not_found') {
+      return res.status(404).json({ success: false, error: 'Ticket not found', code: 'INVALID_TICKET' });
+    }
+    if (outcome === 'succeeded') {
+      return res.status(409).json({ success: false, error: 'Analysis already completed', code: 'TICKET_SUCCEEDED' });
+    }
+    res.json({ success: true, refunded: true, alreadyRefunded: outcome === 'already_refunded' });
+  } catch (error) {
+    console.error('Refund analysis error:', error);
+    res.status(503).json({ success: false, error: 'Refund temporarily unavailable', code: 'REFUND_FAILED' });
+  }
+}
+
+module.exports = {
+  analyzeImage, analyzeText, extractTextFromImage, analyzeWithWolfram, recordAnalysis, refundAnalysis,
+};

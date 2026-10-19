@@ -4,7 +4,7 @@ services:
     environment:
       POSTGRES_DB: mathhelper_db
       POSTGRES_USER: mathhelper
-      POSTGRES_PASSWORD: mathhelper_password
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
       - "5433:5432"
     volumes:
@@ -19,17 +19,18 @@ services:
     build: ./backend
     ports:
       - "3001:3001"
+    # Secrets (JWT_SECRET, GEMINI_API_KEY, RESEND_API_KEY, PADDLE_*, ...) come from backend/.env (never commit it).
+    # Values under `environment` override the file.
+    env_file:
+      - ./backend/.env
     environment:
       PORT: 3001
       NODE_ENV: development
-      DATABASE_URL: postgresql://mathhelper:mathhelper_password@postgres:5432/mathhelper_db
-      JWT_SECRET: mathhelper-dev-secret-key-2024
+      DATABASE_URL: postgresql://mathhelper:${POSTGRES_PASSWORD:-postgres}@postgres:5432/mathhelper_db
       JWT_ACCESS_EXPIRY: 15m
       JWT_REFRESH_EXPIRY: 7d
-      GEMINI_API_KEY: AIzaSyC62xS3g7fATPTSH88vuT1PSGncXxwURwE
       GEMINI_MODEL: gemini-2.5-flash
       MAX_IMAGE_SIZE_MB: 4
-      RESEND_API_KEY: re_Va2Wouih_3CwDaGGrjChUDsSp5eU9kPKr
       EMAIL_FROM: MathHelper <noreply@mathhelper.online>
     depends_on:
       postgres:
