@@ -282,7 +282,10 @@
     "quitTitle": "Quiz beenden",
     "quitMessage": "Sind Sie sicher, dass Sie beenden möchten? Ihr Fortschritt geht verloren.",
     "continueQuiz": "Quiz fortsetzen",
-    "quit": "Beenden"
+    "quit": "Beenden",
+    "showHint": "Tipp anzeigen",
+    "whyNot": "Warum nicht „{{answer}}“?",
+    "practiceMode": "Übung"
   },
   "quizResult": {
     "excellent": "Ausgezeichnet!",
@@ -307,7 +310,9 @@
     "retry": "Erneut versuchen",
     "goBack": "Zurück",
     "perfectScore": "PERFEKTE PUNKTZAHL!",
-    "history": "Frühere Versuche"
+    "history": "Frühere Versuche",
+    "practiceMistakes": "Fehler üben ({{count}})",
+    "practiceNotCounted": "Übung – zählt nicht zur Bewertung"
   },
   "profileModal": {
     "premiumBadge": "Premium",

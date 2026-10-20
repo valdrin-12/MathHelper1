@@ -120,7 +120,7 @@ function ConfettiAnimation() {
   );
 }
 
-export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, isPerfectScore, quizHistory = [] }) {
+export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, onPracticeMistakes, isPerfectScore, quizHistory = [] }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -130,6 +130,7 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
   const totalQuestions = quizSet.questions.length;
   const correctCount = result.filter(a => a?.correct).length;
   const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
+  const wrongCount = totalQuestions - correctCount;
   const attemptPercentage = (attempt) => (
     typeof attempt?.percentage === 'number'
       ? attempt.percentage
@@ -165,6 +166,11 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
             </View>
             <Text style={styles.gradeLabel}>{grade.label}</Text>
             <Text style={styles.gradeMessage}>{grade.message}</Text>
+            {quizSet.isPractice && (
+              <View style={styles.practiceNote}>
+                <Pill icon="barbell" label={t('quizResult.practiceNotCounted')} color={colors.primary} />
+              </View>
+            )}
 
             {/* Score Circle */}
             <View style={[styles.scoreCircle, { borderColor: quizSet.color }]}>
@@ -254,6 +260,16 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
 
         {/* Footer Buttons */}
         <View style={styles.footer}>
+          {wrongCount > 0 && onPracticeMistakes && (
+            <Button
+              title={t('quizResult.practiceMistakes', { count: wrongCount })}
+              icon="barbell"
+              tone="warning"
+              onPress={onPracticeMistakes}
+              style={styles.practiceButton}
+            />
+          )}
+          <View style={styles.footerRow}>
           <Button
             title={t('quizResult.retry')}
             icon="refresh"
@@ -267,6 +283,7 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
             onPress={onClose}
             style={[styles.footerButton, { backgroundColor: quizSet.color }]}
           />
+          </View>
         </View>
       </SafeAreaView>
     </Modal>
@@ -489,16 +506,26 @@ const makeStyles = (colors) => StyleSheet.create({
 
   // Footer
   footer: {
-    flexDirection: 'row',
     paddingHorizontal: SPACING.lg,
     paddingTop: SPACING.md,
     paddingBottom: SPACING.md,
-    gap: SPACING.md,
+    gap: SPACING.sm + 2,
     backgroundColor: colors.surface,
     borderTopWidth: HAIRLINE,
     borderTopColor: colors.border,
   },
+  footerRow: {
+    flexDirection: 'row',
+    gap: SPACING.md,
+  },
   footerButton: {
     flex: 1,
+  },
+  practiceButton: {
+    alignSelf: 'stretch',
+  },
+  practiceNote: {
+    marginTop: SPACING.sm,
+    alignItems: 'center',
   },
 });
