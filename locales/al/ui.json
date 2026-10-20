@@ -282,7 +282,10 @@
     "quitTitle": "Dil nga Kuizi",
     "quitMessage": "Jeni i sigurt që dëshironi të dilni? Progresi juaj do të humbasë.",
     "continueQuiz": "Vazhdo Kuizin",
-    "quit": "Dil"
+    "quit": "Dil",
+    "showHint": "Shfaq një ndihmë",
+    "whyNot": "Pse jo „{{answer}}“?",
+    "practiceMode": "Ushtrim"
   },
   "quizResult": {
     "excellent": "Shkëlqyer!",
@@ -302,12 +305,14 @@
     "reviewAnswers": "Rishiko Përgjigjet",
     "correctStatus": "✓ Saktë",
     "wrongStatus": "✗ Gabim",
-    "yourAnswer": "Pergjigjja juaj: {{answer}}",
+    "yourAnswer": "Përgjigjja juaj: {{answer}}",
     "correctAnswer": "Përgjigja e saktë: {{answer}}",
     "retry": "Provo Përsëri",
     "goBack": "Kthehu",
     "perfectScore": "REZULTAT PERFEKT!",
-    "history": "Tentativa të mëparshme"
+    "history": "Tentativa të mëparshme",
+    "practiceMistakes": "Ushtroni gabimet ({{count}})",
+    "practiceNotCounted": "Ushtrim — nuk llogaritet në rezultat"
   },
   "profileModal": {
     "premiumBadge": "Premium",

@@ -22,6 +22,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
   const [showExplanation, setShowExplanation] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [showQuitConfirm, setShowQuitConfirm] = useState(false);
+  const [showHint, setShowHint] = useState(false);
   const fadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
   const { colors } = useTheme();
@@ -34,14 +35,18 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
       setShowExplanation(false);
       setAnswers([]);
       setShowQuitConfirm(false);
+      setShowHint(false);
       // Reset fade animation so content is visible for the new quiz
       fadeAnim.setValue(1);
     }
-  }, [visible, fadeAnim]);
+    // quizSet is part of the deps: every attempt (retry, practise mistakes) starts from question 1
+  }, [visible, quizSet, fadeAnim]);
 
   if (!quizSet) return null;
 
   const currentQuestion = quizSet.questions[currentIndex];
+  // A new, shorter attempt can render once before the reset effect runs
+  if (!currentQuestion) return null;
   const totalQuestions = quizSet.questions.length;
   const progress = (currentIndex + (showExplanation ? 1 : 0)) / totalQuestions;
 
@@ -53,7 +58,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
 
   const handleNext = () => {
     const isCorrect = selectedOption === currentQuestion.correct;
-    const newAnswers = [...answers, { questionId: currentQuestion.id, selected: selectedOption, correct: isCorrect }];
+    const newAnswers = [...answers, { questionId: currentQuestion.id, selected: selectedOption, correct: isCorrect, usedHint: showHint }];
 
     Animated.sequence([
       Animated.timing(fadeAnim, { toValue: 0, duration: 200, useNativeDriver: true }),
@@ -65,6 +70,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
         setCurrentIndex(currentIndex + 1);
         setSelectedOption(null);
         setShowExplanation(false);
+        setShowHint(false);
         Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
       }
     });
@@ -96,6 +102,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
   };
 
   const isAnswerCorrect = selectedOption === currentQuestion.correct;
+  const whyWrongText = !isAnswerCorrect && selectedOption !== null ? currentQuestion.whyWrong?.[selectedOption] : null;
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen" onRequestClose={handleQuit}>
@@ -107,7 +114,9 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
           </TouchableOpacity>
           <View style={styles.headerCenter}>
             <Text style={styles.headerTitle} numberOfLines={1}>{quizSet.title}</Text>
-            <Text style={styles.headerProgress}>{currentIndex + 1} / {totalQuestions}</Text>
+            <Text style={styles.headerProgress}>
+              {quizSet.isPractice ? `${t('activeQuiz.practiceMode')} · ` : ''}{currentIndex + 1} / {totalQuestions}
+            </Text>
           </View>
           <View style={styles.difficultyBadge}>
             <Text style={styles.difficultyText}>{quizSet.icon}</Text>
@@ -136,6 +145,26 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
               <Text style={[styles.questionNumber, { color: quizSet.color }]}>{t('activeQuiz.questionLabel', { number: currentIndex + 1 })}</Text>
               <Text style={styles.questionText}>{currentQuestion.question}</Text>
             </View>
+
+            {/* Hint: one nudge towards the method, only before answering */}
+            {!!currentQuestion.hint && selectedOption === null && (
+              showHint ? (
+                <View style={styles.hintCard}>
+                  <Ionicons name="bulb" size={18} color={colors.secondary} />
+                  <Text style={styles.hintText}>{currentQuestion.hint}</Text>
+                </View>
+              ) : (
+                <TouchableOpacity
+                  style={styles.hintButton}
+                  onPress={() => setShowHint(true)}
+                  activeOpacity={0.6}
+                  accessibilityRole="button"
+                >
+                  <Ionicons name="bulb-outline" size={16} color={colors.secondary} />
+                  <Text style={styles.hintButtonText}>{t('activeQuiz.showHint')}</Text>
+                </TouchableOpacity>
+              )
+            )}
 
             {/* Options */}
             <View style={styles.optionsContainer}>
@@ -175,6 +204,12 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
                 <Text style={[styles.explanationTitle, { color: isAnswerCorrect ? colors.success : colors.error }]}>
                   {isAnswerCorrect ? `✓ ${t('activeQuiz.correct')}` : `✗ ${t('activeQuiz.wrong')}`}
                 </Text>
+                {!!whyWrongText && (
+                  <View style={styles.whyWrongBox}>
+                    <Text style={styles.whyWrongLabel}>{t('activeQuiz.whyNot', { answer: currentQuestion.options[selectedOption] })}</Text>
+                    <Text style={styles.explanationText}>{whyWrongText}</Text>
+                  </View>
+                )}
                 <Text style={styles.explanationText}>{currentQuestion.explanation}</Text>
               </View>
             )}
@@ -304,6 +339,36 @@ const makeStyles = (colors) => StyleSheet.create({
     color: colors.text,
   },
 
+  // Hint
+  hintButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: SPACING.xs + 2,
+    minHeight: 36,
+    paddingHorizontal: SPACING.md,
+    marginTop: SPACING.md,
+    borderRadius: BORDER_RADIUS.round,
+    backgroundColor: colors.warningLight,
+  },
+  hintButtonText: {
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.secondary,
+  },
+  hintCard: {
+    flexDirection: 'row',
+    gap: SPACING.sm,
+    marginTop: SPACING.md,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: colors.warningLight,
+  },
+  hintText: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.text,
+    flex: 1,
+  },
+
   // Options
   optionsContainer: {
     marginTop: SPACING.lg,
@@ -389,6 +454,17 @@ const makeStyles = (colors) => StyleSheet.create({
   explanationText: {
     ...TYPOGRAPHY.body,
     color: colors.text,
+  },
+  whyWrongBox: {
+    marginBottom: SPACING.md,
+    paddingBottom: SPACING.md,
+    borderBottomWidth: HAIRLINE,
+    borderBottomColor: colors.border,
+  },
+  whyWrongLabel: {
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.error,
+    marginBottom: 2,
   },
 
   footer: {

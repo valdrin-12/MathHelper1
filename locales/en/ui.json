@@ -282,7 +282,10 @@
     "quitTitle": "Quit Quiz",
     "quitMessage": "Are you sure you want to quit? Your progress will be lost.",
     "continueQuiz": "Continue Quiz",
-    "quit": "Quit"
+    "quit": "Quit",
+    "showHint": "Show a hint",
+    "whyNot": "Why not “{{answer}}”?",
+    "practiceMode": "Practice"
   },
   "quizResult": {
     "excellent": "Excellent!",
@@ -307,7 +310,9 @@
     "retry": "Try Again",
     "goBack": "Go Back",
     "perfectScore": "PERFECT SCORE!",
-    "history": "Previous attempts"
+    "history": "Previous attempts",
+    "practiceMistakes": "Practise mistakes ({{count}})",
+    "practiceNotCounted": "Practice — not counted in your score"
   },
   "profileModal": {
     "premiumBadge": "Premium",

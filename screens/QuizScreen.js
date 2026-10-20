@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import { useLocalizedQuizzes } from '../hooks/useLocalizedData';
 import { FREE_QUIZ_IDS } from '../data/quizData';
+import { createQuizAttempt } from '../utils/quizAttempt';
 import { isPremiumActive } from '../utils/isPremium';
 import ActiveQuizModal from '../components/ActiveQuizModal';
 import QuizResultModal from '../components/QuizResultModal';
@@ -142,7 +143,7 @@ export default function QuizScreen() {
       setShowPremiumModal(true);
       return;
     }
-    setActiveQuiz(quizSet);
+    setActiveQuiz(createQuizAttempt(quizSet));
     setShowQuiz(true);
   };
 
@@ -151,6 +152,11 @@ export default function QuizScreen() {
     setCompletedQuizSet(quizSet);
     setShowQuiz(false);
     setShowResult(true);
+    // Practising mistakes doesn't count towards scores, best score or the daily challenge
+    if (quizSet?.isPractice) {
+      setLastScore(null);
+      return;
+    }
     const correct = answers ? answers.filter(a => a?.correct).length : 0;
     const total = quizSet?.questions?.length || 0;
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
@@ -167,7 +173,20 @@ export default function QuizScreen() {
     }
   };
 
+  // A retry is always a full, freshly shuffled attempt of the original set
+  const findOriginalSet = (attempt) => quizSets.find((q) => q.id === attempt?.id) || attempt;
+
   const handleRetryQuiz = () => {
+    setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet)));
+    setShowResult(false);
+    setQuizResult(null);
+    setShowQuiz(true);
+  };
+
+  const handlePracticeMistakes = () => {
+    const wrongIds = (quizResult || []).filter((a) => !a?.correct).map((a) => a.questionId);
+    if (wrongIds.length === 0) return;
+    setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet), { questionIds: wrongIds, isPractice: true }));
     setShowResult(false);
     setQuizResult(null);
     setShowQuiz(true);
@@ -344,6 +363,7 @@ export default function QuizScreen() {
         quizSet={completedQuizSet}
         onClose={handleCloseResult}
         onRetry={handleRetryQuiz}
+        onPracticeMistakes={handlePracticeMistakes}
         isPerfectScore={lastScore === 100}
         quizHistory={(stats?.completedQuizzes || []).filter(q => q.quizId === completedQuizSet?.id)}
       />
