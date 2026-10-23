@@ -21,7 +21,10 @@ export const CHALLENGE_KEY_PREFIX = '@mathhelper_challenge_';
 export const CACHED_USER_KEY = '@mathhelper_cached_user';
 
 /** Any key starting with one of these prefixes is per-user data and is wiped on logout. */
-export const USER_SCOPED_PREFIXES = [COURSE_PROGRESS_KEY, CHALLENGE_KEY_PREFIX, CACHED_USER_KEY];
+// Local XP record for practice attempts and hint costs (see utils/progress.js XP_LEDGER_KEY)
+const XP_LEDGER_KEY = '@mathhelper_xp_ledger';
+
+export const USER_SCOPED_PREFIXES = [COURSE_PROGRESS_KEY, CHALLENGE_KEY_PREFIX, CACHED_USER_KEY, XP_LEDGER_KEY];
 
 let currentUserId = null;
 

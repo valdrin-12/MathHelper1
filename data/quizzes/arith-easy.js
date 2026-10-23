@@ -1,6 +1,7 @@
 // Quiz set "arith-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "arith-easy",
@@ -583,6 +584,133 @@ export default {
           "Sie haben 4³ statt 4² gerechnet (27 + 64).",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 65
+      },
+      "al": {
+        "question": "Llogaritni: 125 − 4 × (6 + 9)",
+        "explanation": "Fillimisht kllapa: 6 + 9 = 15. Pastaj shumëzimi: 4 × 15 = 60. Në fund zbritja: 125 − 60 = 65.",
+        "hint": "Kujtoni radhën e veprimeve: kllapat, pastaj shumëzimi, në fund zbritja.",
+        "commonMistakes": [
+          {
+            "value": 1815,
+            "why": "Keni zbritur para shumëzimit: (125 − 4) × 15 = 1815."
+          },
+          {
+            "value": 110,
+            "why": "Keni injoruar kllapat: 125 − 4 × 6 + 9 = 125 − 24 + 9 = 110."
+          }
+        ]
+      },
+      "en": {
+        "question": "Calculate: 125 − 4 × (6 + 9)",
+        "explanation": "Brackets first: 6 + 9 = 15. Then multiplication: 4 × 15 = 60. Finally subtraction: 125 − 60 = 65.",
+        "hint": "Remember the order of operations: brackets, then multiplication, then subtraction.",
+        "commonMistakes": [
+          {
+            "value": 1815,
+            "why": "You subtracted before multiplying: (125 − 4) × 15 = 1815."
+          },
+          {
+            "value": 110,
+            "why": "You ignored the brackets: 125 − 4 × 6 + 9 = 125 − 24 + 9 = 110."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie: 125 − 4 × (6 + 9)",
+        "explanation": "Zuerst die Klammer: 6 + 9 = 15. Dann die Multiplikation: 4 × 15 = 60. Zuletzt die Subtraktion: 125 − 60 = 65.",
+        "hint": "Denken Sie an die Rechenreihenfolge: Klammern, dann Punkt- vor Strichrechnung.",
+        "commonMistakes": [
+          {
+            "value": 1815,
+            "why": "Sie haben vor dem Multiplizieren subtrahiert: (125 − 4) × 15 = 1815."
+          },
+          {
+            "value": 110,
+            "why": "Sie haben die Klammer ignoriert: 125 − 4 × 6 + 9 = 125 − 24 + 9 = 110."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 24
+      },
+      "al": {
+        "question": "Gjeni shumëfishin më të vogël të përbashkët (SHVP) të numrave 6 dhe 8.",
+        "explanation": "Shumëfishat e 8: 8, 16, 24, … Numri 24 është i pari që pjesëtohet edhe me 6 (24 = 6 · 4). Pra SHVP(6, 8) = 24.",
+        "hint": "Renditni shumëfishat e numrit më të madh derisa të gjeni një që pjesëtohet edhe me numrin tjetër.",
+        "commonMistakes": [
+          {
+            "value": 48,
+            "why": "Kjo është prodhimi 6 · 8; ai është shumëfish i përbashkët, por jo më i vogli."
+          },
+          {
+            "value": 2,
+            "why": "Ky është pjesëtuesi më i madh i përbashkët (PMP), jo shumëfishi më i vogël i përbashkët."
+          }
+        ]
+      },
+      "en": {
+        "question": "Find the least common multiple (LCM) of 6 and 8.",
+        "explanation": "Multiples of 8: 8, 16, 24, … 24 is the first one that is also divisible by 6 (24 = 6 · 4). So LCM(6, 8) = 24.",
+        "hint": "List the multiples of the larger number until you find one that the other number divides.",
+        "commonMistakes": [
+          {
+            "value": 48,
+            "why": "That is the product 6 · 8; it is a common multiple, but not the least one."
+          },
+          {
+            "value": 2,
+            "why": "That is the greatest common divisor (GCD), not the least common multiple."
+          }
+        ]
+      },
+      "de": {
+        "question": "Bestimmen Sie das kleinste gemeinsame Vielfache (kgV) von 6 und 8.",
+        "explanation": "Vielfache von 8: 8, 16, 24, … 24 ist das erste, das auch durch 6 teilbar ist (24 = 6 · 4). Also kgV(6, 8) = 24.",
+        "hint": "Schreiben Sie die Vielfachen der größeren Zahl auf, bis eines auch durch die andere Zahl teilbar ist.",
+        "commonMistakes": [
+          {
+            "value": 48,
+            "why": "Das ist das Produkt 6 · 8; es ist ein gemeinsames Vielfaches, aber nicht das kleinste."
+          },
+          {
+            "value": 2,
+            "why": "Das ist der größte gemeinsame Teiler (ggT), nicht das kleinste gemeinsame Vielfache."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Të gjithë numrat e thjeshtë janë numra tek.",
+        "explanation": "Numri 2 është i thjeshtë (ka vetëm pjesëtuesit 1 dhe 2) dhe është çift. Pra jo të gjithë numrat e thjeshtë janë tek; pohimi është i gabuar.",
+        "hint": "Kontrolloni numrin e thjeshtë më të vogël.",
+        "whyWrong": "Pohimi nuk është i vërtetë: 2 është numër i thjeshtë dhe çift, prandaj ekziston të paktën një përjashtim."
+      },
+      "en": {
+        "question": "All prime numbers are odd.",
+        "explanation": "The number 2 is prime (its only divisors are 1 and 2) and it is even. So not all primes are odd; the statement is false.",
+        "hint": "Check the smallest prime number.",
+        "whyWrong": "The statement is not true: 2 is a prime number and it is even, so there is at least one exception."
+      },
+      "de": {
+        "question": "Alle Primzahlen sind ungerade.",
+        "explanation": "Die Zahl 2 ist eine Primzahl (sie hat nur die Teiler 1 und 2) und ist gerade. Also sind nicht alle Primzahlen ungerade; die Aussage ist falsch.",
+        "hint": "Prüfen Sie die kleinste Primzahl.",
+        "whyWrong": "Die Aussage stimmt nicht: 2 ist eine Primzahl und gerade, es gibt also mindestens eine Ausnahme."
       }
     }
   ]

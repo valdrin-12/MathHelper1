@@ -14,6 +14,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
 import { Button, Pill } from './ui';
+import { getLevelInfo } from '../utils/progress';
+import { formatNumber, parseNumericAnswer, findCommonMistake } from '../utils/quizAttempt';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const CONFETTI_COUNT = 40;
@@ -120,8 +122,42 @@ function ConfettiAnimation() {
   );
 }
 
-export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, onPracticeMistakes, isPerfectScore, quizHistory = [] }) {
-  const { t } = useTranslation();
+// XP gained in this attempt and the level progress after it
+function XpCard({ xpSummary, styles, colors, t }) {
+  const before = getLevelInfo(xpSummary.totalBefore);
+  const after = getLevelInfo(xpSummary.totalAfter);
+  const leveledUp = after.level > before.level;
+  return (
+    <View style={styles.xpCard} accessible accessibilityLabel={`${t('quizResult.xpGained', { xp: xpSummary.gained })}, ${t('progress.levelN', { level: after.level })}`}>
+      <View style={styles.xpTopRow}>
+        <View style={styles.xpIcon}>
+          <Ionicons name="sparkles" size={18} color={colors.warningAccent} />
+        </View>
+        <View style={styles.flex1}>
+          <Text style={styles.xpGained}>{t('quizResult.xpGained', { xp: xpSummary.gained })}</Text>
+          {xpSummary.hintPenalty > 0 && (
+            <Text style={styles.xpNote}>{t('quizResult.hintPenalty', { xp: xpSummary.hintPenalty })}</Text>
+          )}
+        </View>
+        {leveledUp && <Pill icon="arrow-up-circle" label={t('quizResult.levelUp')} color={colors.success} filled />}
+      </View>
+      <View style={styles.xpLevelRow}>
+        <Text style={styles.xpLevelText} numberOfLines={1}>
+          {t('progress.levelN', { level: after.level })} · {t(after.nameKey)}
+        </Text>
+        <Text style={styles.xpLevelValue}>{after.xpIntoLevel}/{after.xpForLevel} XP</Text>
+      </View>
+      <View style={styles.xpBar}>
+        <View style={[styles.xpBarFill, { width: `${Math.round(after.progress * 100)}%` }]} />
+      </View>
+      <Text style={styles.xpNote}>{t('progress.xpToNext', { xp: after.nextLevelAt - after.xp, level: after.level + 1 })}</Text>
+    </View>
+  );
+}
+
+export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, onPracticeMistakes, isPerfectScore, quizHistory = [], xpSummary, timedOut }) {
+  const { t, i18n } = useTranslation();
+  const lang = (i18n.language || 'al').slice(0, 2);
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
@@ -129,6 +165,30 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
 
   const totalQuestions = quizSet.questions.length;
   const correctCount = result.filter(a => a?.correct).length;
+  // Answers are matched by question id (a timed-out test fills unanswered questions as wrong)
+  const answerById = new Map(result.map((a) => [a?.questionId, a]));
+  const tfLabel = (v) => (v ? t('activeQuiz.trueLabel') : t('activeQuiz.falseLabel'));
+  const unitOf = (q) => (q.unit ? ` ${q.unit}` : '');
+  const givenText = (q, a) => {
+    if (a?.given === null || a?.given === undefined) return null;
+    if (q.type === 'input') {
+      const v = parseNumericAnswer(a.given, q.unit);
+      return Number.isFinite(v) ? `${formatNumber(v, lang)}${unitOf(q)}` : String(a.given);
+    }
+    if (q.type === 'truefalse') return tfLabel(a.given);
+    return q.options?.[a.given] ?? null;
+  };
+  const correctText = (q) => {
+    if (q.type === 'input') return `${formatNumber(q.answer?.value, lang)}${unitOf(q)}`;
+    if (q.type === 'truefalse') return tfLabel(q.correct);
+    return q.options?.[q.correct];
+  };
+  const whyWrongFor = (q, a) => {
+    if (a?.correct || a?.given === null || a?.given === undefined) return null;
+    if (q.type === 'input') return findCommonMistake(q, parseNumericAnswer(a.given, q.unit))?.why || null;
+    if (q.type === 'truefalse') return q.whyWrong || null;
+    return q.whyWrong?.[a.given] || null;
+  };
   const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
   const wrongCount = totalQuestions - correctCount;
   const attemptPercentage = (attempt) => (
@@ -171,6 +231,11 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
                 <Pill icon="barbell" label={t('quizResult.practiceNotCounted')} color={colors.primary} />
               </View>
             )}
+            {!quizSet.isPractice && quizSet.mode === 'test' && (
+              <View style={styles.practiceNote}>
+                <Pill icon={timedOut ? 'alarm' : 'timer-outline'} label={timedOut ? t('quizResult.timeUp') : t('quizResult.testMode')} color={timedOut ? colors.error : colors.primary} />
+              </View>
+            )}
 
             {/* Score Circle */}
             <View style={[styles.scoreCircle, { borderColor: quizSet.color }]}>
@@ -198,11 +263,15 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
             </View>
           </View>
 
+          {xpSummary && <XpCard xpSummary={xpSummary} styles={styles} colors={colors} t={t} />}
+
           {/* Review Answers */}
           <Text style={styles.reviewTitle}>{t('quizResult.reviewAnswers')}</Text>
           {quizSet.questions.map((question, index) => {
-            const answer = result[index];
+            const answer = answerById.get(question.id);
             const isCorrect = answer?.correct;
+            const given = givenText(question, answer);
+            const why = whyWrongFor(question, answer);
             return (
               <View key={question.id} style={styles.reviewCard}>
                 <View style={styles.reviewCardHeader}>
@@ -223,16 +292,17 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
                   <View style={[styles.reviewAnswerRow, styles.reviewAnswerRowWrong]}>
                     <Ionicons name="close" size={15} color={colors.error} style={styles.reviewAnswerIcon} />
                     <Text style={styles.reviewYourAnswer}>
-                      {t('quizResult.yourAnswer', { answer: question.options[answer?.selected] || '-' })}
+                      {given === null ? t('quizResult.notAnswered') : t('quizResult.yourAnswer', { answer: given })}
                     </Text>
                   </View>
                 )}
                 <View style={[styles.reviewAnswerRow, styles.reviewAnswerRowCorrect]}>
                   <Ionicons name="checkmark" size={15} color={colors.success} style={styles.reviewAnswerIcon} />
                   <Text style={styles.reviewCorrectAnswer}>
-                    {t('quizResult.correctAnswer', { answer: question.options[question.correct] })}
+                    {t('quizResult.correctAnswer', { answer: correctText(question) })}
                   </Text>
                 </View>
+                {!!why && <Text style={styles.reviewWhyWrong}>{why}</Text>}
                 <Text style={styles.reviewExplanation}>{question.explanation}</Text>
               </View>
             );
@@ -449,10 +519,75 @@ const makeStyles = (colors) => StyleSheet.create({
     color: colors.text,
     flex: 1,
   },
+  reviewWhyWrong: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.error,
+    marginTop: SPACING.xs,
+  },
   reviewExplanation: {
     ...TYPOGRAPHY.footnote,
     color: colors.textSecondary,
     marginTop: SPACING.xs,
+  },
+
+  // XP
+  flex1: {
+    flex: 1,
+  },
+  xpCard: {
+    backgroundColor: colors.surface,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
+    marginTop: SPACING.lg,
+    gap: SPACING.sm,
+  },
+  xpTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.md,
+  },
+  xpIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.warningLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  xpGained: {
+    ...TYPOGRAPHY.h2,
+    color: colors.text,
+  },
+  xpLevelRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'baseline',
+    gap: SPACING.sm,
+    marginTop: SPACING.xs,
+  },
+  xpLevelText: {
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.text,
+    flex: 1,
+  },
+  xpLevelValue: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+  },
+  xpBar: {
+    height: 8,
+    backgroundColor: colors.borderLight,
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  xpBarFill: {
+    height: '100%',
+    borderRadius: 4,
+    backgroundColor: colors.warningAccent,
+  },
+  xpNote: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
   },
 
   // History

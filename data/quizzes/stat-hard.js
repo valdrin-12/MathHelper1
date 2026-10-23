@@ -1,6 +1,7 @@
 // Quiz set "stat-hard" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "stat-hard",
@@ -583,6 +584,147 @@ export default {
           null,
           "Es wurde nur durch 2! (für N) geteilt, nicht auch durch 3! (für A)."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 0.205,
+        "tolerance": 0.001
+      },
+      "al": {
+        "question": "Një lojtar e godet objektivin me probabilitet 0,2 në çdo gjuajtje, në mënyrë të pavarur. Ai gjuan 5 herë. Sa është probabiliteti që ta godasë saktësisht 2 herë? Rrumbullakoni në tri shifra pas presjes.",
+        "explanation": "Shpërndarja binomiale me n = 5, p = 0,2: P(X = 2) = C(5, 2) · 0,2² · 0,8³ = 10 · 0,04 · 0,512 = 0,2048 ≈ 0,205.",
+        "hint": "Përdorni formulën binomiale P(X = k) = C(n, k) · pᵏ · (1 − p)ⁿ⁻ᵏ.",
+        "commonMistakes": [
+          {
+            "value": 0.02,
+            "why": "Keni harruar koeficientin binomial C(5, 2) = 10: 0,04 · 0,512 ≈ 0,020."
+          },
+          {
+            "value": 0.04,
+            "why": "Keni llogaritur vetëm 0,2² = 0,04, pa mundësinë e mosgoditjes në 3 gjuajtjet e tjera dhe pa C(5, 2)."
+          }
+        ]
+      },
+      "en": {
+        "question": "A player hits a target with probability 0.2 on each shot, independently. They shoot 5 times. What is the probability of hitting exactly 2 times? Round to three decimal places.",
+        "explanation": "Binomial distribution with n = 5, p = 0.2: P(X = 2) = C(5, 2) · 0.2² · 0.8³ = 10 · 0.04 · 0.512 = 0.2048 ≈ 0.205.",
+        "hint": "Use the binomial formula P(X = k) = C(n, k) · pᵏ · (1 − p)ⁿ⁻ᵏ.",
+        "commonMistakes": [
+          {
+            "value": 0.02,
+            "why": "You forgot the binomial coefficient C(5, 2) = 10: 0.04 · 0.512 ≈ 0.020."
+          },
+          {
+            "value": 0.04,
+            "why": "You only computed 0.2² = 0.04, without the probability of missing the other 3 shots and without C(5, 2)."
+          }
+        ]
+      },
+      "de": {
+        "question": "Eine Spielerin trifft bei jedem Schuss unabhängig mit der Wahrscheinlichkeit 0,2. Sie schießt 5-mal. Wie groß ist die Wahrscheinlichkeit für genau 2 Treffer? Runden Sie auf drei Nachkommastellen.",
+        "explanation": "Binomialverteilung mit n = 5, p = 0,2: P(X = 2) = C(5, 2) · 0,2² · 0,8³ = 10 · 0,04 · 0,512 = 0,2048 ≈ 0,205.",
+        "hint": "Verwenden Sie die Binomialformel P(X = k) = C(n, k) · pᵏ · (1 − p)ⁿ⁻ᵏ.",
+        "commonMistakes": [
+          {
+            "value": 0.02,
+            "why": "Sie haben den Binomialkoeffizienten C(5, 2) = 10 vergessen: 0,04 · 0,512 ≈ 0,020."
+          },
+          {
+            "value": 0.04,
+            "why": "Sie haben nur 0,2² = 0,04 berechnet, ohne die Wahrscheinlichkeit für die 3 Fehlschüsse und ohne C(5, 2)."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 4.2,
+        "tolerance": 0.01
+      },
+      "al": {
+        "question": "X ka shpërndarje binomiale me n = 20 dhe p = 0,3. Llogaritni variancën Var(X). Shkruani rezultatin si numër dhjetor.",
+        "explanation": "Për shpërndarjen binomiale Var(X) = n · p · (1 − p) = 20 · 0,3 · 0,7 = 4,2.",
+        "hint": "Varianca e shpërndarjes binomiale është n · p · (1 − p).",
+        "commonMistakes": [
+          {
+            "value": 6,
+            "why": "Kjo është pritja matematike E(X) = n · p = 6, jo varianca."
+          },
+          {
+            "value": 2.05,
+            "why": "Kjo është devijimi standard √4,2 ≈ 2,05; varianca nuk merret nën rrënjë."
+          },
+          {
+            "value": 14,
+            "why": "Keni llogaritur n · (1 − p) = 14, duke harruar faktorin p."
+          }
+        ]
+      },
+      "en": {
+        "question": "X is binomially distributed with n = 20 and p = 0.3. Calculate the variance Var(X). Give the result as a decimal number.",
+        "explanation": "For a binomial distribution Var(X) = n · p · (1 − p) = 20 · 0.3 · 0.7 = 4.2.",
+        "hint": "The variance of a binomial distribution is n · p · (1 − p).",
+        "commonMistakes": [
+          {
+            "value": 6,
+            "why": "That is the expected value E(X) = n · p = 6, not the variance."
+          },
+          {
+            "value": 2.05,
+            "why": "That is the standard deviation √4.2 ≈ 2.05; the variance is not square-rooted."
+          },
+          {
+            "value": 14,
+            "why": "You computed n · (1 − p) = 14 and forgot the factor p."
+          }
+        ]
+      },
+      "de": {
+        "question": "X ist binomialverteilt mit n = 20 und p = 0,3. Berechnen Sie die Varianz Var(X). Geben Sie das Ergebnis als Dezimalzahl an.",
+        "explanation": "Für die Binomialverteilung gilt Var(X) = n · p · (1 − p) = 20 · 0,3 · 0,7 = 4,2.",
+        "hint": "Die Varianz der Binomialverteilung ist n · p · (1 − p).",
+        "commonMistakes": [
+          {
+            "value": 6,
+            "why": "Das ist der Erwartungswert E(X) = n · p = 6, nicht die Varianz."
+          },
+          {
+            "value": 2.05,
+            "why": "Das ist die Standardabweichung √4,2 ≈ 2,05; die Varianz wird nicht gewurzelt."
+          },
+          {
+            "value": 14,
+            "why": "Sie haben n · (1 − p) = 14 gerechnet und den Faktor p vergessen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Dy ngjarje me probabilitete pozitive që përjashtojnë njëra-tjetrën (nuk mund të ndodhin njëkohësisht) janë të pavarura.",
+        "explanation": "Nëse A dhe B përjashtojnë njëra-tjetrën, P(A ∩ B) = 0. Por P(A) · P(B) > 0, pra P(A ∩ B) ≠ P(A) · P(B) dhe ngjarjet nuk janë të pavarura. Në fakt, nëse ndodh A, B bëhet e pamundur, që është varësi e fortë. Pohimi është i gabuar.",
+        "hint": "Krahasoni P(A ∩ B) me P(A) · P(B).",
+        "whyWrong": "Pohimi nuk është i vërtetë: për ngjarje që përjashtojnë njëra-tjetrën P(A ∩ B) = 0, ndërsa pavarësia kërkon P(A ∩ B) = P(A) · P(B) > 0."
+      },
+      "en": {
+        "question": "Two events with positive probabilities that are mutually exclusive (cannot happen together) are independent.",
+        "explanation": "If A and B are mutually exclusive, P(A ∩ B) = 0. But P(A) · P(B) > 0, so P(A ∩ B) ≠ P(A) · P(B) and the events are not independent. In fact, if A happens, B becomes impossible, which is a strong dependence. The statement is false.",
+        "hint": "Compare P(A ∩ B) with P(A) · P(B).",
+        "whyWrong": "The statement is not true: for mutually exclusive events P(A ∩ B) = 0, whereas independence requires P(A ∩ B) = P(A) · P(B) > 0."
+      },
+      "de": {
+        "question": "Zwei unvereinbare Ereignisse (sie können nicht gleichzeitig eintreten) mit positiven Wahrscheinlichkeiten sind unabhängig.",
+        "explanation": "Sind A und B unvereinbar, gilt P(A ∩ B) = 0. Aber P(A) · P(B) > 0, also P(A ∩ B) ≠ P(A) · P(B), und die Ereignisse sind nicht unabhängig. Tritt A ein, wird B sogar unmöglich – eine starke Abhängigkeit. Die Aussage ist falsch.",
+        "hint": "Vergleichen Sie P(A ∩ B) mit P(A) · P(B).",
+        "whyWrong": "Die Aussage stimmt nicht: Für unvereinbare Ereignisse ist P(A ∩ B) = 0, Unabhängigkeit verlangt aber P(A ∩ B) = P(A) · P(B) > 0."
       }
     }
   ]

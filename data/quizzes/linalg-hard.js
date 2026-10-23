@@ -1,6 +1,7 @@
 // Quiz set "linalg-hard" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "linalg-hard",
@@ -583,6 +584,109 @@ export default {
           "Erfüllt die erste Gleichung, aber 2 · 1 − 3 + 2 = 1 ≠ 3.",
           "Erfüllt die erste Gleichung, aber 2 · 2 − 1 + 3 = 6 ≠ 3."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 5
+      },
+      "al": {
+        "question": "Llogaritni sipërfaqen e trekëndëshit me kulme A(0, 0, 0), B(2, 0, 0) dhe C(0, 3, 4).",
+        "explanation": "AB = (2, 0, 0), AC = (0, 3, 4). AB × AC = (0 · 4 − 0 · 3, 0 · 0 − 2 · 4, 2 · 3 − 0 · 0) = (0, −8, 6). |AB × AC| = √(64 + 36) = 10. Sipërfaqja = 10 : 2 = 5.",
+        "hint": "Sipërfaqja e trekëndëshit është gjysma e gjatësisë së prodhimit vektorial AB × AC.",
+        "commonMistakes": [
+          {
+            "value": 10,
+            "why": "Kjo është sipërfaqja e paralelogramit |AB × AC|; për trekëndëshin duhet pjesëtuar me 2."
+          }
+        ]
+      },
+      "en": {
+        "question": "Calculate the area of the triangle with vertices A(0, 0, 0), B(2, 0, 0) and C(0, 3, 4).",
+        "explanation": "AB = (2, 0, 0), AC = (0, 3, 4). AB × AC = (0 · 4 − 0 · 3, 0 · 0 − 2 · 4, 2 · 3 − 0 · 0) = (0, −8, 6). |AB × AC| = √(64 + 36) = 10. Area = 10 ÷ 2 = 5.",
+        "hint": "The area of the triangle is half the length of the cross product AB × AC.",
+        "commonMistakes": [
+          {
+            "value": 10,
+            "why": "That is the area of the parallelogram |AB × AC|; for the triangle you must divide by 2."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie den Flächeninhalt des Dreiecks mit den Eckpunkten A(0, 0, 0), B(2, 0, 0) und C(0, 3, 4).",
+        "explanation": "AB = (2, 0, 0), AC = (0, 3, 4). AB × AC = (0 · 4 − 0 · 3, 0 · 0 − 2 · 4, 2 · 3 − 0 · 0) = (0, −8, 6). |AB × AC| = √(64 + 36) = 10. Flächeninhalt = 10 : 2 = 5.",
+        "hint": "Der Flächeninhalt des Dreiecks ist die Hälfte der Länge des Kreuzprodukts AB × AC.",
+        "commonMistakes": [
+          {
+            "value": 10,
+            "why": "Das ist der Flächeninhalt des Parallelogramms |AB × AC|; für das Dreieck muss man durch 2 teilen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 6
+      },
+      "al": {
+        "question": "Llogaritni vëllimin e paralelopipedit të ndërtuar mbi vektorët a = (1, 0, 0), b = (1, 2, 0) dhe c = (1, 1, 3).",
+        "explanation": "Vëllimi është vlera absolute e prodhimit të përzier, pra e përcaktorit me rreshta a, b, c: det [[1, 0, 0], [1, 2, 0], [1, 1, 3]] = 1 · (2 · 3 − 0 · 1) − 0 + 0 = 6. V = |6| = 6.",
+        "hint": "Përdorni prodhimin e përzier a · (b × c), domethënë përcaktorin 3×3 të vektorëve.",
+        "commonMistakes": [
+          {
+            "value": 1,
+            "why": "Keni pjesëtuar me 6; kjo është vëllimi i tetraedrit mbi të njëjtët vektorë, jo i paralelopipedit."
+          }
+        ]
+      },
+      "en": {
+        "question": "Calculate the volume of the parallelepiped spanned by the vectors a = (1, 0, 0), b = (1, 2, 0) and c = (1, 1, 3).",
+        "explanation": "The volume is the absolute value of the scalar triple product, i.e. of the determinant with rows a, b, c: det [[1, 0, 0], [1, 2, 0], [1, 1, 3]] = 1 · (2 · 3 − 0 · 1) − 0 + 0 = 6. V = |6| = 6.",
+        "hint": "Use the scalar triple product a · (b × c), i.e. the 3×3 determinant of the vectors.",
+        "commonMistakes": [
+          {
+            "value": 1,
+            "why": "You divided by 6; that is the volume of the tetrahedron spanned by the same vectors, not of the parallelepiped."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie das Volumen des Spats (Parallelepipeds), der von den Vektoren a = (1, 0, 0), b = (1, 2, 0) und c = (1, 1, 3) aufgespannt wird.",
+        "explanation": "Das Volumen ist der Betrag des Spatprodukts, also der Determinante mit den Zeilen a, b, c: det [[1, 0, 0], [1, 2, 0], [1, 1, 3]] = 1 · (2 · 3 − 0 · 1) − 0 + 0 = 6. V = |6| = 6.",
+        "hint": "Verwenden Sie das Spatprodukt a · (b × c), also die 3×3-Determinante der Vektoren.",
+        "commonMistakes": [
+          {
+            "value": 1,
+            "why": "Sie haben durch 6 geteilt; das ist das Volumen des Tetraeders aus denselben Vektoren, nicht des Spats."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Nëse A dhe B janë matrica 2×2 dhe A · B = 0 (matrica zero), atëherë A = 0 ose B = 0.",
+        "explanation": "Për matricat ky rregull nuk vlen. Shembull: A = [[1, 0], [0, 0]] dhe B = [[0, 0], [0, 1]] janë jozero, por A · B = [[0, 0], [0, 0]]. Pohimi është i gabuar.",
+        "hint": "Kërkoni dy matrica jozero, secila me një rresht ose shtyllë zero.",
+        "whyWrong": "Pohimi nuk është i vërtetë: te matricat ekzistojnë «pjesëtues të zeros», p.sh. [[1, 0], [0, 0]] · [[0, 0], [0, 1]] = 0, megjithëse asnjëra nuk është zero."
+      },
+      "en": {
+        "question": "If A and B are 2×2 matrices and A · B = 0 (the zero matrix), then A = 0 or B = 0.",
+        "explanation": "This rule does not hold for matrices. Example: A = [[1, 0], [0, 0]] and B = [[0, 0], [0, 1]] are non-zero, but A · B = [[0, 0], [0, 0]]. The statement is false.",
+        "hint": "Look for two non-zero matrices, each with a zero row or column.",
+        "whyWrong": "The statement is not true: matrices have “zero divisors”, e.g. [[1, 0], [0, 0]] · [[0, 0], [0, 1]] = 0 although neither factor is zero."
+      },
+      "de": {
+        "question": "Sind A und B 2×2-Matrizen mit A · B = 0 (Nullmatrix), dann gilt A = 0 oder B = 0.",
+        "explanation": "Diese Regel gilt für Matrizen nicht. Beispiel: A = [[1, 0], [0, 0]] und B = [[0, 0], [0, 1]] sind keine Nullmatrizen, aber A · B = [[0, 0], [0, 0]]. Die Aussage ist falsch.",
+        "hint": "Suchen Sie zwei von null verschiedene Matrizen, jede mit einer Nullzeile oder Nullspalte.",
+        "whyWrong": "Die Aussage stimmt nicht: Bei Matrizen gibt es „Nullteiler“, z. B. [[1, 0], [0, 0]] · [[0, 0], [0, 1]] = 0, obwohl keiner der Faktoren null ist."
       }
     }
   ]

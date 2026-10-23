@@ -1,6 +1,7 @@
 // Quiz set "stat-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "stat-medium",
@@ -583,6 +584,121 @@ export default {
           "Es wurde mit 5 multipliziert statt 5 zu addieren.",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 5040
+      },
+      "al": {
+        "question": "Sa kode PIN me 4 shifra mund të formohen nga shifrat 0–9, nëse të gjitha shifrat duhet të jenë të ndryshme? (Kodi mund të fillojë me 0.)",
+        "explanation": "Renditja ka rëndësi dhe shifrat nuk përsëriten: 10 · 9 · 8 · 7 = 5040.",
+        "hint": "Numëroni sa zgjedhje ka për pozicionin e parë, të dytë, të tretë dhe të katërt.",
+        "commonMistakes": [
+          {
+            "value": 10000,
+            "why": "Kjo është 10⁴, numri i kodeve kur shifrat lejohen të përsëriten."
+          },
+          {
+            "value": 210,
+            "why": "Kjo është kombinacioni C(10, 4) = 210, ku renditja nuk merret parasysh; te kodi PIN renditja ka rëndësi."
+          }
+        ]
+      },
+      "en": {
+        "question": "How many 4-digit PIN codes can be formed from the digits 0–9 if all digits must be different? (A code may start with 0.)",
+        "explanation": "Order matters and digits do not repeat: 10 · 9 · 8 · 7 = 5040.",
+        "hint": "Count the choices for the first, second, third and fourth position.",
+        "commonMistakes": [
+          {
+            "value": 10000,
+            "why": "That is 10⁴, the number of codes when digits may repeat."
+          },
+          {
+            "value": 210,
+            "why": "That is the combination C(10, 4) = 210, which ignores order; for a PIN the order matters."
+          }
+        ]
+      },
+      "de": {
+        "question": "Wie viele 4-stellige PIN-Codes lassen sich aus den Ziffern 0–9 bilden, wenn alle Ziffern verschieden sein müssen? (Ein Code darf mit 0 beginnen.)",
+        "explanation": "Die Reihenfolge zählt und Ziffern wiederholen sich nicht: 10 · 9 · 8 · 7 = 5040.",
+        "hint": "Zählen Sie die Möglichkeiten für die erste, zweite, dritte und vierte Stelle.",
+        "commonMistakes": [
+          {
+            "value": 10000,
+            "why": "Das ist 10⁴, die Anzahl der Codes, wenn Ziffern wiederholt werden dürfen."
+          },
+          {
+            "value": 210,
+            "why": "Das ist die Kombination C(10, 4) = 210, die die Reihenfolge nicht beachtet; bei einer PIN zählt die Reihenfolge."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 7
+      },
+      "al": {
+        "question": "Mesatarja e 5 numrave është 8. Njëri prej tyre, 12, hiqet. Sa është mesatarja e 4 numrave të mbetur?",
+        "explanation": "Shuma e 5 numrave: 5 · 8 = 40. Pas heqjes së 12: 40 − 12 = 28. Mesatarja e re: 28 : 4 = 7.",
+        "hint": "Gjeni fillimisht shumën e të gjithë numrave nga mesatarja.",
+        "commonMistakes": [
+          {
+            "value": 5.6,
+            "why": "Keni pjesëtuar me 5 në vend të 4: 28 : 5 = 5,6; pas heqjes mbeten vetëm 4 numra."
+          }
+        ]
+      },
+      "en": {
+        "question": "The mean of 5 numbers is 8. One of them, 12, is removed. What is the mean of the remaining 4 numbers?",
+        "explanation": "Sum of the 5 numbers: 5 · 8 = 40. After removing 12: 40 − 12 = 28. New mean: 28 ÷ 4 = 7.",
+        "hint": "First find the total of all the numbers from the mean.",
+        "commonMistakes": [
+          {
+            "value": 5.6,
+            "why": "You divided by 5 instead of 4: 28 ÷ 5 = 5.6; after the removal only 4 numbers remain."
+          }
+        ]
+      },
+      "de": {
+        "question": "Der Mittelwert von 5 Zahlen ist 8. Eine davon, die 12, wird entfernt. Wie groß ist der Mittelwert der übrigen 4 Zahlen?",
+        "explanation": "Summe der 5 Zahlen: 5 · 8 = 40. Nach dem Entfernen der 12: 40 − 12 = 28. Neuer Mittelwert: 28 : 4 = 7.",
+        "hint": "Bestimmen Sie zuerst aus dem Mittelwert die Summe aller Zahlen.",
+        "commonMistakes": [
+          {
+            "value": 5.6,
+            "why": "Sie haben durch 5 statt durch 4 geteilt: 28 : 5 = 5,6; nach dem Entfernen bleiben nur 4 Zahlen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Nëse çdo vlerë e një grupi të dhënash shumëzohet me 2, edhe devijimi standard shumëzohet me 2.",
+        "explanation": "Kur çdo vlerë shumëzohet me 2, mesatarja shumëzohet me 2 dhe çdo largesë nga mesatarja dyfishohet. Varianca shumëzohet me 2² = 4, prandaj devijimi standard me √4 = 2. Pohimi është i vërtetë.",
+        "hint": "Mendoni çfarë ndodh me largesat e vlerave nga mesatarja.",
+        "whyWrong": "Pohimi nuk është i gabuar: ndryshe nga shtimi i një konstanteje (që nuk e ndryshon shpërndarjen), shumëzimi i zgjeron të gjitha largesat nga mesatarja me faktorin 2."
+      },
+      "en": {
+        "question": "If every value of a data set is multiplied by 2, the standard deviation is also multiplied by 2.",
+        "explanation": "Multiplying every value by 2 doubles the mean and doubles every deviation from the mean. The variance is multiplied by 2² = 4, so the standard deviation by √4 = 2. The statement is true.",
+        "hint": "Think about what happens to the distances of the values from the mean.",
+        "whyWrong": "The statement is not false: unlike adding a constant (which leaves the spread unchanged), multiplying stretches every deviation from the mean by the factor 2."
+      },
+      "de": {
+        "question": "Wird jeder Wert einer Datenreihe mit 2 multipliziert, so wird auch die Standardabweichung mit 2 multipliziert.",
+        "explanation": "Multipliziert man jeden Wert mit 2, verdoppeln sich der Mittelwert und jede Abweichung vom Mittelwert. Die Varianz wird mit 2² = 4 multipliziert, die Standardabweichung also mit √4 = 2. Die Aussage ist wahr.",
+        "hint": "Überlegen Sie, was mit den Abständen der Werte vom Mittelwert passiert.",
+        "whyWrong": "Die Aussage ist nicht falsch: Anders als das Addieren einer Konstanten (das die Streuung nicht ändert) streckt das Multiplizieren jede Abweichung vom Mittelwert um den Faktor 2."
       }
     }
   ]

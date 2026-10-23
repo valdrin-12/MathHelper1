@@ -150,7 +150,13 @@
     "challengeOfDay": "Herausforderung des Tages",
     "daily": "Täglich",
     "completed": "Heute erledigt ✓",
-    "bestScore": "Beste: {{score}}%"
+    "bestScore": "Beste: {{score}}%",
+    "chooseMode": "Wie möchten Sie üben?",
+    "modePractice": "Übung",
+    "modePracticeDesc": "Ohne Zeitlimit. Sie sehen sofort, ob jede Antwort richtig ist. Tipps: −{{xp}} XP.",
+    "modeTest": "Test",
+    "modeTestDesc": "{{minutes}} Minuten für das ganze Quiz. Ergebnis und Erklärungen am Ende. Tipps: −{{xp}} XP.",
+    "startMode": "Starten: {{mode}}"
   },
   "saved": {
     "loadErrorTitle": "Gespeicherte Aufgaben konnten nicht geladen werden",
@@ -285,7 +291,23 @@
     "quit": "Beenden",
     "showHint": "Tipp anzeigen",
     "whyNot": "Warum nicht „{{answer}}“?",
-    "practiceMode": "Übung"
+    "practiceMode": "Übung",
+    "testMode": "Test",
+    "trueLabel": "Wahr",
+    "falseLabel": "Falsch",
+    "trueOrFalse": "Wahr oder falsch?",
+    "check": "Prüfen",
+    "inputPlaceholder": "Antwort eingeben",
+    "inputHelp": "Auch Brüche (3/4) und Dezimalzahlen (2,5) sind möglich.",
+    "invalidNumber": "Bitte geben Sie eine Zahl ein, z. B. 12, -3,5 oder 3/4.",
+    "toggleMinus": "Vorzeichen wechseln",
+    "insertFraction": "Bruchstrich einfügen",
+    "correctValue": "Richtige Antwort: {{answer}}",
+    "showHintCost": "Tipp anzeigen (−{{xp}} XP)",
+    "skip": "Frage überspringen",
+    "finishTest": "Test beenden",
+    "timeLeft": "Verbleibende Zeit: {{time}}",
+    "testNote": "Im Testmodus werden Ihre Antworten am Ende bewertet."
   },
   "quizResult": {
     "excellent": "Ausgezeichnet!",
@@ -312,7 +334,13 @@
     "perfectScore": "PERFEKTE PUNKTZAHL!",
     "history": "Frühere Versuche",
     "practiceMistakes": "Fehler üben ({{count}})",
-    "practiceNotCounted": "Übung – zählt nicht zur Bewertung"
+    "practiceNotCounted": "Übung – zählt nicht zur Bewertung",
+    "xpGained": "+{{xp}} XP",
+    "hintPenalty": "−{{xp}} XP für genutzte Tipps",
+    "levelUp": "Neue Stufe!",
+    "timeUp": "Zeit abgelaufen",
+    "testMode": "Test",
+    "notAnswered": "Nicht beantwortet"
   },
   "profileModal": {
     "premiumBadge": "Premium",
@@ -578,9 +606,49 @@
   },
   "graph": {
     "title": "Funktionsgraph",
-    "noInternet": "Keine Internetverbindung",
-    "noInternetDesc": "Der Graph benötigt eine Internetverbindung. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
-    "plotError": "Graph konnte nicht gezeichnet werden:"
+    "placeholder": "z. B. x^2 − 4",
+    "addFunction": "Funktion hinzufügen",
+    "removeFunction": "Funktion entfernen",
+    "zoomIn": "Vergrößern",
+    "zoomOut": "Verkleinern",
+    "resetView": "Ansicht zurücksetzen",
+    "tapHint": "Tippen Sie auf einen Punkt, um die Koordinaten zu sehen. Ziehen Sie, um den Graphen zu verschieben.",
+    "analysis": "Kurvendiskussion",
+    "analysisOf": "Kurvendiskussion von {{name}}",
+    "intersections": "Schnittpunkte",
+    "domain": "Definitionsbereich",
+    "xIntercepts": "Nullstellen",
+    "yIntercept": "Schnittpunkt mit der y-Achse",
+    "maxima": "Lokale Maxima (Hochpunkte)",
+    "minima": "Lokale Minima (Tiefpunkte)",
+    "inflections": "Wendepunkte",
+    "increasing": "Streng monoton steigend auf",
+    "decreasing": "Streng monoton fallend auf",
+    "verticalAsymptotes": "Senkrechte Asymptoten",
+    "horizontalAsymptotes": "Waagerechte Asymptoten",
+    "allReals": "Alle reellen Zahlen (ℝ)",
+    "none": "Keine",
+    "touching": "berührt die x-Achse",
+    "identical": "Die Funktionen sind identisch",
+    "asX": "für x → {{dir}}",
+    "rangeNote": "Numerische Analyse, Werte gerundet. Untersuchter Bereich: {{from}} ≤ x ≤ {{to}}.",
+    "truncatedNote": "Es werden nur die Punkte nahe dem Ursprung angezeigt.",
+    "emptyHint": "Geben Sie eine Funktion von x ein, z. B. x^2 − 4 oder sin(x).",
+    "errors": {
+      "syntax": "Der Ausdruck konnte nicht gelesen werden. Bitte prüfen Sie Klammern und Rechenzeichen.",
+      "unknownSymbol": "Unbekanntes Symbol „{{name}}“. Bitte verwenden Sie x als Variable.",
+      "unsupported": "Dieser Ausdruck wird im Graphen nicht unterstützt.",
+      "tooLong": "Der Ausdruck ist zu lang.",
+      "undefinedEverywhere": "Die Funktion ist im untersuchten Bereich nicht definiert."
+    },
+    "point": {
+      "root": "Nullstelle",
+      "max": "Hochpunkt",
+      "min": "Tiefpunkt",
+      "inflection": "Wendepunkt",
+      "yIntercept": "y-Achsenabschnitt",
+      "intersection": "Schnittpunkt"
+    }
   },
   "weekdaysShort": {
     "0": "So",
@@ -636,5 +704,149 @@
     "USAGE_CHECK_FAILED": "Ihr Nutzungslimit konnte nicht geprüft werden. Bitte versuchen Sie es erneut.",
     "SAVED_LIMIT": "Sie haben die maximale Anzahl gespeicherter Aufgaben erreicht. Löschen Sie einige, um neue zu speichern.",
     "INVALID_CODE": "Ungültiger oder abgelaufener Code. Bitte versuchen Sie es erneut oder fordern Sie einen neuen Code an."
+  },
+  "progress": {
+    "levelN": "Stufe {{level}}",
+    "levelShort": "Lvl {{level}}",
+    "xpToNext": "Noch {{xp}} XP bis Stufe {{level}}",
+    "mastery": "Themenbeherrschung",
+    "masteryValue": "{{percent}} % beherrscht",
+    "masteryEmpty": "Schließen Sie ein Quiz ab, um zu sehen, wie gut Sie jedes Thema beherrschen.",
+    "masteryFooter": "Basierend auf Ihrem besten Ergebnis pro Quiz; schwierigere Quiz zählen mehr.",
+    "levelNames": {
+      "1": "Zahlen-Neuling",
+      "2": "Eifriger Addierer",
+      "3": "Faktorenfinder",
+      "4": "Gleichungslöser",
+      "5": "Funktionsentdecker",
+      "6": "Geometrie-Meister",
+      "7": "Analysis-Ritter",
+      "8": "Statistik-Stratege",
+      "9": "Mathe-Maestro",
+      "10": "Mathe-Legende"
+    }
+  },
+  "tools": {
+    "title": "Mathe-Werkzeuge",
+    "openTools": "Werkzeuge & Formeln",
+    "openToolsDesc": "Rechner mit Schritt-für-Schritt-Lösungen — auch ohne Internet",
+    "tabCalculators": "Rechner",
+    "tabFormulas": "Formeln",
+    "subtitle": "Schritt-für-Schritt-Lösungen direkt auf Ihrem Gerät — ohne Internet.",
+    "formulasSubtitle": "Die wichtigsten Formeln für die Klassen 6–12.",
+    "solve": "Lösen",
+    "answer": "Antwort",
+    "steps": "Lösung Schritt für Schritt",
+    "offline": "Offline",
+    "optional": "optional",
+    "couldNotSolve": "Diese Aufgabe kann mit diesem Werkzeug nicht gelöst werden. Bitte prüfen Sie Ihre Eingabe.",
+    "options": {
+      "simplify": "Vereinfachen",
+      "expand": "Ausmultiplizieren",
+      "factor": "Faktorisieren",
+      "of": "p % von b",
+      "whatPercent": "a von b in %",
+      "change": "Änderung %",
+      "det": "Determinante",
+      "inverse": "Inverse",
+      "transpose": "Transponierte"
+    },
+    "items": {
+      "graph": {
+        "title": "Funktionsgraph",
+        "desc": "f(x) zeichnen mit Nullstellen, Extrema und Asymptoten"
+      },
+      "quadratic": {
+        "title": "Quadratische Gleichung",
+        "desc": "ax² + bx + c = 0 — Diskriminante, Lösungen und Scheitel"
+      },
+      "system": {
+        "title": "Gleichungssystem",
+        "desc": "2 oder 3 lineare Gleichungen, eine pro Zeile"
+      },
+      "inequality": {
+        "title": "Lineare Ungleichung",
+        "desc": "Lösung und Intervall, z. B. −2x + 1 > 7"
+      },
+      "algebra": {
+        "title": "Vereinfachen, ausmultiplizieren, faktorisieren",
+        "desc": "Terme mit einer Variablen"
+      },
+      "fraction": {
+        "title": "Brüche",
+        "desc": "Exakte Bruchrechnung, z. B. 1/3 + 1/6"
+      },
+      "derivative": {
+        "title": "Ableitung",
+        "desc": "Mit der Regel in jedem Schritt"
+      },
+      "integral": {
+        "title": "Integral",
+        "desc": "Unbestimmt oder bestimmt (Grenzen optional)"
+      },
+      "percent": {
+        "title": "Prozentrechnung",
+        "desc": "Prozentwert, Prozentsatz, prozentuale Änderung"
+      },
+      "gcdlcm": {
+        "title": "ggT und kgV",
+        "desc": "Größter gemeinsamer Teiler und kleinstes gemeinsames Vielfaches"
+      },
+      "primeFactors": {
+        "title": "Primfaktoren",
+        "desc": "Primfaktorzerlegung einer Zahl"
+      },
+      "matrix": {
+        "title": "Matrizen",
+        "desc": "Determinante, Inverse und Transponierte"
+      },
+      "statistics": {
+        "title": "Statistik",
+        "desc": "Mittelwert, Median, Modalwert, Standardabweichung"
+      }
+    },
+    "fields": {
+      "quadratic": {
+        "a": "Koeffizient a",
+        "b": "Koeffizient b",
+        "c": "Koeffizient c"
+      },
+      "system": {
+        "equations": "Gleichungen (eine pro Zeile)"
+      },
+      "inequality": {
+        "expression": "Ungleichung"
+      },
+      "algebra": {
+        "expression": "Term"
+      },
+      "fraction": {
+        "expression": "Term mit Brüchen"
+      },
+      "derivative": {
+        "expression": "f(x) ="
+      },
+      "integral": {
+        "expression": "f(x) =",
+        "from": "Untere Grenze",
+        "to": "Obere Grenze"
+      },
+      "percent": {
+        "a": "Wert a",
+        "b": "Wert b"
+      },
+      "gcdlcm": {
+        "numbers": "Zahlen"
+      },
+      "primeFactors": {
+        "n": "Zahl"
+      },
+      "matrix": {
+        "A": "Matrix A (eine Matrixzeile pro Eingabezeile)"
+      },
+      "statistics": {
+        "data": "Daten"
+      }
+    }
   }
 }

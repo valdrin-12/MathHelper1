@@ -1,6 +1,7 @@
 // Quiz set "numth-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "numth-medium",
@@ -583,6 +584,121 @@ export default {
           "3 × 2 = 6 ≡ −1, nicht 1 (mod 7).",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 1
+      },
+      "al": {
+        "question": "Sa është mbetja kur 3¹⁰⁰ pjesëtohet me 4?",
+        "explanation": "3 ≡ −1 (mod 4), prandaj 3¹⁰⁰ ≡ (−1)¹⁰⁰ = 1 (mod 4), sepse eksponenti 100 është çift. Mbetja është 1.",
+        "hint": "Shkruani 3 si −1 modulo 4 dhe shikoni nëse eksponenti është çift apo tek.",
+        "commonMistakes": [
+          {
+            "value": 3,
+            "why": "Mbetja 3 vlen vetëm për fuqitë tek të 3; këtu eksponenti 100 është çift."
+          }
+        ]
+      },
+      "en": {
+        "question": "What is the remainder when 3¹⁰⁰ is divided by 4?",
+        "explanation": "3 ≡ −1 (mod 4), so 3¹⁰⁰ ≡ (−1)¹⁰⁰ = 1 (mod 4), because the exponent 100 is even. The remainder is 1.",
+        "hint": "Write 3 as −1 modulo 4 and check whether the exponent is even or odd.",
+        "commonMistakes": [
+          {
+            "value": 3,
+            "why": "A remainder of 3 only occurs for odd powers of 3; here the exponent 100 is even."
+          }
+        ]
+      },
+      "de": {
+        "question": "Welcher Rest bleibt, wenn man 3¹⁰⁰ durch 4 teilt?",
+        "explanation": "3 ≡ −1 (mod 4), also 3¹⁰⁰ ≡ (−1)¹⁰⁰ = 1 (mod 4), da der Exponent 100 gerade ist. Der Rest ist 1.",
+        "hint": "Schreiben Sie 3 als −1 modulo 4 und prüfen Sie, ob der Exponent gerade oder ungerade ist.",
+        "commonMistakes": [
+          {
+            "value": 3,
+            "why": "Der Rest 3 tritt nur bei ungeraden Potenzen von 3 auf; hier ist der Exponent 100 gerade."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 840
+      },
+      "al": {
+        "question": "Gjeni shumëfishin më të vogël të përbashkët SHVP(84, 120).",
+        "explanation": "84 = 2² · 3 · 7 dhe 120 = 2³ · 3 · 5. SHVP merr çdo faktor të thjeshtë me eksponentin më të madh: 2³ · 3 · 5 · 7 = 840. (Kontroll: PMP = 12 dhe 84 · 120 : 12 = 840.)",
+        "hint": "Zbërtheni të dy numrat në faktorë të thjeshtë dhe merrni çdo faktor me eksponentin më të madh.",
+        "commonMistakes": [
+          {
+            "value": 10080,
+            "why": "Kjo është prodhimi 84 · 120; duhet pjesëtuar me PMP(84, 120) = 12."
+          },
+          {
+            "value": 12,
+            "why": "Ky është pjesëtuesi më i madh i përbashkët (PMP), jo shumëfishi më i vogël i përbashkët."
+          }
+        ]
+      },
+      "en": {
+        "question": "Find the least common multiple LCM(84, 120).",
+        "explanation": "84 = 2² · 3 · 7 and 120 = 2³ · 3 · 5. The LCM takes every prime factor with its highest exponent: 2³ · 3 · 5 · 7 = 840. (Check: GCD = 12 and 84 · 120 ÷ 12 = 840.)",
+        "hint": "Factor both numbers into primes and take each prime with its highest exponent.",
+        "commonMistakes": [
+          {
+            "value": 10080,
+            "why": "That is the product 84 · 120; you have to divide by GCD(84, 120) = 12."
+          },
+          {
+            "value": 12,
+            "why": "That is the greatest common divisor (GCD), not the least common multiple."
+          }
+        ]
+      },
+      "de": {
+        "question": "Bestimmen Sie das kleinste gemeinsame Vielfache kgV(84, 120).",
+        "explanation": "84 = 2² · 3 · 7 und 120 = 2³ · 3 · 5. Das kgV nimmt jeden Primfaktor mit dem höchsten Exponenten: 2³ · 3 · 5 · 7 = 840. (Probe: ggT = 12 und 84 · 120 : 12 = 840.)",
+        "hint": "Zerlegen Sie beide Zahlen in Primfaktoren und nehmen Sie jeden Primfaktor mit dem höchsten Exponenten.",
+        "commonMistakes": [
+          {
+            "value": 10080,
+            "why": "Das ist das Produkt 84 · 120; man muss noch durch ggT(84, 120) = 12 teilen."
+          },
+          {
+            "value": 12,
+            "why": "Das ist der größte gemeinsame Teiler (ggT), nicht das kleinste gemeinsame Vielfache."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Nëse 6 pjesëton prodhimin a · b, atëherë 6 pjesëton a ose 6 pjesëton b.",
+        "explanation": "Kjo vlen vetëm për pjesëtues të thjeshtë (lema e Euklidit). 6 = 2 · 3 nuk është i thjeshtë: për a = 2 dhe b = 3, 6 pjesëton a · b = 6, por nuk pjesëton as 2 as 3. Pohimi është i gabuar.",
+        "hint": "Provoni a = 2 dhe b = 3.",
+        "whyWrong": "Pohimi nuk është i vërtetë: vetia «p | ab ⇒ p | a ose p | b» vlen vetëm për numrat e thjeshtë p; 6 mund të ndahet ndërmjet faktorëve (2 te a, 3 te b)."
+      },
+      "en": {
+        "question": "If 6 divides the product a · b, then 6 divides a or 6 divides b.",
+        "explanation": "This only holds for prime divisors (Euclid's lemma). 6 = 2 · 3 is not prime: for a = 2 and b = 3, 6 divides a · b = 6 but divides neither 2 nor 3. The statement is false.",
+        "hint": "Try a = 2 and b = 3.",
+        "whyWrong": "The statement is not true: the property “p | ab ⇒ p | a or p | b” only holds for primes p; 6 can be split between the factors (2 in a, 3 in b)."
+      },
+      "de": {
+        "question": "Wenn 6 das Produkt a · b teilt, dann teilt 6 die Zahl a oder die Zahl b.",
+        "explanation": "Das gilt nur für Primteiler (Lemma von Euklid). 6 = 2 · 3 ist keine Primzahl: Für a = 2 und b = 3 teilt 6 das Produkt a · b = 6, aber weder 2 noch 3. Die Aussage ist falsch.",
+        "hint": "Probieren Sie a = 2 und b = 3.",
+        "whyWrong": "Die Aussage stimmt nicht: Die Eigenschaft „p | ab ⇒ p | a oder p | b“ gilt nur für Primzahlen p; 6 kann sich auf die Faktoren aufteilen (2 in a, 3 in b)."
       }
     }
   ]

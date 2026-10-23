@@ -1,6 +1,7 @@
 // Quiz set "stat-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "stat-easy",
@@ -583,6 +584,134 @@ export default {
           "KZ und ZK sind verschiedene Ergebnisse, also gibt es 4, nicht 3.",
           "1/2 + 1/2 wurden addiert; wenn zwei unabhängige Ereignisse beide eintreten sollen, wird multipliziert."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 9
+      },
+      "al": {
+        "question": "Gjeni amplitudën (gjerësinë e ndryshimit, vlera më e madhe minus vlera më e vogël) e të dhënave: 4, 11, 7, 2, 9.",
+        "explanation": "Vlera më e madhe është 11, vlera më e vogël është 2. Amplituda = 11 − 2 = 9.",
+        "hint": "Gjeni fillimisht vlerën më të madhe dhe vlerën më të vogël.",
+        "commonMistakes": [
+          {
+            "value": 5,
+            "why": "Keni zbritur vlerën e parë nga e fundit (9 − 4) pa i renditur të dhënat."
+          },
+          {
+            "value": 7,
+            "why": "Keni zbritur vlerën e parë (4) nga më e madhja; duhet zbritur vlera më e vogël (2)."
+          }
+        ]
+      },
+      "en": {
+        "question": "Find the range (largest value minus smallest value) of the data: 4, 11, 7, 2, 9.",
+        "explanation": "The largest value is 11, the smallest is 2. Range = 11 − 2 = 9.",
+        "hint": "First find the largest and the smallest value.",
+        "commonMistakes": [
+          {
+            "value": 5,
+            "why": "You subtracted the first value from the last (9 − 4) without sorting the data."
+          },
+          {
+            "value": 7,
+            "why": "You subtracted the first value (4) from the largest; you must subtract the smallest value (2)."
+          }
+        ]
+      },
+      "de": {
+        "question": "Bestimmen Sie die Spannweite (größter minus kleinster Wert) der Daten: 4, 11, 7, 2, 9.",
+        "explanation": "Der größte Wert ist 11, der kleinste ist 2. Spannweite = 11 − 2 = 9.",
+        "hint": "Bestimmen Sie zuerst den größten und den kleinsten Wert.",
+        "commonMistakes": [
+          {
+            "value": 5,
+            "why": "Sie haben den ersten vom letzten Wert abgezogen (9 − 4), ohne die Daten zu ordnen."
+          },
+          {
+            "value": 7,
+            "why": "Sie haben den ersten Wert (4) vom größten abgezogen; abziehen muss man den kleinsten Wert (2)."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 0.375,
+        "tolerance": 0.001
+      },
+      "al": {
+        "question": "Një rrotullues ka 8 sektorë të barabartë, nga të cilët 3 janë të kuq. Sa është probabiliteti që shigjeta të ndalet në një sektor të kuq? Shkruani rezultatin si numër dhjetor.",
+        "explanation": "Rezultatet e mundshme: 8, të favorshme: 3. P = 3/8 = 0,375.",
+        "hint": "Probabiliteti = numri i rezultateve të favorshme : numri i të gjitha rezultateve.",
+        "commonMistakes": [
+          {
+            "value": 0.6,
+            "why": "Keni pjesëtuar të kuqet me jo-të kuqet (3/5); emëruesi duhet të jetë numri i të gjithë sektorëve (8)."
+          },
+          {
+            "value": 0.625,
+            "why": "Kjo është probabiliteti që sektori të mos jetë i kuq: 5/8 = 0,625."
+          }
+        ]
+      },
+      "en": {
+        "question": "A spinner has 8 equal sectors, 3 of which are red. What is the probability that the arrow stops on a red sector? Give the result as a decimal number.",
+        "explanation": "Possible outcomes: 8, favourable: 3. P = 3/8 = 0.375.",
+        "hint": "Probability = number of favourable outcomes ÷ number of all outcomes.",
+        "commonMistakes": [
+          {
+            "value": 0.6,
+            "why": "You divided red by non-red (3/5); the denominator must be the total number of sectors (8)."
+          },
+          {
+            "value": 0.625,
+            "why": "That is the probability of not landing on red: 5/8 = 0.625."
+          }
+        ]
+      },
+      "de": {
+        "question": "Ein Glücksrad hat 8 gleich große Felder, davon sind 3 rot. Wie groß ist die Wahrscheinlichkeit, dass der Zeiger auf einem roten Feld stehen bleibt? Geben Sie das Ergebnis als Dezimalzahl an.",
+        "explanation": "Mögliche Ergebnisse: 8, günstige: 3. P = 3/8 = 0,375.",
+        "hint": "Wahrscheinlichkeit = Anzahl der günstigen Ergebnisse : Anzahl aller Ergebnisse.",
+        "commonMistakes": [
+          {
+            "value": 0.6,
+            "why": "Sie haben rote durch nicht-rote Felder geteilt (3/5); im Nenner steht die Anzahl aller Felder (8)."
+          },
+          {
+            "value": 0.625,
+            "why": "Das ist die Wahrscheinlichkeit für ein nicht-rotes Feld: 5/8 = 0,625."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Mesatarja aritmetike e një grupi të dhënash është gjithmonë njëra nga vlerat e të dhënave.",
+        "explanation": "Mesatarja mund të mos jetë asnjëra nga vlerat. Për shembull, mesatarja e 1 dhe 2 është (1 + 2) : 2 = 1,5, që nuk është në të dhëna. Pohimi është i gabuar.",
+        "hint": "Llogaritni mesataren e dy numrave të njëpasnjëshëm.",
+        "whyWrong": "Pohimi nuk është i vërtetë: mesatarja mund të bjerë ndërmjet vlerave, p.sh. mesatarja e 1 dhe 2 është 1,5."
+      },
+      "en": {
+        "question": "The arithmetic mean of a data set is always one of the data values.",
+        "explanation": "The mean need not be any of the values. For example, the mean of 1 and 2 is (1 + 2) ÷ 2 = 1.5, which is not in the data. The statement is false.",
+        "hint": "Calculate the mean of two consecutive numbers.",
+        "whyWrong": "The statement is not true: the mean can fall between the values, e.g. the mean of 1 and 2 is 1.5."
+      },
+      "de": {
+        "question": "Das arithmetische Mittel einer Datenreihe ist immer einer der Datenwerte.",
+        "explanation": "Der Mittelwert muss keiner der Werte sein. Zum Beispiel ist der Mittelwert von 1 und 2 gleich (1 + 2) : 2 = 1,5, und 1,5 kommt in den Daten nicht vor. Die Aussage ist falsch.",
+        "hint": "Berechnen Sie den Mittelwert zweier aufeinanderfolgender Zahlen.",
+        "whyWrong": "Die Aussage stimmt nicht: Der Mittelwert kann zwischen den Werten liegen, z. B. ist der Mittelwert von 1 und 2 gleich 1,5."
       }
     }
   ]

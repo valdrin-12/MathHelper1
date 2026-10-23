@@ -1,6 +1,7 @@
 // Quiz set "alg-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "alg-medium",
@@ -583,6 +584,133 @@ export default {
           "f(0) = 3 wurde als Steigung verwendet: 3 · 5 = 15.",
           "Der y-Achsenabschnitt fehlt: 2 · 5 = 10 ohne +3."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 12
+      },
+      "al": {
+        "question": "Jepet funksioni f(x) = x² − 3x + 2. Llogaritni f(−2).",
+        "explanation": "Zëvendësojmë x = −2: f(−2) = (−2)² − 3 · (−2) + 2 = 4 + 6 + 2 = 12.",
+        "hint": "Vendoseni −2 në kllapa kudo ku shfaqet x dhe kujdesuni për shenjat.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Keni llogaritur −2² = −4 në vend të (−2)² = 4: −4 + 6 + 2 = 4."
+          },
+          {
+            "value": 0,
+            "why": "Keni shkruar −3 · (−2) = −6 në vend të +6: 4 − 6 + 2 = 0."
+          }
+        ]
+      },
+      "en": {
+        "question": "Given f(x) = x² − 3x + 2, calculate f(−2).",
+        "explanation": "Substitute x = −2: f(−2) = (−2)² − 3 · (−2) + 2 = 4 + 6 + 2 = 12.",
+        "hint": "Put −2 in brackets wherever x appears and be careful with the signs.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "You calculated −2² = −4 instead of (−2)² = 4: −4 + 6 + 2 = 4."
+          },
+          {
+            "value": 0,
+            "why": "You wrote −3 · (−2) = −6 instead of +6: 4 − 6 + 2 = 0."
+          }
+        ]
+      },
+      "de": {
+        "question": "Gegeben ist f(x) = x² − 3x + 2. Berechnen Sie f(−2).",
+        "explanation": "x = −2 einsetzen: f(−2) = (−2)² − 3 · (−2) + 2 = 4 + 6 + 2 = 12.",
+        "hint": "Setzen Sie −2 überall, wo x steht, in Klammern ein und achten Sie auf die Vorzeichen.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Sie haben −2² = −4 statt (−2)² = 4 gerechnet: −4 + 6 + 2 = 4."
+          },
+          {
+            "value": 0,
+            "why": "Sie haben −3 · (−2) = −6 statt +6 gerechnet: 4 − 6 + 2 = 0."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 1
+      },
+      "al": {
+        "question": "Një drejtëz kalon nëpër pikat (2, 5) dhe (4, 9). Gjeni ordinatën e pikës ku ajo pret boshtin y (koeficientin b në y = mx + b).",
+        "explanation": "Koeficienti këndor: m = (9 − 5) : (4 − 2) = 4 : 2 = 2. Nga 5 = 2 · 2 + b del b = 5 − 4 = 1. Drejtëza është y = 2x + 1, pra b = 1.",
+        "hint": "Gjeni fillimisht koeficientin këndor m, pastaj zëvendësoni njërën pikë në y = mx + b.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Keni llogaritur m = Δx : Δy = 1/2 në vend të Δy : Δx, prandaj b = 5 − 1 = 4."
+          },
+          {
+            "value": 9,
+            "why": "Keni bërë gabim me shenjën: b = 5 + 2 · 2 = 9 në vend të b = 5 − 2 · 2."
+          }
+        ]
+      },
+      "en": {
+        "question": "A line passes through the points (2, 5) and (4, 9). Find the y-intercept (the value b in y = mx + b).",
+        "explanation": "Slope: m = (9 − 5) ÷ (4 − 2) = 4 ÷ 2 = 2. From 5 = 2 · 2 + b we get b = 5 − 4 = 1. The line is y = 2x + 1, so b = 1.",
+        "hint": "First find the slope m, then substitute one of the points into y = mx + b.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "You computed m = Δx ÷ Δy = 1/2 instead of Δy ÷ Δx, so b = 5 − 1 = 4."
+          },
+          {
+            "value": 9,
+            "why": "Sign error: b = 5 + 2 · 2 = 9 instead of b = 5 − 2 · 2."
+          }
+        ]
+      },
+      "de": {
+        "question": "Eine Gerade verläuft durch die Punkte (2, 5) und (4, 9). Bestimmen Sie den y-Achsenabschnitt (den Wert b in y = mx + b).",
+        "explanation": "Steigung: m = (9 − 5) : (4 − 2) = 4 : 2 = 2. Aus 5 = 2 · 2 + b folgt b = 5 − 4 = 1. Die Gerade ist y = 2x + 1, also b = 1.",
+        "hint": "Bestimmen Sie zuerst die Steigung m und setzen Sie dann einen der Punkte in y = mx + b ein.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Sie haben m = Δx : Δy = 1/2 statt Δy : Δx berechnet, daher b = 5 − 1 = 4."
+          },
+          {
+            "value": 9,
+            "why": "Vorzeichenfehler: b = 5 + 2 · 2 = 9 statt b = 5 − 2 · 2."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Drejtëzat y = 2x + 1 dhe y = −x/2 + 3 janë pingule me njëra-tjetrën.",
+        "explanation": "Dy drejtëza janë pingule kur prodhimi i koeficientëve këndorë është −1. Këtu: 2 · (−1/2) = −1, pra drejtëzat janë pingule. Pohimi është i vërtetë.",
+        "hint": "Shumëzoni koeficientët këndorë të dy drejtëzave.",
+        "whyWrong": "Pohimi nuk është i gabuar: koeficientët këndorë nuk janë të barabartë (pra drejtëzat nuk janë paralele), por prodhimi i tyre është −1, që është kushti i pingultisë."
+      },
+      "en": {
+        "question": "The lines y = 2x + 1 and y = −x/2 + 3 are perpendicular to each other.",
+        "explanation": "Two lines are perpendicular when the product of their slopes is −1. Here: 2 · (−1/2) = −1, so the lines are perpendicular. The statement is true.",
+        "hint": "Multiply the slopes of the two lines.",
+        "whyWrong": "The statement is not false: the slopes are not equal (so the lines are not parallel), but their product is −1, which is the condition for perpendicular lines."
+      },
+      "de": {
+        "question": "Die Geraden y = 2x + 1 und y = −x/2 + 3 stehen senkrecht aufeinander.",
+        "explanation": "Zwei Geraden stehen senkrecht, wenn das Produkt ihrer Steigungen −1 ist. Hier: 2 · (−1/2) = −1, also stehen sie senkrecht. Die Aussage ist wahr.",
+        "hint": "Multiplizieren Sie die Steigungen der beiden Geraden.",
+        "whyWrong": "Die Aussage ist nicht falsch: Die Steigungen sind nicht gleich (die Geraden sind also nicht parallel), aber ihr Produkt ist −1 – genau die Bedingung für Orthogonalität."
       }
     }
   ]

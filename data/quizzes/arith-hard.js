@@ -1,6 +1,7 @@
 // Quiz set "arith-hard" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "arith-hard",
@@ -583,6 +584,124 @@ export default {
           "Sie haben 360 ÷ 4 gerechnet, statt 4 von 9 Anteilen zu nehmen.",
           "80 ist der kleinste Teil (2 Anteile)."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 400
+      },
+      "al": {
+        "question": "Pas një rritjeje prej 30%, çmimi i një telefoni është 520 €. Sa ishte çmimi para rritjes (në €)?",
+        "explanation": "Çmimi i ri është 130% i çmimit të vjetër: 1,3 · x = 520. Pra x = 520 : 1,3 = 400 €. Kontroll: 400 + 30% · 400 = 400 + 120 = 520 ✓",
+        "hint": "Çmimi i ri është 130% i çmimit fillestar; pjesëtoni me faktorin përkatës.",
+        "unit": "€",
+        "commonMistakes": [
+          {
+            "value": 364,
+            "why": "Keni zbritur 30% të 520 (520 − 156 = 364); përqindja duhet llogaritur nga çmimi fillestar, jo nga i riu."
+          }
+        ]
+      },
+      "en": {
+        "question": "After a 30% increase, a phone costs €520. What was the price before the increase (in €)?",
+        "explanation": "The new price is 130% of the old one: 1.3 · x = 520. So x = 520 ÷ 1.3 = €400. Check: 400 + 30% · 400 = 400 + 120 = 520 ✓",
+        "hint": "The new price is 130% of the original; divide by the matching factor.",
+        "unit": "€",
+        "commonMistakes": [
+          {
+            "value": 364,
+            "why": "You subtracted 30% of 520 (520 − 156 = 364); the percentage refers to the original price, not the new one."
+          }
+        ]
+      },
+      "de": {
+        "question": "Nach einer Erhöhung um 30 % kostet ein Handy 520 €. Wie hoch war der Preis vor der Erhöhung (in €)?",
+        "explanation": "Der neue Preis ist 130 % des alten: 1,3 · x = 520. Also x = 520 : 1,3 = 400 €. Probe: 400 + 30 % · 400 = 400 + 120 = 520 ✓",
+        "hint": "Der neue Preis entspricht 130 % des Ausgangspreises; teilen Sie durch den passenden Faktor.",
+        "unit": "€",
+        "commonMistakes": [
+          {
+            "value": 364,
+            "why": "Sie haben 30 % von 520 abgezogen (520 − 156 = 364); der Prozentsatz bezieht sich auf den Ausgangspreis, nicht auf den neuen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 1
+      },
+      "al": {
+        "question": "Llogaritni: (−2)⁴ − 2⁴ + 3⁰",
+        "explanation": "(−2)⁴ = 16, sepse fuqia çift e një numri negativ është pozitive. 2⁴ = 16 dhe 3⁰ = 1. Pra 16 − 16 + 1 = 1.",
+        "hint": "Kujdes me shenjën te fuqia çift e numrit negativ dhe kujtoni sa është çdo numër (≠ 0) në fuqi 0.",
+        "commonMistakes": [
+          {
+            "value": -31,
+            "why": "Keni marrë (−2)⁴ = −16: −16 − 16 + 1 = −31."
+          },
+          {
+            "value": 0,
+            "why": "Keni marrë 3⁰ = 0; por çdo numër jozero në fuqi 0 është 1."
+          }
+        ]
+      },
+      "en": {
+        "question": "Calculate: (−2)⁴ − 2⁴ + 3⁰",
+        "explanation": "(−2)⁴ = 16, because an even power of a negative number is positive. 2⁴ = 16 and 3⁰ = 1. So 16 − 16 + 1 = 1.",
+        "hint": "Watch the sign for an even power of a negative number, and recall what any non-zero number to the power 0 equals.",
+        "commonMistakes": [
+          {
+            "value": -31,
+            "why": "You took (−2)⁴ = −16: −16 − 16 + 1 = −31."
+          },
+          {
+            "value": 0,
+            "why": "You took 3⁰ = 0; but any non-zero number to the power 0 equals 1."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie: (−2)⁴ − 2⁴ + 3⁰",
+        "explanation": "(−2)⁴ = 16, denn eine gerade Potenz einer negativen Zahl ist positiv. 2⁴ = 16 und 3⁰ = 1. Also 16 − 16 + 1 = 1.",
+        "hint": "Achten Sie auf das Vorzeichen bei einer geraden Potenz einer negativen Zahl und überlegen Sie, was eine Zahl (≠ 0) hoch 0 ergibt.",
+        "commonMistakes": [
+          {
+            "value": -31,
+            "why": "Sie haben (−2)⁴ = −16 gerechnet: −16 − 16 + 1 = −31."
+          },
+          {
+            "value": 0,
+            "why": "Sie haben 3⁰ = 0 gesetzt; jede von 0 verschiedene Zahl hoch 0 ergibt aber 1."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Numri 0,999… (ku 9 përsëritet pafundësisht) është saktësisht i barabartë me 1.",
+        "explanation": "Le të jetë x = 0,999… Atëherë 10x = 9,999… dhe 10x − x = 9, pra 9x = 9 dhe x = 1. Ose: 1/3 = 0,333…, dhe 3 · 1/3 = 0,999… = 1. Pohimi është i vërtetë.",
+        "hint": "Shënojeni numrin me x dhe krahasoni 10x me x.",
+        "whyWrong": "Pohimi nuk është i gabuar: nuk ekziston asnjë numër real midis 0,999… dhe 1, diferenca e tyre është 0, prandaj janë i njëjti numër."
+      },
+      "en": {
+        "question": "The number 0.999… (with the 9 repeating forever) is exactly equal to 1.",
+        "explanation": "Let x = 0.999… Then 10x = 9.999… and 10x − x = 9, so 9x = 9 and x = 1. Or: 1/3 = 0.333…, and 3 · 1/3 = 0.999… = 1. The statement is true.",
+        "hint": "Call the number x and compare 10x with x.",
+        "whyWrong": "The statement is not false: there is no real number between 0.999… and 1, their difference is 0, so they are the same number."
+      },
+      "de": {
+        "question": "Die Zahl 0,999… (die 9 wiederholt sich unendlich oft) ist genau gleich 1.",
+        "explanation": "Sei x = 0,999… Dann ist 10x = 9,999… und 10x − x = 9, also 9x = 9 und x = 1. Oder: 1/3 = 0,333…, und 3 · 1/3 = 0,999… = 1. Die Aussage ist wahr.",
+        "hint": "Nennen Sie die Zahl x und vergleichen Sie 10x mit x.",
+        "whyWrong": "Die Aussage ist nicht falsch: Zwischen 0,999… und 1 liegt keine reelle Zahl, ihre Differenz ist 0, also sind sie dieselbe Zahl."
       }
     }
   ]

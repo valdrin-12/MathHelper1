@@ -1,6 +1,7 @@
 // Quiz set "geo-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "geo-medium",
@@ -583,6 +584,152 @@ export default {
           "Sie haben wie beim Dreieck durch 2 geteilt; beim Parallelogramm gibt es keinen Faktor 1/2.",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 84
+      },
+      "al": {
+        "question": "Një trekëndësh ka brinjët 13 cm, 14 cm dhe 15 cm. Llogaritni sipërfaqen e tij në cm².",
+        "explanation": "Gjysmëperimetri: s = (13 + 14 + 15) : 2 = 21. Formula e Heronit: S = √(s(s − a)(s − b)(s − c)) = √(21 · 8 · 7 · 6) = √7056 = 84 cm². (Kontroll: lartësia mbi brinjën 14 është 12 cm, dhe 14 · 12 : 2 = 84.)",
+        "hint": "Përdorni formulën e Heronit me gjysmëperimetrin s.",
+        "unit": "cm²",
+        "commonMistakes": [
+          {
+            "value": 7056,
+            "why": "Keni harruar rrënjën katrore në formulën e Heronit: 21 · 8 · 7 · 6 = 7056."
+          },
+          {
+            "value": 168,
+            "why": "Keni shumëzuar bazën me lartësinë (14 · 12) pa pjesëtuar me 2."
+          }
+        ]
+      },
+      "en": {
+        "question": "A triangle has sides 13 cm, 14 cm and 15 cm. Calculate its area in cm².",
+        "explanation": "Semi-perimeter: s = (13 + 14 + 15) ÷ 2 = 21. Heron's formula: A = √(s(s − a)(s − b)(s − c)) = √(21 · 8 · 7 · 6) = √7056 = 84 cm². (Check: the height to side 14 is 12 cm, and 14 · 12 ÷ 2 = 84.)",
+        "hint": "Use Heron's formula with the semi-perimeter s.",
+        "unit": "cm²",
+        "commonMistakes": [
+          {
+            "value": 7056,
+            "why": "You forgot the square root in Heron's formula: 21 · 8 · 7 · 6 = 7056."
+          },
+          {
+            "value": 168,
+            "why": "You multiplied base by height (14 · 12) without dividing by 2."
+          }
+        ]
+      },
+      "de": {
+        "question": "Ein Dreieck hat die Seiten 13 cm, 14 cm und 15 cm. Berechnen Sie seinen Flächeninhalt in cm².",
+        "explanation": "Halber Umfang: s = (13 + 14 + 15) : 2 = 21. Heronsche Formel: A = √(s(s − a)(s − b)(s − c)) = √(21 · 8 · 7 · 6) = √7056 = 84 cm². (Probe: Die Höhe auf die Seite 14 ist 12 cm, und 14 · 12 : 2 = 84.)",
+        "hint": "Verwenden Sie die Heronsche Formel mit dem halben Umfang s.",
+        "unit": "cm²",
+        "commonMistakes": [
+          {
+            "value": 7056,
+            "why": "Sie haben die Wurzel in der Heronschen Formel vergessen: 21 · 8 · 7 · 6 = 7056."
+          },
+          {
+            "value": 168,
+            "why": "Sie haben Grundseite mal Höhe (14 · 12) gerechnet, ohne durch 2 zu teilen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 268.1,
+        "tolerance": 0.05
+      },
+      "al": {
+        "question": "Llogaritni vëllimin e një sfere me rreze r = 4 cm. Merrni π ≈ 3,1416 dhe rrumbullakoni në një shifër pas presjes.",
+        "explanation": "V = (4/3)πr³ = (4/3) · π · 4³ = (4/3) · π · 64 = 256π/3 ≈ 268,08 ≈ 268,1 cm³.",
+        "hint": "Përdorni formulën e vëllimit të sferës, ku rrezja ngrihet në kub.",
+        "unit": "cm³",
+        "commonMistakes": [
+          {
+            "value": 201.1,
+            "why": "Kjo është sipërfaqja e sferës: 4πr² = 64π ≈ 201,1 cm²."
+          },
+          {
+            "value": 67,
+            "why": "Keni ngritur rrezen në katror në vend të kubit: (4/3) · π · 16 ≈ 67,0."
+          },
+          {
+            "value": 804.2,
+            "why": "Keni harruar faktorin 1/3: 4 · π · 64 ≈ 804,2."
+          }
+        ]
+      },
+      "en": {
+        "question": "Calculate the volume of a sphere with radius r = 4 cm. Use π ≈ 3.1416 and round to one decimal place.",
+        "explanation": "V = (4/3)πr³ = (4/3) · π · 4³ = (4/3) · π · 64 = 256π/3 ≈ 268.08 ≈ 268.1 cm³.",
+        "hint": "Use the volume formula of a sphere, in which the radius is cubed.",
+        "unit": "cm³",
+        "commonMistakes": [
+          {
+            "value": 201.1,
+            "why": "That is the surface area of the sphere: 4πr² = 64π ≈ 201.1 cm²."
+          },
+          {
+            "value": 67,
+            "why": "You squared the radius instead of cubing it: (4/3) · π · 16 ≈ 67.0."
+          },
+          {
+            "value": 804.2,
+            "why": "You forgot the factor 1/3: 4 · π · 64 ≈ 804.2."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie das Volumen einer Kugel mit Radius r = 4 cm. Verwenden Sie π ≈ 3,1416 und runden Sie auf eine Nachkommastelle.",
+        "explanation": "V = (4/3)πr³ = (4/3) · π · 4³ = (4/3) · π · 64 = 256π/3 ≈ 268,08 ≈ 268,1 cm³.",
+        "hint": "Verwenden Sie die Volumenformel der Kugel, in der der Radius hoch 3 genommen wird.",
+        "unit": "cm³",
+        "commonMistakes": [
+          {
+            "value": 201.1,
+            "why": "Das ist die Oberfläche der Kugel: 4πr² = 64π ≈ 201,1 cm²."
+          },
+          {
+            "value": 67,
+            "why": "Sie haben den Radius quadriert statt hoch 3 genommen: (4/3) · π · 16 ≈ 67,0."
+          },
+          {
+            "value": 804.2,
+            "why": "Sie haben den Faktor 1/3 vergessen: 4 · π · 64 ≈ 804,2."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Një kon dhe një cilindër kanë të njëjtën bazë dhe të njëjtën lartësi. Vëllimi i konit është një e treta e vëllimit të cilindrit.",
+        "explanation": "V(cilindri) = πr²h dhe V(koni) = (1/3)πr²h. Pra V(koni) = V(cilindri) : 3. Pohimi është i vërtetë.",
+        "hint": "Krahasoni formulat e vëllimit të konit dhe të cilindrit.",
+        "whyWrong": "Pohimi nuk është i gabuar: formula e konit (1/3)πr²h ndryshon nga ajo e cilindrit πr²h pikërisht me faktorin 1/3."
+      },
+      "en": {
+        "question": "A cone and a cylinder have the same base and the same height. The volume of the cone is one third of the volume of the cylinder.",
+        "explanation": "V(cylinder) = πr²h and V(cone) = (1/3)πr²h. So V(cone) = V(cylinder) ÷ 3. The statement is true.",
+        "hint": "Compare the volume formulas of a cone and a cylinder.",
+        "whyWrong": "The statement is not false: the cone formula (1/3)πr²h differs from the cylinder formula πr²h by exactly the factor 1/3."
+      },
+      "de": {
+        "question": "Ein Kegel und ein Zylinder haben dieselbe Grundfläche und dieselbe Höhe. Das Volumen des Kegels ist ein Drittel des Zylindervolumens.",
+        "explanation": "V(Zylinder) = πr²h und V(Kegel) = (1/3)πr²h. Also V(Kegel) = V(Zylinder) : 3. Die Aussage ist wahr.",
+        "hint": "Vergleichen Sie die Volumenformeln von Kegel und Zylinder.",
+        "whyWrong": "Die Aussage ist nicht falsch: Die Kegelformel (1/3)πr²h unterscheidet sich von der Zylinderformel πr²h genau um den Faktor 1/3."
       }
     }
   ]

@@ -1,6 +1,7 @@
 // Quiz set "trig-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "trig-easy",
@@ -583,6 +584,128 @@ export default {
           "Sie haben 10 durch 0,6 geteilt (≈ 16,67, auf zwei Dezimalstellen gerundet), statt zu multiplizieren; eine Kathete kann nicht länger als die Hypotenuse sein.",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 8
+      },
+      "al": {
+        "question": "Në një trekëndësh kënddrejtë, për këndin e ngushtë α vlen tan α = 3/4. Kateti përballë α është 6 cm. Sa centimetra është kateti afër α?",
+        "explanation": "tan α = kateti përballë : kateti afër, pra 3/4 = 6 : b. Atëherë b = 6 · 4/3 = 8 cm.",
+        "hint": "Shkruani përkufizimin e tangjentit dhe zgjidhni për katetin afër.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 4.5,
+            "why": "Keni shumëzuar 6 · 3/4 = 4,5; kateti afër del kur pjesëtoni 6 me tan α."
+          }
+        ]
+      },
+      "en": {
+        "question": "In a right triangle, the acute angle α has tan α = 3/4. The leg opposite α is 6 cm. How many centimetres is the leg adjacent to α?",
+        "explanation": "tan α = opposite ÷ adjacent, so 3/4 = 6 ÷ b. Then b = 6 · 4/3 = 8 cm.",
+        "hint": "Write down the definition of tangent and solve for the adjacent leg.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 4.5,
+            "why": "You multiplied 6 · 3/4 = 4.5; the adjacent leg is 6 divided by tan α."
+          }
+        ]
+      },
+      "de": {
+        "question": "In einem rechtwinkligen Dreieck gilt für den spitzen Winkel α: tan α = 3/4. Die Gegenkathete von α ist 6 cm lang. Wie viele Zentimeter ist die Ankathete von α lang?",
+        "explanation": "tan α = Gegenkathete : Ankathete, also 3/4 = 6 : b. Damit b = 6 · 4/3 = 8 cm.",
+        "hint": "Schreiben Sie die Definition des Tangens auf und lösen Sie nach der Ankathete auf.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 4.5,
+            "why": "Sie haben 6 · 3/4 = 4,5 gerechnet; die Ankathete ist 6 geteilt durch tan α."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 4.33,
+        "tolerance": 0.01
+      },
+      "al": {
+        "question": "Një shkallë 5 m e gjatë mbështetet në mur dhe formon me tokën një kënd 60°. Në çfarë lartësie e prek shkalla murin? Rrumbullakoni në dy shifra pas presjes (në m).",
+        "explanation": "Shkalla është hipotenuza dhe lartësia është kateti përballë këndit 60°: h = 5 · sin 60° = 5 · √3/2 ≈ 4,33 m.",
+        "hint": "Cili raport trigonometrik lidh katetin përballë këndit me hipotenuzën?",
+        "unit": "m",
+        "commonMistakes": [
+          {
+            "value": 2.5,
+            "why": "Keni përdorur cos 60° (5 · 0,5 = 2,5); kjo është largesa e këmbës së shkallës nga muri."
+          },
+          {
+            "value": 8.66,
+            "why": "Keni përdorur tan 60° (5 · √3 ≈ 8,66); shkalla është hipotenuza, jo kateti afër."
+          }
+        ]
+      },
+      "en": {
+        "question": "A 5 m ladder leans against a wall and makes a 60° angle with the ground. At what height does the ladder touch the wall? Round to two decimal places (in m).",
+        "explanation": "The ladder is the hypotenuse and the height is the leg opposite the 60° angle: h = 5 · sin 60° = 5 · √3/2 ≈ 4.33 m.",
+        "hint": "Which trigonometric ratio links the opposite leg with the hypotenuse?",
+        "unit": "m",
+        "commonMistakes": [
+          {
+            "value": 2.5,
+            "why": "You used cos 60° (5 · 0.5 = 2.5); that is the distance of the ladder's foot from the wall."
+          },
+          {
+            "value": 8.66,
+            "why": "You used tan 60° (5 · √3 ≈ 8.66); the ladder is the hypotenuse, not the adjacent leg."
+          }
+        ]
+      },
+      "de": {
+        "question": "Eine 5 m lange Leiter lehnt an einer Wand und bildet mit dem Boden einen Winkel von 60°. In welcher Höhe berührt die Leiter die Wand? Runden Sie auf zwei Nachkommastellen (in m).",
+        "explanation": "Die Leiter ist die Hypotenuse, die Höhe ist die Gegenkathete des 60°-Winkels: h = 5 · sin 60° = 5 · √3/2 ≈ 4,33 m.",
+        "hint": "Welches trigonometrische Verhältnis verbindet die Gegenkathete mit der Hypotenuse?",
+        "unit": "m",
+        "commonMistakes": [
+          {
+            "value": 2.5,
+            "why": "Sie haben cos 60° verwendet (5 · 0,5 = 2,5); das ist der Abstand des Leiterfußes von der Wand."
+          },
+          {
+            "value": 8.66,
+            "why": "Sie haben tan 60° verwendet (5 · √3 ≈ 8,66); die Leiter ist die Hypotenuse, nicht die Ankathete."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "sin(2 · 30°) = 2 · sin 30°",
+        "explanation": "Ana e majtë: sin 60° = √3/2 ≈ 0,866. Ana e djathtë: 2 · sin 30° = 2 · 0,5 = 1. Meqë 0,866 ≠ 1, pohimi është i gabuar. (Në përgjithësi sin 2x = 2 sin x cos x.)",
+        "hint": "Llogaritni veçmas të dyja anët me vlerat e njohura të sin 30° dhe sin 60°.",
+        "whyWrong": "Pohimi nuk është i vërtetë: sinusi nuk është linear, faktori 2 nuk mund të nxirret jashtë: sin 60° ≈ 0,866, ndërsa 2 · sin 30° = 1."
+      },
+      "en": {
+        "question": "sin(2 · 30°) = 2 · sin 30°",
+        "explanation": "Left side: sin 60° = √3/2 ≈ 0.866. Right side: 2 · sin 30° = 2 · 0.5 = 1. Since 0.866 ≠ 1, the statement is false. (In general sin 2x = 2 sin x cos x.)",
+        "hint": "Evaluate both sides separately using the known values of sin 30° and sin 60°.",
+        "whyWrong": "The statement is not true: sine is not linear, so the factor 2 cannot be pulled out: sin 60° ≈ 0.866, whereas 2 · sin 30° = 1."
+      },
+      "de": {
+        "question": "sin(2 · 30°) = 2 · sin 30°",
+        "explanation": "Linke Seite: sin 60° = √3/2 ≈ 0,866. Rechte Seite: 2 · sin 30° = 2 · 0,5 = 1. Da 0,866 ≠ 1, ist die Aussage falsch. (Allgemein gilt sin 2x = 2 sin x cos x.)",
+        "hint": "Berechnen Sie beide Seiten getrennt mit den bekannten Werten von sin 30° und sin 60°.",
+        "whyWrong": "Die Aussage stimmt nicht: Der Sinus ist nicht linear, der Faktor 2 lässt sich nicht herausziehen: sin 60° ≈ 0,866, aber 2 · sin 30° = 1."
       }
     }
   ]

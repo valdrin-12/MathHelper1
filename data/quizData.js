@@ -37,7 +37,8 @@ const RAW_QUIZ_SETS = [
 
 const LANGS = ['al', 'en', 'de'];
 
-// Flatten one set into the shape the app uses: questions get question/options/explanation/hint/whyWrong in one language
+// Flatten one set into the shape the app uses: questions get their texts in one language.
+// Question types: 'choice' (options + correct index), 'input' (numeric answer), 'truefalse' (boolean correct).
 const localizeSet = (set, lang) => {
   const l = LANGS.includes(lang) ? lang : 'al';
   const meta = set.i18n[l] || set.i18n.al;
@@ -51,14 +52,32 @@ const localizeSet = (set, lang) => {
     color: set.color,
     questions: set.questions.map((q) => {
       const t = q[l] || q.al;
-      return {
+      const type = q.type || 'choice';
+      const base = {
         id: q.id,
-        type: q.type || 'choice',
+        type,
         question: t.question,
-        options: t.options,
-        correct: q.correct,
         explanation: t.explanation,
         hint: t.hint || q.al.hint || '',
+      };
+      if (type === 'input') {
+        // Numeric typed answer: { value, tolerance?, alternatives? } is language-independent
+        return {
+          ...base,
+          answer: q.answer,
+          unit: t.unit ?? q.al.unit ?? '',
+          placeholder: t.placeholder ?? q.al.placeholder ?? '',
+          commonMistakes: t.commonMistakes || q.al.commonMistakes || [],
+        };
+      }
+      if (type === 'truefalse') {
+        // correct is a boolean; whyWrong is a single string shown when the student picks the wrong value
+        return { ...base, correct: q.correct, whyWrong: t.whyWrong || q.al.whyWrong || '' };
+      }
+      return {
+        ...base,
+        options: t.options,
+        correct: q.correct,
         whyWrong: t.whyWrong || q.al.whyWrong || [],
       };
     }),

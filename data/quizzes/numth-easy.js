@@ -1,6 +1,7 @@
 // Quiz set "numth-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "numth-easy",
@@ -583,6 +584,109 @@ export default {
           "3 + 5 = 8 ist keine Primzahl.",
           "3 + 3 = 6 ist nicht durch 4 teilbar."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 14
+      },
+      "al": {
+        "question": "Sa shumëfisha të numrit 7 ka ndërmjet 1 dhe 100?",
+        "explanation": "Shumëfishat janë 7, 14, …, 98. Meqë 100 : 7 = 14 me mbetje 2, shumëfishi më i madh është 7 · 14 = 98. Pra janë 14 shumëfisha.",
+        "hint": "Pjesëtoni 100 me 7 dhe shikoni vetëm pjesën e plotë.",
+        "commonMistakes": [
+          {
+            "value": 15,
+            "why": "Keni rrumbullakuar 100 : 7 ≈ 14,3 lart në 15; por 7 · 15 = 105 > 100."
+          }
+        ]
+      },
+      "en": {
+        "question": "How many multiples of 7 are there between 1 and 100?",
+        "explanation": "The multiples are 7, 14, …, 98. Since 100 ÷ 7 = 14 remainder 2, the largest multiple is 7 · 14 = 98. So there are 14 multiples.",
+        "hint": "Divide 100 by 7 and look only at the whole-number part.",
+        "commonMistakes": [
+          {
+            "value": 15,
+            "why": "You rounded 100 ÷ 7 ≈ 14.3 up to 15; but 7 · 15 = 105 > 100."
+          }
+        ]
+      },
+      "de": {
+        "question": "Wie viele Vielfache von 7 liegen zwischen 1 und 100?",
+        "explanation": "Die Vielfachen sind 7, 14, …, 98. Da 100 : 7 = 14 Rest 2, ist das größte Vielfache 7 · 14 = 98. Es sind also 14 Vielfache.",
+        "hint": "Teilen Sie 100 durch 7 und betrachten Sie nur den ganzzahligen Teil.",
+        "commonMistakes": [
+          {
+            "value": 15,
+            "why": "Sie haben 100 : 7 ≈ 14,3 auf 15 aufgerundet; aber 7 · 15 = 105 > 100."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 1
+      },
+      "al": {
+        "question": "Sa është mbetja kur 2026 pjesëtohet me 9?",
+        "explanation": "Një numër jep me 9 të njëjtën mbetje si shuma e shifrave të tij: 2 + 0 + 2 + 6 = 10, dhe 10 = 9 + 1. Pra mbetja është 1. (Kontroll: 9 · 225 = 2025, 2026 − 2025 = 1.)",
+        "hint": "Mbetja me 9 është e njëjtë me mbetjen e shumës së shifrave me 9.",
+        "commonMistakes": [
+          {
+            "value": 10,
+            "why": "10 është shuma e shifrave; mbetja duhet të jetë më e vogël se 9, prandaj pjesëtoni edhe 10 me 9."
+          }
+        ]
+      },
+      "en": {
+        "question": "What is the remainder when 2026 is divided by 9?",
+        "explanation": "A number has the same remainder modulo 9 as the sum of its digits: 2 + 0 + 2 + 6 = 10, and 10 = 9 + 1. So the remainder is 1. (Check: 9 · 225 = 2025, 2026 − 2025 = 1.)",
+        "hint": "The remainder on division by 9 equals the remainder of the digit sum on division by 9.",
+        "commonMistakes": [
+          {
+            "value": 10,
+            "why": "10 is the digit sum; a remainder must be less than 9, so divide 10 by 9 as well."
+          }
+        ]
+      },
+      "de": {
+        "question": "Welcher Rest bleibt, wenn man 2026 durch 9 teilt?",
+        "explanation": "Eine Zahl hat bei Division durch 9 denselben Rest wie ihre Quersumme: 2 + 0 + 2 + 6 = 10, und 10 = 9 + 1. Der Rest ist also 1. (Probe: 9 · 225 = 2025, 2026 − 2025 = 1.)",
+        "hint": "Der Rest bei Division durch 9 ist gleich dem Rest der Quersumme bei Division durch 9.",
+        "commonMistakes": [
+          {
+            "value": 10,
+            "why": "10 ist die Quersumme; ein Rest muss kleiner als 9 sein, also teilen Sie auch 10 durch 9."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Numri 1 nuk është as numër i thjeshtë, as numër i përbërë.",
+        "explanation": "Numri i thjeshtë ka saktësisht dy pjesëtues të ndryshëm (1 dhe vetveten), ndërsa numri i përbërë ka më shumë se dy. Numri 1 ka vetëm një pjesëtues, prandaj nuk bën pjesë në asnjërin grup. Pohimi është i vërtetë.",
+        "hint": "Numëroni sa pjesëtues pozitivë ka numri 1.",
+        "whyWrong": "Pohimi nuk është i gabuar: 1 ka vetëm një pjesëtues, ndërsa numri i thjeshtë kërkon saktësisht dy dhe numri i përbërë më shumë se dy."
+      },
+      "en": {
+        "question": "The number 1 is neither prime nor composite.",
+        "explanation": "A prime has exactly two different divisors (1 and itself), a composite number has more than two. The number 1 has only one divisor, so it belongs to neither group. The statement is true.",
+        "hint": "Count how many positive divisors the number 1 has.",
+        "whyWrong": "The statement is not false: 1 has only one divisor, whereas a prime needs exactly two and a composite number more than two."
+      },
+      "de": {
+        "question": "Die Zahl 1 ist weder eine Primzahl noch eine zusammengesetzte Zahl.",
+        "explanation": "Eine Primzahl hat genau zwei verschiedene Teiler (1 und sich selbst), eine zusammengesetzte Zahl mehr als zwei. Die Zahl 1 hat nur einen Teiler und gehört daher zu keiner der beiden Gruppen. Die Aussage ist wahr.",
+        "hint": "Zählen Sie, wie viele positive Teiler die Zahl 1 hat.",
+        "whyWrong": "Die Aussage ist nicht falsch: 1 hat nur einen Teiler, eine Primzahl braucht aber genau zwei und eine zusammengesetzte Zahl mehr als zwei."
       }
     }
   ]

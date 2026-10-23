@@ -1,6 +1,7 @@
 // Quiz set "linalg-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "linalg-medium",
@@ -583,6 +584,133 @@ export default {
           "Das Minuszeichen ging verloren: 2 · (−3) = −6.",
           "A · B muss nicht berechnet werden; det(A · B) = det(A) · det(B) genügt."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 5
+      },
+      "al": {
+        "question": "Për cilën vlerë të k përcaktori i matricës [[2, 3], [1, k]] është i barabartë me 7?",
+        "explanation": "det = 2 · k − 3 · 1 = 2k − 3. Nga 2k − 3 = 7 del 2k = 10, pra k = 5.",
+        "hint": "Për matricën [[a, b], [c, d]] përcaktori është ad − bc.",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Keni llogaritur ad + bc: 2k + 3 = 7 ⇒ k = 2."
+          },
+          {
+            "value": -2,
+            "why": "Keni llogaritur bc − ad: 3 − 2k = 7 ⇒ k = −2."
+          }
+        ]
+      },
+      "en": {
+        "question": "For which value of k does the matrix [[2, 3], [1, k]] have determinant 7?",
+        "explanation": "det = 2 · k − 3 · 1 = 2k − 3. From 2k − 3 = 7 we get 2k = 10, so k = 5.",
+        "hint": "For the matrix [[a, b], [c, d]] the determinant is ad − bc.",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "You computed ad + bc: 2k + 3 = 7 ⇒ k = 2."
+          },
+          {
+            "value": -2,
+            "why": "You computed bc − ad: 3 − 2k = 7 ⇒ k = −2."
+          }
+        ]
+      },
+      "de": {
+        "question": "Für welchen Wert von k hat die Matrix [[2, 3], [1, k]] die Determinante 7?",
+        "explanation": "det = 2 · k − 3 · 1 = 2k − 3. Aus 2k − 3 = 7 folgt 2k = 10, also k = 5.",
+        "hint": "Für die Matrix [[a, b], [c, d]] ist die Determinante ad − bc.",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Sie haben ad + bc gerechnet: 2k + 3 = 7 ⇒ k = 2."
+          },
+          {
+            "value": -2,
+            "why": "Sie haben bc − ad gerechnet: 3 − 2k = 7 ⇒ k = −2."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 15
+      },
+      "al": {
+        "question": "Jepet A = [[1, 2], [3, 4]]. Llogaritni elementin në rreshtin 2 dhe shtyllën 1 të matricës A² = A · A.",
+        "explanation": "Elementi (2, 1) = rreshti 2 i A · shtylla 1 e A = (3, 4) · (1, 3) = 3 · 1 + 4 · 3 = 3 + 12 = 15. (A² = [[7, 10], [15, 22]].)",
+        "hint": "Elementi (i, j) i prodhimit është prodhimi skalar i rreshtit i me shtyllën j.",
+        "commonMistakes": [
+          {
+            "value": 9,
+            "why": "Keni ngritur në katror vetëm elementin 3; A² nuk llogaritet element për element."
+          },
+          {
+            "value": 22,
+            "why": "Ky është elementi në rreshtin 2 dhe shtyllën 2: 3 · 2 + 4 · 4 = 22."
+          }
+        ]
+      },
+      "en": {
+        "question": "Given A = [[1, 2], [3, 4]]. Calculate the entry in row 2, column 1 of A² = A · A.",
+        "explanation": "Entry (2, 1) = row 2 of A · column 1 of A = (3, 4) · (1, 3) = 3 · 1 + 4 · 3 = 3 + 12 = 15. (A² = [[7, 10], [15, 22]].)",
+        "hint": "Entry (i, j) of a product is the dot product of row i with column j.",
+        "commonMistakes": [
+          {
+            "value": 9,
+            "why": "You only squared the entry 3; A² is not computed entry by entry."
+          },
+          {
+            "value": 22,
+            "why": "That is the entry in row 2, column 2: 3 · 2 + 4 · 4 = 22."
+          }
+        ]
+      },
+      "de": {
+        "question": "Gegeben ist A = [[1, 2], [3, 4]]. Berechnen Sie den Eintrag in Zeile 2, Spalte 1 von A² = A · A.",
+        "explanation": "Eintrag (2, 1) = Zeile 2 von A · Spalte 1 von A = (3, 4) · (1, 3) = 3 · 1 + 4 · 3 = 3 + 12 = 15. (A² = [[7, 10], [15, 22]].)",
+        "hint": "Der Eintrag (i, j) eines Produkts ist das Skalarprodukt von Zeile i und Spalte j.",
+        "commonMistakes": [
+          {
+            "value": 9,
+            "why": "Sie haben nur den Eintrag 3 quadriert; A² wird nicht eintragsweise berechnet."
+          },
+          {
+            "value": 22,
+            "why": "Das ist der Eintrag in Zeile 2, Spalte 2: 3 · 2 + 4 · 4 = 22."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Nëse në një matricë katrore ndërrojmë vendet e dy rreshtave, përcaktori ndryshon shenjë.",
+        "explanation": "Për [[a, b], [c, d]]: det = ad − bc. Pas ndërrimit të rreshtave: [[c, d], [a, b]] me det = cb − da = −(ad − bc). Kjo vlen për matricat katrore të çdo madhësie. Pohimi është i vërtetë.",
+        "hint": "Provoni me një matricë 2×2 [[a, b], [c, d]] dhe ndërroni rreshtat.",
+        "whyWrong": "Pohimi nuk është i gabuar: ndërrimi i dy rreshtave shumëzon përcaktorin me −1 (vlera absolute mbetet e njëjtë, por shenja ndryshon)."
+      },
+      "en": {
+        "question": "Swapping two rows of a square matrix changes the sign of its determinant.",
+        "explanation": "For [[a, b], [c, d]]: det = ad − bc. After swapping the rows: [[c, d], [a, b]] with det = cb − da = −(ad − bc). This holds for square matrices of any size. The statement is true.",
+        "hint": "Try a 2×2 matrix [[a, b], [c, d]] and swap its rows.",
+        "whyWrong": "The statement is not false: swapping two rows multiplies the determinant by −1 (the absolute value stays the same, but the sign changes)."
+      },
+      "de": {
+        "question": "Vertauscht man in einer quadratischen Matrix zwei Zeilen, so ändert die Determinante ihr Vorzeichen.",
+        "explanation": "Für [[a, b], [c, d]]: det = ad − bc. Nach dem Zeilentausch: [[c, d], [a, b]] mit det = cb − da = −(ad − bc). Das gilt für quadratische Matrizen jeder Größe. Die Aussage ist wahr.",
+        "hint": "Probieren Sie eine 2×2-Matrix [[a, b], [c, d]] und vertauschen Sie die Zeilen.",
+        "whyWrong": "Die Aussage ist nicht falsch: Ein Zeilentausch multipliziert die Determinante mit −1 (der Betrag bleibt gleich, das Vorzeichen ändert sich)."
       }
     }
   ]

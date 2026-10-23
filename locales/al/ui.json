@@ -150,7 +150,13 @@
     "challengeOfDay": "Sfida e Ditës",
     "daily": "Ditore",
     "completed": "Completuar sot ✓",
-    "bestScore": "Më i miri: {{score}}%"
+    "bestScore": "Më i miri: {{score}}%",
+    "chooseMode": "Si dëshironi të ushtroheni?",
+    "modePractice": "Ushtrim",
+    "modePracticeDesc": "Pa kohëmatës. Shihni menjëherë nëse përgjigja është e saktë. Ndihma: −{{xp}} XP.",
+    "modeTest": "Test",
+    "modeTestDesc": "{{minutes}} minuta për gjithë kuizin. Rezultati dhe shpjegimet në fund. Ndihma: −{{xp}} XP.",
+    "startMode": "Fillo: {{mode}}"
   },
   "saved": {
     "loadErrorTitle": "Problemet e ruajtura nuk u ngarkuan",
@@ -285,7 +291,23 @@
     "quit": "Dil",
     "showHint": "Shfaq një ndihmë",
     "whyNot": "Pse jo „{{answer}}“?",
-    "practiceMode": "Ushtrim"
+    "practiceMode": "Ushtrim",
+    "testMode": "Test",
+    "trueLabel": "E vërtetë",
+    "falseLabel": "E gabuar",
+    "trueOrFalse": "E vërtetë apo e gabuar?",
+    "check": "Kontrollo",
+    "inputPlaceholder": "Shkruani përgjigjen",
+    "inputHelp": "Mund të shkruani edhe thyesa (3/4) ose numra dhjetorë (2,5).",
+    "invalidNumber": "Ju lutemi shkruani një numër, p.sh. 12, -3,5 ose 3/4.",
+    "toggleMinus": "Ndrysho shenjën",
+    "insertFraction": "Shto vijën e thyesës",
+    "correctValue": "Përgjigja e saktë: {{answer}}",
+    "showHintCost": "Shfaq një ndihmë (−{{xp}} XP)",
+    "skip": "Kalo pyetjen",
+    "finishTest": "Përfundo testin",
+    "timeLeft": "Koha e mbetur: {{time}}",
+    "testNote": "Në modalitetin Test përgjigjet vlerësohen në fund."
   },
   "quizResult": {
     "excellent": "Shkëlqyer!",
@@ -312,7 +334,13 @@
     "perfectScore": "REZULTAT PERFEKT!",
     "history": "Tentativa të mëparshme",
     "practiceMistakes": "Ushtroni gabimet ({{count}})",
-    "practiceNotCounted": "Ushtrim — nuk llogaritet në rezultat"
+    "practiceNotCounted": "Ushtrim — nuk llogaritet në rezultat",
+    "xpGained": "+{{xp}} XP",
+    "hintPenalty": "−{{xp}} XP për ndihmat e përdorura",
+    "levelUp": "Niveli i ri!",
+    "timeUp": "Koha mbaroi",
+    "testMode": "Test",
+    "notAnswered": "Pa përgjigje"
   },
   "profileModal": {
     "premiumBadge": "Premium",
@@ -683,9 +711,49 @@
   },
   "graph": {
     "title": "Grafik",
-    "noInternet": "Nuk ka lidhje me internetin",
-    "noInternetDesc": "Grafiku ka nevojë për internet që të ngarkohet. Kontrolloni lidhjen dhe provoni përsëri.",
-    "plotError": "Grafiku nuk u vizatua:"
+    "placeholder": "p.sh. x^2 − 4",
+    "addFunction": "Shto funksion",
+    "removeFunction": "Hiq funksionin",
+    "zoomIn": "Zmadho",
+    "zoomOut": "Zvogëlo",
+    "resetView": "Rikthe pamjen",
+    "tapHint": "Prekni një pikë për të parë koordinatat. Tërhiqni për ta lëvizur grafikun.",
+    "analysis": "Analiza e funksionit",
+    "analysisOf": "Analiza e {{name}}",
+    "intersections": "Pikat e prerjes",
+    "domain": "Bashkësia e përkufizimit",
+    "xIntercepts": "Zerot (prerjet me boshtin x)",
+    "yIntercept": "Prerja me boshtin y",
+    "maxima": "Maksimumet lokale",
+    "minima": "Minimumet lokale",
+    "inflections": "Pikat e infleksionit",
+    "increasing": "Intervalet ku rritet",
+    "decreasing": "Intervalet ku zbret",
+    "verticalAsymptotes": "Asimptotat vertikale",
+    "horizontalAsymptotes": "Asimptotat horizontale",
+    "allReals": "Të gjithë numrat realë (ℝ)",
+    "none": "Nuk ka",
+    "touching": "e prek boshtin x",
+    "identical": "Funksionet janë identike",
+    "asX": "kur x → {{dir}}",
+    "rangeNote": "Analizë numerike, vlerat janë të rrumbullakuara. Intervali i shqyrtuar: {{from}} ≤ x ≤ {{to}}.",
+    "truncatedNote": "Shfaqen vetëm pikat më afër origjinës.",
+    "emptyHint": "Shkruani një funksion të x, p.sh. x^2 − 4 ose sin(x).",
+    "errors": {
+      "syntax": "Shprehja nuk u kuptua. Kontrolloni kllapat dhe operatorët.",
+      "unknownSymbol": "Simbol i panjohur: „{{name}}”. Përdorni x si ndryshore.",
+      "unsupported": "Kjo shprehje nuk mbështetet në grafik.",
+      "tooLong": "Shprehja është shumë e gjatë.",
+      "undefinedEverywhere": "Funksioni nuk është i përkufizuar në intervalin e shqyrtuar."
+    },
+    "point": {
+      "root": "Zero",
+      "max": "Maksimum",
+      "min": "Minimum",
+      "inflection": "Pikë infleksioni",
+      "yIntercept": "Prerja me boshtin y",
+      "intersection": "Pikë prerjeje"
+    }
   },
   "weekdaysShort": {
     "0": "Di",
@@ -741,5 +809,149 @@
     "USAGE_CHECK_FAILED": "Kufiri i përdorimit nuk u kontrollua. Provoni përsëri.",
     "SAVED_LIMIT": "Keni arritur numrin maksimal të problemeve të ruajtura. Fshini disa për të ruajtur të reja.",
     "INVALID_CODE": "Kodi është i pavlefshëm ose ka skaduar. Provoni përsëri ose kërkoni një kod të ri."
+  },
+  "progress": {
+    "levelN": "Niveli {{level}}",
+    "levelShort": "Niv. {{level}}",
+    "xpToNext": "Edhe {{xp}} XP deri në nivelin {{level}}",
+    "mastery": "Zotërimi i temave",
+    "masteryValue": "zotërim {{percent}}%",
+    "masteryEmpty": "Përfundoni një kuiz për të parë sa e zotëroni secilën temë.",
+    "masteryFooter": "Llogaritet nga rezultati më i mirë në çdo kuiz; kuizet më të vështira kanë më shumë peshë.",
+    "levelNames": {
+      "1": "Fillestar i numrave",
+      "2": "Mbledhës i zellshëm",
+      "3": "Gjurmues faktorësh",
+      "4": "Zgjidhës ekuacionesh",
+      "5": "Eksplorues funksionesh",
+      "6": "Mjeshtër i gjeometrisë",
+      "7": "Kalorës i analizës",
+      "8": "Strateg i statistikës",
+      "9": "Mjeshtër i matematikës",
+      "10": "Legjendë e matematikës"
+    }
+  },
+  "tools": {
+    "title": "Mjete matematikore",
+    "openTools": "Mjete & Formula",
+    "openToolsDesc": "Kalkulatorë me zgjidhje hap pas hapi — funksionojnë edhe pa internet",
+    "tabCalculators": "Kalkulatorë",
+    "tabFormulas": "Formula",
+    "subtitle": "Zgjidhje hap pas hapi, direkt në pajisjen tuaj — pa internet.",
+    "formulasSubtitle": "Formulat më të rëndësishme për klasat 6–12.",
+    "solve": "Zgjidh",
+    "answer": "Përgjigja",
+    "steps": "Zgjidhja hap pas hapi",
+    "offline": "Pa internet",
+    "optional": "opsionale",
+    "couldNotSolve": "Ky problem nuk mund të zgjidhet me këtë mjet. Kontrolloni të dhënat dhe provoni përsëri.",
+    "options": {
+      "simplify": "Thjeshto",
+      "expand": "Zbërthe",
+      "factor": "Faktorizo",
+      "of": "p% e b",
+      "whatPercent": "a nga b në %",
+      "change": "Ndryshimi %",
+      "det": "Përcaktori",
+      "inverse": "E anasjellta",
+      "transpose": "E transponuara"
+    },
+    "items": {
+      "graph": {
+        "title": "Grafiku i funksionit",
+        "desc": "Vizatoni f(x) dhe shihni zerot, ekstremet dhe asimptotat"
+      },
+      "quadratic": {
+        "title": "Ekuacioni i fuqisë së dytë",
+        "desc": "ax² + bx + c = 0 — diskriminanti, rrënjët dhe kulmi"
+      },
+      "system": {
+        "title": "Sistem ekuacionesh",
+        "desc": "2 ose 3 ekuacione lineare, një për rresht"
+      },
+      "inequality": {
+        "title": "Mosbarazim linear",
+        "desc": "Zgjidhja dhe intervali, p.sh. −2x + 1 > 7"
+      },
+      "algebra": {
+        "title": "Thjeshto, zbërthe, faktorizo",
+        "desc": "Shprehje algjebrike me një ndryshore"
+      },
+      "fraction": {
+        "title": "Thyesat",
+        "desc": "Llogaritje me thyesa të sakta, p.sh. 1/3 + 1/6"
+      },
+      "derivative": {
+        "title": "Derivati",
+        "desc": "Me rregullat e emërtuara në çdo hap"
+      },
+      "integral": {
+        "title": "Integrali",
+        "desc": "I pacaktuar ose i caktuar (kufijtë janë opsionalë)"
+      },
+      "percent": {
+        "title": "Përqindjet",
+        "desc": "Përqindja e një numri, sa % është a nga b, ndryshimi në %"
+      },
+      "gcdlcm": {
+        "title": "PPMM dhe SHPMV",
+        "desc": "Pjesëtuesi më i madh dhe shumëfishi më i vogël i përbashkët"
+      },
+      "primeFactors": {
+        "title": "Faktorët e thjeshtë",
+        "desc": "Zbërthimi i një numri në faktorë të thjeshtë"
+      },
+      "matrix": {
+        "title": "Matricat",
+        "desc": "Përcaktori, e anasjellta dhe e transponuara"
+      },
+      "statistics": {
+        "title": "Statistika",
+        "desc": "Mesatarja, mediana, moda, devijimi standard"
+      }
+    },
+    "fields": {
+      "quadratic": {
+        "a": "Koeficienti a",
+        "b": "Koeficienti b",
+        "c": "Koeficienti c"
+      },
+      "system": {
+        "equations": "Ekuacionet (një për rresht)"
+      },
+      "inequality": {
+        "expression": "Mosbarazimi"
+      },
+      "algebra": {
+        "expression": "Shprehja"
+      },
+      "fraction": {
+        "expression": "Shprehja me thyesa"
+      },
+      "derivative": {
+        "expression": "f(x) ="
+      },
+      "integral": {
+        "expression": "f(x) =",
+        "from": "Kufiri i poshtëm",
+        "to": "Kufiri i sipërm"
+      },
+      "percent": {
+        "a": "Vlera a",
+        "b": "Vlera b"
+      },
+      "gcdlcm": {
+        "numbers": "Numrat"
+      },
+      "primeFactors": {
+        "n": "Numri"
+      },
+      "matrix": {
+        "A": "Matrica A (çdo rresht i matricës në rresht të veçantë)"
+      },
+      "statistics": {
+        "data": "Të dhënat"
+      }
+    }
   }
 }

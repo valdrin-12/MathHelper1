@@ -150,7 +150,13 @@
     "challengeOfDay": "Challenge of the Day",
     "daily": "Daily",
     "completed": "Completed today ✓",
-    "bestScore": "Best: {{score}}%"
+    "bestScore": "Best: {{score}}%",
+    "chooseMode": "How would you like to practise?",
+    "modePractice": "Practice",
+    "modePracticeDesc": "No timer. See right away whether each answer is correct. Hints: −{{xp}} XP.",
+    "modeTest": "Test",
+    "modeTestDesc": "{{minutes}} minutes for the whole quiz. Results and explanations at the end. Hints: −{{xp}} XP.",
+    "startMode": "Start: {{mode}}"
   },
   "saved": {
     "loadErrorTitle": "Couldn't Load Saved Problems",
@@ -285,7 +291,23 @@
     "quit": "Quit",
     "showHint": "Show a hint",
     "whyNot": "Why not “{{answer}}”?",
-    "practiceMode": "Practice"
+    "practiceMode": "Practice",
+    "testMode": "Test",
+    "trueLabel": "True",
+    "falseLabel": "False",
+    "trueOrFalse": "True or false?",
+    "check": "Check",
+    "inputPlaceholder": "Type your answer",
+    "inputHelp": "Fractions (3/4) and decimals (2.5) work too.",
+    "invalidNumber": "Please enter a number, e.g. 12, -3.5 or 3/4.",
+    "toggleMinus": "Toggle minus sign",
+    "insertFraction": "Insert fraction bar",
+    "correctValue": "Correct answer: {{answer}}",
+    "showHintCost": "Show a hint (−{{xp}} XP)",
+    "skip": "Skip question",
+    "finishTest": "Finish test",
+    "timeLeft": "Time left: {{time}}",
+    "testNote": "In Test mode your answers are marked at the end."
   },
   "quizResult": {
     "excellent": "Excellent!",
@@ -312,7 +334,13 @@
     "perfectScore": "PERFECT SCORE!",
     "history": "Previous attempts",
     "practiceMistakes": "Practise mistakes ({{count}})",
-    "practiceNotCounted": "Practice — not counted in your score"
+    "practiceNotCounted": "Practice — not counted in your score",
+    "xpGained": "+{{xp}} XP",
+    "hintPenalty": "−{{xp}} XP for hints used",
+    "levelUp": "Level up!",
+    "timeUp": "Time's up",
+    "testMode": "Test",
+    "notAnswered": "Not answered"
   },
   "profileModal": {
     "premiumBadge": "Premium",
@@ -578,9 +606,49 @@
   },
   "graph": {
     "title": "Graph",
-    "noInternet": "No internet connection",
-    "noInternetDesc": "The graph needs an internet connection to load. Please check your connection and try again.",
-    "plotError": "Could not plot:"
+    "placeholder": "e.g. x^2 − 4",
+    "addFunction": "Add function",
+    "removeFunction": "Remove function",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetView": "Reset view",
+    "tapHint": "Tap a point to see its coordinates. Drag to move the graph.",
+    "analysis": "Function analysis",
+    "analysisOf": "Analysis of {{name}}",
+    "intersections": "Intersection points",
+    "domain": "Domain",
+    "xIntercepts": "Roots (x-intercepts)",
+    "yIntercept": "y-intercept",
+    "maxima": "Local maxima",
+    "minima": "Local minima",
+    "inflections": "Inflection points",
+    "increasing": "Increasing on",
+    "decreasing": "Decreasing on",
+    "verticalAsymptotes": "Vertical asymptotes",
+    "horizontalAsymptotes": "Horizontal asymptotes",
+    "allReals": "All real numbers (ℝ)",
+    "none": "None",
+    "touching": "touches the x-axis",
+    "identical": "The functions are identical",
+    "asX": "as x → {{dir}}",
+    "rangeNote": "Numerical analysis, values are rounded. Range examined: {{from}} ≤ x ≤ {{to}}.",
+    "truncatedNote": "Only the points closest to the origin are listed.",
+    "emptyHint": "Enter a function of x, e.g. x^2 − 4 or sin(x).",
+    "errors": {
+      "syntax": "We couldn't read this expression. Please check brackets and operators.",
+      "unknownSymbol": "Unknown symbol “{{name}}”. Please use x as the variable.",
+      "unsupported": "This expression isn't supported in the graph.",
+      "tooLong": "The expression is too long.",
+      "undefinedEverywhere": "The function is not defined in the examined range."
+    },
+    "point": {
+      "root": "Root",
+      "max": "Maximum",
+      "min": "Minimum",
+      "inflection": "Inflection point",
+      "yIntercept": "y-intercept",
+      "intersection": "Intersection"
+    }
   },
   "weekdaysShort": {
     "0": "Su",
@@ -636,5 +704,149 @@
     "USAGE_CHECK_FAILED": "Could not check your usage limit. Please try again.",
     "SAVED_LIMIT": "You have reached the maximum number of saved problems. Delete some to save new ones.",
     "INVALID_CODE": "Invalid or expired code. Please try again or request a new code."
+  },
+  "progress": {
+    "levelN": "Level {{level}}",
+    "levelShort": "Lv. {{level}}",
+    "xpToNext": "{{xp}} XP to level {{level}}",
+    "mastery": "Topic mastery",
+    "masteryValue": "{{percent}}% mastery",
+    "masteryEmpty": "Finish a quiz to see how well you master each topic.",
+    "masteryFooter": "Based on your best score in each quiz; harder quizzes count more.",
+    "levelNames": {
+      "1": "Number Novice",
+      "2": "Eager Adder",
+      "3": "Factor Finder",
+      "4": "Equation Solver",
+      "5": "Function Explorer",
+      "6": "Geometry Master",
+      "7": "Calculus Knight",
+      "8": "Statistics Strategist",
+      "9": "Math Maestro",
+      "10": "Math Legend"
+    }
+  },
+  "tools": {
+    "title": "Math tools",
+    "openTools": "Tools & Formulas",
+    "openToolsDesc": "Calculators with step-by-step solutions — they also work offline",
+    "tabCalculators": "Calculators",
+    "tabFormulas": "Formulas",
+    "subtitle": "Step-by-step solutions, right on your device — no internet needed.",
+    "formulasSubtitle": "The most important formulas for grades 6–12.",
+    "solve": "Solve",
+    "answer": "Answer",
+    "steps": "Step-by-step solution",
+    "offline": "Offline",
+    "optional": "optional",
+    "couldNotSolve": "This problem cannot be solved with this tool. Check your input and try again.",
+    "options": {
+      "simplify": "Simplify",
+      "expand": "Expand",
+      "factor": "Factor",
+      "of": "p% of b",
+      "whatPercent": "a of b in %",
+      "change": "% change",
+      "det": "Determinant",
+      "inverse": "Inverse",
+      "transpose": "Transpose"
+    },
+    "items": {
+      "graph": {
+        "title": "Function graph",
+        "desc": "Plot f(x) and see zeros, extrema and asymptotes"
+      },
+      "quadratic": {
+        "title": "Quadratic equation",
+        "desc": "ax² + bx + c = 0 — discriminant, roots and vertex"
+      },
+      "system": {
+        "title": "System of equations",
+        "desc": "2 or 3 linear equations, one per line"
+      },
+      "inequality": {
+        "title": "Linear inequality",
+        "desc": "Solution and interval, e.g. −2x + 1 > 7"
+      },
+      "algebra": {
+        "title": "Simplify, expand, factor",
+        "desc": "Algebraic expressions in one variable"
+      },
+      "fraction": {
+        "title": "Fractions",
+        "desc": "Exact fraction arithmetic, e.g. 1/3 + 1/6"
+      },
+      "derivative": {
+        "title": "Derivative",
+        "desc": "With the rule named in every step"
+      },
+      "integral": {
+        "title": "Integral",
+        "desc": "Indefinite or definite (limits are optional)"
+      },
+      "percent": {
+        "title": "Percentages",
+        "desc": "Percent of a number, what % a is of b, % change"
+      },
+      "gcdlcm": {
+        "title": "GCD and LCM",
+        "desc": "Greatest common divisor and least common multiple"
+      },
+      "primeFactors": {
+        "title": "Prime factors",
+        "desc": "Prime factorization of a number"
+      },
+      "matrix": {
+        "title": "Matrices",
+        "desc": "Determinant, inverse and transpose"
+      },
+      "statistics": {
+        "title": "Statistics",
+        "desc": "Mean, median, mode, standard deviation"
+      }
+    },
+    "fields": {
+      "quadratic": {
+        "a": "Coefficient a",
+        "b": "Coefficient b",
+        "c": "Coefficient c"
+      },
+      "system": {
+        "equations": "Equations (one per line)"
+      },
+      "inequality": {
+        "expression": "Inequality"
+      },
+      "algebra": {
+        "expression": "Expression"
+      },
+      "fraction": {
+        "expression": "Expression with fractions"
+      },
+      "derivative": {
+        "expression": "f(x) ="
+      },
+      "integral": {
+        "expression": "f(x) =",
+        "from": "Lower limit",
+        "to": "Upper limit"
+      },
+      "percent": {
+        "a": "Value a",
+        "b": "Value b"
+      },
+      "gcdlcm": {
+        "numbers": "Numbers"
+      },
+      "primeFactors": {
+        "n": "Number"
+      },
+      "matrix": {
+        "A": "Matrix A (one row per line)"
+      },
+      "statistics": {
+        "data": "Data"
+      }
+    }
   }
 }

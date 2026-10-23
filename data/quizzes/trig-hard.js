@@ -1,6 +1,7 @@
 // Quiz set "trig-hard" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "trig-hard",
@@ -583,6 +584,122 @@ export default {
           "Sie haben den Bruch umgedreht.",
           "2 ist nur tan x; Sie müssen noch durch cos x teilen und einsetzen."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": -0.28,
+        "tolerance": 0.001
+      },
+      "al": {
+        "question": "Dihet që cos x = 0,6. Llogaritni cos 2x. Shkruani rezultatin si numër dhjetor.",
+        "explanation": "cos 2x = 2cos²x − 1 = 2 · 0,36 − 1 = 0,72 − 1 = −0,28.",
+        "hint": "Përdorni formulën e këndit të dyfishtë që përmban vetëm cos x.",
+        "commonMistakes": [
+          {
+            "value": 1.2,
+            "why": "Keni llogaritur 2 · cos x = 1,2; cos 2x nuk është 2 cos x."
+          },
+          {
+            "value": 0.28,
+            "why": "Keni përdorur 1 − 2cos²x në vend të 2cos²x − 1, pra shenja është e kundërt."
+          }
+        ]
+      },
+      "en": {
+        "question": "Given cos x = 0.6, calculate cos 2x. Give the result as a decimal number.",
+        "explanation": "cos 2x = 2cos²x − 1 = 2 · 0.36 − 1 = 0.72 − 1 = −0.28.",
+        "hint": "Use the double-angle formula that contains only cos x.",
+        "commonMistakes": [
+          {
+            "value": 1.2,
+            "why": "You calculated 2 · cos x = 1.2; cos 2x is not 2 cos x."
+          },
+          {
+            "value": 0.28,
+            "why": "You used 1 − 2cos²x instead of 2cos²x − 1, so the sign is reversed."
+          }
+        ]
+      },
+      "de": {
+        "question": "Es gilt cos x = 0,6. Berechnen Sie cos 2x. Geben Sie das Ergebnis als Dezimalzahl an.",
+        "explanation": "cos 2x = 2cos²x − 1 = 2 · 0,36 − 1 = 0,72 − 1 = −0,28.",
+        "hint": "Verwenden Sie die Doppelwinkelformel, die nur cos x enthält.",
+        "commonMistakes": [
+          {
+            "value": 1.2,
+            "why": "Sie haben 2 · cos x = 1,2 gerechnet; cos 2x ist nicht 2 cos x."
+          },
+          {
+            "value": 0.28,
+            "why": "Sie haben 1 − 2cos²x statt 2cos²x − 1 verwendet, das Vorzeichen ist also vertauscht."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 4
+      },
+      "al": {
+        "question": "Sa zgjidhje ka ekuacioni sin 2x = sin x në intervalin [0, 2π)?",
+        "explanation": "sin 2x = 2 sin x cos x, pra 2 sin x cos x − sin x = 0 ⇒ sin x (2cos x − 1) = 0. sin x = 0 jep x = 0 dhe x = π; cos x = 1/2 jep x = π/3 dhe x = 5π/3. Gjithsej 4 zgjidhje.",
+        "hint": "Shkruani sin 2x = 2 sin x cos x dhe nxirrni sin x si faktor të përbashkët (mos pjesëtoni me sin x).",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Keni pjesëtuar me sin x dhe keni humbur zgjidhjet e sin x = 0 (x = 0 dhe x = π)."
+          }
+        ]
+      },
+      "en": {
+        "question": "How many solutions does the equation sin 2x = sin x have in the interval [0, 2π)?",
+        "explanation": "sin 2x = 2 sin x cos x, so 2 sin x cos x − sin x = 0 ⇒ sin x (2cos x − 1) = 0. sin x = 0 gives x = 0 and x = π; cos x = 1/2 gives x = π/3 and x = 5π/3. In total 4 solutions.",
+        "hint": "Write sin 2x = 2 sin x cos x and factor out sin x (do not divide by sin x).",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "You divided by sin x and lost the solutions of sin x = 0 (x = 0 and x = π)."
+          }
+        ]
+      },
+      "de": {
+        "question": "Wie viele Lösungen hat die Gleichung sin 2x = sin x im Intervall [0, 2π)?",
+        "explanation": "sin 2x = 2 sin x cos x, also 2 sin x cos x − sin x = 0 ⇒ sin x (2cos x − 1) = 0. sin x = 0 liefert x = 0 und x = π; cos x = 1/2 liefert x = π/3 und x = 5π/3. Insgesamt 4 Lösungen.",
+        "hint": "Schreiben Sie sin 2x = 2 sin x cos x und klammern Sie sin x aus (nicht durch sin x teilen).",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Sie haben durch sin x geteilt und dabei die Lösungen von sin x = 0 (x = 0 und x = π) verloren."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Për çdo x dhe y vlen cos(x − y) = cos x · cos y + sin x · sin y.",
+        "explanation": "Kjo është formula e adicionit për kosinusin e diferencës. Kontroll me x = 60°, y = 30°: cos 30° = √3/2, dhe cos 60° cos 30° + sin 60° sin 30° = (1/2)(√3/2) + (√3/2)(1/2) = √3/2 ✓. Pohimi është i vërtetë.",
+        "hint": "Kontrolloni formulën me dy kënde të njohura, p.sh. x = 60° dhe y = 30°.",
+        "whyWrong": "Pohimi nuk është i gabuar: te kosinusi i diferencës shenja është «+» (te cos(x + y) është «−»); kontrolli me 60° dhe 30° e konfirmon."
+      },
+      "en": {
+        "question": "For all x and y: cos(x − y) = cos x · cos y + sin x · sin y.",
+        "explanation": "This is the subtraction formula for cosine. Check with x = 60°, y = 30°: cos 30° = √3/2, and cos 60° cos 30° + sin 60° sin 30° = (1/2)(√3/2) + (√3/2)(1/2) = √3/2 ✓. The statement is true.",
+        "hint": "Check the formula with two known angles, e.g. x = 60° and y = 30°.",
+        "whyWrong": "The statement is not false: for the cosine of a difference the sign is “+” (for cos(x + y) it is “−”); the check with 60° and 30° confirms it."
+      },
+      "de": {
+        "question": "Für alle x und y gilt: cos(x − y) = cos x · cos y + sin x · sin y.",
+        "explanation": "Das ist das Subtraktionstheorem des Kosinus. Probe mit x = 60°, y = 30°: cos 30° = √3/2, und cos 60° cos 30° + sin 60° sin 30° = (1/2)(√3/2) + (√3/2)(1/2) = √3/2 ✓. Die Aussage ist wahr.",
+        "hint": "Prüfen Sie die Formel mit zwei bekannten Winkeln, z. B. x = 60° und y = 30°.",
+        "whyWrong": "Die Aussage ist nicht falsch: Beim Kosinus einer Differenz steht ein „+“ (bei cos(x + y) ein „−“); die Probe mit 60° und 30° bestätigt das."
       }
     }
   ]
