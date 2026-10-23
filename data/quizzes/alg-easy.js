@@ -1,6 +1,7 @@
 // Quiz set "alg-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "alg-easy",
@@ -583,6 +584,133 @@ export default {
           "Die Rollen wurden vertauscht: 3 · 2 = 6 ist die Konstante, 3 + 2 = 5 der Koeffizient von x.",
           "Die Konstanten werden multipliziert (3 · 2 = 6), nicht addiert."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 3
+      },
+      "al": {
+        "question": "Zgjidhni ekuacionin: 7 − 2x = 1. Shkruani vlerën e x.",
+        "explanation": "Zbresim 7 nga të dyja anët: −2x = 1 − 7 = −6. Pjesëtojmë me −2: x = −6 : (−2) = 3. Kontroll: 7 − 2 · 3 = 1 ✓",
+        "hint": "Veçoni termin me x në njërën anë dhe kujdesuni për shenjën kur pjesëtoni me një numër negativ.",
+        "commonMistakes": [
+          {
+            "value": -3,
+            "why": "Keni shkruar −2x = 6: shenja e anës së djathtë është gabim, sepse 1 − 7 = −6."
+          },
+          {
+            "value": 4,
+            "why": "Keni mbledhur 1 + 7 = 8 në vend që të zbrisnit 7 dhe keni injoruar shenjën minus para 2x."
+          }
+        ]
+      },
+      "en": {
+        "question": "Solve the equation: 7 − 2x = 1. Enter the value of x.",
+        "explanation": "Subtract 7 from both sides: −2x = 1 − 7 = −6. Divide by −2: x = −6 ÷ (−2) = 3. Check: 7 − 2 · 3 = 1 ✓",
+        "hint": "Isolate the x-term on one side and watch the sign when dividing by a negative number.",
+        "commonMistakes": [
+          {
+            "value": -3,
+            "why": "You wrote −2x = 6: the right-hand side has the wrong sign, because 1 − 7 = −6."
+          },
+          {
+            "value": 4,
+            "why": "You added 1 + 7 = 8 instead of subtracting 7 and ignored the minus sign in front of 2x."
+          }
+        ]
+      },
+      "de": {
+        "question": "Lösen Sie die Gleichung: 7 − 2x = 1. Geben Sie den Wert von x ein.",
+        "explanation": "Auf beiden Seiten 7 subtrahieren: −2x = 1 − 7 = −6. Durch −2 dividieren: x = −6 : (−2) = 3. Probe: 7 − 2 · 3 = 1 ✓",
+        "hint": "Bringen Sie den x-Term auf eine Seite und achten Sie auf das Vorzeichen, wenn Sie durch eine negative Zahl teilen.",
+        "commonMistakes": [
+          {
+            "value": -3,
+            "why": "Sie haben −2x = 6 geschrieben: Die rechte Seite hat das falsche Vorzeichen, denn 1 − 7 = −6."
+          },
+          {
+            "value": 4,
+            "why": "Sie haben 1 + 7 = 8 gerechnet statt 7 abzuziehen und das Minus vor 2x ignoriert."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 24
+      },
+      "al": {
+        "question": "Llogaritni vlerën e shprehjes 2(a − 3) + 4a për a = 5.",
+        "explanation": "Hapim kllapën: 2(a − 3) + 4a = 2a − 6 + 4a = 6a − 6. Për a = 5: 6 · 5 − 6 = 30 − 6 = 24.",
+        "hint": "Hapni kllapën duke shumëzuar 2 me secilin term brenda saj, pastaj zëvendësoni a = 5.",
+        "commonMistakes": [
+          {
+            "value": 27,
+            "why": "Keni shumëzuar 2 vetëm me a, jo edhe me −3: 10 − 3 + 20 = 27."
+          },
+          {
+            "value": 36,
+            "why": "Keni shkruar +6 në vend të −6 gjatë hapjes së kllapës: 6 · 5 + 6 = 36."
+          }
+        ]
+      },
+      "en": {
+        "question": "Evaluate the expression 2(a − 3) + 4a for a = 5.",
+        "explanation": "Expand: 2(a − 3) + 4a = 2a − 6 + 4a = 6a − 6. For a = 5: 6 · 5 − 6 = 30 − 6 = 24.",
+        "hint": "Expand the bracket by multiplying 2 by each term inside it, then substitute a = 5.",
+        "commonMistakes": [
+          {
+            "value": 27,
+            "why": "You multiplied 2 only by a, not by −3: 10 − 3 + 20 = 27."
+          },
+          {
+            "value": 36,
+            "why": "You wrote +6 instead of −6 when expanding the bracket: 6 · 5 + 6 = 36."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie den Wert des Terms 2(a − 3) + 4a für a = 5.",
+        "explanation": "Klammer auflösen: 2(a − 3) + 4a = 2a − 6 + 4a = 6a − 6. Für a = 5: 6 · 5 − 6 = 30 − 6 = 24.",
+        "hint": "Lösen Sie die Klammer auf, indem Sie 2 mit jedem Glied in der Klammer multiplizieren, und setzen Sie dann a = 5 ein.",
+        "commonMistakes": [
+          {
+            "value": 27,
+            "why": "Sie haben 2 nur mit a multipliziert, nicht mit −3: 10 − 3 + 20 = 27."
+          },
+          {
+            "value": 36,
+            "why": "Sie haben beim Auflösen der Klammer +6 statt −6 geschrieben: 6 · 5 + 6 = 36."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Për çdo dy numra a dhe b vlen: (a + b)² = a² + b².",
+        "explanation": "(a + b)² = (a + b)(a + b) = a² + 2ab + b². Për shembull, për a = 1 dhe b = 2: (1 + 2)² = 9, ndërsa 1² + 2² = 5. Pra pohimi është i gabuar.",
+        "hint": "Provoni me numra konkretë, p.sh. a = 1 dhe b = 2.",
+        "whyWrong": "Pohimi nuk është i vërtetë: mungon termi i dyfishtë 2ab, sepse katrori i shumës nuk është shuma e katrorëve."
+      },
+      "en": {
+        "question": "For all numbers a and b: (a + b)² = a² + b².",
+        "explanation": "(a + b)² = (a + b)(a + b) = a² + 2ab + b². For example, for a = 1 and b = 2: (1 + 2)² = 9, but 1² + 2² = 5. So the statement is false.",
+        "hint": "Try concrete numbers, e.g. a = 1 and b = 2.",
+        "whyWrong": "The statement is not true: the middle term 2ab is missing, because the square of a sum is not the sum of the squares."
+      },
+      "de": {
+        "question": "Für alle Zahlen a und b gilt: (a + b)² = a² + b².",
+        "explanation": "(a + b)² = (a + b)(a + b) = a² + 2ab + b². Zum Beispiel für a = 1 und b = 2: (1 + 2)² = 9, aber 1² + 2² = 5. Die Aussage ist also falsch.",
+        "hint": "Probieren Sie konkrete Zahlen aus, z. B. a = 1 und b = 2.",
+        "whyWrong": "Die Aussage stimmt nicht: Es fehlt das gemischte Glied 2ab, denn das Quadrat einer Summe ist nicht die Summe der Quadrate."
       }
     }
   ]

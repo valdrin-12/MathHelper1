@@ -1,6 +1,7 @@
 // Quiz set "alg-hard" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "alg-hard",
@@ -583,6 +584,146 @@ export default {
           "Nur der Faktor x − 3 wurde berücksichtigt, x + 2 wurde übersehen.",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": -5
+      },
+      "al": {
+        "question": "Gjeni vlerën më të vogël të funksionit f(x) = 2x² − 8x + 3.",
+        "explanation": "Kulmi i parabolës: x = −b/(2a) = 8/4 = 2. Vlera minimale: f(2) = 2 · 4 − 16 + 3 = −5. Meqë a = 2 > 0, parabola hapet lart, prandaj −5 është minimumi.",
+        "hint": "Minimumi arrihet në kulmin e parabolës, x = −b/(2a).",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Kjo është abshisa e kulmit (x = 2), jo vlera e funksionit në të."
+          },
+          {
+            "value": 27,
+            "why": "Keni marrë x = −2 (gabim me shenjën te −b/(2a)): f(−2) = 8 + 16 + 3 = 27."
+          },
+          {
+            "value": 3,
+            "why": "Kjo është f(0) = 3, pika ku parabola pret boshtin y, jo minimumi."
+          }
+        ]
+      },
+      "en": {
+        "question": "Find the minimum value of the function f(x) = 2x² − 8x + 3.",
+        "explanation": "Vertex: x = −b/(2a) = 8/4 = 2. Minimum value: f(2) = 2 · 4 − 16 + 3 = −5. Since a = 2 > 0 the parabola opens upwards, so −5 is the minimum.",
+        "hint": "The minimum is reached at the vertex of the parabola, x = −b/(2a).",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "That is the x-coordinate of the vertex (x = 2), not the function value there."
+          },
+          {
+            "value": 27,
+            "why": "You used x = −2 (sign error in −b/(2a)): f(−2) = 8 + 16 + 3 = 27."
+          },
+          {
+            "value": 3,
+            "why": "That is f(0) = 3, the y-intercept, not the minimum."
+          }
+        ]
+      },
+      "de": {
+        "question": "Bestimmen Sie den kleinsten Funktionswert von f(x) = 2x² − 8x + 3.",
+        "explanation": "Scheitelpunkt: x = −b/(2a) = 8/4 = 2. Minimum: f(2) = 2 · 4 − 16 + 3 = −5. Da a = 2 > 0, ist die Parabel nach oben geöffnet, also ist −5 das Minimum.",
+        "hint": "Das Minimum liegt im Scheitelpunkt der Parabel, x = −b/(2a).",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Das ist die x-Koordinate des Scheitelpunkts (x = 2), nicht der Funktionswert dort."
+          },
+          {
+            "value": 27,
+            "why": "Sie haben x = −2 verwendet (Vorzeichenfehler bei −b/(2a)): f(−2) = 8 + 16 + 3 = 27."
+          },
+          {
+            "value": 3,
+            "why": "Das ist f(0) = 3, der y-Achsenabschnitt, nicht das Minimum."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 1.5,
+        "tolerance": 0.001
+      },
+      "al": {
+        "question": "x₁ dhe x₂ janë rrënjët e ekuacionit x² − 6x + 4 = 0. Pa e zgjidhur ekuacionin, llogaritni 1/x₁ + 1/x₂. Shkruani rezultatin si numër dhjetor.",
+        "explanation": "Sipas Vietës: x₁ + x₂ = 6 dhe x₁ · x₂ = 4. Atëherë 1/x₁ + 1/x₂ = (x₁ + x₂)/(x₁ · x₂) = 6/4 = 1,5.",
+        "hint": "Bashkoni thyesat në një emërues të përbashkët dhe përdorni formulat e Vietës.",
+        "commonMistakes": [
+          {
+            "value": -1.5,
+            "why": "Keni marrë x₁ + x₂ = −6; sipas Vietës shuma është −b/a = 6."
+          },
+          {
+            "value": 0.67,
+            "why": "Keni pjesëtuar prodhimin me shumën (4/6) në vend të shumës me prodhimin."
+          }
+        ]
+      },
+      "en": {
+        "question": "x₁ and x₂ are the roots of x² − 6x + 4 = 0. Without solving the equation, calculate 1/x₁ + 1/x₂. Give the result as a decimal number.",
+        "explanation": "By Vieta: x₁ + x₂ = 6 and x₁ · x₂ = 4. Then 1/x₁ + 1/x₂ = (x₁ + x₂)/(x₁ · x₂) = 6/4 = 1.5.",
+        "hint": "Combine the fractions over a common denominator and use Vieta's formulas.",
+        "commonMistakes": [
+          {
+            "value": -1.5,
+            "why": "You took x₁ + x₂ = −6; by Vieta the sum is −b/a = 6."
+          },
+          {
+            "value": 0.67,
+            "why": "You divided the product by the sum (4/6) instead of the sum by the product."
+          }
+        ]
+      },
+      "de": {
+        "question": "x₁ und x₂ sind die Lösungen von x² − 6x + 4 = 0. Berechnen Sie, ohne die Gleichung zu lösen, 1/x₁ + 1/x₂. Geben Sie das Ergebnis als Dezimalzahl an.",
+        "explanation": "Nach Vieta: x₁ + x₂ = 6 und x₁ · x₂ = 4. Also 1/x₁ + 1/x₂ = (x₁ + x₂)/(x₁ · x₂) = 6/4 = 1,5.",
+        "hint": "Bringen Sie die Brüche auf einen gemeinsamen Nenner und verwenden Sie den Satz von Vieta.",
+        "commonMistakes": [
+          {
+            "value": -1.5,
+            "why": "Sie haben x₁ + x₂ = −6 angenommen; nach Vieta ist die Summe −b/a = 6."
+          },
+          {
+            "value": 0.67,
+            "why": "Sie haben das Produkt durch die Summe (4/6) geteilt statt die Summe durch das Produkt."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Nëse dallori D = b² − 4ac i ekuacionit ax² + bx + c = 0 (a ≠ 0) është negativ, atëherë grafiku i y = ax² + bx + c nuk e pret boshtin x.",
+        "explanation": "Pikat ku grafiku pret boshtin x janë zgjidhjet reale të ax² + bx + c = 0. Kur D < 0, ekuacioni nuk ka zgjidhje reale, prandaj parabola nuk e pret boshtin x. Pohimi është i vërtetë.",
+        "hint": "Mendoni çfarë do të thotë algjebrikisht që grafiku pret boshtin x (y = 0).",
+        "whyWrong": "Pohimi nuk është i gabuar: prerja me boshtin x kërkon një zgjidhje reale të ax² + bx + c = 0, ndërsa me D < 0 nuk ka asnjë të tillë."
+      },
+      "en": {
+        "question": "If the discriminant D = b² − 4ac of ax² + bx + c = 0 (a ≠ 0) is negative, then the graph of y = ax² + bx + c does not cross the x-axis.",
+        "explanation": "The points where the graph meets the x-axis are the real solutions of ax² + bx + c = 0. When D < 0 the equation has no real solutions, so the parabola does not meet the x-axis. The statement is true.",
+        "hint": "Think about what it means algebraically for the graph to meet the x-axis (y = 0).",
+        "whyWrong": "The statement is not false: meeting the x-axis requires a real solution of ax² + bx + c = 0, and with D < 0 there is none."
+      },
+      "de": {
+        "question": "Ist die Diskriminante D = b² − 4ac von ax² + bx + c = 0 (a ≠ 0) negativ, dann schneidet der Graph von y = ax² + bx + c die x-Achse nicht.",
+        "explanation": "Die Schnittpunkte mit der x-Achse sind die reellen Lösungen von ax² + bx + c = 0. Für D < 0 hat die Gleichung keine reelle Lösung, also schneidet die Parabel die x-Achse nicht. Die Aussage ist wahr.",
+        "hint": "Überlegen Sie, was es algebraisch bedeutet, dass der Graph die x-Achse trifft (y = 0).",
+        "whyWrong": "Die Aussage ist nicht falsch: Ein Schnittpunkt mit der x-Achse erfordert eine reelle Lösung von ax² + bx + c = 0, und für D < 0 gibt es keine."
       }
     }
   ]

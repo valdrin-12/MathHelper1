@@ -1,6 +1,7 @@
 // Quiz set "trig-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "trig-medium",
@@ -583,6 +584,125 @@ export default {
           null,
           "sin²x/sin x = sin x; Sie haben in die falsche Richtung geteilt."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 4
+      },
+      "al": {
+        "question": "Sa zgjidhje ka ekuacioni sin x = 0,3 në intervalin 0° ≤ x < 720°?",
+        "explanation": "Në një periudhë [0°, 360°) sin x = 0,3 ka dy zgjidhje: x₁ ≈ 17,5° (kuadranti I) dhe x₂ = 180° − x₁ ≈ 162,5° (kuadranti II). Intervali [0°, 720°) përmban dy periudha, pra 2 · 2 = 4 zgjidhje.",
+        "hint": "Numëroni zgjidhjet në një periudhë 360° dhe pastaj sa periudha përmban intervali.",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Keni numëruar zgjidhjet vetëm në një periudhë [0°, 360°); intervali përmban dy periudha."
+          },
+          {
+            "value": 1,
+            "why": "Keni marrë vetëm vlerën e kalkulatorit (≈ 17,5°), pa zgjidhjen në kuadrantin II dhe pa periudhën e dytë."
+          }
+        ]
+      },
+      "en": {
+        "question": "How many solutions does sin x = 0.3 have in the interval 0° ≤ x < 720°?",
+        "explanation": "In one period [0°, 360°), sin x = 0.3 has two solutions: x₁ ≈ 17.5° (quadrant I) and x₂ = 180° − x₁ ≈ 162.5° (quadrant II). The interval [0°, 720°) contains two periods, so 2 · 2 = 4 solutions.",
+        "hint": "Count the solutions in one 360° period, then how many periods the interval contains.",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "You only counted the solutions in one period [0°, 360°); the interval contains two periods."
+          },
+          {
+            "value": 1,
+            "why": "You only took the calculator value (≈ 17.5°), missing the quadrant II solution and the second period."
+          }
+        ]
+      },
+      "de": {
+        "question": "Wie viele Lösungen hat die Gleichung sin x = 0,3 im Intervall 0° ≤ x < 720°?",
+        "explanation": "In einer Periode [0°, 360°) hat sin x = 0,3 zwei Lösungen: x₁ ≈ 17,5° (I. Quadrant) und x₂ = 180° − x₁ ≈ 162,5° (II. Quadrant). Das Intervall [0°, 720°) umfasst zwei Perioden, also 2 · 2 = 4 Lösungen.",
+        "hint": "Zählen Sie die Lösungen in einer Periode von 360° und dann, wie viele Perioden das Intervall umfasst.",
+        "commonMistakes": [
+          {
+            "value": 2,
+            "why": "Sie haben nur die Lösungen in einer Periode [0°, 360°) gezählt; das Intervall umfasst zwei Perioden."
+          },
+          {
+            "value": 1,
+            "why": "Sie haben nur den Taschenrechnerwert (≈ 17,5°) genommen und die Lösung im II. Quadranten sowie die zweite Periode übersehen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 14.14,
+        "tolerance": 0.01
+      },
+      "al": {
+        "question": "Në trekëndëshin ABC: a = 10 cm, α = 30° dhe β = 45°. Llogaritni brinjën b në cm. Rrumbullakoni në dy shifra pas presjes.",
+        "explanation": "Teorema e sinusit: a/sin α = b/sin β ⇒ b = a · sin β / sin α = 10 · (√2/2) / (1/2) = 10√2 ≈ 14,14 cm.",
+        "hint": "Përdorni teoremën e sinusit: a/sin α = b/sin β.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 7.07,
+            "why": "Keni përmbysur raportin: 10 · sin 30° / sin 45° ≈ 7,07; përballë këndit më të madh (45°) duhet të jetë brinja më e madhe."
+          }
+        ]
+      },
+      "en": {
+        "question": "In triangle ABC: a = 10 cm, α = 30° and β = 45°. Calculate side b in cm. Round to two decimal places.",
+        "explanation": "Law of sines: a/sin α = b/sin β ⇒ b = a · sin β / sin α = 10 · (√2/2) / (1/2) = 10√2 ≈ 14.14 cm.",
+        "hint": "Use the law of sines: a/sin α = b/sin β.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 7.07,
+            "why": "You inverted the ratio: 10 · sin 30° / sin 45° ≈ 7.07; the larger angle (45°) must face the longer side."
+          }
+        ]
+      },
+      "de": {
+        "question": "Im Dreieck ABC gilt: a = 10 cm, α = 30° und β = 45°. Berechnen Sie die Seite b in cm. Runden Sie auf zwei Nachkommastellen.",
+        "explanation": "Sinussatz: a/sin α = b/sin β ⇒ b = a · sin β / sin α = 10 · (√2/2) / (1/2) = 10√2 ≈ 14,14 cm.",
+        "hint": "Verwenden Sie den Sinussatz: a/sin α = b/sin β.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 7.07,
+            "why": "Sie haben das Verhältnis umgedreht: 10 · sin 30° / sin 45° ≈ 7,07; dem größeren Winkel (45°) muss die längere Seite gegenüberliegen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Për çdo kënd x vlen sin(180° − x) = sin x.",
+        "explanation": "Sipas formulës së diferencës: sin(180° − x) = sin 180° · cos x − cos 180° · sin x = 0 · cos x − (−1) · sin x = sin x. Për shembull sin 150° = sin 30° = 0,5. Pohimi është i vërtetë.",
+        "hint": "Zbatoni formulën sin(a − b) = sin a cos b − cos a sin b.",
+        "whyWrong": "Pohimi nuk është i gabuar: këndet x dhe 180° − x kanë në rrethin njësi të njëjtën ordinatë (pika simetrike ndaj boshtit y), pra të njëjtin sinus."
+      },
+      "en": {
+        "question": "For every angle x: sin(180° − x) = sin x.",
+        "explanation": "By the difference formula: sin(180° − x) = sin 180° · cos x − cos 180° · sin x = 0 · cos x − (−1) · sin x = sin x. For example sin 150° = sin 30° = 0.5. The statement is true.",
+        "hint": "Apply sin(a − b) = sin a cos b − cos a sin b.",
+        "whyWrong": "The statement is not false: on the unit circle the angles x and 180° − x have the same y-coordinate (the points are mirror images in the y-axis), hence the same sine."
+      },
+      "de": {
+        "question": "Für jeden Winkel x gilt: sin(180° − x) = sin x.",
+        "explanation": "Nach dem Subtraktionstheorem: sin(180° − x) = sin 180° · cos x − cos 180° · sin x = 0 · cos x − (−1) · sin x = sin x. Beispiel: sin 150° = sin 30° = 0,5. Die Aussage ist wahr.",
+        "hint": "Wenden Sie sin(a − b) = sin a cos b − cos a sin b an.",
+        "whyWrong": "Die Aussage ist nicht falsch: Am Einheitskreis haben die Winkel x und 180° − x dieselbe y-Koordinate (die Punkte liegen spiegelbildlich zur y-Achse), also denselben Sinus."
       }
     }
   ]

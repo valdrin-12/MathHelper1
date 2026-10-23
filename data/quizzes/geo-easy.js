@@ -1,6 +1,7 @@
 // Quiz set "geo-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "geo-easy",
@@ -583,6 +584,127 @@ export default {
           null,
           "Sie haben von 360° abgezogen; die beiden Winkel ergeben zusammen 180°."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 81
+      },
+      "al": {
+        "question": "Perimetri i një katrori është 36 cm. Llogaritni sipërfaqen e tij në cm².",
+        "explanation": "Katrori ka 4 brinjë të barabarta: a = 36 : 4 = 9 cm. Sipërfaqja: S = a² = 9² = 81 cm².",
+        "hint": "Gjeni fillimisht gjatësinë e brinjës nga perimetri.",
+        "unit": "cm²",
+        "commonMistakes": [
+          {
+            "value": 324,
+            "why": "Keni pjesëtuar perimetrin me 2 në vend të 4: brinja 18 cm dhe 18² = 324."
+          },
+          {
+            "value": 9,
+            "why": "Kjo është gjatësia e brinjës (9 cm), jo sipërfaqja."
+          }
+        ]
+      },
+      "en": {
+        "question": "The perimeter of a square is 36 cm. Calculate its area in cm².",
+        "explanation": "A square has 4 equal sides: a = 36 ÷ 4 = 9 cm. Area: A = a² = 9² = 81 cm².",
+        "hint": "First find the side length from the perimeter.",
+        "unit": "cm²",
+        "commonMistakes": [
+          {
+            "value": 324,
+            "why": "You divided the perimeter by 2 instead of 4: side 18 cm and 18² = 324."
+          },
+          {
+            "value": 9,
+            "why": "That is the side length (9 cm), not the area."
+          }
+        ]
+      },
+      "de": {
+        "question": "Der Umfang eines Quadrats beträgt 36 cm. Berechnen Sie seinen Flächeninhalt in cm².",
+        "explanation": "Ein Quadrat hat 4 gleich lange Seiten: a = 36 : 4 = 9 cm. Flächeninhalt: A = a² = 9² = 81 cm².",
+        "hint": "Bestimmen Sie zuerst die Seitenlänge aus dem Umfang.",
+        "unit": "cm²",
+        "commonMistakes": [
+          {
+            "value": 324,
+            "why": "Sie haben den Umfang durch 2 statt durch 4 geteilt: Seite 18 cm und 18² = 324."
+          },
+          {
+            "value": 9,
+            "why": "Das ist die Seitenlänge (9 cm), nicht der Flächeninhalt."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 65
+      },
+      "al": {
+        "question": "Dy kënde të një trekëndëshi janë 47° dhe 68°. Sa gradë është këndi i tretë?",
+        "explanation": "Shuma e këndeve në trekëndësh është 180°. Këndi i tretë: 180° − 47° − 68° = 180° − 115° = 65°.",
+        "hint": "Kujtoni sa është shuma e këndeve të brendshme të një trekëndëshi.",
+        "unit": "°",
+        "commonMistakes": [
+          {
+            "value": 245,
+            "why": "Keni përdorur 360° (shuma e këndeve të katërkëndëshit) në vend të 180°: 360° − 115° = 245°."
+          }
+        ]
+      },
+      "en": {
+        "question": "Two angles of a triangle measure 47° and 68°. How many degrees is the third angle?",
+        "explanation": "The angles of a triangle add up to 180°. Third angle: 180° − 47° − 68° = 180° − 115° = 65°.",
+        "hint": "Recall the sum of the interior angles of a triangle.",
+        "unit": "°",
+        "commonMistakes": [
+          {
+            "value": 245,
+            "why": "You used 360° (the angle sum of a quadrilateral) instead of 180°: 360° − 115° = 245°."
+          }
+        ]
+      },
+      "de": {
+        "question": "Zwei Winkel eines Dreiecks betragen 47° und 68°. Wie viel Grad hat der dritte Winkel?",
+        "explanation": "Die Winkelsumme im Dreieck beträgt 180°. Dritter Winkel: 180° − 47° − 68° = 180° − 115° = 65°.",
+        "hint": "Denken Sie an die Innenwinkelsumme eines Dreiecks.",
+        "unit": "°",
+        "commonMistakes": [
+          {
+            "value": 245,
+            "why": "Sie haben 360° (Winkelsumme im Viereck) statt 180° verwendet: 360° − 115° = 245°."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Shuma e këndeve të jashtme të çdo shumëkëndëshi konveks (një kënd në secilin kulm) është 360°.",
+        "explanation": "Në çdo kulm, këndi i jashtëm = 180° − këndi i brendshëm. Për n kulme: n · 180° − (n − 2) · 180° = 360°. Pra shuma nuk varet nga numri i brinjëve; pohimi është i vërtetë.",
+        "hint": "Në çdo kulm, këndi i brendshëm dhe ai i jashtëm së bashku japin 180°.",
+        "whyWrong": "Pohimi nuk është i gabuar: n · 180° minus shumën e këndeve të brendshme (n − 2) · 180° jep gjithmonë 360°, për çdo numër brinjësh."
+      },
+      "en": {
+        "question": "The exterior angles of any convex polygon (one at each vertex) add up to 360°.",
+        "explanation": "At each vertex, exterior angle = 180° − interior angle. For n vertices: n · 180° − (n − 2) · 180° = 360°. So the sum does not depend on the number of sides; the statement is true.",
+        "hint": "At each vertex the interior and exterior angles together make 180°.",
+        "whyWrong": "The statement is not false: n · 180° minus the interior angle sum (n − 2) · 180° always gives 360°, whatever the number of sides."
+      },
+      "de": {
+        "question": "Die Außenwinkel jedes konvexen Vielecks (einer an jeder Ecke) ergeben zusammen 360°.",
+        "explanation": "An jeder Ecke gilt: Außenwinkel = 180° − Innenwinkel. Bei n Ecken: n · 180° − (n − 2) · 180° = 360°. Die Summe hängt also nicht von der Eckenzahl ab; die Aussage ist wahr.",
+        "hint": "An jeder Ecke ergeben Innen- und Außenwinkel zusammen 180°.",
+        "whyWrong": "Die Aussage ist nicht falsch: n · 180° minus die Innenwinkelsumme (n − 2) · 180° ergibt immer 360°, unabhängig von der Eckenzahl."
       }
     }
   ]

@@ -1,6 +1,7 @@
 // Quiz set "calc-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "calc-medium",
@@ -583,6 +584,121 @@ export default {
           null,
           "Sie haben vergessen, −1 mit (x − 1) zu multiplizieren: Das +1 fehlt."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 8
+      },
+      "al": {
+        "question": "Jepet f(x) = x³ − 4x. Llogaritni f′(2).",
+        "explanation": "Derivati: f′(x) = 3x² − 4. Për x = 2: f′(2) = 3 · 4 − 4 = 12 − 4 = 8.",
+        "hint": "Derivoni fillimisht funksionin me rregullin e fuqisë, pastaj zëvendësoni x = 2.",
+        "commonMistakes": [
+          {
+            "value": 0,
+            "why": "Kjo është f(2) = 8 − 8 = 0, vlera e funksionit, jo e derivatit."
+          },
+          {
+            "value": 2,
+            "why": "Keni derivuar x³ si 3x në vend të 3x²: 3 · 2 − 4 = 2."
+          }
+        ]
+      },
+      "en": {
+        "question": "Given f(x) = x³ − 4x, calculate f′(2).",
+        "explanation": "Derivative: f′(x) = 3x² − 4. For x = 2: f′(2) = 3 · 4 − 4 = 12 − 4 = 8.",
+        "hint": "First differentiate using the power rule, then substitute x = 2.",
+        "commonMistakes": [
+          {
+            "value": 0,
+            "why": "That is f(2) = 8 − 8 = 0, the function value, not the derivative."
+          },
+          {
+            "value": 2,
+            "why": "You differentiated x³ as 3x instead of 3x²: 3 · 2 − 4 = 2."
+          }
+        ]
+      },
+      "de": {
+        "question": "Gegeben ist f(x) = x³ − 4x. Berechnen Sie f′(2).",
+        "explanation": "Ableitung: f′(x) = 3x² − 4. Für x = 2: f′(2) = 3 · 4 − 4 = 12 − 4 = 8.",
+        "hint": "Leiten Sie zuerst mit der Potenzregel ab und setzen Sie dann x = 2 ein.",
+        "commonMistakes": [
+          {
+            "value": 0,
+            "why": "Das ist f(2) = 8 − 8 = 0, der Funktionswert, nicht die Ableitung."
+          },
+          {
+            "value": 2,
+            "why": "Sie haben x³ zu 3x statt zu 3x² abgeleitet: 3 · 2 − 4 = 2."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 2
+      },
+      "al": {
+        "question": "Jepet f(x) = x³ − 3x² + 2. Për cilën vlerë pozitive të x vlen f′(x) = 0?",
+        "explanation": "f′(x) = 3x² − 6x = 3x(x − 2). Nga f′(x) = 0 del x = 0 ose x = 2. Vlera pozitive është x = 2.",
+        "hint": "Derivoni dhe faktorizoni derivatin duke nxjerrë faktorin e përbashkët.",
+        "commonMistakes": [
+          {
+            "value": 3,
+            "why": "Keni zgjidhur x³ − 3x² = 0 (pra keni punuar me funksionin, jo me derivatin) dhe keni marrë x = 3."
+          }
+        ]
+      },
+      "en": {
+        "question": "Given f(x) = x³ − 3x² + 2. For which positive value of x is f′(x) = 0?",
+        "explanation": "f′(x) = 3x² − 6x = 3x(x − 2). Setting f′(x) = 0 gives x = 0 or x = 2. The positive value is x = 2.",
+        "hint": "Differentiate and factor the derivative by taking out the common factor.",
+        "commonMistakes": [
+          {
+            "value": 3,
+            "why": "You solved x³ − 3x² = 0 (working with the function, not the derivative) and got x = 3."
+          }
+        ]
+      },
+      "de": {
+        "question": "Gegeben ist f(x) = x³ − 3x² + 2. Für welchen positiven Wert von x gilt f′(x) = 0?",
+        "explanation": "f′(x) = 3x² − 6x = 3x(x − 2). Aus f′(x) = 0 folgt x = 0 oder x = 2. Der positive Wert ist x = 2.",
+        "hint": "Leiten Sie ab und klammern Sie in der Ableitung den gemeinsamen Faktor aus.",
+        "commonMistakes": [
+          {
+            "value": 3,
+            "why": "Sie haben x³ − 3x² = 0 gelöst (also mit der Funktion statt mit der Ableitung gearbeitet) und x = 3 erhalten."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Derivati i një prodhimi është prodhimi i derivateve: (f · g)′ = f′ · g′.",
+        "explanation": "Rregulli i prodhimit është (f · g)′ = f′ · g + f · g′. Për shembull, për f(x) = g(x) = x: (x · x)′ = (x²)′ = 2x, ndërsa f′ · g′ = 1 · 1 = 1. Pohimi është i gabuar.",
+        "hint": "Provoni me f(x) = x dhe g(x) = x dhe krahasoni me derivatin e x².",
+        "whyWrong": "Pohimi nuk është i vërtetë: rregulli i saktë është (f · g)′ = f′g + fg′; p.sh. (x²)′ = 2x, jo 1 · 1 = 1."
+      },
+      "en": {
+        "question": "The derivative of a product is the product of the derivatives: (f · g)′ = f′ · g′.",
+        "explanation": "The product rule is (f · g)′ = f′ · g + f · g′. For example, for f(x) = g(x) = x: (x · x)′ = (x²)′ = 2x, whereas f′ · g′ = 1 · 1 = 1. The statement is false.",
+        "hint": "Try f(x) = x and g(x) = x and compare with the derivative of x².",
+        "whyWrong": "The statement is not true: the correct rule is (f · g)′ = f′g + fg′; e.g. (x²)′ = 2x, not 1 · 1 = 1."
+      },
+      "de": {
+        "question": "Die Ableitung eines Produkts ist das Produkt der Ableitungen: (f · g)′ = f′ · g′.",
+        "explanation": "Die Produktregel lautet (f · g)′ = f′ · g + f · g′. Beispiel: Für f(x) = g(x) = x ist (x · x)′ = (x²)′ = 2x, aber f′ · g′ = 1 · 1 = 1. Die Aussage ist falsch.",
+        "hint": "Probieren Sie f(x) = x und g(x) = x und vergleichen Sie mit der Ableitung von x².",
+        "whyWrong": "Die Aussage stimmt nicht: Richtig ist (f · g)′ = f′g + fg′; z. B. (x²)′ = 2x, nicht 1 · 1 = 1."
       }
     }
   ]

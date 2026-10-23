@@ -1,6 +1,7 @@
 // Quiz set "calc-hard" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "calc-hard",
@@ -583,6 +584,133 @@ export default {
           "(1, 0) ist eine Nullstelle der Funktion, kein Wendepunkt.",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 12
+      },
+      "al": {
+        "question": "Llogaritni integralin e caktuar ∫₀² (3x² + 2x) dx.",
+        "explanation": "Një primitivë është F(x) = x³ + x². Atëherë ∫₀² (3x² + 2x) dx = F(2) − F(0) = (8 + 4) − 0 = 12.",
+        "hint": "Gjeni një primitivë dhe zbatoni formulën e Njuton–Lajbnicit F(2) − F(0).",
+        "commonMistakes": [
+          {
+            "value": 14,
+            "why": "Keni derivuar në vend që të integronit: (6x + 2) për x = 2 jep 14."
+          },
+          {
+            "value": 16,
+            "why": "Keni vlerësuar vetëm funksionin nën integral në x = 2: 3 · 4 + 2 · 2 = 16."
+          }
+        ]
+      },
+      "en": {
+        "question": "Evaluate the definite integral ∫₀² (3x² + 2x) dx.",
+        "explanation": "An antiderivative is F(x) = x³ + x². Then ∫₀² (3x² + 2x) dx = F(2) − F(0) = (8 + 4) − 0 = 12.",
+        "hint": "Find an antiderivative and apply F(2) − F(0) (fundamental theorem of calculus).",
+        "commonMistakes": [
+          {
+            "value": 14,
+            "why": "You differentiated instead of integrating: (6x + 2) at x = 2 gives 14."
+          },
+          {
+            "value": 16,
+            "why": "You only evaluated the integrand at x = 2: 3 · 4 + 2 · 2 = 16."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie das bestimmte Integral ∫₀² (3x² + 2x) dx.",
+        "explanation": "Eine Stammfunktion ist F(x) = x³ + x². Also ∫₀² (3x² + 2x) dx = F(2) − F(0) = (8 + 4) − 0 = 12.",
+        "hint": "Bestimmen Sie eine Stammfunktion und berechnen Sie F(2) − F(0) (Hauptsatz der Differential- und Integralrechnung).",
+        "commonMistakes": [
+          {
+            "value": 14,
+            "why": "Sie haben abgeleitet statt integriert: (6x + 2) an der Stelle x = 2 ergibt 14."
+          },
+          {
+            "value": 16,
+            "why": "Sie haben nur den Integranden an der Stelle x = 2 ausgewertet: 3 · 4 + 2 · 2 = 16."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 2
+      },
+      "al": {
+        "question": "Jepet f(x) = e²ˣ · cos x. Llogaritni f′(0).",
+        "explanation": "Me rregullin e prodhimit dhe të zinxhirit: f′(x) = 2e²ˣ · cos x − e²ˣ · sin x. Për x = 0: f′(0) = 2 · 1 · 1 − 1 · 0 = 2.",
+        "hint": "Përdorni rregullin e prodhimit; derivati i e²ˣ kërkon edhe rregullin e zinxhirit.",
+        "commonMistakes": [
+          {
+            "value": 1,
+            "why": "Keni harruar faktorin 2 nga rregulli i zinxhirit: (e²ˣ)′ = 2e²ˣ, jo e²ˣ."
+          },
+          {
+            "value": 0,
+            "why": "Keni shumëzuar derivatet (2e²ˣ · (−sin x)) në vend që të zbatonit rregullin e prodhimit."
+          }
+        ]
+      },
+      "en": {
+        "question": "Given f(x) = e²ˣ · cos x, calculate f′(0).",
+        "explanation": "Using the product and chain rules: f′(x) = 2e²ˣ · cos x − e²ˣ · sin x. At x = 0: f′(0) = 2 · 1 · 1 − 1 · 0 = 2.",
+        "hint": "Use the product rule; the derivative of e²ˣ also needs the chain rule.",
+        "commonMistakes": [
+          {
+            "value": 1,
+            "why": "You forgot the factor 2 from the chain rule: (e²ˣ)′ = 2e²ˣ, not e²ˣ."
+          },
+          {
+            "value": 0,
+            "why": "You multiplied the derivatives (2e²ˣ · (−sin x)) instead of applying the product rule."
+          }
+        ]
+      },
+      "de": {
+        "question": "Gegeben ist f(x) = e²ˣ · cos x. Berechnen Sie f′(0).",
+        "explanation": "Mit Produkt- und Kettenregel: f′(x) = 2e²ˣ · cos x − e²ˣ · sin x. Für x = 0: f′(0) = 2 · 1 · 1 − 1 · 0 = 2.",
+        "hint": "Verwenden Sie die Produktregel; für die Ableitung von e²ˣ brauchen Sie zusätzlich die Kettenregel.",
+        "commonMistakes": [
+          {
+            "value": 1,
+            "why": "Sie haben den Faktor 2 aus der Kettenregel vergessen: (e²ˣ)′ = 2e²ˣ, nicht e²ˣ."
+          },
+          {
+            "value": 0,
+            "why": "Sie haben die Ableitungen multipliziert (2e²ˣ · (−sin x)), statt die Produktregel anzuwenden."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Çdo funksion që është i derivueshëm në një pikë është edhe i vazhdueshëm në atë pikë.",
+        "explanation": "Nëse f′(a) ekziston, atëherë f(x) − f(a) = [(f(x) − f(a))/(x − a)] · (x − a) → f′(a) · 0 = 0 kur x → a, pra lim(x→a) f(x) = f(a). Pohimi është i vërtetë. (E kundërta nuk vlen: |x| është i vazhdueshëm në 0, por jo i derivueshëm.)",
+        "hint": "Shkruani f(x) − f(a) si prodhim të herësit të diferencave me (x − a).",
+        "whyWrong": "Pohimi nuk është i gabuar: derivueshmëria detyron f(x) → f(a) kur x → a. Shembulli |x| tregon vetëm që e kundërta (vazhdueshmëria ⇒ derivueshmëria) nuk vlen."
+      },
+      "en": {
+        "question": "Every function that is differentiable at a point is also continuous at that point.",
+        "explanation": "If f′(a) exists, then f(x) − f(a) = [(f(x) − f(a))/(x − a)] · (x − a) → f′(a) · 0 = 0 as x → a, so lim(x→a) f(x) = f(a). The statement is true. (The converse fails: |x| is continuous at 0 but not differentiable.)",
+        "hint": "Write f(x) − f(a) as the difference quotient times (x − a).",
+        "whyWrong": "The statement is not false: differentiability forces f(x) → f(a) as x → a. The example |x| only shows that the converse (continuous ⇒ differentiable) fails."
+      },
+      "de": {
+        "question": "Jede Funktion, die an einer Stelle differenzierbar ist, ist dort auch stetig.",
+        "explanation": "Existiert f′(a), dann gilt f(x) − f(a) = [(f(x) − f(a))/(x − a)] · (x − a) → f′(a) · 0 = 0 für x → a, also lim(x→a) f(x) = f(a). Die Aussage ist wahr. (Die Umkehrung gilt nicht: |x| ist bei 0 stetig, aber nicht differenzierbar.)",
+        "hint": "Schreiben Sie f(x) − f(a) als Differenzenquotient mal (x − a).",
+        "whyWrong": "Die Aussage ist nicht falsch: Differenzierbarkeit erzwingt f(x) → f(a) für x → a. Das Beispiel |x| zeigt nur, dass die Umkehrung (stetig ⇒ differenzierbar) nicht gilt."
       }
     }
   ]

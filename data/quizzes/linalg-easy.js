@@ -1,6 +1,7 @@
 // Quiz set "linalg-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "linalg-easy",
@@ -583,6 +584,121 @@ export default {
           null,
           "Es wurde vergessen, 12 durch 3 zu teilen."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 10
+      },
+      "al": {
+        "question": "Jepen pikat A(2, −1) dhe B(−4, 7). Llogaritni gjatësinë e vektorit AB (largesën |AB|).",
+        "explanation": "AB = (−4 − 2, 7 − (−1)) = (−6, 8). |AB| = √((−6)² + 8²) = √(36 + 64) = √100 = 10.",
+        "hint": "Gjeni komponentët e vektorit AB (mbarimi minus fillimi) dhe përdorni teoremën e Pitagorës.",
+        "commonMistakes": [
+          {
+            "value": 14,
+            "why": "Keni mbledhur vlerat absolute të komponentëve (6 + 8) në vend që të përdornit √(x² + y²)."
+          },
+          {
+            "value": 2,
+            "why": "Keni mbledhur komponentët −6 + 8 = 2; gjatësia llogaritet me √(x² + y²)."
+          }
+        ]
+      },
+      "en": {
+        "question": "Given the points A(2, −1) and B(−4, 7), calculate the length of the vector AB (the distance |AB|).",
+        "explanation": "AB = (−4 − 2, 7 − (−1)) = (−6, 8). |AB| = √((−6)² + 8²) = √(36 + 64) = √100 = 10.",
+        "hint": "Find the components of AB (end minus start) and use Pythagoras.",
+        "commonMistakes": [
+          {
+            "value": 14,
+            "why": "You added the absolute values of the components (6 + 8) instead of using √(x² + y²)."
+          },
+          {
+            "value": 2,
+            "why": "You added the components −6 + 8 = 2; the length is √(x² + y²)."
+          }
+        ]
+      },
+      "de": {
+        "question": "Gegeben sind die Punkte A(2, −1) und B(−4, 7). Berechnen Sie die Länge des Vektors AB (den Abstand |AB|).",
+        "explanation": "AB = (−4 − 2, 7 − (−1)) = (−6, 8). |AB| = √((−6)² + 8²) = √(36 + 64) = √100 = 10.",
+        "hint": "Bestimmen Sie die Komponenten von AB (Endpunkt minus Anfangspunkt) und verwenden Sie den Satz des Pythagoras.",
+        "commonMistakes": [
+          {
+            "value": 14,
+            "why": "Sie haben die Beträge der Komponenten addiert (6 + 8), statt √(x² + y²) zu verwenden."
+          },
+          {
+            "value": 2,
+            "why": "Sie haben die Komponenten addiert: −6 + 8 = 2; die Länge ist √(x² + y²)."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": -4
+      },
+      "al": {
+        "question": "Gjeni numrin k për të cilin vlen k · (2, −3) = (−8, 12).",
+        "explanation": "Krahasojmë komponentët: 2k = −8 ⇒ k = −4, dhe −3k = 12 ⇒ k = −4. Të dyja japin të njëjtën vlerë, pra k = −4.",
+        "hint": "Barazoni komponentët përkatës dhe zgjidhni për k.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Keni humbur shenjën: me k = 4 marrim (8, −12), jo (−8, 12)."
+          }
+        ]
+      },
+      "en": {
+        "question": "Find the number k such that k · (2, −3) = (−8, 12).",
+        "explanation": "Compare components: 2k = −8 ⇒ k = −4, and −3k = 12 ⇒ k = −4. Both give the same value, so k = −4.",
+        "hint": "Set the corresponding components equal and solve for k.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "You lost the sign: with k = 4 we get (8, −12), not (−8, 12)."
+          }
+        ]
+      },
+      "de": {
+        "question": "Bestimmen Sie die Zahl k, für die k · (2, −3) = (−8, 12) gilt.",
+        "explanation": "Komponenten vergleichen: 2k = −8 ⇒ k = −4, und −3k = 12 ⇒ k = −4. Beide ergeben denselben Wert, also k = −4.",
+        "hint": "Setzen Sie die entsprechenden Komponenten gleich und lösen Sie nach k auf.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Das Vorzeichen fehlt: Mit k = 4 erhält man (8, −12), nicht (−8, 12)."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": true,
+      "al": {
+        "question": "Për çdo vektor v vlen |−3v| = 3 · |v|.",
+        "explanation": "Për v = (x, y): −3v = (−3x, −3y) dhe |−3v| = √(9x² + 9y²) = 3√(x² + y²) = 3|v|. Shenja minus ndryshon vetëm kahun, jo gjatësinë. Pohimi është i vërtetë.",
+        "hint": "Shkruani v = (x, y) dhe llogaritni gjatësinë e (−3x, −3y).",
+        "whyWrong": "Pohimi nuk është i gabuar: gjatësia nuk mund të jetë negative; shumëzimi me −3 e kthen kahun, ndërsa gjatësinë e shumëzon me |−3| = 3."
+      },
+      "en": {
+        "question": "For every vector v: |−3v| = 3 · |v|.",
+        "explanation": "For v = (x, y): −3v = (−3x, −3y) and |−3v| = √(9x² + 9y²) = 3√(x² + y²) = 3|v|. The minus sign only reverses the direction, not the length. The statement is true.",
+        "hint": "Write v = (x, y) and compute the length of (−3x, −3y).",
+        "whyWrong": "The statement is not false: a length cannot be negative; multiplying by −3 reverses the direction and multiplies the length by |−3| = 3."
+      },
+      "de": {
+        "question": "Für jeden Vektor v gilt: |−3v| = 3 · |v|.",
+        "explanation": "Für v = (x, y): −3v = (−3x, −3y) und |−3v| = √(9x² + 9y²) = 3√(x² + y²) = 3|v|. Das Minus kehrt nur die Richtung um, nicht die Länge. Die Aussage ist wahr.",
+        "hint": "Schreiben Sie v = (x, y) und berechnen Sie die Länge von (−3x, −3y).",
+        "whyWrong": "Die Aussage ist nicht falsch: Eine Länge kann nicht negativ sein; die Multiplikation mit −3 kehrt die Richtung um und multipliziert die Länge mit |−3| = 3."
       }
     }
   ]

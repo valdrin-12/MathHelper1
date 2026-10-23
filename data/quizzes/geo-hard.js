@@ -1,6 +1,7 @@
 // Quiz set "geo-hard" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "geo-hard",
@@ -583,6 +584,140 @@ export default {
           "Sie haben die Seitenflächenhöhe 13 cm als Pyramidenhöhe verwendet: (1/3) × 100 × 13 ≈ 433,3 (auf eine Dezimalstelle gerundet).",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 301.6,
+        "tolerance": 0.05
+      },
+      "al": {
+        "question": "Një kon ka rreze të bazës r = 6 cm dhe përftuesen s = 10 cm. Llogaritni vëllimin e tij në cm³. Merrni π ≈ 3,1416 dhe rrumbullakoni në një shifër pas presjes.",
+        "explanation": "Lartësia nga teorema e Pitagorës: h = √(s² − r²) = √(100 − 36) = 8 cm. Vëllimi: V = (1/3)πr²h = (1/3) · π · 36 · 8 = 96π ≈ 301,59 ≈ 301,6 cm³.",
+        "hint": "Gjeni fillimisht lartësinë e konit me teoremën e Pitagorës (r, h dhe s formojnë trekëndësh kënddrejtë).",
+        "unit": "cm³",
+        "commonMistakes": [
+          {
+            "value": 904.8,
+            "why": "Keni harruar faktorin 1/3: π · 36 · 8 = 288π ≈ 904,8."
+          },
+          {
+            "value": 377,
+            "why": "Keni përdorur përftuesen 10 cm si lartësi: (1/3) · π · 36 · 10 = 120π ≈ 377,0."
+          }
+        ]
+      },
+      "en": {
+        "question": "A cone has base radius r = 6 cm and slant height s = 10 cm. Calculate its volume in cm³. Use π ≈ 3.1416 and round to one decimal place.",
+        "explanation": "Height by Pythagoras: h = √(s² − r²) = √(100 − 36) = 8 cm. Volume: V = (1/3)πr²h = (1/3) · π · 36 · 8 = 96π ≈ 301.59 ≈ 301.6 cm³.",
+        "hint": "First find the height with Pythagoras (r, h and s form a right triangle).",
+        "unit": "cm³",
+        "commonMistakes": [
+          {
+            "value": 904.8,
+            "why": "You forgot the factor 1/3: π · 36 · 8 = 288π ≈ 904.8."
+          },
+          {
+            "value": 377,
+            "why": "You used the slant height 10 cm as the height: (1/3) · π · 36 · 10 = 120π ≈ 377.0."
+          }
+        ]
+      },
+      "de": {
+        "question": "Ein Kegel hat den Grundkreisradius r = 6 cm und die Mantellinie s = 10 cm. Berechnen Sie sein Volumen in cm³. Verwenden Sie π ≈ 3,1416 und runden Sie auf eine Nachkommastelle.",
+        "explanation": "Höhe mit dem Satz des Pythagoras: h = √(s² − r²) = √(100 − 36) = 8 cm. Volumen: V = (1/3)πr²h = (1/3) · π · 36 · 8 = 96π ≈ 301,59 ≈ 301,6 cm³.",
+        "hint": "Bestimmen Sie zuerst die Höhe mit dem Satz des Pythagoras (r, h und s bilden ein rechtwinkliges Dreieck).",
+        "unit": "cm³",
+        "commonMistakes": [
+          {
+            "value": 904.8,
+            "why": "Sie haben den Faktor 1/3 vergessen: π · 36 · 8 = 288π ≈ 904,8."
+          },
+          {
+            "value": 377,
+            "why": "Sie haben die Mantellinie 10 cm als Höhe verwendet: (1/3) · π · 36 · 10 = 120π ≈ 377,0."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 7
+      },
+      "al": {
+        "question": "Në trekëndëshin ABC: a = 5 cm, b = 8 cm dhe këndi ndërmjet tyre γ = 60°. Llogaritni gjatësinë e brinjës c në cm.",
+        "explanation": "Teorema e kosinusit: c² = a² + b² − 2ab · cos γ = 25 + 64 − 2 · 5 · 8 · 0,5 = 89 − 40 = 49. Pra c = √49 = 7 cm.",
+        "hint": "Përdorni teoremën e kosinusit për këndin ndërmjet dy brinjëve të njohura.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 9.43,
+            "why": "Keni përdorur teoremën e Pitagorës (c² = 89), por trekëndëshi nuk është kënddrejtë: c ≈ 9,43."
+          },
+          {
+            "value": 11.36,
+            "why": "Keni shkruar +2ab · cos γ në vend të −2ab · cos γ: c² = 129, c ≈ 11,36."
+          }
+        ]
+      },
+      "en": {
+        "question": "In triangle ABC: a = 5 cm, b = 8 cm and the angle between them is γ = 60°. Calculate the length of side c in cm.",
+        "explanation": "Law of cosines: c² = a² + b² − 2ab · cos γ = 25 + 64 − 2 · 5 · 8 · 0.5 = 89 − 40 = 49. So c = √49 = 7 cm.",
+        "hint": "Use the law of cosines for the angle between the two known sides.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 9.43,
+            "why": "You used Pythagoras (c² = 89), but the triangle is not right-angled: c ≈ 9.43."
+          },
+          {
+            "value": 11.36,
+            "why": "You wrote +2ab · cos γ instead of −2ab · cos γ: c² = 129, c ≈ 11.36."
+          }
+        ]
+      },
+      "de": {
+        "question": "Im Dreieck ABC gilt: a = 5 cm, b = 8 cm und der eingeschlossene Winkel ist γ = 60°. Berechnen Sie die Länge der Seite c in cm.",
+        "explanation": "Kosinussatz: c² = a² + b² − 2ab · cos γ = 25 + 64 − 2 · 5 · 8 · 0,5 = 89 − 40 = 49. Also c = √49 = 7 cm.",
+        "hint": "Verwenden Sie den Kosinussatz für den Winkel zwischen den beiden bekannten Seiten.",
+        "unit": "cm",
+        "commonMistakes": [
+          {
+            "value": 9.43,
+            "why": "Sie haben den Satz des Pythagoras verwendet (c² = 89), das Dreieck ist aber nicht rechtwinklig: c ≈ 9,43."
+          },
+          {
+            "value": 11.36,
+            "why": "Sie haben +2ab · cos γ statt −2ab · cos γ geschrieben: c² = 129, c ≈ 11,36."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Dy trekëndësha, këndet e të cilëve janë përkatësisht të barabarta, janë gjithmonë kongruentë.",
+        "explanation": "Këndet e barabarta garantojnë vetëm ngjashmërinë, jo kongruencën. Për shembull, dy trekëndësha barabrinjës me brinjë 1 cm dhe 2 cm kanë të gjitha këndet 60°, por nuk janë kongruentë. Pohimi është i gabuar.",
+        "hint": "Mendoni për dy trekëndësha barabrinjës me madhësi të ndryshme.",
+        "whyWrong": "Pohimi nuk është i vërtetë: kënde të barabarta japin trekëndësha të ngjashëm, por madhësia (brinjët) mund të jetë e ndryshme."
+      },
+      "en": {
+        "question": "Two triangles whose corresponding angles are all equal are always congruent.",
+        "explanation": "Equal angles only guarantee similarity, not congruence. For example, two equilateral triangles with sides 1 cm and 2 cm both have all angles 60°, but they are not congruent. The statement is false.",
+        "hint": "Think of two equilateral triangles of different sizes.",
+        "whyWrong": "The statement is not true: equal angles give similar triangles, but their size (side lengths) can differ."
+      },
+      "de": {
+        "question": "Zwei Dreiecke, deren entsprechende Winkel alle gleich sind, sind immer kongruent.",
+        "explanation": "Gleiche Winkel garantieren nur Ähnlichkeit, keine Kongruenz. Beispiel: Zwei gleichseitige Dreiecke mit den Seiten 1 cm und 2 cm haben alle Winkel 60°, sind aber nicht kongruent. Die Aussage ist falsch.",
+        "hint": "Denken Sie an zwei gleichseitige Dreiecke unterschiedlicher Größe.",
+        "whyWrong": "Die Aussage stimmt nicht: Gleiche Winkel ergeben ähnliche Dreiecke, ihre Größe (Seitenlängen) kann aber verschieden sein."
       }
     }
   ]

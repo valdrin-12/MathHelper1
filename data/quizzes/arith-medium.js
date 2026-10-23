@@ -1,6 +1,7 @@
 // Quiz set "arith-medium" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "arith-medium",
@@ -583,6 +584,137 @@ export default {
           "3/5 = 0,6 ist größer als 1/2.",
           "2/7 ≈ 0,286 ist kleiner als 1/3."
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 1.25,
+        "tolerance": 0.001
+      },
+      "al": {
+        "question": "Për 6 kekë nevojiten 3/4 kg miell. Sa kilogramë miell nevojiten për 10 kekë? Shkruani rezultatin si numër dhjetor.",
+        "explanation": "Për 1 kek: 3/4 : 6 = 3/24 = 1/8 kg. Për 10 kekë: 10 · 1/8 = 10/8 = 1,25 kg.",
+        "hint": "Gjeni fillimisht sasinë për një kek, pastaj shumëzoni me 10.",
+        "unit": "kg",
+        "commonMistakes": [
+          {
+            "value": 0.45,
+            "why": "Keni shumëzuar me 6/10 në vend të 10/6: 3/4 · 6/10 = 0,45."
+          },
+          {
+            "value": 7.5,
+            "why": "Keni shumëzuar 3/4 me 10, por keni harruar të pjesëtoni me 6."
+          }
+        ]
+      },
+      "en": {
+        "question": "A recipe needs 3/4 kg of flour for 6 cakes. How many kilograms of flour are needed for 10 cakes? Give the result as a decimal number.",
+        "explanation": "For 1 cake: 3/4 ÷ 6 = 3/24 = 1/8 kg. For 10 cakes: 10 · 1/8 = 10/8 = 1.25 kg.",
+        "hint": "First find the amount for one cake, then multiply by 10.",
+        "unit": "kg",
+        "commonMistakes": [
+          {
+            "value": 0.45,
+            "why": "You multiplied by 6/10 instead of 10/6: 3/4 · 6/10 = 0.45."
+          },
+          {
+            "value": 7.5,
+            "why": "You multiplied 3/4 by 10 but forgot to divide by 6."
+          }
+        ]
+      },
+      "de": {
+        "question": "Für 6 Kuchen braucht man 3/4 kg Mehl. Wie viele Kilogramm Mehl braucht man für 10 Kuchen? Geben Sie das Ergebnis als Dezimalzahl an.",
+        "explanation": "Für 1 Kuchen: 3/4 : 6 = 3/24 = 1/8 kg. Für 10 Kuchen: 10 · 1/8 = 10/8 = 1,25 kg.",
+        "hint": "Bestimmen Sie zuerst die Menge für einen Kuchen und multiplizieren Sie dann mit 10.",
+        "unit": "kg",
+        "commonMistakes": [
+          {
+            "value": 0.45,
+            "why": "Sie haben mit 6/10 statt mit 10/6 multipliziert: 3/4 · 6/10 = 0,45."
+          },
+          {
+            "value": 7.5,
+            "why": "Sie haben 3/4 mit 10 multipliziert, aber vergessen, durch 6 zu teilen."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 36
+      },
+      "al": {
+        "question": "Llogaritni 15% të numrit 240.",
+        "explanation": "15% = 15/100 = 0,15. Pra 0,15 · 240 = 36.",
+        "hint": "Shndërroni përqindjen në thyesë me emërues 100 ose në numër dhjetor.",
+        "commonMistakes": [
+          {
+            "value": 16,
+            "why": "Keni pjesëtuar 240 : 15 = 16 në vend që të llogaritnit 15/100 të 240."
+          },
+          {
+            "value": 3.6,
+            "why": "Keni zhvendosur presjen një vend më shumë: 0,015 · 240 = 3,6."
+          }
+        ]
+      },
+      "en": {
+        "question": "Calculate 15% of 240.",
+        "explanation": "15% = 15/100 = 0.15. So 0.15 · 240 = 36.",
+        "hint": "Write the percentage as a fraction over 100 or as a decimal.",
+        "commonMistakes": [
+          {
+            "value": 16,
+            "why": "You divided 240 ÷ 15 = 16 instead of taking 15/100 of 240."
+          },
+          {
+            "value": 3.6,
+            "why": "You moved the decimal point one place too far: 0.015 · 240 = 3.6."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie 15 % von 240.",
+        "explanation": "15 % = 15/100 = 0,15. Also 0,15 · 240 = 36.",
+        "hint": "Schreiben Sie den Prozentsatz als Bruch mit Nenner 100 oder als Dezimalzahl.",
+        "commonMistakes": [
+          {
+            "value": 16,
+            "why": "Sie haben 240 : 15 = 16 gerechnet statt 15/100 von 240."
+          },
+          {
+            "value": 3.6,
+            "why": "Sie haben das Komma um eine Stelle zu weit verschoben: 0,015 · 240 = 3,6."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "1/2 + 1/3 = 2/5",
+        "explanation": "Emëruesi i përbashkët është 6: 1/2 + 1/3 = 3/6 + 2/6 = 5/6. Pra 1/2 + 1/3 ≠ 2/5; pohimi është i gabuar. (Vini re: 2/5 është madje më i vogël se 1/2.)",
+        "hint": "Sillini thyesat në emërues të përbashkët para se t'i mblidhni.",
+        "whyWrong": "Pohimi nuk është i vërtetë: thyesat nuk mblidhen duke mbledhur veçmas numëruesit dhe emëruesit; nevojitet emërues i përbashkët."
+      },
+      "en": {
+        "question": "1/2 + 1/3 = 2/5",
+        "explanation": "The common denominator is 6: 1/2 + 1/3 = 3/6 + 2/6 = 5/6. So 1/2 + 1/3 ≠ 2/5; the statement is false. (Note: 2/5 is even smaller than 1/2.)",
+        "hint": "Bring the fractions to a common denominator before adding.",
+        "whyWrong": "The statement is not true: fractions are not added by adding numerators and denominators separately; you need a common denominator."
+      },
+      "de": {
+        "question": "1/2 + 1/3 = 2/5",
+        "explanation": "Der gemeinsame Nenner ist 6: 1/2 + 1/3 = 3/6 + 2/6 = 5/6. Also 1/2 + 1/3 ≠ 2/5; die Aussage ist falsch. (Übrigens ist 2/5 sogar kleiner als 1/2.)",
+        "hint": "Bringen Sie die Brüche vor dem Addieren auf einen gemeinsamen Nenner.",
+        "whyWrong": "Die Aussage stimmt nicht: Brüche addiert man nicht, indem man Zähler und Nenner getrennt addiert; man braucht einen gemeinsamen Nenner."
       }
     }
   ]

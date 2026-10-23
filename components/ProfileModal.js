@@ -18,6 +18,8 @@ import { useStats } from '../context/StatsContext';
 import { useSavedItems } from '../context/SavedItemsContext';
 import { useTheme } from '../context/ThemeContext';
 import { isPremiumActive } from '../utils/isPremium';
+import { useProgress } from '../utils/progress';
+import { useLocalizedQuizzes } from '../hooks/useLocalizedData';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { ListSection, ListRow, Card, Pill, Button, showAlert, confirmAction, getErrorMessage } from './ui';
 
@@ -178,6 +180,74 @@ function AchievementBadge({ achievement, earned }) {
   );
 }
 
+// ─── Level + XP card ───
+function LevelCard({ level, xp }) {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const levelStyles = useMemo(() => makeLevelStyles(colors), [colors]);
+  return (
+    <Card style={levelStyles.card}>
+      <View
+        style={levelStyles.row}
+        accessible
+        accessibilityLabel={`${t('progress.levelN', { level: level.level })}, ${t(level.nameKey)}, ${xp} XP`}
+      >
+        <View style={levelStyles.badge}>
+          <Text style={levelStyles.badgeLevel}>{level.level}</Text>
+        </View>
+        <View style={levelStyles.text}>
+          <Text style={levelStyles.eyebrow}>{t('progress.levelN', { level: level.level })}</Text>
+          <Text style={levelStyles.name} numberOfLines={1}>{t(level.nameKey)}</Text>
+        </View>
+        <Text style={levelStyles.xp}>{xp} XP</Text>
+      </View>
+      <View style={levelStyles.bar}>
+        <View style={[levelStyles.barFill, { width: `${Math.round(level.progress * 100)}%` }]} />
+      </View>
+      <Text style={levelStyles.note}>{t('progress.xpToNext', { xp: level.nextLevelAt - level.xp, level: level.level + 1 })}</Text>
+    </Card>
+  );
+}
+
+// ─── Mastery per topic ───
+function MasteryList({ mastery }) {
+  const { t } = useTranslation();
+  const { colors } = useTheme();
+  const levelStyles = useMemo(() => makeLevelStyles(colors), [colors]);
+  const anyAttempted = mastery.some((m) => m.attempted > 0);
+  return (
+    <View style={levelStyles.masterySection}>
+      <Text style={levelStyles.sectionTitle}>{t('progress.mastery')}</Text>
+      <Card style={levelStyles.masteryCard}>
+        {!anyAttempted && <Text style={levelStyles.note}>{t('progress.masteryEmpty')}</Text>}
+        {mastery.map((m) => {
+          const barColor = m.mastery >= 80 ? colors.success : m.mastery >= 50 ? colors.warning : m.mastery > 0 ? colors.error : colors.borderLight;
+          return (
+            <View
+              key={m.key}
+              style={levelStyles.masteryRow}
+              accessible
+              accessibilityLabel={`${m.category}, ${t('progress.masteryValue', { percent: m.mastery })}`}
+            >
+              <Text style={levelStyles.masteryIcon}>{m.icon}</Text>
+              <View style={levelStyles.text}>
+                <View style={levelStyles.masteryLabelRow}>
+                  <Text style={levelStyles.masteryName} numberOfLines={1}>{m.category}</Text>
+                  <Text style={levelStyles.masteryPercent}>{m.mastery}%</Text>
+                </View>
+                <View style={levelStyles.masteryBar}>
+                  <View style={[levelStyles.barFillPlain, { width: `${m.mastery}%`, backgroundColor: barColor }]} />
+                </View>
+              </View>
+            </View>
+          );
+        })}
+      </Card>
+      <Text style={levelStyles.footer}>{t('progress.masteryFooter')}</Text>
+    </View>
+  );
+}
+
 export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const { user, logout, updateProfile } = useUser();
   const {
@@ -187,6 +257,8 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
   const isPremium = isPremiumActive(user);
+  const { quizSets } = useLocalizedQuizzes();
+  const { xp, level, mastery } = useProgress(stats, user?.id, quizSets);
   const [showEdit, setShowEdit] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const { t } = useTranslation();
@@ -423,6 +495,9 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
           </View>
         </Animated.View>
 
+        {/* Level + XP */}
+        <LevelCard level={level} xp={xp.total} />
+
         {/* Circular Stats */}
         <Card style={styles.circularStatsRow}>
           <View style={styles.circularStatItem}>
@@ -470,6 +545,9 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
 
         {/* Weekly Activity Chart */}
         <WeeklyChart dailyActivity={stats?.dailyActivity} />
+
+        {/* Mastery per topic */}
+        <MasteryList mastery={mastery} />
 
         {/* Achievements */}
         <View style={styles.achievementsSection}>
@@ -598,7 +676,7 @@ const makeStyles = (colors) => StyleSheet.create({
     paddingVertical: SPACING.xl,
     paddingHorizontal: SPACING.md,
     marginHorizontal: SPACING.lg,
-    marginTop: SPACING.xxl,
+    marginTop: SPACING.lg,
   },
   circularStatItem: {
     alignItems: 'center', gap: SPACING.sm,
@@ -769,5 +847,76 @@ const makeBadgeStyles = (colors) => StyleSheet.create({
   },
   progressText: {
     ...TYPOGRAPHY.small, fontSize: 10, color: colors.textMuted,
+  },
+});
+
+// ─── Level + Mastery Styles ───
+const makeLevelStyles = (colors) => StyleSheet.create({
+  card: {
+    marginHorizontal: SPACING.lg, marginTop: SPACING.xxl, gap: SPACING.sm,
+  },
+  row: {
+    flexDirection: 'row', alignItems: 'center', gap: SPACING.md,
+  },
+  badge: {
+    width: 44, height: 44, borderRadius: 22,
+    backgroundColor: colors.primary,
+    justifyContent: 'center', alignItems: 'center',
+  },
+  badgeLevel: {
+    ...TYPOGRAPHY.headline, fontSize: 18, color: '#FFFFFF',
+  },
+  text: { flex: 1 },
+  eyebrow: {
+    ...TYPOGRAPHY.footnote, color: colors.textSubtle, textTransform: 'uppercase',
+  },
+  name: {
+    ...TYPOGRAPHY.headline, color: colors.text,
+  },
+  xp: {
+    ...TYPOGRAPHY.subheadBold, color: colors.primary,
+  },
+  bar: {
+    height: 8, borderRadius: 4, overflow: 'hidden', backgroundColor: colors.borderLight, marginTop: SPACING.xs,
+  },
+  barFill: {
+    height: '100%', borderRadius: 4, backgroundColor: colors.primary,
+  },
+  barFillPlain: {
+    height: '100%', borderRadius: 3,
+  },
+  note: {
+    ...TYPOGRAPHY.footnote, color: colors.textSubtle,
+  },
+  masterySection: {
+    marginHorizontal: SPACING.lg, marginTop: SPACING.xxl,
+  },
+  sectionTitle: {
+    ...TYPOGRAPHY.h3, fontWeight: '700', color: colors.text,
+    marginBottom: SPACING.md, paddingHorizontal: SPACING.xs,
+  },
+  masteryCard: {
+    gap: SPACING.md,
+  },
+  masteryRow: {
+    flexDirection: 'row', alignItems: 'center', gap: SPACING.md,
+  },
+  masteryIcon: {
+    fontSize: 20, width: 28, textAlign: 'center',
+  },
+  masteryLabelRow: {
+    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 4, gap: SPACING.sm,
+  },
+  masteryName: {
+    ...TYPOGRAPHY.subheadBold, color: colors.text, flex: 1,
+  },
+  masteryPercent: {
+    ...TYPOGRAPHY.footnote, fontWeight: '600', color: colors.textSubtle,
+  },
+  masteryBar: {
+    height: 6, borderRadius: 3, overflow: 'hidden', backgroundColor: colors.inputBg,
+  },
+  footer: {
+    ...TYPOGRAPHY.footnote, color: colors.textSubtle, marginTop: SPACING.sm, marginHorizontal: SPACING.lg,
   },
 });

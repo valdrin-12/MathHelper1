@@ -1,6 +1,7 @@
 // Quiz set "calc-easy" in all languages (al = Albanian source, en, de).
 // Each question: correct = index into options (same order in every language);
 // hint = one nudge without the answer; whyWrong[i] = why option i is wrong (null for the correct one).
+// type 'input': answer.value (+ optional tolerance), commonMistakes = typical wrong values; type 'truefalse': correct = true/false, whyWrong = why the opposite answer is wrong.
 
 export default {
   "id": "calc-easy",
@@ -583,6 +584,134 @@ export default {
           "Der Grenzwert existiert; nach dem Kürzen bleibt ein Polynom.",
           null
         ]
+      }
+    },
+    {
+      "id": 11,
+      "type": "input",
+      "answer": {
+        "value": 0.25,
+        "tolerance": 0.001
+      },
+      "al": {
+        "question": "Llogaritni lim(x→0) (√(x + 4) − 2)/x. Shkruani rezultatin si numër dhjetor.",
+        "explanation": "Zëvendësimi i drejtpërdrejtë jep 0/0. Shumëzojmë numëruesin dhe emëruesin me √(x + 4) + 2: (x + 4 − 4)/(x(√(x + 4) + 2)) = 1/(√(x + 4) + 2). Për x → 0: 1/(2 + 2) = 1/4 = 0,25.",
+        "hint": "Shumëzoni me të konjuguarën e numëruesit, √(x + 4) + 2.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Keni marrë emëruesin √(x + 4) + 2 → 4 si rezultat, duke harruar se ai mbetet në emërues: 1/4."
+          },
+          {
+            "value": 0,
+            "why": "Forma 0/0 nuk do të thotë që limiti është 0; ajo është e papërcaktuar dhe duhet thjeshtuar."
+          }
+        ]
+      },
+      "en": {
+        "question": "Evaluate lim(x→0) (√(x + 4) − 2)/x. Give the result as a decimal number.",
+        "explanation": "Direct substitution gives 0/0. Multiply numerator and denominator by √(x + 4) + 2: (x + 4 − 4)/(x(√(x + 4) + 2)) = 1/(√(x + 4) + 2). As x → 0: 1/(2 + 2) = 1/4 = 0.25.",
+        "hint": "Multiply by the conjugate of the numerator, √(x + 4) + 2.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "You took the denominator √(x + 4) + 2 → 4 as the result, forgetting that it stays in the denominator: 1/4."
+          },
+          {
+            "value": 0,
+            "why": "The form 0/0 does not mean the limit is 0; it is indeterminate and has to be simplified."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie lim(x→0) (√(x + 4) − 2)/x. Geben Sie das Ergebnis als Dezimalzahl an.",
+        "explanation": "Direktes Einsetzen ergibt 0/0. Zähler und Nenner mit √(x + 4) + 2 erweitern: (x + 4 − 4)/(x(√(x + 4) + 2)) = 1/(√(x + 4) + 2). Für x → 0: 1/(2 + 2) = 1/4 = 0,25.",
+        "hint": "Erweitern Sie mit dem konjugierten Ausdruck des Zählers, √(x + 4) + 2.",
+        "commonMistakes": [
+          {
+            "value": 4,
+            "why": "Sie haben den Nenner √(x + 4) + 2 → 4 als Ergebnis genommen und übersehen, dass er im Nenner bleibt: 1/4."
+          },
+          {
+            "value": 0,
+            "why": "Die Form 0/0 bedeutet nicht, dass der Grenzwert 0 ist; sie ist unbestimmt und muss vereinfacht werden."
+          }
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": "input",
+      "answer": {
+        "value": 1
+      },
+      "al": {
+        "question": "Llogaritni lim(x→−2) (x² + 5x + 6)/(x + 2).",
+        "explanation": "Për x = −2 marrim 0/0. Faktorizojmë: x² + 5x + 6 = (x + 2)(x + 3). Thjeshtojmë: (x + 2)(x + 3)/(x + 2) = x + 3. Për x → −2: −2 + 3 = 1.",
+        "hint": "Faktorizoni numëruesin; njëri faktor do të thjeshtohet me emëruesin.",
+        "commonMistakes": [
+          {
+            "value": 0,
+            "why": "Forma 0/0 nuk do të thotë që limiti është 0; duhet faktorizuar dhe thjeshtuar."
+          },
+          {
+            "value": 5,
+            "why": "Keni zëvendësuar x = 2 në vend të x = −2 te x + 3."
+          }
+        ]
+      },
+      "en": {
+        "question": "Evaluate lim(x→−2) (x² + 5x + 6)/(x + 2).",
+        "explanation": "For x = −2 we get 0/0. Factor: x² + 5x + 6 = (x + 2)(x + 3). Cancel: (x + 2)(x + 3)/(x + 2) = x + 3. As x → −2: −2 + 3 = 1.",
+        "hint": "Factor the numerator; one factor will cancel with the denominator.",
+        "commonMistakes": [
+          {
+            "value": 0,
+            "why": "The form 0/0 does not mean the limit is 0; you have to factor and cancel."
+          },
+          {
+            "value": 5,
+            "why": "You substituted x = 2 instead of x = −2 into x + 3."
+          }
+        ]
+      },
+      "de": {
+        "question": "Berechnen Sie lim(x→−2) (x² + 5x + 6)/(x + 2).",
+        "explanation": "Für x = −2 ergibt sich 0/0. Faktorisieren: x² + 5x + 6 = (x + 2)(x + 3). Kürzen: (x + 2)(x + 3)/(x + 2) = x + 3. Für x → −2: −2 + 3 = 1.",
+        "hint": "Faktorisieren Sie den Zähler; ein Faktor lässt sich mit dem Nenner kürzen.",
+        "commonMistakes": [
+          {
+            "value": 0,
+            "why": "Die Form 0/0 bedeutet nicht, dass der Grenzwert 0 ist; man muss faktorisieren und kürzen."
+          },
+          {
+            "value": 5,
+            "why": "Sie haben x = 2 statt x = −2 in x + 3 eingesetzt."
+          }
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": "truefalse",
+      "correct": false,
+      "al": {
+        "question": "Nëse f(a) nuk është i përcaktuar, atëherë lim(x→a) f(x) nuk mund të ekzistojë.",
+        "explanation": "Limiti varet vetëm nga vlerat e f pranë a, jo nga vlera në a. Për shembull, f(x) = (x² − 4)/(x − 2) nuk është i përcaktuar në x = 2, por lim(x→2) f(x) = lim(x→2) (x + 2) = 4. Pohimi është i gabuar.",
+        "hint": "Kujtoni një limit të formës 0/0 që e keni llogaritur më parë.",
+        "whyWrong": "Pohimi nuk është i vërtetë: limiti mund të ekzistojë edhe kur funksioni nuk është i përcaktuar në atë pikë, p.sh. (x² − 4)/(x − 2) për x → 2 jep 4."
+      },
+      "en": {
+        "question": "If f(a) is not defined, then lim(x→a) f(x) cannot exist.",
+        "explanation": "A limit depends only on the values of f near a, not on the value at a. For example, f(x) = (x² − 4)/(x − 2) is not defined at x = 2, but lim(x→2) f(x) = lim(x→2) (x + 2) = 4. The statement is false.",
+        "hint": "Recall a 0/0 limit you have already evaluated.",
+        "whyWrong": "The statement is not true: the limit can exist even if the function is undefined at that point, e.g. (x² − 4)/(x − 2) as x → 2 gives 4."
+      },
+      "de": {
+        "question": "Ist f(a) nicht definiert, dann kann lim(x→a) f(x) nicht existieren.",
+        "explanation": "Ein Grenzwert hängt nur von den Werten von f in der Nähe von a ab, nicht vom Wert an der Stelle a. Beispiel: f(x) = (x² − 4)/(x − 2) ist bei x = 2 nicht definiert, aber lim(x→2) f(x) = lim(x→2) (x + 2) = 4. Die Aussage ist falsch.",
+        "hint": "Denken Sie an einen Grenzwert der Form 0/0, den Sie schon berechnet haben.",
+        "whyWrong": "Die Aussage stimmt nicht: Der Grenzwert kann existieren, auch wenn die Funktion an der Stelle nicht definiert ist, z. B. (x² − 4)/(x − 2) für x → 2 ergibt 4."
       }
     }
   ]

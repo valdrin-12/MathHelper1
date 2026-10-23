@@ -6,10 +6,14 @@ import {
   StyleSheet,
   ScrollView,
   Animated,
+  Modal,
+  TouchableOpacity,
+  Platform,
 } from 'react-native';
 import { useLocalizedQuizzes } from '../hooks/useLocalizedData';
 import { FREE_QUIZ_IDS } from '../data/quizData';
-import { createQuizAttempt } from '../utils/quizAttempt';
+import { createQuizAttempt, parseDurationSeconds } from '../utils/quizAttempt';
+import { useProgress, computeAttemptXp, hintCost } from '../utils/progress';
 import { isPremiumActive } from '../utils/isPremium';
 import ActiveQuizModal from '../components/ActiveQuizModal';
 import QuizResultModal from '../components/QuizResultModal';
@@ -58,6 +62,55 @@ function MiniProgressRing({ progress, size = 44, strokeWidth = 3, color }) {
   );
 }
 
+// Last chosen quiz mode ('practice' | 'test'), a device preference
+const QUIZ_MODE_KEY = '@mathhelper_quiz_mode';
+
+// Bottom sheet to pick Practice or Test before a quiz starts
+function ModeSheet({ quizSet, mode, onChangeMode, onStart, onCancel, colors, styles, t }) {
+  const minutes = quizSet ? Math.max(1, Math.round(parseDurationSeconds(quizSet.duration, quizSet.questions.length) / 60)) : 0;
+  const options = [
+    { value: 'practice', icon: 'school', title: t('quiz.modePractice'), desc: t('quiz.modePracticeDesc', { xp: hintCost('practice') }) },
+    { value: 'test', icon: 'timer', title: t('quiz.modeTest'), desc: t('quiz.modeTestDesc', { minutes, xp: hintCost('test') }) },
+  ];
+  return (
+    <Modal visible={!!quizSet} transparent animationType="slide" onRequestClose={onCancel}>
+      <View style={styles.sheetOverlay}>
+        <TouchableOpacity style={StyleSheet.absoluteFill} onPress={onCancel} accessibilityRole="button" accessibilityLabel={t('common.cancel')} />
+        <View style={styles.sheet}>
+          <View style={styles.sheetGrabber} />
+          <Text style={styles.sheetTitle}>{t('quiz.chooseMode')}</Text>
+          {!!quizSet && <Text style={styles.sheetSubtitle} numberOfLines={1}>{quizSet.title}</Text>}
+          <View style={styles.sheetOptions}>
+            {options.map((o) => {
+              const active = mode === o.value;
+              return (
+                <TouchableOpacity
+                  key={o.value}
+                  style={[styles.modeOption, active && styles.modeOptionActive]}
+                  onPress={() => onChangeMode(o.value)}
+                  activeOpacity={0.7}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: active, checked: active }}
+                  accessibilityLabel={`${o.title}, ${o.desc}`}
+                >
+                  <IconBadge name={o.icon} color={o.value === 'test' ? colors.secondary : colors.primary} size={34} />
+                  <View style={styles.modeText}>
+                    <Text style={styles.modeTitle}>{o.title}</Text>
+                    <Text style={styles.modeDesc}>{o.desc}</Text>
+                  </View>
+                  <Ionicons name={active ? 'checkmark-circle' : 'ellipse-outline'} size={22} color={active ? colors.primary : colors.textPlaceholder} />
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+          <Button title={t('quiz.startMode', { mode: mode === 'test' ? t('quiz.modeTest') : t('quiz.modePractice') })} icon="play" onPress={onStart} />
+          <Button title={t('common.cancel')} variant="plain" onPress={onCancel} />
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
 // Difficulty icon component
 function DifficultyIcon({ difficulty, size = 16 }) {
   const iconMap = {
@@ -85,6 +138,17 @@ export default function QuizScreen() {
   const [lastScore, setLastScore] = useState(null);
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [challengeCompletedToday, setChallengeCompletedToday] = useState(false);
+  const [pendingQuiz, setPendingQuiz] = useState(null); // quiz waiting for a mode choice
+  const [quizMode, setQuizMode] = useState('practice');
+  const [xpSummary, setXpSummary] = useState(null);
+  const [timedOut, setTimedOut] = useState(false);
+  const { xp, level, addXp } = useProgress(stats, user?.id);
+
+  useEffect(() => {
+    AsyncStorage.getItem(QUIZ_MODE_KEY)
+      .then((v) => { if (v === 'practice' || v === 'test') setQuizMode(v); })
+      .catch(() => {});
+  }, []);
 
   // Device-local calendar date (not UTC) so the challenge flips at local midnight
   const todayDateKey = getLocalDateKey();
@@ -143,27 +207,52 @@ export default function QuizScreen() {
       setShowPremiumModal(true);
       return;
     }
-    setActiveQuiz(createQuizAttempt(quizSet));
-    setShowQuiz(true);
+    setPendingQuiz(quizSet);
   };
 
-  const handleQuizComplete = (answers, quizSet) => {
+  const handleChangeMode = (mode) => {
+    setQuizMode(mode);
+    AsyncStorage.setItem(QUIZ_MODE_KEY, mode).catch(() => {});
+  };
+
+  const handleStartWithMode = () => {
+    const quizSet = pendingQuiz;
+    if (!quizSet) return;
+    setPendingQuiz(null);
+    setActiveQuiz(createQuizAttempt(quizSet, { mode: quizMode }));
+    // iOS can't present a modal while another one is still dismissing
+    if (Platform.OS === 'ios') setTimeout(() => setShowQuiz(true), 400);
+    else setShowQuiz(true);
+  };
+
+  const handleQuizComplete = (answers, quizSet, { timedOut: didTimeOut = false } = {}) => {
     setQuizResult(answers);
     setCompletedQuizSet(quizSet);
+    setTimedOut(!!didTimeOut);
     setShowQuiz(false);
     setShowResult(true);
-    // Practising mistakes doesn't count towards scores, best score or the daily challenge
-    if (quizSet?.isPractice) {
-      setLastScore(null);
-      return;
-    }
     const correct = answers ? answers.filter(a => a?.correct).length : 0;
     const total = quizSet?.questions?.length || 0;
+    const hintsUsed = answers ? answers.filter(a => a?.usedHint).length : 0;
+    // Practising mistakes doesn't count towards scores, best score, mastery or the daily challenge — reduced XP only
+    if (quizSet?.isPractice) {
+      setLastScore(null);
+      const attemptXp = computeAttemptXp({ correct, total, hintsUsed, mode: 'practice', isMistakesPractice: true });
+      setXpSummary({ ...attemptXp, totalBefore: xp.total, totalAfter: xp.total + attemptXp.gained });
+      if (attemptXp.gained) addXp(attemptXp.gained);
+      return;
+    }
     const percentage = total > 0 ? Math.round((correct / total) * 100) : 0;
     setLastScore(percentage);
+    const previousAttempts = (stats?.completedQuizzes || []).filter(q => q.quizId === quizSet?.id).length;
+    const attemptXp = computeAttemptXp({ correct, total, hintsUsed, mode: quizSet?.mode, previousAttempts });
+    setXpSummary({ ...attemptXp, totalBefore: xp.total, totalAfter: xp.total + attemptXp.gained });
     // Guard: only record if we have a valid quiz reference
     if (quizSet?.id && quizSet?.title) {
-      recordQuizCompleted(quizSet.id, quizSet.title, correct, total);
+      // Quiz XP is derived from the recorded attempt; hints are charged locally once it is saved
+      Promise.resolve(recordQuizCompleted(quizSet.id, quizSet.title, correct, total))
+        .then((ok) => { if (ok && attemptXp.hintPenalty) addXp(-attemptXp.hintPenalty); })
+        .catch(() => {});
     }
     // Mark daily challenge as completed
     if (dailyChallenge && quizSet?.id === dailyChallenge.id) {
@@ -177,8 +266,9 @@ export default function QuizScreen() {
   const findOriginalSet = (attempt) => quizSets.find((q) => q.id === attempt?.id) || attempt;
 
   const handleRetryQuiz = () => {
-    setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet)));
+    setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet), { mode: completedQuizSet?.mode }));
     setShowResult(false);
+    setXpSummary(null);
     setQuizResult(null);
     setShowQuiz(true);
   };
@@ -186,8 +276,10 @@ export default function QuizScreen() {
   const handlePracticeMistakes = () => {
     const wrongIds = (quizResult || []).filter((a) => !a?.correct).map((a) => a.questionId);
     if (wrongIds.length === 0) return;
-    setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet), { questionIds: wrongIds, isPractice: true }));
+    // Always with immediate feedback, whatever the original mode was
+    setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet), { questionIds: wrongIds, isPractice: true, mode: 'practice' }));
     setShowResult(false);
+    setXpSummary(null);
     setQuizResult(null);
     setShowQuiz(true);
   };
@@ -198,6 +290,8 @@ export default function QuizScreen() {
     setCompletedQuizSet(null);
     setActiveQuiz(null);
     setLastScore(null);
+    setXpSummary(null);
+    setTimedOut(false);
   };
 
   const handleCloseQuiz = () => {
@@ -226,12 +320,25 @@ export default function QuizScreen() {
         <ScreenHeader
           title={t('quiz.title')}
           subtitle={t('quiz.quizzesAvailable', { count: quizSets.length })}
-          right={streak > 0 ? (
-            <View style={styles.streakChip}>
-              <Ionicons name="flame" size={15} color={colors.secondary} />
-              <Text style={styles.streakText}>{streak}</Text>
+          right={(
+            <View style={styles.headerChips}>
+              <View
+                style={styles.levelChip}
+                accessible
+                accessibilityLabel={`${t('progress.levelN', { level: level.level })}, ${xp.total} XP`}
+              >
+                <Ionicons name="sparkles" size={14} color={colors.primary} />
+                <Text style={styles.levelText}>{t('progress.levelShort', { level: level.level })}</Text>
+                <Text style={styles.levelXp}>{xp.total} XP</Text>
+              </View>
+              {streak > 0 && (
+                <View style={styles.streakChip}>
+                  <Ionicons name="flame" size={15} color={colors.secondary} />
+                  <Text style={styles.streakText}>{streak}</Text>
+                </View>
+              )}
             </View>
-          ) : null}
+          )}
         />
 
         {/* Challenge of the Day */}
@@ -366,6 +473,20 @@ export default function QuizScreen() {
         onPracticeMistakes={handlePracticeMistakes}
         isPerfectScore={lastScore === 100}
         quizHistory={(stats?.completedQuizzes || []).filter(q => q.quizId === completedQuizSet?.id)}
+        xpSummary={xpSummary}
+        timedOut={timedOut}
+      />
+
+      {/* Practice / Test chooser */}
+      <ModeSheet
+        quizSet={pendingQuiz}
+        mode={quizMode}
+        onChangeMode={handleChangeMode}
+        onStart={handleStartWithMode}
+        onCancel={() => setPendingQuiz(null)}
+        colors={colors}
+        styles={styles}
+        t={t}
       />
 
       {/* Premium Upsell Modal */}
@@ -382,6 +503,96 @@ const makeStyles = (colors) => StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
+  headerChips: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.xs + 2,
+  },
+  levelChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: colors.primaryBg,
+    paddingHorizontal: SPACING.sm + 2,
+    paddingVertical: SPACING.xs + 1,
+    borderRadius: BORDER_RADIUS.round,
+  },
+  levelText: {
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.primary,
+  },
+  levelXp: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.primary,
+  },
+
+  // Mode sheet
+  sheetOverlay: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: colors.overlay,
+  },
+  sheet: {
+    backgroundColor: colors.background,
+    borderTopLeftRadius: BORDER_RADIUS.lg + 4,
+    borderTopRightRadius: BORDER_RADIUS.lg + 4,
+    paddingHorizontal: SPACING.lg,
+    paddingTop: SPACING.sm,
+    paddingBottom: SPACING.xxl,
+    gap: SPACING.sm,
+    width: '100%',
+    maxWidth: 560,
+    alignSelf: 'center',
+  },
+  sheetGrabber: {
+    alignSelf: 'center',
+    width: 36,
+    height: 5,
+    borderRadius: 3,
+    backgroundColor: colors.borderLight,
+    marginBottom: SPACING.sm,
+  },
+  sheetTitle: {
+    ...TYPOGRAPHY.h3,
+    fontWeight: '700',
+    color: colors.text,
+    textAlign: 'center',
+  },
+  sheetSubtitle: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.textSubtle,
+    textAlign: 'center',
+  },
+  sheetOptions: {
+    gap: SPACING.sm,
+    marginVertical: SPACING.md,
+  },
+  modeOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.md,
+    padding: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    backgroundColor: colors.surface,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+  },
+  modeOptionActive: {
+    borderColor: colors.primary,
+  },
+  modeText: {
+    flex: 1,
+  },
+  modeTitle: {
+    ...TYPOGRAPHY.headline,
+    color: colors.text,
+  },
+  modeDesc: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSubtle,
+    marginTop: 2,
+  },
+
   streakChip: {
     flexDirection: 'row',
     alignItems: 'center',
