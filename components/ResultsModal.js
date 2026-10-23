@@ -164,13 +164,15 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                 <Text style={styles.errorBannerText}>❌ {saveError}</Text>
               </View>
             )}
-            <Button
-              title={isSaving ? `⏳ ${t('results.saving')}` : saveSuccess ? `✅ ${t('results.saved')}` : `💾 ${t('results.saveProblem')}`}
-              tone={saveSuccess ? 'success' : 'primary'}
-              onPress={handleSave}
-              disabled={isSaving || saveSuccess}
-              style={saveSuccess ? styles.savedButton : null}
-            />
+            {onSave && (
+              <Button
+                title={isSaving ? `⏳ ${t('results.saving')}` : saveSuccess ? `✅ ${t('results.saved')}` : `💾 ${t('results.saveProblem')}`}
+                tone={saveSuccess ? 'success' : 'primary'}
+                onPress={handleSave}
+                disabled={isSaving || saveSuccess}
+                style={saveSuccess ? styles.savedButton : null}
+              />
+            )}
             <Button
               title={t('common.close')}
               variant="tinted"

@@ -22,6 +22,7 @@ import { isPlottableFunction } from '../services/graphService';
 import LoadingOverlay from '../components/LoadingOverlay';
 import ResultsModal from '../components/ResultsModal';
 import GraphModal from '../components/GraphModal';
+import ToolsModal from '../components/ToolsModal';
 import MathKeyboard from '../components/MathKeyboard';
 import { useSavedItems } from '../context/SavedItemsContext';
 import { useUser } from '../context/UserContext';
@@ -88,6 +89,9 @@ export default function DashboardScreen() {
   const [limitType, setLimitType] = useState('free'); // 'free' or 'daily'
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [showGraphModal, setShowGraphModal] = useState(false);
+  const [showTools, setShowTools] = useState(false);
+  // The graph opened from Tools starts empty; the Graph button uses the typed problem
+  const [graphFromTools, setGraphFromTools] = useState(false);
 
   const navigation = useNavigation();
   const [greeting, setGreeting] = useState(() => getGreeting(t));
@@ -537,6 +541,17 @@ export default function DashboardScreen() {
             )}
           </Card>
 
+          {/* Offline tools & formula sheet */}
+          <ListSection style={styles.toolsSection}>
+            <ListRow
+              icon="construct"
+              iconColor={colors.purple}
+              title={t('tools.openTools')}
+              subtitle={t('tools.openToolsDesc')}
+              onPress={() => setShowTools(true)}
+            />
+          </ListSection>
+
           {/* Statistics */}
           <View style={styles.sectionBlock}>
             <SectionTitle>{t('dashboard.yourStats')}</SectionTitle>
@@ -599,8 +614,15 @@ export default function DashboardScreen() {
 
       <GraphModal
         visible={showGraphModal}
-        functionText={mathProblemText}
-        onClose={() => setShowGraphModal(false)}
+        functionText={graphFromTools ? '' : mathProblemText}
+        onClose={() => { setShowGraphModal(false); setGraphFromTools(false); }}
+      />
+
+      <ToolsModal
+        visible={showTools}
+        onClose={() => setShowTools(false)}
+        // Wait for the tools sheet to close before presenting the graph (one modal at a time on iOS)
+        onOpenGraph={() => { setGraphFromTools(true); setTimeout(() => setShowGraphModal(true), 400); }}
       />
 
       <SavedItemDetailModal
@@ -684,6 +706,10 @@ const makeStyles = (colors) => StyleSheet.create({
   },
   sectionBlock: {
     marginTop: SPACING.xxxl,
+  },
+  toolsSection: {
+    marginHorizontal: 0,
+    marginTop: SPACING.lg,
   },
 
   // Header avatar
