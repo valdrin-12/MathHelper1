@@ -114,6 +114,11 @@ app.get('/privacy', staticPageCsp, (req, res) => {
   res.sendFile(path.join(__dirname, '..', 'pages', 'privacy.html'));
 });
 
+// Terms of Service page
+app.get('/terms', staticPageCsp, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'terms.html'));
+});
+
 // Paddle checkout success page (Paddle.Checkout successUrl)
 app.get('/premium/success', staticPageCsp, (req, res) => {
   const appUrl = process.env.APP_URL || 'https://mathhelper.online';
