@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const pool = require('../config/database');
 
-const FREE_LIFETIME_LIMIT = 2;
+const FREE_LIFETIME_LIMIT = 3;
 const PREMIUM_DAILY_LIMIT = 10;
 
 // An analysis ticket covers one "Llogarit" click: e.g. Wolfram first, then the AI fallback.
@@ -28,7 +28,7 @@ function serviceUnavailable(res) {
 
 /**
  * Atomically consume one analysis credit.
- * Free: 2 lifetime analyses total (never resets).
+ * Free: 3 lifetime analyses total (never resets).
  * Premium (active): 10 analyses/day (resets daily, server date).
  * Premium (expired): treated as free.
  *

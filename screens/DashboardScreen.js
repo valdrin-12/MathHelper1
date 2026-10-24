@@ -15,6 +15,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
+import { verifyAnswer } from '../services/verifyAnswer';
 import * as imageService from '../services/imageService';
 import * as geminiService from '../services/geminiService';
 import * as mathCalculatorService from '../services/mathCalculatorService';
@@ -186,6 +187,14 @@ export default function DashboardScreen() {
     setShowResultModal(true);
   };
 
+  // AI / Wolfram answers are re-checked with mathjs when the problem text is known (typed or read from a photo)
+  const showCheckedResult = (result, solverType, problemText) => {
+    const verification = problemText
+      ? verifyAnswer({ problem: problemText, answer: result?.answer, lang: language })
+      : undefined;
+    showResult(verification ? { ...result, verification } : result, solverType);
+  };
+
   // Read + downscale the selected photo (never counted against the analysis limit)
   const readSelectedImage = async () => {
     const image = await imageService.convertImageToBase64(selectedImage, selectedImageSize || undefined);
@@ -258,7 +267,7 @@ export default function DashboardScreen() {
       if (problemText && problemText.trim()) {
         try {
           const wolframResult = await geminiService.analyzeWithWolfram(problemText, ticket);
-          showResult(wolframResult, 'wolfram');
+          showCheckedResult(wolframResult, 'wolfram', problemText);
           return;
         } catch (wolframError) {
           lastError = wolframError; // fall back to AI with the same ticket
@@ -269,7 +278,7 @@ export default function DashboardScreen() {
         const aiResult = image
           ? await geminiService.analyzeMathProblem(image.base64, image.mimeType, ticket)
           : await geminiService.analyzeMathProblemFromText(problemText, ticket);
-        showResult(aiResult, 'ai');
+        showCheckedResult(aiResult, 'ai', problemText);
         return;
       } catch (aiError) {
         lastError = aiError;
@@ -303,7 +312,7 @@ export default function DashboardScreen() {
         await geminiService.refundAnalysis(ticket);
         throw aiError;
       }
-      showResult(result, 'ai');
+      showCheckedResult(result, 'ai', image ? null : mathProblemText);
     } catch (error) {
       reportError(error, handleAnalyzeWithAI); // not awaited: a retry must start after this run finishes
     } finally {

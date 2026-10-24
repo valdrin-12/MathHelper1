@@ -36,7 +36,9 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
 
   if (!result) return null;
 
-  const { answer, steps, explanation, solverType } = result;
+  const { answer, steps, explanation, solverType, verification } = result;
+  const isVerified = verification?.status === 'verified';
+  const isMismatch = verification?.status === 'mismatch';
 
   const handleSave = async () => {
     if (!onSave || savingRef.current || saveSuccess) return;
@@ -80,7 +82,7 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
           </View>
 
           <ScrollView style={styles.content} contentContainerStyle={styles.contentInner} showsVerticalScrollIndicator={false}>
-            {/* Solver Type Badge */}
+            {/* Solver Type Badge (+ MathJS check of AI / Wolfram answers) */}
             {solverType && (
               <View style={styles.badgeContainer}>
                 <Pill
@@ -90,6 +92,21 @@ export default function ResultsModal({ visible, result, onClose, onSave, imageUr
                     solverType === 'wolfram' ? t('dashboard.calculatedWithWolfram') :
                     t('dashboard.analyzedWithAI')}
                 />
+                {isVerified ? <Pill icon="shield-checkmark" color={colors.success} label={t('verify.verified')} /> : null}
+              </View>
+            )}
+
+            {/* MathJS could not confirm the answer: say exactly what does not add up */}
+            {isMismatch && (
+              <View style={styles.verifyWarning} accessibilityRole="alert">
+                <Ionicons name="warning" size={20} color={colors.warning} style={styles.verifyWarningIcon} />
+                <View style={styles.verifyWarningBody}>
+                  <Text style={styles.verifyWarningTitle}>{t('verify.checkTitle')}</Text>
+                  {verification.code && verification.code !== 'generic' ? (
+                    <Text style={styles.verifyWarningText}>{t(`verify.${verification.code}`, verification.params)}</Text>
+                  ) : null}
+                  <Text style={styles.verifyWarningHint}>{t('verify.generic')}</Text>
+                </View>
               </View>
             )}
 
@@ -234,7 +251,38 @@ const makeStyles = (colors) => StyleSheet.create({
     padding: SPACING.lg,
   },
   badgeContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: SPACING.sm,
     marginBottom: SPACING.md,
+  },
+  verifyWarning: {
+    flexDirection: 'row',
+    backgroundColor: colors.warningLight,
+    borderRadius: BORDER_RADIUS.lg,
+    padding: SPACING.lg,
+    marginBottom: SPACING.md,
+  },
+  verifyWarningIcon: {
+    marginRight: SPACING.md,
+    marginTop: 1,
+  },
+  verifyWarningBody: {
+    flex: 1,
+  },
+  verifyWarningTitle: {
+    ...TYPOGRAPHY.subheadBold,
+    color: colors.text,
+    marginBottom: 2,
+  },
+  verifyWarningText: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.text,
+  },
+  verifyWarningHint: {
+    ...TYPOGRAPHY.footnote,
+    color: colors.textSecondary,
+    marginTop: SPACING.xs,
   },
 
   // Sections

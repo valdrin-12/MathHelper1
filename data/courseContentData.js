@@ -482,7 +482,7 @@ const baseContents = {
         examples: [
           {
             example: 'Identifiko variablat, konstantet dhe koeficientët në: 5x + 3y - 7',
-            solution: 'Variablat: x dhe y\nKonstante: 7 (termi pa variabël), koeficientët: 5 (para x), 3 (para y)\nTermi -7 është term konstant',
+            solution: 'Variablat: x dhe y\nKonstante: −7 (termi pa variabël), koeficientët: 5 (para x), 3 (para y)\nTermi −7 është term konstant',
           },
           {
             example: 'Shkruaj si shprehje algjebrike: "gjysma e x plus katër"',

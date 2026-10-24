@@ -2,7 +2,7 @@
   "expo": {
     "name": "Ndihmësi i Matematikës",
     "slug": "ndihmesi-matematikes",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
@@ -14,6 +14,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.valdrin.mathhelper",
+      "buildNumber": "1",
       "infoPlist": {
         "NSCameraUsageDescription": "MathHelper uses the camera so you can photograph a math problem. The photo is sent to our server, where it is analyzed by an AI service to produce a solution. It is stored only if you choose to save the result.",
         "NSPhotoLibraryUsageDescription": "MathHelper accesses your photo library so you can choose a picture of a math problem. The selected photo is sent to our server, where it is analyzed by an AI service to produce a solution. It is stored only if you choose to save the result."
@@ -22,9 +23,6 @@
     "android": {
       "package": "com.valdrin.mathhelper",
       "versionCode": 1,
-      "compileSdkVersion": 35,
-      "targetSdkVersion": 35,
-      "minSdkVersion": 24,
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
@@ -63,7 +61,8 @@
           "cameraPermission": "MathHelper uses the camera so you can photograph a math problem. The photo is sent to our server, where it is analyzed by an AI service to produce a solution. It is stored only if you choose to save the result.",
           "microphonePermission": false
         }
-      ]
+      ],
+      "expo-font"
     ]
   }
 }

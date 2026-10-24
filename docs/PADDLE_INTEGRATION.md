@@ -73,7 +73,7 @@ Country price overrides (monthly / yearly):
    - `services/paddleService.js`: native stub (Paddle is web only).
    - `config/plans.js`: plan features and price IDs (from env).
    - `components/PremiumModal.js`: Monthly/Yearly chips, Paddle's formatted price shown as-is, overlay checkout with email prefill and `user_id`. Native flow untouched.
-   - Locales (`al`, `en`, `de`): new keys added; "one-time purchase" copy removed; limits fixed (Free: 2 analyses total, Premium: 10/day).
+   - Locales (`al`, `en`, `de`): new keys added; "one-time purchase" copy removed; limits fixed (Free: 3 analyses total, Premium: 10/day).
 5. **Backend:**
    - `npm install @paddle/paddle-node-sdk`, `npm uninstall paysera-nodejs`
    - `backend/src/controllers/paddleController.js`: webhook handler (signature verification + subscription sync).
