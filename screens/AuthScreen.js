@@ -19,11 +19,12 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { SHADOWS } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
 import WebContainer from '../components/WebContainer';
-import { getErrorMessage } from '../components/ui';
+import { getErrorMessage, showAlert } from '../components/ui';
+import GoogleButton from '../components/GoogleButton';
 
 
 export default function AuthScreen() {
-  const { login, register } = useUser();
+  const { login, register, loginWithGoogle } = useUser();
   const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -40,6 +41,7 @@ export default function AuthScreen() {
   const [privacyConsent, setPrivacyConsent] = useState(false);
   const [loginError, setLoginError] = useState('');
   const [registerError, setRegisterError] = useState('');
+  const [googleError, setGoogleError] = useState('');
 
   // Forgot password state
   const [forgotMode, setForgotMode] = useState(false); // false | 'email' | 'code' | 'newPassword' | 'success'
@@ -124,6 +126,28 @@ export default function AuthScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // Sign in / sign up with Google: the server verifies the token and creates or links the account
+  const handleGoogleToken = async (idToken) => {
+    setGoogleError('');
+    setLoading(true);
+    try {
+      const result = await loginWithGoogle(idToken, i18n.language);
+      if (!result.success) {
+        setGoogleError(getErrorMessage(result.code, t('errors.GOOGLE_AUTH_FAILED'), t));
+      } else if (result.linkedExisting) {
+        showAlert(t('auth.googleLinkedTitle'), t('auth.googleLinkedMessage'));
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const openLegalPage = (page) => {
+    const SUPPORTED = ['al', 'en', 'de'];
+    const lang = SUPPORTED.includes(i18n.language) ? i18n.language : 'al';
+    Linking.openURL(`https://mathhelper.online/${page}?lang=${lang}`);
   };
 
   const handleRegister = async () => {
@@ -499,6 +523,26 @@ export default function AuthScreen() {
             <Text style={styles.dividerText}>{t('common.or')}</Text>
             <View style={styles.dividerLine} />
           </View>
+
+          {/* Google */}
+          <GoogleButton
+            onToken={handleGoogleToken}
+            onError={(code) => setGoogleError(getErrorMessage(code, undefined, t))}
+            disabled={loading}
+          />
+          {googleError ? (
+            <View style={[styles.loginErrorBox, { marginTop: 12 }]}>
+              <Ionicons name="alert-circle" size={16} color={colors.error} style={{ marginRight: 6 }} />
+              <Text style={styles.loginErrorText}>{googleError}</Text>
+            </View>
+          ) : null}
+          <Text style={styles.googleConsent}>
+            {t('auth.googleConsentPrefix')}
+            <Text style={styles.consentLink} onPress={() => openLegalPage('terms')}>{t('auth.googleConsentTerms')}</Text>
+            {t('auth.googleConsentMiddle')}
+            <Text style={styles.consentLink} onPress={() => openLegalPage('privacy')}>{t('auth.googleConsentPrivacy')}</Text>
+            {t('auth.googleConsentSuffix')}
+          </Text>
 
           {/* Switch mode */}
           <TouchableOpacity onPress={toggleMode} style={styles.switchModeButton}>
@@ -944,6 +988,14 @@ const makeStyles = (colors) => StyleSheet.create({
     marginHorizontal: 12,
     fontWeight: '400',
     letterSpacing: -0.08,
+  },
+
+  googleConsent: {
+    fontSize: 12,
+    lineHeight: 17,
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginTop: 12,
   },
 
   // ─── Mode Toggle ─────────────────────────────────────────────────────────────

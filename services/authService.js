@@ -29,6 +29,20 @@ export const registerUser = async ({ name, email, password, language }) => {
 };
 
 /**
+ * Sign in or sign up with a Google ID token (verified by the server).
+ * @returns {Promise<{ success: boolean, user: Object|null, isNewUser?: boolean, linkedExisting?: boolean, error: string|null, code: string|null }>}
+ */
+export const loginWithGoogle = async ({ idToken, language }) => {
+  try {
+    const data = await api.post('/api/auth/google', { idToken, language });
+    await api.storeTokens(data.accessToken, data.refreshToken);
+    return { success: true, user: data.user, isNewUser: !!data.isNewUser, linkedExisting: !!data.linkedExisting, error: null, code: null };
+  } catch (error) {
+    return failure(error, 'GOOGLE_AUTH_FAILED');
+  }
+};
+
+/**
  * Login with email and password.
  * Wrong email and wrong password both yield code 'INVALID_CREDENTIALS'.
  * @returns {Promise<{ success: boolean, user: Object|null, error: string|null, code: string|null }>}
@@ -110,15 +124,16 @@ export const updateUser = async (updates) => {
 };
 
 /**
- * Permanently delete the account. Requires the user's password.
- * Error codes: PASSWORD_REQUIRED, INVALID_PASSWORD, SUBSCRIPTION_CANCEL_FAILED, NETWORK_ERROR,
- * TIMEOUT, SERVER_ERROR, DELETE_FAILED.
- * @param {string} password
+ * Permanently delete the account. Requires the user's password, or for an account created with Google
+ * (no password) a fresh Google ID token: pass `{ idToken }`.
+ * Error codes: PASSWORD_REQUIRED, INVALID_PASSWORD, GOOGLE_REAUTH_REQUIRED, INVALID_GOOGLE_TOKEN,
+ * SUBSCRIPTION_CANCEL_FAILED, NETWORK_ERROR, TIMEOUT, SERVER_ERROR, DELETE_FAILED.
+ * @param {string|{ idToken: string }} credential
  * @returns {Promise<{ success: boolean, error: string|null, code: string|null }>}
  */
-export const deleteAccount = async (password) => {
+export const deleteAccount = async (credential) => {
   try {
-    await api.delete('/api/auth/account', { password });
+    await api.delete('/api/auth/account', typeof credential === 'string' ? { password: credential } : { idToken: credential?.idToken });
     await api.clearTokens();
     return { success: true, error: null, code: null };
   } catch (error) {
@@ -130,6 +145,7 @@ export const deleteAccount = async (password) => {
 export default {
   registerUser,
   loginUser,
+  loginWithGoogle,
   getCurrentUser,
   logoutUser,
   updateUser,

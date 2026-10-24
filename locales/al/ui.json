@@ -26,6 +26,14 @@
     "settings": "Cilësimet"
   },
   "auth": {
+    "continueWithGoogle": "Vazhdo me Google",
+    "googleConsentPrefix": "Duke vazhduar me Google, pranoni ",
+    "googleConsentTerms": "Kushtet e Shërbimit",
+    "googleConsentMiddle": " dhe ",
+    "googleConsentPrivacy": "Politikën e Privatësisë",
+    "googleConsentSuffix": ".",
+    "googleLinkedTitle": "Llogaria u lidh me Google",
+    "googleLinkedMessage": "Për siguri, fjalëkalimi i vjetër u hoq dhe sesionet e tjera u mbyllën. Për të hyrë përsëri me email, përdorni \"Keni harruar fjalëkalimin?\" dhe vendosni një fjalëkalim të ri.",
     "login": "Kyçu",
     "register": "Regjistrohu",
     "welcomeBack": "Mirë se erdhe!",
@@ -182,6 +190,7 @@
     "confirmBulkDelete": "Jeni i sigurt që doni të fshini {{count}} probleme?"
   },
   "settings": {
+    "deleteAccountGoogleConfirm": "Konfirmoni me Google që ta fshini llogarinë.",
     "streak": "Seria",
     "deletePasswordLabel": "Shkruani fjalëkalimin për ta konfirmuar",
     "deletePasswordPlaceholder": "Fjalëkalimi juaj aktual",
@@ -380,6 +389,7 @@
     "upgradePremiumDesc": "10 analiza/ditë - Zgjidh më shumë probleme!"
   },
   "editProfile": {
+    "googleAccountHint": "U regjistruat me Google. Mund të shtoni një fjalëkalim për të hyrë edhe me email; emaili mund të ndryshohet vetëm pasi të vendosni fjalëkalim.",
     "confirmIdentity": "Konfirmoni identitetin",
     "currentPassword": "Fjalëkalimi aktual",
     "currentPasswordPlaceholder": "Shkruani fjalëkalimin aktual",
@@ -797,6 +807,13 @@
     "backspace": "Fshi"
   },
   "errors": {
+    "GOOGLE_AUTH_FAILED": "Hyrja me Google dështoi. Provoni përsëri.",
+    "INVALID_GOOGLE_TOKEN": "Hyrja me Google nuk u verifikua. Provoni përsëri.",
+    "GOOGLE_EMAIL_NOT_VERIFIED": "Emaili i llogarisë suaj Google nuk është i verifikuar.",
+    "GOOGLE_ACCOUNT_CONFLICT": "Ky email është i lidhur me një tjetër llogari Google.",
+    "GOOGLE_PLAY_SERVICES_UNAVAILABLE": "Google Play Services nuk janë të disponueshme në këtë pajisje.",
+    "GOOGLE_REAUTH_REQUIRED": "Konfirmoni me Google për të vazhduar.",
+    "SET_PASSWORD_FIRST": "Vendosni fillimisht një fjalëkalim para se ta ndryshoni emailin.",
     "NETWORK_ERROR": "Nuk ka lidhje me internetin. Kontrolloni lidhjen dhe provoni përsëri.",
     "TIMEOUT": "Serveri po vonohet të përgjigjet. Provoni përsëri.",
     "SERVER_ERROR": "Diçka shkoi keq nga ana jonë. Provoni përsëri më vonë.",

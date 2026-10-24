@@ -26,6 +26,14 @@
     "settings": "Settings"
   },
   "auth": {
+    "continueWithGoogle": "Continue with Google",
+    "googleConsentPrefix": "By continuing with Google, you agree to the ",
+    "googleConsentTerms": "Terms of Service",
+    "googleConsentMiddle": " and the ",
+    "googleConsentPrivacy": "Privacy Policy",
+    "googleConsentSuffix": ".",
+    "googleLinkedTitle": "Account linked with Google",
+    "googleLinkedMessage": "For your security, your old password was removed and other sessions were signed out. To sign in with email again, use \"Forgot Password?\" and set a new password.",
     "login": "Log In",
     "register": "Sign Up",
     "welcomeBack": "Welcome",
@@ -182,6 +190,7 @@
     "confirmBulkDelete": "Are you sure you want to delete {{count}} problems?"
   },
   "settings": {
+    "deleteAccountGoogleConfirm": "Confirm with Google to delete your account.",
     "streak": "Streak",
     "deletePasswordLabel": "Enter your password to confirm",
     "deletePasswordPlaceholder": "Your current password",
@@ -380,6 +389,7 @@
     "upgradePremiumDesc": "10 analyses/day - Solve more problems!"
   },
   "editProfile": {
+    "googleAccountHint": "You signed up with Google. You can add a password to also sign in with email; the email can only be changed once a password is set.",
     "confirmIdentity": "Confirm it's you",
     "currentPassword": "Current Password",
     "currentPasswordPlaceholder": "Enter your current password",
@@ -692,6 +702,13 @@
     "backspace": "Delete"
   },
   "errors": {
+    "GOOGLE_AUTH_FAILED": "Google sign-in failed. Please try again.",
+    "INVALID_GOOGLE_TOKEN": "Google sign-in could not be verified. Please try again.",
+    "GOOGLE_EMAIL_NOT_VERIFIED": "The email of your Google account is not verified.",
+    "GOOGLE_ACCOUNT_CONFLICT": "This email is linked to a different Google account.",
+    "GOOGLE_PLAY_SERVICES_UNAVAILABLE": "Google Play Services are not available on this device.",
+    "GOOGLE_REAUTH_REQUIRED": "Confirm with Google to continue.",
+    "SET_PASSWORD_FIRST": "Set a password before changing your email.",
     "NETWORK_ERROR": "No internet connection. Please check your connection and try again.",
     "TIMEOUT": "The server is taking too long to respond. Please try again.",
     "SERVER_ERROR": "Something went wrong on our side. Please try again later.",
