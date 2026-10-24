@@ -153,9 +153,9 @@
     "bestScore": "Beste: {{score}}%",
     "chooseMode": "Wie möchten Sie üben?",
     "modePractice": "Übung",
-    "modePracticeDesc": "Ohne Zeitlimit. Sie sehen sofort, ob jede Antwort richtig ist. Tipps: −{{xp}} XP.",
+    "modePracticeDesc": "Ohne Zeitlimit. Sie sehen sofort, ob jede Antwort richtig ist. Nutzen Sie den Tipp zur Lösung der Aufgabe.",
     "modeTest": "Test",
-    "modeTestDesc": "{{minutes}} Minuten für das ganze Quiz. Ergebnis und Erklärungen am Ende. Tipps: −{{xp}} XP.",
+    "modeTestDesc": "{{minutes}} Minuten für das ganze Quiz. Ergebnis und Erklärungen am Ende. Nutzen Sie den Tipp zur Lösung der Aufgabe.",
     "startMode": "Starten: {{mode}}"
   },
   "saved": {
@@ -303,7 +303,7 @@
     "toggleMinus": "Vorzeichen wechseln",
     "insertFraction": "Bruchstrich einfügen",
     "correctValue": "Richtige Antwort: {{answer}}",
-    "showHintCost": "Tipp anzeigen (−{{xp}} XP)",
+    "showHintCost": "Nutzen Sie den Tipp zur Lösung der Aufgabe",
     "skip": "Frage überspringen",
     "finishTest": "Test beenden",
     "timeLeft": "Verbleibende Zeit: {{time}}",

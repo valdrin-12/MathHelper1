@@ -11,7 +11,7 @@ export const formulaSections = [
       { name: { al: 'Katrori i ndryshimit', en: 'Square of a difference', de: 'Binomische Formel (2)' }, formula: '(a − b)² = a² − 2ab + b²' },
       { name: { al: 'Ndryshimi i katrorëve', en: 'Difference of squares', de: 'Binomische Formel (3)' }, formula: 'a² − b² = (a − b)(a + b)' },
       { name: { al: 'Formula kuadratike', en: 'Quadratic formula', de: 'Mitternachtsformel' }, formula: 'x₁,₂ = (−b ± √(b² − 4ac)) / 2a' },
-      { name: { al: 'Diskriminanti', en: 'Discriminant', de: 'Diskriminante' }, formula: 'Δ = b² − 4ac' },
+      { name: { al: 'Diskriminanti', en: 'Discriminant', de: 'Diskriminante' }, formula: 'D = b² − 4ac' },
       { name: { al: 'Formulat e Vietit', en: "Vieta's formulas", de: 'Satz von Vieta' }, formula: 'x₁ + x₂ = −b/a,   x₁ · x₂ = c/a' },
       { name: { al: 'Fuqitë', en: 'Powers', de: 'Potenzgesetze' }, formula: 'aᵐ · aⁿ = aᵐ⁺ⁿ,   (aᵐ)ⁿ = aᵐⁿ,   a⁻ⁿ = 1/aⁿ' },
       { name: { al: 'Logaritmet', en: 'Logarithms', de: 'Logarithmengesetze' }, formula: 'log(xy) = log x + log y,   log(xⁿ) = n·log x' },
@@ -34,7 +34,7 @@ export const formulaSections = [
   },
   {
     id: 'trigonometry',
-    icon: 'triangle',
+    icon: 'pulse',
     title: { al: 'Trigonometri', en: 'Trigonometry', de: 'Trigonometrie' },
     items: [
       { name: { al: 'Në trekëndëshin kënddrejtë', en: 'Right triangle', de: 'Rechtwinkliges Dreieck' }, formula: 'sin α = a/c,   cos α = b/c,   tg α = a/b' },

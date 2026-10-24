@@ -153,9 +153,9 @@
     "bestScore": "Më i miri: {{score}}%",
     "chooseMode": "Si dëshironi të ushtroheni?",
     "modePractice": "Ushtrim",
-    "modePracticeDesc": "Pa kohëmatës. Shihni menjëherë nëse përgjigja është e saktë. Ndihma: −{{xp}} XP.",
+    "modePracticeDesc": "Pa kohëmatës. Shihni menjëherë nëse përgjigja është e saktë. Përdorni ndihmën për zgjidhjen e problemit.",
     "modeTest": "Test",
-    "modeTestDesc": "{{minutes}} minuta për gjithë kuizin. Rezultati dhe shpjegimet në fund. Ndihma: −{{xp}} XP.",
+    "modeTestDesc": "{{minutes}} minuta për gjithë kuizin. Rezultati dhe shpjegimet në fund. Përdorni ndihmën për zgjidhjen e problemit.",
     "startMode": "Fillo: {{mode}}"
   },
   "saved": {
@@ -303,7 +303,7 @@
     "toggleMinus": "Ndrysho shenjën",
     "insertFraction": "Shto vijën e thyesës",
     "correctValue": "Përgjigja e saktë: {{answer}}",
-    "showHintCost": "Shfaq një ndihmë (−{{xp}} XP)",
+    "showHintCost": "Përdorni ndihmën për zgjidhjen e problemit",
     "skip": "Kalo pyetjen",
     "finishTest": "Përfundo testin",
     "timeLeft": "Koha e mbetur: {{time}}",

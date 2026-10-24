@@ -96,7 +96,7 @@ text('2x² = 8 (move/divide)', '2x^2 = 8', 'en', (r) => sameSet(r.extras.roots, 
 text('x² − x − 1 = 0 golden ratio', 'x^2 - x - 1 = 0', 'en', (r) => (r.answer.includes('(1 ± √5)/2') && near(r.extras.roots[1], 1.6180339887)) || r.answer);
 tool('tool quadratic a=2 b=−3 c=1', 'quadratic', { a: 2, b: -3, c: 1 }, 'en', (r) => (sameSet(r.extras.roots, [0.5, 1]) && r.extras.factored === '(2x − 1)(x − 1)') || JSON.stringify(r.extras));
 tool('tool quadratic a=0 → linear', 'quadratic', { a: 0, b: 2, c: -4 }, 'en', answerIs('x = 2'));
-text('quadratic al steps Δ', 'x^2-5x+6=0', 'al', (r) => r.steps.some((s) => s.startsWith('Formula e diskriminantit Δ = b² − 4ac')) || r.steps.join(' | '));
+text('quadratic al steps D', 'x^2-5x+6=0', 'al', (r) => r.steps.some((s) => s.startsWith('Formula e diskriminantit D = b² − 4ac')) || r.steps.join(' | '));
 
 // ---- higher degree -------------------------------------------------------------------------
 text('x³−6x²+11x−6=0', 'x^3-6x^2+11x-6=0', 'en', typeIs('polynomial', (r) => sameSet(r.extras.roots, [1, 2, 3]) || JSON.stringify(r.extras)));

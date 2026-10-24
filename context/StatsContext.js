@@ -54,19 +54,22 @@ export const StatsProvider = ({ children }) => {
   }, [offline, loadStats]);
 
   // Writes return true on success, false on failure (never throw), then reload stats.
-  const runWrite = async (fn) => {
+  // With `waitForReload: false` the caller is released as soon as the write succeeds
+  // and the stats refresh continues in the background.
+  const runWrite = async (fn, { waitForReload = true } = {}) => {
     try {
       await fn();
     } catch (e) {
       console.warn('Gabim në ruajtjen e stats:', e?.code || e?.message);
       return false;
     }
-    await loadStats();
+    if (waitForReload) await loadStats();
+    else loadStats();
     return true;
   };
 
   const recordCourseCompleted = (courseId, title) =>
-    runWrite(() => statsService.recordCourseCompleted(courseId, title));
+    runWrite(() => statsService.recordCourseCompleted(courseId, title), { waitForReload: false });
 
   const recordQuizCompleted = (quizId, title, score, total) =>
     runWrite(() => statsService.recordQuizCompleted(quizId, title, score, total));

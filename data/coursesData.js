@@ -15,7 +15,7 @@ const translationsMap = {
 // Category metadata (icons and colors are language-independent)
 export const mathCategories = [
   { id: 'algebra', icon: '∑', color: '#FF6B6B' },
-  { id: 'geometry', icon: '△', color: '#4ECDC4' },
+  { id: 'geometry', icon: 'π', color: '#4ECDC4' },
   { id: 'calculus', icon: '∫', color: '#45B7D1' },
   { id: 'statistics', icon: '📊', color: '#96CEB4' },
   { id: 'trigonometry', icon: '∿', color: '#FFEAA7' },

@@ -450,7 +450,7 @@ export const solvePolynomialEquation = (ctx, lang, original) => {
       const sf = surdForm(q.P, q.Q, q.m, lang);
       q.roots.forEach((r) => roots.push(r.value));
       exactTexts.push(sf.minus, sf.plus);
-      lines.push(`${f.poly.toString(lang)} = 0 ⇒ ${v} = ${sf.pm} (Δ = ${fmtNum(q.disc, lang)})`);
+      lines.push(`${f.poly.toString(lang)} = 0 ⇒ ${v} = ${sf.pm} (D = ${fmtNum(q.disc, lang)})`);
     } else {
       return fail('Polynomial has no rational roots - use AI');
     }

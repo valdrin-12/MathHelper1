@@ -98,7 +98,7 @@ export const courseContents_calculus_de = {
     lessons: [
       {
         title: 'Der Begriff der Ableitung',
-        theory: 'Die Ableitung von f an der Stelle a ist: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nSie misst die momentane Änderungsrate bzw. die Steigung der Tangente an der Stelle a.\n\nSchreibweisen: f\'(x), df/dx, Df, ẏ. Jede wird in bestimmten Zusammenhängen bevorzugt.\n\nDie Ableitung als Grenzwert des Differenzenquotienten: Δy/Δx → dy/dx für Δx→0.',
+        theory: 'Die Ableitung von f an der Stelle a ist: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nSie misst die momentane Änderungsrate bzw. die Steigung der Tangente an der Stelle a.\n\nSchreibweisen: f\'(x), df/dx, Df, ẏ. Jede wird in bestimmten Zusammenhängen bevorzugt.\n\nDie Ableitung als Grenzwert des Differenzenquotienten: [f(x+h) − f(x)]/h → dy/dx für h→0.',
         keyPoints: [
           'f\'(a) = lim [f(a+h)-f(a)]/h für h→0',
           'Ableitung = Steigung der Tangente',

@@ -153,9 +153,9 @@
     "bestScore": "Best: {{score}}%",
     "chooseMode": "How would you like to practise?",
     "modePractice": "Practice",
-    "modePracticeDesc": "No timer. See right away whether each answer is correct. Hints: −{{xp}} XP.",
+    "modePracticeDesc": "No timer. See right away whether each answer is correct. Use the hint to help solve the problem.",
     "modeTest": "Test",
-    "modeTestDesc": "{{minutes}} minutes for the whole quiz. Results and explanations at the end. Hints: −{{xp}} XP.",
+    "modeTestDesc": "{{minutes}} minutes for the whole quiz. Results and explanations at the end. Use the hint to help solve the problem.",
     "startMode": "Start: {{mode}}"
   },
   "saved": {
@@ -303,7 +303,7 @@
     "toggleMinus": "Toggle minus sign",
     "insertFraction": "Insert fraction bar",
     "correctValue": "Correct answer: {{answer}}",
-    "showHintCost": "Show a hint (−{{xp}} XP)",
+    "showHintCost": "Use the hint to help solve the problem",
     "skip": "Skip question",
     "finishTest": "Finish test",
     "timeLeft": "Time left: {{time}}",

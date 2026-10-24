@@ -98,7 +98,7 @@ export const courseContents_calculus = {
     lessons: [
       {
         title: 'Koncepti i Derivatit',
-        theory: 'Derivati i f te pika a është: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nKjo mat shkallën e ndryshimit të menjëhershme ose pjerrësinë e tangentit te a.\n\nNotacionet: f\'(x), df/dx, Df, ẏ. Secila ka kontekste ku preferohet.\n\nDerivati si limit i raportit të diferencave: Δy/Δx → dy/dx kur Δx→0.',
+        theory: 'Derivati i f te pika a është: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nKjo mat shkallën e ndryshimit të menjëhershme ose pjerrësinë e tangentit te a.\n\nNotacionet: f\'(x), df/dx, Df, ẏ. Secila ka kontekste ku preferohet.\n\nDerivati si limit i raportit të diferencave: [f(x+h) − f(x)]/h → dy/dx kur h→0.',
         keyPoints: [
           'f\'(a) = lim [f(a+h)-f(a)]/h kur h→0',
           'Derivati = pjerrësia e tangentit',

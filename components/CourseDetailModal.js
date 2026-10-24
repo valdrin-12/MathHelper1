@@ -127,14 +127,16 @@ export default function CourseDetailModal({ visible, course, onClose, onProgress
 
   const handleCompleteCourse = async () => {
     if (completing || courseCompleted) return;
+    // Optimistic: the button reacts the instant it is tapped; the save runs behind it
     setCompleting(true);
+    setCourseCompleted(true);
     const ok = await recordCourseCompleted(course.id, course.title);
     setCompleting(false);
     if (!ok) {
+      setCourseCompleted(false);
       showAlert(t('common.error'), t('courseContent.completeError'));
       return;
     }
-    setCourseCompleted(true);
     const title = course.title;
     // Close the course modal immediately, then show success alert
     onClose();
@@ -269,8 +271,9 @@ export default function CourseDetailModal({ visible, course, onClose, onProgress
                       onPress={() => togglePractice(i)}
                       activeOpacity={0.7}
                     >
+                      <Ionicons name={expandedPractice[i] ? 'chevron-up' : 'chevron-down'} size={16} color={tint} />
                       <Text style={[contentStyles.showSolutionText, { color: tint }]}>
-                        {expandedPractice[i] ? `▲ ${t('courseContent.hideSolution')}` : `▼ ${t('courseContent.showSolution')}`}
+                        {expandedPractice[i] ? t('courseContent.hideSolution') : t('courseContent.showSolution')}
                       </Text>
                     </TouchableOpacity>
                     {expandedPractice[i] && (
@@ -330,14 +333,17 @@ export default function CourseDetailModal({ visible, course, onClose, onProgress
             <TouchableOpacity
               style={[contentStyles.navButton, contentStyles.navButtonNext, contentStyles.completeButton]}
               onPress={handleCompleteCourse}
-              disabled={completing}
+              disabled={completing || courseCompleted}
               activeOpacity={0.7}
               accessibilityRole="button"
               accessibilityState={{ disabled: completing, busy: completing }}
             >
-              <Text style={contentStyles.navButtonNextText}>
-                {courseCompleted ? `✓ ${t('courseContent.completed')}` : `${t('courseContent.completeCourse')}`}
-              </Text>
+              <View style={contentStyles.navButtonInner}>
+                {courseCompleted ? <Ionicons name="checkmark-circle" size={20} color="#FFFFFF" /> : null}
+                <Text style={contentStyles.navButtonNextText}>
+                  {courseCompleted ? t('courseContent.completed') : t('courseContent.completeCourse')}
+                </Text>
+              </View>
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -863,8 +869,10 @@ const makeContentStyles = (colors) => StyleSheet.create({
   showSolutionBtn: {
     minHeight: 44,
     borderRadius: BORDER_RADIUS.sm,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    gap: 6,
   },
   showSolutionText: {
     ...TYPOGRAPHY.subheadBold,

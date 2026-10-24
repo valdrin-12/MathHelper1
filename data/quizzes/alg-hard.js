@@ -38,7 +38,7 @@ export default {
           "x₁ = 3, x₂ = −1/2",
           "x₁ = 3, x₂ = −1"
         ],
-        "explanation": "Δ = (−5)² − 4 · 2 · (−3) = 25 + 24 = 49. x = (5 ± 7)/4, pra x₁ = 12/4 = 3 dhe x₂ = −2/4 = −1/2. Faktorizimi: (2x + 1)(x − 3) = 0 ✓",
+        "explanation": "D = (−5)² − 4 · 2 · (−3) = 25 + 24 = 49. x = (5 ± 7)/4, pra x₁ = 12/4 = 3 dhe x₂ = −2/4 = −1/2. Faktorizimi: (2x + 1)(x − 3) = 0 ✓",
         "hint": "Llogaritni diskriminantin dhe kujdes me emëruesin 2a.",
         "whyWrong": [
           "Gabim shenje: keni përdorur +b në vend të −b në formulë.",
@@ -55,7 +55,7 @@ export default {
           "x₁ = 3, x₂ = −1/2",
           "x₁ = 3, x₂ = −1"
         ],
-        "explanation": "Δ = (−5)² − 4 · 2 · (−3) = 25 + 24 = 49. x = (5 ± 7)/4, so x₁ = 12/4 = 3 and x₂ = −2/4 = −1/2. Factored: (2x + 1)(x − 3) = 0 ✓",
+        "explanation": "D = (−5)² − 4 · 2 · (−3) = 25 + 24 = 49. x = (5 ± 7)/4, so x₁ = 12/4 = 3 and x₂ = −2/4 = −1/2. Factored: (2x + 1)(x − 3) = 0 ✓",
         "hint": "Compute the discriminant and be careful with the denominator 2a.",
         "whyWrong": [
           "Sign error: you used +b instead of −b in the formula.",
@@ -72,7 +72,7 @@ export default {
           "x₁ = 3, x₂ = −1/2",
           "x₁ = 3, x₂ = −1"
         ],
-        "explanation": "Δ = (−5)² − 4 · 2 · (−3) = 25 + 24 = 49. x = (5 ± 7)/4, also x₁ = 12/4 = 3 und x₂ = −2/4 = −1/2. Faktorisiert: (2x + 1)(x − 3) = 0 ✓",
+        "explanation": "D = (−5)² − 4 · 2 · (−3) = 25 + 24 = 49. x = (5 ± 7)/4, also x₁ = 12/4 = 3 und x₂ = −2/4 = −1/2. Faktorisiert: (2x + 1)(x − 3) = 0 ✓",
         "hint": "Berechnen Sie die Diskriminante und achten Sie auf den Nenner 2a.",
         "whyWrong": [
           "Vorzeichenfehler: In der Formel wurde +b statt −b verwendet.",
@@ -94,8 +94,8 @@ export default {
           "19",
           "49"
         ],
-        "explanation": "a = 2, b = −3, c = −5. Δ = (−3)² − 4 · 2 · (−5) = 9 + 40 = 49. Meqë Δ > 0, ekuacioni ka dy rrënjë reale të ndryshme.",
-        "hint": "Përdorni Δ = b² − 4ac dhe kujdesuni për shenjat e b-së dhe c-së.",
+        "explanation": "a = 2, b = −3, c = −5. D = (−3)² − 4 · 2 · (−5) = 9 + 40 = 49. Meqë D > 0, ekuacioni ka dy rrënjë reale të ndryshme.",
+        "hint": "Përdorni D = b² − 4ac dhe kujdesuni për shenjat e b-së dhe c-së.",
         "whyWrong": [
           "Keni marrë c = 5 në vend të −5: 9 − 40 = −31.",
           "Keni llogaritur (−3)² = −9; katrori është gjithmonë jonegativ.",
@@ -111,8 +111,8 @@ export default {
           "19",
           "49"
         ],
-        "explanation": "a = 2, b = −3, c = −5. Δ = (−3)² − 4 · 2 · (−5) = 9 + 40 = 49. Since Δ > 0, there are two distinct real roots.",
-        "hint": "Use Δ = b² − 4ac and watch the signs of b and c.",
+        "explanation": "a = 2, b = −3, c = −5. D = (−3)² − 4 · 2 · (−5) = 9 + 40 = 49. Since D > 0, there are two distinct real roots.",
+        "hint": "Use D = b² − 4ac and watch the signs of b and c.",
         "whyWrong": [
           "You took c = 5 instead of −5: 9 − 40 = −31.",
           "You computed (−3)² = −9; a square is never negative.",
@@ -128,8 +128,8 @@ export default {
           "19",
           "49"
         ],
-        "explanation": "a = 2, b = −3, c = −5. Δ = (−3)² − 4 · 2 · (−5) = 9 + 40 = 49. Da Δ > 0, gibt es zwei verschiedene reelle Lösungen.",
-        "hint": "Verwenden Sie Δ = b² − 4ac und achten Sie auf die Vorzeichen von b und c.",
+        "explanation": "a = 2, b = −3, c = −5. D = (−3)² − 4 · 2 · (−5) = 9 + 40 = 49. Da D > 0, gibt es zwei verschiedene reelle Lösungen.",
+        "hint": "Verwenden Sie D = b² − 4ac und achten Sie auf die Vorzeichen von b und c.",
         "whyWrong": [
           "c = 5 statt −5 verwendet: 9 − 40 = −31.",
           "Es wurde (−3)² = −9 gerechnet; ein Quadrat ist nie negativ.",
@@ -150,13 +150,13 @@ export default {
           "x = 2 ± 2√3",
           "x = 2 ± √5"
         ],
-        "explanation": "Δ = 16 − 4 = 12, √12 = 2√3. x = (4 ± 2√3)/2 = 2 ± √3. Kontroll (Viet): (2 + √3)(2 − √3) = 4 − 3 = 1 = c/a ✓",
-        "hint": "Llogaritni Δ, thjeshtoni √Δ dhe pjesëtoni të gjithë numëruesin me 2a.",
+        "explanation": "D = 16 − 4 = 12, √12 = 2√3. x = (4 ± 2√3)/2 = 2 ± √3. Kontroll (Viet): (2 + √3)(2 − √3) = 4 − 3 = 1 = c/a ✓",
+        "hint": "Llogaritni D, thjeshtoni √D dhe pjesëtoni të gjithë numëruesin me 2a.",
         "whyWrong": [
           null,
           "Gabim shenje: në formulë −b = 4, jo −4.",
           "Keni pjesëtuar me 2 vetëm 4-shin, jo edhe 2√3.",
-          "Keni llogaritur Δ = 16 + 4 = 20; duhet 16 − 4 = 12."
+          "Keni llogaritur D = 16 + 4 = 20; duhet 16 − 4 = 12."
         ]
       },
       "en": {
@@ -167,13 +167,13 @@ export default {
           "x = 2 ± 2√3",
           "x = 2 ± √5"
         ],
-        "explanation": "Δ = 16 − 4 = 12, √12 = 2√3. x = (4 ± 2√3)/2 = 2 ± √3. Check (Vieta): (2 + √3)(2 − √3) = 4 − 3 = 1 = c/a ✓",
-        "hint": "Compute Δ, simplify √Δ and divide the whole numerator by 2a.",
+        "explanation": "D = 16 − 4 = 12, √12 = 2√3. x = (4 ± 2√3)/2 = 2 ± √3. Check (Vieta): (2 + √3)(2 − √3) = 4 − 3 = 1 = c/a ✓",
+        "hint": "Compute D, simplify √D and divide the whole numerator by 2a.",
         "whyWrong": [
           null,
           "Sign error: in the formula −b = 4, not −4.",
           "You divided only the 4 by 2, not the 2√3 as well.",
-          "You computed Δ = 16 + 4 = 20; it should be 16 − 4 = 12."
+          "You computed D = 16 + 4 = 20; it should be 16 − 4 = 12."
         ]
       },
       "de": {
@@ -184,13 +184,13 @@ export default {
           "x = 2 ± 2√3",
           "x = 2 ± √5"
         ],
-        "explanation": "Δ = 16 − 4 = 12, √12 = 2√3. x = (4 ± 2√3)/2 = 2 ± √3. Probe (Vieta): (2 + √3)(2 − √3) = 4 − 3 = 1 = c/a ✓",
-        "hint": "Berechnen Sie Δ, vereinfachen Sie √Δ und teilen Sie den ganzen Zähler durch 2a.",
+        "explanation": "D = 16 − 4 = 12, √12 = 2√3. x = (4 ± 2√3)/2 = 2 ± √3. Probe (Vieta): (2 + √3)(2 − √3) = 4 − 3 = 1 = c/a ✓",
+        "hint": "Berechnen Sie D, vereinfachen Sie √D und teilen Sie den ganzen Zähler durch 2a.",
         "whyWrong": [
           null,
           "Vorzeichenfehler: In der Formel ist −b = 4, nicht −4.",
           "Nur die 4 wurde durch 2 geteilt, nicht auch 2√3.",
-          "Es wurde Δ = 16 + 4 = 20 gerechnet; richtig ist 16 − 4 = 12."
+          "Es wurde D = 16 + 4 = 20 gerechnet; richtig ist 16 − 4 = 12."
         ]
       }
     },
@@ -262,7 +262,7 @@ export default {
           "k = 18",
           "k = 6"
         ],
-        "explanation": "Δ = k² − 4 · 1 · 9 = k² − 36 = 0, pra k² = 36 dhe k = 6 (k > 0). Kontroll: x² + 6x + 9 = (x + 3)² ✓",
+        "explanation": "D = k² − 4 · 1 · 9 = k² − 36 = 0, pra k² = 36 dhe k = 6 (k > 0). Kontroll: x² + 6x + 9 = (x + 3)² ✓",
         "hint": "Kur ka një ekuacion kuadratik rrënjë të dyfishtë? Mendoni për diskriminantin.",
         "whyWrong": [
           "Keni marrë k = √9; kushti është k² = 4 · 9.",
@@ -279,7 +279,7 @@ export default {
           "k = 18",
           "k = 6"
         ],
-        "explanation": "Δ = k² − 4 · 1 · 9 = k² − 36 = 0, so k² = 36 and k = 6 (k > 0). Check: x² + 6x + 9 = (x + 3)² ✓",
+        "explanation": "D = k² − 4 · 1 · 9 = k² − 36 = 0, so k² = 36 and k = 6 (k > 0). Check: x² + 6x + 9 = (x + 3)² ✓",
         "hint": "When does a quadratic equation have a double root? Think about the discriminant.",
         "whyWrong": [
           "You took k = √9; the condition is k² = 4 · 9.",
@@ -296,7 +296,7 @@ export default {
           "k = 18",
           "k = 6"
         ],
-        "explanation": "Δ = k² − 4 · 1 · 9 = k² − 36 = 0, also k² = 36 und k = 6 (k > 0). Probe: x² + 6x + 9 = (x + 3)² ✓",
+        "explanation": "D = k² − 4 · 1 · 9 = k² − 36 = 0, also k² = 36 und k = 6 (k > 0). Probe: x² + 6x + 9 = (x + 3)² ✓",
         "hint": "Wann hat eine quadratische Gleichung eine doppelte Lösung? Denken Sie an die Diskriminante.",
         "whyWrong": [
           "Es wurde k = √9 genommen; die Bedingung lautet k² = 4 · 9.",
