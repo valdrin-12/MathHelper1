@@ -462,7 +462,7 @@ export const courseContents_base_de = {
         examples: [
           {
             example: 'Bestimme die Variablen, Konstanten und Koeffizienten in: 5x + 3y - 7',
-            solution: 'Variablen: x und y\nKonstante: 7 (der Term ohne Variable), Koeffizienten: 5 (vor x), 3 (vor y)\nDer Term -7 ist ein konstanter Term',
+            solution: 'Variablen: x und y\nKonstante: −7 (der Term ohne Variable), Koeffizienten: 5 (vor x), 3 (vor y)\nDer Term −7 ist ein konstanter Term',
           },
           {
             example: 'Schreibe als algebraischen Ausdruck: "die Haelfte von x plus vier"',

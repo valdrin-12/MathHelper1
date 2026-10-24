@@ -26,6 +26,7 @@ RESPONSE FORMAT (VERY IMPORTANT - use these EXACT English markers):
 RULES:
 - Respond in ${lang} (the actual content must be in ${lang}, but keep the markers ANSWER:, STEPS:, EXPLANATION: in English)
 - Use correct mathematical symbols (×, ÷, =, ≠, ≤, ≥, π, √, ∫, Σ, etc.)
+- In ANSWER write the result in a form that can be checked automatically: for equations give each solution as "x = value" (e.g. x = 2, x = 3), for inequalities "x > 3" or an interval, for derivatives and integrals the resulting expression, and for plain calculations the number
 - Explain concepts in a simple and understandable way
 - If the image does not contain a clear math problem, say so in ${lang}
 - If the image is too unclear, say so in ${lang}
@@ -61,6 +62,7 @@ RESPONSE FORMAT (VERY IMPORTANT - use these EXACT English markers):
 RULES:
 - Respond in ${lang} (the actual content must be in ${lang}, but keep the markers ANSWER:, STEPS:, EXPLANATION: in English)
 - Use correct mathematical symbols (×, ÷, =, ≠, ≤, ≥, π, √, ∫, Σ, etc.)
+- In ANSWER write the result in a form that can be checked automatically: for equations give each solution as "x = value" (e.g. x = 2, x = 3), for inequalities "x > 3" or an interval, for derivatives and integrals the resulting expression, and for plain calculations the number
 - Explain concepts in a simple and understandable way
 - If the text does not contain a clear math problem, say so in ${lang}
 

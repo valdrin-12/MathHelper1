@@ -462,7 +462,7 @@ export const courseContents_base_en = {
         examples: [
           {
             example: 'Identify the variables, constants, and coefficients in: 5x + 3y - 7',
-            solution: 'Variables: x and y\nConstant: 7 (the term without a variable), Coefficients: 5 (before x), 3 (before y)\nThe term -7 is a constant term',
+            solution: 'Variables: x and y\nConstant: −7 (the term without a variable), Coefficients: 5 (before x), 3 (before y)\nThe term −7 is a constant term',
           },
           {
             example: 'Write as an algebraic expression: "half of x plus four"',

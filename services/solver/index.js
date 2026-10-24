@@ -285,3 +285,6 @@ export const solveWithTool = async (tool, input = {}, lang = 'al') => {
 };
 
 export const SUPPORTED_TOOLS = ['quadratic', 'system', 'derivative', 'integral', 'simplify', 'expand', 'factor', 'fraction', 'percent', 'gcdlcm', 'primeFactors', 'matrix', 'statistics', 'inequality'];
+
+// Shared with the answer verifier (services/verifyAnswer.js)
+export { detectDerivative, detectIntegral, SOLVE_PREFIX, KEYWORD_TOOLS, cleanExpr };
