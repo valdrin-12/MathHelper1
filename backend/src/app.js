@@ -34,6 +34,12 @@ app.post('/api/paddle/webhook',
 app.use(helmet({
   contentSecurityPolicy: false,
   crossOriginEmbedderPolicy: false,
+  // Sign in with Google (Google Identity Services) needs both of these:
+  // - the Referer, so Google can tell which origin the page belongs to; "no-referrer" (helmet's default)
+  //   makes it answer "The given origin is not allowed for the given client ID"
+  // - window.opener in its sign-in popup; "same-origin" cuts it off
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
 }));
 const ALLOWED_ORIGINS = [
   'https://mathhelper.online',
