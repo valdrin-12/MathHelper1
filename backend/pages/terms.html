@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <title>MathHelper - Terms of Service</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Matches the app's iOS design system (theme/constants.js); light + dark */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #006FE6;
+      --primary-bg: #EBF3FF;
+      --text: #000000;
+      --text-secondary: #3A3A3C;
+      --text-muted: #8E8E93;
+      --bg: #F2F2F7;
+      --surface: #FFFFFF;
+      --segment-track: rgba(118,118,128,0.12);
+      --segment-active: #FFFFFF;
+      --separator: rgba(60,60,67,0.18);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #0A84FF;
+        --primary-bg: rgba(10,132,255,0.16);
+        --text: #FFFFFF;
+        --text-secondary: #EBEBF5;
+        --text-muted: #8E8E93;
+        --bg: #000000;
+        --surface: #1C1C1E;
+        --segment-track: #2C2C2E;
+        --segment-active: #636366;
+        --separator: rgba(84,84,88,0.6);
+      }
+    }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-wrap: break-word;
+    }
+
+    /* NAV */
+    nav {
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid var(--separator);
+      padding: 12px 20px;
+      padding-top: max(12px, env(safe-area-inset-top));
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px; min-width: 0;
+      text-decoration: none; color: var(--text);
+      font-size: 17px; font-weight: 600;
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    /* Language switcher as an iOS segmented control */
+    .lang-row {
+      display: flex; flex-shrink: 0;
+      background: var(--segment-track); border-radius: 9px; padding: 2px;
+    }
+    .lang-btn {
+      padding: 6px 12px; border-radius: 7px; border: none; background: transparent;
+      font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+      color: var(--text); min-height: 32px;
+    }
+    .lang-btn.active {
+      background: var(--segment-active); font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+    }
+    .lang-btn .short { display: none; }
+
+    /* CONTENT */
+    .container {
+      max-width: 720px; margin: 0 auto;
+      padding: 40px 20px 80px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(80px, env(safe-area-inset-bottom));
+    }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-bg);
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; color: var(--primary);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(28px, 7vw, 34px);
+      font-weight: 700; color: var(--text);
+      letter-spacing: 0.37px; margin-bottom: 6px; line-height: 1.2;
+      hyphens: auto; -webkit-hyphens: auto;
+    }
+    .last-updated {
+      font-size: 15px; color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .section {
+      background: var(--surface);
+      border-radius: 12px; padding: 16px;
+      margin-bottom: 12px;
+    }
+    .section h2 {
+      font-size: 17px; font-weight: 600; line-height: 1.3;
+      color: var(--text); margin-bottom: 8px;
+      display: flex; align-items: flex-start; gap: 8px;
+      hyphens: auto; -webkit-hyphens: auto;
+    }
+    .section h2 .icon { font-size: 18px; line-height: 1.3; }
+    .section p {
+      font-size: 15px; color: var(--text-secondary);
+      margin-bottom: 8px; line-height: 1.55;
+    }
+    .section p:last-child { margin-bottom: 0; }
+    .section ul { list-style: none; margin: 8px 0; }
+    .section ul li {
+      font-size: 15px; color: var(--text-secondary);
+      padding: 4px 0 4px 18px; position: relative; line-height: 1.5;
+    }
+    .section ul li::before {
+      content: '•'; color: var(--primary);
+      position: absolute; left: 2px; font-weight: 700;
+    }
+    .highlight-box {
+      background: var(--primary-bg);
+      border-radius: 10px;
+      padding: 12px 14px; margin-top: 12px;
+      font-size: 14px; color: var(--text);
+      font-weight: 500;
+    }
+    .contact-box {
+      background: var(--surface);
+      border-radius: 12px; padding: 16px;
+      margin-top: 24px;
+    }
+    .contact-box h2 { color: var(--text); font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .contact-box p { color: var(--text-secondary); font-size: 15px; }
+    .contact-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+
+    .legal-links { margin-top: 20px; text-align: center; font-size: 15px; }
+    .legal-links a { color: var(--primary); font-weight: 600; text-decoration: none; }
+    .section a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .container { padding-top: 24px; }
+      nav { padding-left: 16px; padding-right: 16px; }
+      .lang-btn { padding: 6px 10px; }
+      .lang-btn .full { display: none; }
+      .lang-btn .short { display: inline; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">&#x1F4D0;</div>
+    MathHelper
+  </a>
+  <div class="lang-row">
+    <button class="lang-btn active" data-lang="al" aria-label="Shqip"><span class="full">Shqip</span><span class="short">AL</span></button>
+    <button class="lang-btn" data-lang="en" aria-label="English"><span class="full">English</span><span class="short">EN</span></button>
+    <button class="lang-btn" data-lang="de" aria-label="Deutsch"><span class="full">Deutsch</span><span class="short">DE</span></button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-badge">&#x1F4C4; <span id="badgeText">Kushtet e Shërbimit</span></div>
+  <h1 id="pageTitle">Kushtet e Shërbimit</h1>
+  <p class="last-updated" id="lastUpdated">Përditësuar: Tetor 2026</p>
+
+  <div id="content"></div>
+  <p class="legal-links"><a href="/privacy" id="privacyLink">Politika e Privatësisë</a></p>
+</div>
+
+<script>
+const EMAIL = 'EnoDevSupport@proton.me';
+
+const T = {
+  al: {
+    badge: 'Kushtet e Shërbimit',
+    title: 'Kushtet e Shërbimit',
+    updated: 'Përditësuar: Tetor 2026',
+    privacy: 'Politika e Privatësisë',
+    sections: [
+      {
+        icon: '📋',
+        title: '1. Hyrje dhe pranimi',
+        body: `Këto Kushte të Shërbimit ("Kushtet") rregullojnë përdorimin tuaj të MathHelper ("ne"): aplikacioneve celulare, faqes mathhelper.online dhe të gjitha shërbimeve të ndërlidhura. Duke krijuar një llogari ose duke përdorur MathHelper, ju pranoni këto Kushte. Nëse nuk jeni dakord, ju lutemi mos e përdorni shërbimin.`,
+        note: 'MathHelper është shoqërues mësimi. Ai është bërë që t’ju ndihmojë të kuptoni si zgjidhet një problem, jo për të mashtruar në provime ose detyra të vlerësuara.'
+      },
+      {
+        icon: '👤',
+        title: '2. Llogaria juaj',
+        list: [
+          'Duhet të jeni të paktën 13 vjeç. Nëse jeni nën moshën madhore në vendin ku jetoni, ju duhet leja e prindit ose kujdestarit ligjor, i cili është përgjegjës për përdorimin tuaj të MathHelper.',
+          'Jepni informacion të saktë gjatë regjistrimit dhe mbajini të fshehta të dhënat e hyrjes.',
+          'Ju jeni përgjegjës për gjithçka që ndodh përmes llogarisë suaj. Na lajmëroni menjëherë nëse mendoni se dikush tjetër po e përdor.',
+          'Një llogari është për një person. Nuk lejohet ta shisni, ta ndani ose ta transferoni.',
+          'Kostot e lidhjes me internetin i paguani ju.'
+        ]
+      },
+      {
+        icon: '🤖',
+        title: '3. Përgjigjet e AI dhe përdorimi edukativ',
+        body: `MathHelper i zgjidh problemet me një llogaritës offline në pajisjen tuaj, me Wolfram Alpha dhe me Google Gemini AI. Përgjigjet e krijuara nga AI mund të jenë të gabuara ose jo të plota.`,
+        list: [
+          'Kur është e mundur, aplikacioni i kontrollon përgjigjet me një motor matematikor (MathJS) dhe ju tregon nëse arriti t’i konfirmojë. Ky kontroll është ndihmë, jo garanci, dhe disa probleme nuk mund të kontrollohen.',
+          'Rezultatet e rëndësishme gjithmonë kontrollojini me mësuesin ose me librin shkollor. MathHelper nuk e zëvendëson mësuesin.',
+          'Ju jeni përgjegjës për mënyrën si i përdorni rezultatet, përfshirë respektimin e rregullave të shkollës suaj për detyrat dhe provimet.',
+          'Fotoja ose teksti që dërgoni u shkon këtyre shërbimeve vetëm për të zgjidhur problemin tuaj, siç përshkruhet në Politikën tonë të Privatësisë.'
+        ]
+      },
+      {
+        icon: '💳',
+        title: '4. Përdorimi falas, Premium dhe pagesat',
+        body: `Llogaritë falas kanë një numër të kufizuar analizash AI (aktualisht 3 gjithsej); llogaritë Premium kanë më shumë (aktualisht 10 në ditë) dhe qasje në të gjitha kurset dhe kuizet. Llogaritësi offline, grafiku dhe fleta e formulave nuk i përdorin këto limite. Mund t’i ndryshojmë limitet dhe veçoritë, dhe për ndryshime të rëndësishme do t’ju njoftojmë.`,
+        list: [
+          'Në faqen e internetit, pagesat i përpunon Paddle, që vepron si shitës zyrtar (merchant of record). Paddle e tarifon çmimin që shihni gjatë pagesës, bashkë me taksat e zbatueshme, dhe ju dërgon faturën. Në aplikacione, pagesat i përpunon Google Play ose Apple App Store.',
+          'Abonimet rinovohen automatikisht deri sa t’i anuloni. Një provë falas, nëse ofrohet, kthehet në abonim me pagesë kur mbaron, përveç nëse e anuloni para saj.',
+          'Mund të anuloni në çdo kohë: në faqen e internetit përmes "Menaxho abonimin" te Cilësimet; në aplikacione përmes abonimeve tuaja në Google Play ose App Store. Premium e mbani deri në fund të periudhës që keni paguar.',
+          'Rimbursimet ndjekin politikat e Paddle, Google Play ose App Store, dhe të drejtat që keni si konsumator (p.sh. e drejta e tërheqjes në BE/EEA, aty ku zbatohet).',
+          'Para çdo rritjeje të çmimit do t’ju njoftojmë të paktën 30 ditë përpara.'
+        ]
+      },
+      {
+        icon: '©️',
+        title: '5. Përmbajtja jonë',
+        body: `E gjithë përmbajtja e MathHelper, kurset, kuizet, dizajni dhe softueri janë pronë e MathHelper ose e licencuesve të tij. Mund ta përdorni shërbimin për mësim personal, jo komercial.`,
+        list: [
+          'Nuk lejohet të kopjoni, shpërndani ose shisni përmbajtjen tonë',
+          'Nuk lejohet të bëni inxhinieri të kundërt, ta zbërtheni ose të përpiqeni të nxirrni kodin burimor',
+          'Nuk lejohet të krijoni produkte konkurruese me të',
+          'Nuk lejohet të përdorni robotë, skraperë ose mjete të tjera automatike për të nxjerrë përmbajtje',
+          'Lidhjet te faqet e palëve të treta janë vetëm për referim dhe ne nuk jemi përgjegjës për to.'
+        ]
+      },
+      {
+        icon: '📷',
+        title: '6. Përmbajtja që dërgoni ju',
+        body: `"Përmbajtja juaj" janë problemet, fotot, shënimet dhe materialet e tjera që dërgoni. Pronësia mbetet e juaja. Na jepni një licencë jo-ekskluzive dhe pa honorar për t’i përpunuar, ruajtur dhe shfaqur sa nevojitet për të ofruar shërbimin dhe për ta përmirësuar. Si i trajtojmë fotot është shpjeguar në <a href="/privacy">Politikën e Privatësisë</a>.`,
+        list: [
+          'Mos dërgoni përmbajtje të paligjshme, shpifëse, obscene ose ngacmuese',
+          'Mos dërgoni përmbajtje që cënon të drejtat e të tjerëve'
+        ]
+      },
+      {
+        icon: '🚫',
+        title: '7. Sjellja e ndaluar',
+        list: [
+          'Mos u shtirni si përdorues ose organizata të tjera',
+          'Mos dërgoni kod të dëmshëm, viruse ose malware',
+          'Mos ngacmoni, abuzoni ose kërcënoni njerëz të tjerë',
+          'Mos ndërhyni në funksionimin e shërbimit, mos e mbingarkoni dhe mos e provoni sigurinë e tij',
+          'Mos mblidhni të dhëna të përdoruesve të tjerë pa leje',
+          'Mos përdorni mjete automatike për kërkesat te veçoritë e AI, dhe mos u përpiqni të anashkaloni limitet ose pagesën'
+        ]
+      },
+      {
+        icon: '⏹️',
+        title: '8. Pezullimi dhe mbyllja e llogarisë',
+        body: `Mund ta ndaloni përdorimin e MathHelper në çdo kohë dhe të kërkoni fshirjen e llogarisë dhe të dhënave tuaja me email te ${EMAIL}; i fshijmë brenda 30 ditëve. Mund ta pezullojmë ose mbyllim një llogari që i shkel rëndë ose vazhdimisht këto Kushte, ose kur e kërkon ligji. Abonimet me pagesë trajtohen siç përshkruhet në pikën 4.`
+      },
+      {
+        icon: '⚖️',
+        title: '9. Garancitë dhe përgjegjësia',
+        body: `Nëse jeni konsumator në BE/EEA, ruani garancitë ligjore që zbatohen për përmbajtjen dhe shërbimet dixhitale, përfshirë për defekte, deri në dy vjet aty ku e parashikon ligji.`,
+        list: [
+          'MathHelper ofrohet "siç është" dhe "siç disponohet". Punojmë për cilësinë, por nuk premtojmë që do të jetë pa ndërprerje ose që rezultatet janë pa gabime.',
+          'Nuk jemi përgjegjës për dëme të tërthorta ose pasuese, as për fitime të humbura, përfshirë ato që vijnë nga mbështetja te një rezultat i gabuar.',
+          'Përgjegjësia jonë totale ndaj jush kufizohet në tarifat që na keni paguar.',
+          'Asgjë këtu nuk i heq të drejtat që keni sipas ligjit të detyrueshëm të konsumatorit dhe nuk kufizon përgjegjësi që nuk mund të kufizohen me ligj (p.sh. për dashje ose për vdekje dhe lëndim trupor).'
+        ]
+      },
+      {
+        icon: '🔄',
+        title: '10. Ndryshimet e Kushteve',
+        body: `Mund t’i përditësojmë këto Kushte, p.sh. kur shtojmë veçori ose kur ndryshon ligji. Për ndryshime të rëndësishme do t’ju njoftojmë në aplikacion ose me email. Nëse vazhdoni ta përdorni MathHelper pasi ndryshimet të hyjnë në fuqi, i pranoni Kushtet e përditësuara; nëse nuk jeni dakord, ndaloni përdorimin dhe fshijeni llogarinë.`
+      },
+      {
+        icon: '🔒',
+        title: '11. Privatësia dhe kontakti',
+        body: `Si i trajtojmë të dhënat tuaja është përshkruar në <a href="/privacy">Politikën e Privatësisë</a>. Për pyetje rreth këtyre Kushteve, raportim të përmbajtjes së pahijshme ose ankesa për të drejtën e autorit, shkruani te ${EMAIL}. Për ankesa të të drejtës së autorit, shkruani emrin tuaj, përshkrimin e materialit dhe ku shfaqet, dhe konfirmimin që keni të drejtat.`
+      }
+    ],
+    contact: {
+      title: 'Keni pyetje?',
+      body: 'Për çdo pyetje lidhur me këto Kushte, na kontaktoni:'
+    }
+  },
+
+  en: {
+    badge: 'Terms of Service',
+    title: 'Terms of Service',
+    updated: 'Last updated: October 2026',
+    privacy: 'Privacy Policy',
+    sections: [
+      {
+        icon: '📋',
+        title: '1. Introduction and acceptance',
+        body: `These Terms of Service ("Terms") govern your use of MathHelper ("we", "us"): the mobile apps, the website at mathhelper.online and all related services. By creating an account or using MathHelper you agree to these Terms. If you do not agree, please do not use the service.`,
+        note: 'MathHelper is a learning companion. It is meant to help you understand how a problem is solved, not to help you cheat on exams or graded work.'
+      },
+      {
+        icon: '👤',
+        title: '2. Your account',
+        list: [
+          'You must be at least 13 years old. If you are under the age of majority where you live, you need the permission of a parent or legal guardian, who is responsible for your use of MathHelper.',
+          'Give accurate information when you register and keep your login details secret.',
+          'You are responsible for everything that happens under your account. Tell us at once if you think someone else is using it.',
+          'One account is for one person. You may not sell, share or transfer it.',
+          'You pay your own internet and data costs.'
+        ]
+      },
+      {
+        icon: '🤖',
+        title: '3. AI answers and educational use',
+        body: `MathHelper solves problems with an offline calculator on your device, Wolfram Alpha and Google Gemini AI. Answers produced by AI can be wrong or incomplete.`,
+        list: [
+          'Where possible the app re-checks answers with a mathematical engine (MathJS) and tells you whether it could confirm them. This check is an aid, not a guarantee, and some problems cannot be checked.',
+          'Always verify important results with your teacher or textbook. MathHelper does not replace a teacher.',
+          'You are responsible for how you use the results, including following your school’s rules on homework and exams.',
+          'A photo or text you submit is sent to these services only to solve your problem, as described in our Privacy Policy.'
+        ]
+      },
+      {
+        icon: '💳',
+        title: '4. Free use, Premium and payments',
+        body: `Free accounts include a limited number of AI analyses (currently 3 in total); Premium accounts get more (currently 10 per day) and access to all courses and quizzes. The offline calculator, graphs and formula sheet do not use these limits. We may change limits and features and will give notice of significant changes.`,
+        list: [
+          'On the website, payments are processed by Paddle, which acts as the seller of record. Paddle charges the price shown at checkout, including any applicable taxes, and sends your receipt. In the apps, payments are processed by Google Play or the Apple App Store.',
+          'Subscriptions renew automatically until you cancel. A free trial, if offered, turns into a paid subscription when it ends unless you cancel before.',
+          'You can cancel at any time: on the website through "Manage subscription" in Settings; in the apps through your Google Play or App Store subscriptions. You keep Premium until the end of the period you paid for.',
+          'Refunds follow the policies of Paddle, Google Play or the App Store, and the statutory rights you have as a consumer (for example the right of withdrawal in the EU/EEA, where it applies).',
+          'We will give at least 30 days’ notice before a price increase.'
+        ]
+      },
+      {
+        icon: '©️',
+        title: '5. Our content',
+        body: `All MathHelper content, courses, quizzes, designs and software belong to MathHelper or its licensors. You may use the service for personal, non-commercial learning.`,
+        list: [
+          'You may not copy, distribute or sell our content',
+          'You may not reverse engineer, decompile or try to extract the source code',
+          'You may not build competing products from it',
+          'You may not use bots, scrapers or other automated tools to extract content',
+          'Links to third-party websites are for reference only and we are not responsible for them.'
+        ]
+      },
+      {
+        icon: '📷',
+        title: '6. Content you submit',
+        body: `"Your content" means the problems, photos, notes and other material you submit. You keep ownership of it. You give us a non-exclusive, royalty-free licence to process, store and display it as needed to run the service and to improve it. How photos are handled is explained in the <a href="/privacy">Privacy Policy</a>.`,
+        list: [
+          'Do not submit content that is unlawful, defamatory, obscene or harassing',
+          'Do not submit content that infringes the rights of others'
+        ]
+      },
+      {
+        icon: '🚫',
+        title: '7. Prohibited conduct',
+        list: [
+          'Do not impersonate other users or organisations',
+          'Do not send malicious code, viruses or malware',
+          'Do not harass, abuse or threaten other people',
+          'Do not interfere with the service, overload it or probe its security',
+          'Do not collect other users’ data without permission',
+          'Do not use automated means to send requests to the AI features, and do not try to get around usage limits or payment'
+        ]
+      },
+      {
+        icon: '⏹️',
+        title: '8. Suspension and ending your account',
+        body: `You can stop using MathHelper at any time and ask us to delete your account and data by emailing ${EMAIL}; we delete them within 30 days. We may suspend or close an account that seriously or repeatedly breaks these Terms, or when the law requires it. Paid subscriptions are handled as described in section 4.`
+      },
+      {
+        icon: '⚖️',
+        title: '9. Warranties and liability',
+        body: `If you are a consumer in the EU/EEA, you keep the statutory guarantees that apply to digital content and services, including for defects, for up to two years where the law provides.`,
+        list: [
+          'MathHelper is provided "as is" and "as available". We work hard on quality, but we do not promise that it will be uninterrupted or that results are free of errors.',
+          'We are not liable for indirect or consequential losses or lost profits, including from relying on an incorrect result.',
+          'Our total liability to you is limited to the fees you have paid us.',
+          'Nothing in these Terms removes rights you have under mandatory consumer law or limits liability that cannot be limited by law (for example for intent, or for death or personal injury).'
+        ]
+      },
+      {
+        icon: '🔄',
+        title: '10. Changes to these Terms',
+        body: `We may update these Terms, for example when we add features or when the law changes. We will notify you in the app or by email of significant changes. If you keep using MathHelper after the changes take effect, you accept the updated Terms; if you do not agree, stop using the service and delete your account.`
+      },
+      {
+        icon: '🔒',
+        title: '11. Privacy and contact',
+        body: `How we handle your data is described in our <a href="/privacy">Privacy Policy</a>. For questions about these Terms, reports of inappropriate content or copyright complaints, write to ${EMAIL}. For copyright complaints please include your name, a description of the material and where it appears, and confirmation that you hold the rights.`
+      }
+    ],
+    contact: {
+      title: 'Questions?',
+      body: 'For any question about these Terms, contact us:'
+    }
+  },
+
+  de: {
+    badge: 'Nutzungsbedingungen',
+    title: 'Nutzungsbedingungen',
+    updated: 'Zuletzt aktualisiert: Oktober 2026',
+    privacy: 'Datenschutzrichtlinie',
+    sections: [
+      {
+        icon: '📋',
+        title: '1. Einführung und Zustimmung',
+        body: `Diese Nutzungsbedingungen ("Bedingungen") regeln Ihre Nutzung von MathHelper ("wir"): der mobilen Apps, der Website mathhelper.online und aller damit verbundenen Dienste. Mit der Erstellung eines Kontos oder der Nutzung von MathHelper stimmen Sie diesen Bedingungen zu. Wenn Sie nicht einverstanden sind, nutzen Sie den Dienst bitte nicht.`,
+        note: 'MathHelper ist ein Lernbegleiter. Er soll Ihnen helfen zu verstehen, wie eine Aufgabe gelöst wird, und nicht dabei, bei Prüfungen oder benoteten Arbeiten zu täuschen.'
+      },
+      {
+        icon: '👤',
+        title: '2. Ihr Konto',
+        list: [
+          'Sie müssen mindestens 13 Jahre alt sein. Sind Sie an Ihrem Wohnort noch nicht volljährig, benötigen Sie die Erlaubnis eines Elternteils oder gesetzlichen Vertreters, der für Ihre Nutzung von MathHelper verantwortlich ist.',
+          'Machen Sie bei der Registrierung richtige Angaben und halten Sie Ihre Zugangsdaten geheim.',
+          'Sie sind für alles verantwortlich, was über Ihr Konto geschieht. Informieren Sie uns sofort, wenn Sie vermuten, dass jemand anderes es nutzt.',
+          'Ein Konto gehört einer Person. Sie dürfen es nicht verkaufen, teilen oder übertragen.',
+          'Die Kosten für Internet und Datenverbindung tragen Sie selbst.'
+        ]
+      },
+      {
+        icon: '🤖',
+        title: '3. KI-Antworten und Nutzung zum Lernen',
+        body: `MathHelper löst Aufgaben mit einem Offline-Rechner auf Ihrem Gerät, mit Wolfram Alpha und mit Google Gemini KI. Von KI erzeugte Antworten können falsch oder unvollständig sein.`,
+        list: [
+          'Wo möglich, prüft die App Antworten mit einer mathematischen Engine (MathJS) nach und zeigt Ihnen, ob sie bestätigt werden konnten. Diese Prüfung ist eine Hilfe, keine Garantie, und manche Aufgaben lassen sich nicht prüfen.',
+          'Prüfen Sie wichtige Ergebnisse immer mit Ihrer Lehrkraft oder Ihrem Lehrbuch. MathHelper ersetzt keine Lehrkraft.',
+          'Sie sind dafür verantwortlich, wie Sie die Ergebnisse verwenden, einschließlich der Regeln Ihrer Schule für Hausaufgaben und Prüfungen.',
+          'Ein Foto oder Text, den Sie einreichen, wird nur zum Lösen Ihrer Aufgabe an diese Dienste gesendet, wie in unserer Datenschutzrichtlinie beschrieben.'
+        ]
+      },
+      {
+        icon: '💳',
+        title: '4. Kostenlose Nutzung, Premium und Zahlungen',
+        body: `Kostenlose Konten enthalten eine begrenzte Anzahl an KI-Analysen (derzeit insgesamt 3); Premium-Konten erhalten mehr (derzeit 10 pro Tag) sowie Zugang zu allen Kursen und Quiz. Der Offline-Rechner, die Graphen und die Formelsammlung unterliegen diesen Limits nicht. Wir können Limits und Funktionen ändern und kündigen wesentliche Änderungen an.`,
+        list: [
+          'Auf der Website werden Zahlungen von Paddle abgewickelt, das als Verkäufer im Rechtssinne (Merchant of Record) auftritt. Paddle berechnet den an der Kasse angezeigten Preis einschließlich anfallender Steuern und sendet Ihnen die Rechnung. In den Apps werden Zahlungen über Google Play oder den Apple App Store abgewickelt.',
+          'Abonnements verlängern sich automatisch, bis Sie kündigen. Eine kostenlose Testphase, falls angeboten, geht nach ihrem Ende in ein kostenpflichtiges Abonnement über, es sei denn, Sie kündigen vorher.',
+          'Sie können jederzeit kündigen: auf der Website über "Abonnement verwalten" in den Einstellungen, in den Apps über Ihre Abonnements bei Google Play oder im App Store. Premium bleibt bis zum Ende des bezahlten Zeitraums bestehen.',
+          'Erstattungen richten sich nach den Richtlinien von Paddle, Google Play oder dem App Store sowie nach Ihren gesetzlichen Verbraucherrechten (z. B. dem Widerrufsrecht in der EU/im EWR, soweit es gilt).',
+          'Vor einer Preiserhöhung informieren wir Sie mindestens 30 Tage im Voraus.'
+        ]
+      },
+      {
+        icon: '©️',
+        title: '5. Unsere Inhalte',
+        body: `Alle Inhalte, Kurse, Quiz, Designs und die Software von MathHelper gehören MathHelper oder seinen Lizenzgebern. Sie dürfen den Dienst für persönliches, nicht kommerzielles Lernen nutzen.`,
+        list: [
+          'Sie dürfen unsere Inhalte nicht kopieren, verbreiten oder verkaufen',
+          'Sie dürfen den Quellcode nicht zurückentwickeln, dekompilieren oder auszulesen versuchen',
+          'Sie dürfen daraus keine Konkurrenzprodukte entwickeln',
+          'Sie dürfen keine Bots, Scraper oder andere automatisierte Werkzeuge einsetzen, um Inhalte auszulesen',
+          'Links zu Websites Dritter dienen nur als Hinweis; wir sind für sie nicht verantwortlich.'
+        ]
+      },
+      {
+        icon: '📷',
+        title: '6. Von Ihnen eingereichte Inhalte',
+        body: `"Ihre Inhalte" sind die Aufgaben, Fotos, Notizen und anderes Material, das Sie einreichen. Sie bleiben Eigentümer. Sie räumen uns eine nicht ausschließliche, unentgeltliche Lizenz ein, sie zu verarbeiten, zu speichern und anzuzeigen, soweit es für den Betrieb und die Verbesserung des Dienstes nötig ist. Wie Fotos behandelt werden, erklärt die <a href="/privacy">Datenschutzrichtlinie</a>.`,
+        list: [
+          'Reichen Sie keine rechtswidrigen, verleumderischen, obszönen oder belästigenden Inhalte ein',
+          'Reichen Sie keine Inhalte ein, die Rechte anderer verletzen'
+        ]
+      },
+      {
+        icon: '🚫',
+        title: '7. Verbotenes Verhalten',
+        list: [
+          'Geben Sie sich nicht als andere Nutzer oder Organisationen aus',
+          'Senden Sie keinen Schadcode, keine Viren und keine Malware',
+          'Belästigen, beschimpfen oder bedrohen Sie niemanden',
+          'Stören Sie den Dienst nicht, überlasten Sie ihn nicht und testen Sie nicht seine Sicherheit',
+          'Sammeln Sie keine Daten anderer Nutzer ohne Erlaubnis',
+          'Senden Sie keine automatisierten Anfragen an die KI-Funktionen und versuchen Sie nicht, Limits oder die Bezahlung zu umgehen'
+        ]
+      },
+      {
+        icon: '⏹️',
+        title: '8. Sperrung und Beendigung des Kontos',
+        body: `Sie können die Nutzung von MathHelper jederzeit beenden und die Löschung Ihres Kontos und Ihrer Daten per E-Mail an ${EMAIL} verlangen; wir löschen sie innerhalb von 30 Tagen. Wir können ein Konto sperren oder schließen, das diese Bedingungen schwer oder wiederholt verletzt, oder wenn das Gesetz es verlangt. Kostenpflichtige Abonnements werden wie in Abschnitt 4 beschrieben behandelt.`
+      },
+      {
+        icon: '⚖️',
+        title: '9. Gewährleistung und Haftung',
+        body: `Sind Sie Verbraucher in der EU/im EWR, behalten Sie die gesetzlichen Gewährleistungsrechte für digitale Inhalte und Dienstleistungen, auch bei Mängeln, bis zu zwei Jahre, soweit das Gesetz es vorsieht.`,
+        list: [
+          'MathHelper wird "wie besehen" und "wie verfügbar" bereitgestellt. Wir arbeiten an der Qualität, versprechen aber nicht, dass der Dienst unterbrechungsfrei läuft oder die Ergebnisse fehlerfrei sind.',
+          'Wir haften nicht für mittelbare oder Folgeschäden oder entgangenen Gewinn, auch nicht, wenn Sie sich auf ein falsches Ergebnis verlassen haben.',
+          'Unsere Gesamthaftung Ihnen gegenüber ist auf die von Ihnen an uns gezahlten Entgelte begrenzt.',
+          'Nichts in diesen Bedingungen nimmt Ihnen Rechte, die Sie nach zwingendem Verbraucherrecht haben, oder beschränkt eine Haftung, die gesetzlich nicht beschränkt werden kann (z. B. bei Vorsatz oder bei Tod und Körperverletzung).'
+        ]
+      },
+      {
+        icon: '🔄',
+        title: '10. Änderungen dieser Bedingungen',
+        body: `Wir können diese Bedingungen aktualisieren, z. B. wenn wir Funktionen hinzufügen oder sich die Rechtslage ändert. Über wesentliche Änderungen informieren wir Sie in der App oder per E-Mail. Wenn Sie MathHelper nach Inkrafttreten der Änderungen weiter nutzen, akzeptieren Sie die aktualisierten Bedingungen; wenn Sie nicht einverstanden sind, beenden Sie die Nutzung und löschen Sie Ihr Konto.`
+      },
+      {
+        icon: '🔒',
+        title: '11. Datenschutz und Kontakt',
+        body: `Wie wir mit Ihren Daten umgehen, beschreibt unsere <a href="/privacy">Datenschutzrichtlinie</a>. Bei Fragen zu diesen Bedingungen, Meldungen unangemessener Inhalte oder Urheberrechtsbeschwerden schreiben Sie an ${EMAIL}. Bei Urheberrechtsbeschwerden nennen Sie bitte Ihren Namen, eine Beschreibung des Materials und wo es erscheint sowie die Bestätigung, dass Sie die Rechte besitzen.`
+      }
+    ],
+    contact: {
+      title: 'Fragen?',
+      body: 'Bei Fragen zu diesen Bedingungen kontaktieren Sie uns:'
+    }
+  }
+};
+
+function render(lang) {
+  const t = T[lang];
+  document.getElementById('badgeText').textContent = t.badge;
+  document.getElementById('pageTitle').textContent = t.title;
+  document.getElementById('lastUpdated').textContent = t.updated;
+  document.getElementById('privacyLink').textContent = t.privacy;
+  document.title = 'MathHelper - ' + t.title;
+  const htmlLangMap = { al: 'sq', en: 'en', de: 'de' };
+  document.documentElement.lang = htmlLangMap[lang] || 'en';
+
+  document.getElementById('content').innerHTML = t.sections.map(s => `
+    <div class="section">
+      <h2><span class="icon">${s.icon}</span> ${s.title}</h2>
+      ${s.body ? `<p>${s.body}</p>` : ''}
+      ${s.list ? `<ul>${s.list.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+      ${s.note ? `<div class="highlight-box">&#x2139;&#xFE0F; ${s.note}</div>` : ''}
+    </div>
+  `).join('') + `
+    <div class="contact-box">
+      <h2>${t.contact.title}</h2>
+      <p>${t.contact.body}<br><a href="mailto:${EMAIL}">${EMAIL}</a></p>
+    </div>
+  `;
+
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+}
+
+document.querySelectorAll('.lang-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    try { localStorage.setItem('mathhelper-lang', b.dataset.lang); } catch (e) {}
+    render(b.dataset.lang);
+  });
+});
+
+// ?lang= (set by the app or landing page) wins over the remembered choice
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+const T_LANGS = ['al', 'en', 'de'];
+let storedLang = null;
+try { storedLang = localStorage.getItem('mathhelper-lang'); } catch (e) {}
+render(T_LANGS.includes(urlLang) ? urlLang : (T_LANGS.includes(storedLang) ? storedLang : 'al'));
+</script>
+</body>
+</html>
