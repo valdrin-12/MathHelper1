@@ -26,6 +26,14 @@
     "settings": "Einstellungen"
   },
   "auth": {
+    "continueWithGoogle": "Weiter mit Google",
+    "googleConsentPrefix": "Wenn Sie mit Google fortfahren, stimmen Sie den ",
+    "googleConsentTerms": "Nutzungsbedingungen",
+    "googleConsentMiddle": " und der ",
+    "googleConsentPrivacy": "Datenschutzrichtlinie",
+    "googleConsentSuffix": " zu.",
+    "googleLinkedTitle": "Konto mit Google verknüpft",
+    "googleLinkedMessage": "Zu Ihrer Sicherheit wurde Ihr altes Passwort entfernt und andere Sitzungen wurden abgemeldet. Um sich wieder per E-Mail anzumelden, nutzen Sie \"Passwort vergessen?\" und legen Sie ein neues Passwort fest.",
     "login": "Anmelden",
     "register": "Registrieren",
     "welcomeBack": "Willkommen",
@@ -182,6 +190,7 @@
     "confirmBulkDelete": "Möchten Sie wirklich {{count}} Aufgaben löschen?"
   },
   "settings": {
+    "deleteAccountGoogleConfirm": "Bestätigen Sie mit Google, um Ihr Konto zu löschen.",
     "streak": "Serie",
     "deletePasswordLabel": "Geben Sie zur Bestätigung Ihr Passwort ein",
     "deletePasswordPlaceholder": "Ihr aktuelles Passwort",
@@ -380,6 +389,7 @@
     "upgradePremiumDesc": "10 Analysen/Tag - Löse mehr Aufgaben!"
   },
   "editProfile": {
+    "googleAccountHint": "Sie haben sich mit Google registriert. Sie können ein Passwort hinzufügen, um sich auch per E-Mail anzumelden; die E-Mail-Adresse lässt sich erst ändern, wenn ein Passwort festgelegt ist.",
     "confirmIdentity": "Bestätigen Sie Ihre Identität",
     "currentPassword": "Aktuelles Passwort",
     "currentPasswordPlaceholder": "Aktuelles Passwort eingeben",
@@ -692,6 +702,13 @@
     "backspace": "Löschen"
   },
   "errors": {
+    "GOOGLE_AUTH_FAILED": "Die Anmeldung mit Google ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
+    "INVALID_GOOGLE_TOKEN": "Die Google-Anmeldung konnte nicht verifiziert werden. Bitte versuchen Sie es erneut.",
+    "GOOGLE_EMAIL_NOT_VERIFIED": "Die E-Mail-Adresse Ihres Google-Kontos ist nicht verifiziert.",
+    "GOOGLE_ACCOUNT_CONFLICT": "Diese E-Mail-Adresse ist mit einem anderen Google-Konto verknüpft.",
+    "GOOGLE_PLAY_SERVICES_UNAVAILABLE": "Google Play Services sind auf diesem Gerät nicht verfügbar.",
+    "GOOGLE_REAUTH_REQUIRED": "Bestätigen Sie mit Google, um fortzufahren.",
+    "SET_PASSWORD_FIRST": "Legen Sie zuerst ein Passwort fest, bevor Sie die E-Mail-Adresse ändern.",
     "NETWORK_ERROR": "Keine Internetverbindung. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
     "TIMEOUT": "Der Server antwortet zu langsam. Bitte versuchen Sie es erneut.",
     "SERVER_ERROR": "Bei uns ist etwas schiefgelaufen. Bitte versuchen Sie es später erneut.",

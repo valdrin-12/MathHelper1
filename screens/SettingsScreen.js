@@ -22,6 +22,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { ScreenHeader, ListSection, ListRow, Button, showAlert, confirmAction, getErrorMessage } from '../components/ui';
 import WebContainer from '../components/WebContainer';
+import GoogleButton from '../components/GoogleButton';
 import { useResponsive } from '../utils/responsive';
 
 export default function SettingsScreen() {
@@ -96,6 +97,18 @@ export default function SettingsScreen() {
     setIsDeleting(true);
     // On success UserContext clears the session, which unmounts this screen
     const result = await deleteAccount(deletePassword);
+    if (result?.success) return;
+    setIsDeleting(false);
+    setDeleteError(getErrorMessage(result?.code, t('settings.deleteAccountError'), t));
+  };
+
+  // Accounts created with Google have no password: they confirm the deletion with Google instead
+  const hasPassword = user?.hasPassword !== false;
+
+  const confirmDeleteWithGoogle = async (idToken) => {
+    setDeleteError('');
+    setIsDeleting(true);
+    const result = await deleteAccount({ idToken });
     if (result?.success) return;
     setIsDeleting(false);
     setDeleteError(getErrorMessage(result?.code, t('settings.deleteAccountError'), t));
@@ -266,9 +279,19 @@ export default function SettingsScreen() {
               ))}
             </View>
 
-            {/* Re-authentication: the server requires the current password */}
-            <Text style={[styles.deletePasswordLabel, { color: colors.textSubtle }]}>{t('settings.deletePasswordLabel')}</Text>
-            <TextInput
+            {/* Re-authentication: the current password, or Google for an account that has none */}
+            {!hasPassword && (
+              <>
+                <Text style={[styles.deletePasswordLabel, { color: colors.textSubtle }]}>{t('settings.deleteAccountGoogleConfirm')}</Text>
+                <GoogleButton
+                  onToken={confirmDeleteWithGoogle}
+                  onError={(code) => setDeleteError(getErrorMessage(code, undefined, t))}
+                  disabled={isDeleting}
+                />
+              </>
+            )}
+            {hasPassword && <Text style={[styles.deletePasswordLabel, { color: colors.textSubtle }]}>{t('settings.deletePasswordLabel')}</Text>}
+            {hasPassword && <TextInput
               style={[
                 styles.deletePasswordInput,
                 { backgroundColor: colors.background, color: colors.text, borderColor: deleteError ? colors.destructive : 'transparent' },
@@ -285,19 +308,21 @@ export default function SettingsScreen() {
               editable={!isDeleting}
               onSubmitEditing={confirmDeleteAccount}
               accessibilityLabel={t('settings.deletePasswordLabel')}
-            />
+            />}
             {deleteError ? (
               <Text style={[styles.deleteErrorText, { color: colors.destructive }]} accessibilityLiveRegion="polite">{deleteError}</Text>
             ) : null}
 
-            <Button
-              title={t('settings.deleteAccount')}
-              tone="destructive"
-              onPress={confirmDeleteAccount}
-              loading={isDeleting}
-              disabled={!deletePassword}
-              style={[styles.modalButton, { marginTop: SPACING.lg }]}
-            />
+            {hasPassword && (
+              <Button
+                title={t('settings.deleteAccount')}
+                tone="destructive"
+                onPress={confirmDeleteAccount}
+                loading={isDeleting}
+                disabled={!deletePassword}
+                style={[styles.modalButton, { marginTop: SPACING.lg }]}
+              />
+            )}
             <Button
               title={t('common.cancel')}
               variant="plain"

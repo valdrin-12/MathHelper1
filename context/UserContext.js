@@ -187,6 +187,26 @@ export const UserProvider = ({ children }) => {
   };
 
   /**
+   * Hyr ose regjistrohu me Google (serveri e verifikon tokenin)
+   * @returns {Promise<{ success: boolean, error: string|null, code: string|null, isNewUser?: boolean, linkedExisting?: boolean }>}
+   */
+  const loginWithGoogle = async (idToken, language) => {
+    try {
+      const result = await authService.loginWithGoogle({ idToken, language });
+      if (result.success) {
+        await clearUserLocalData();
+        setOffline(false);
+        setAuthError(null);
+        setUser(result.user);
+      }
+      return { success: result.success, error: result.error, code: result.code, isNewUser: result.isNewUser, linkedExisting: result.linkedExisting };
+    } catch (error) {
+      console.error('Gabim gjatë hyrjes me Google:', error);
+      return { success: false, error: 'UNEXPECTED_ERROR', code: 'UNEXPECTED_ERROR' };
+    }
+  };
+
+  /**
    * Regjistro përdorues të ri
    * @returns {Promise<{ success: boolean, error: string|null, code: string|null }>}
    */
@@ -222,14 +242,14 @@ export const UserProvider = ({ children }) => {
 
   /**
    * Fshi llogarinë përgjithmonë.
-   * @param {string} password
+   * @param {string|{ idToken: string }} credential  password, or `{ idToken }` for an account created with Google
    * @returns {Promise<{ success: boolean, error: string|null, code: string|null }>}
-   *   codes: PASSWORD_REQUIRED, INVALID_PASSWORD, SUBSCRIPTION_CANCEL_FAILED, NETWORK_ERROR,
-   *   TIMEOUT, SERVER_ERROR, DELETE_FAILED, UNEXPECTED_ERROR
+   *   codes: PASSWORD_REQUIRED, INVALID_PASSWORD, GOOGLE_REAUTH_REQUIRED, INVALID_GOOGLE_TOKEN,
+   *   SUBSCRIPTION_CANCEL_FAILED, NETWORK_ERROR, TIMEOUT, SERVER_ERROR, DELETE_FAILED, UNEXPECTED_ERROR
    */
-  const deleteAccount = async (password) => {
+  const deleteAccount = async (credential) => {
     try {
-      const result = await authService.deleteAccount(password);
+      const result = await authService.deleteAccount(credential);
       if (result.success) {
         await resetSession();
       }
@@ -267,6 +287,7 @@ export const UserProvider = ({ children }) => {
     login,
     register,
     logout,
+    loginWithGoogle,
     deleteAccount,
     updateProfile,
     refreshUser,

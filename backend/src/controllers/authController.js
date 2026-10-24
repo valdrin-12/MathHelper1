@@ -4,6 +4,7 @@ const { hashResetCode, safeEqualHex } = require('../utils/security');
 const pool = require('../config/database');
 const { sendWelcomeEmail, sendPasswordResetEmail } = require('../services/emailService');
 const { getPaddleClient } = require('../services/paddleClient');
+const googleAuth = require('../services/googleAuthService');
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -65,8 +66,9 @@ async function login(req, res) {
 
     const user = await userModel.findByEmail(email);
     // Always run bcrypt so unknown emails and wrong passwords are indistinguishable (response + timing)
-    const valid = await userModel.comparePassword(password, user ? user.password_hash : DUMMY_PASSWORD_HASH);
-    if (!user || !valid) {
+    // (an account created with Google has no password hash: it can never match)
+    const valid = await userModel.comparePassword(password, user && user.password_hash ? user.password_hash : DUMMY_PASSWORD_HASH);
+    if (!user || !user.password_hash || !valid) {
       return res.status(401).json({ success: false, error: 'Invalid email or password', code: 'INVALID_CREDENTIALS' });
     }
 
@@ -82,6 +84,78 @@ async function login(req, res) {
   } catch (err) {
     console.error('Login error:', err);
     res.status(500).json({ success: false, error: 'Login failed' });
+  }
+}
+
+/**
+ * POST /api/auth/google  body: { idToken, language? }
+ * Signs in (or signs up) with a Google ID token. The token is verified here; the client is never trusted.
+ *  - known Google id            → sign in
+ *  - existing account, same email → link it, and drop its old password (see userModel.linkGoogleId)
+ *  - otherwise                   → create an account without a password
+ */
+async function googleLogin(req, res) {
+  try {
+    const { idToken, language } = req.body;
+
+    let profile;
+    try {
+      profile = await googleAuth.verifyGoogleIdToken(idToken);
+    } catch (err) {
+      return res.status(401).json({ success: false, error: 'Invalid Google token', code: 'INVALID_GOOGLE_TOKEN' });
+    }
+    if (!profile.email || !profile.emailVerified) {
+      return res.status(401).json({ success: false, error: 'Your Google email is not verified', code: 'GOOGLE_EMAIL_NOT_VERIFIED' });
+    }
+    const email = profile.email.toLowerCase();
+
+    let row = await userModel.findByGoogleId(profile.sub);
+    let isNewUser = false;
+    let linkedExisting = false;
+
+    if (!row) {
+      const byEmail = await userModel.findByEmail(email);
+      if (byEmail) {
+        if (byEmail.google_id && byEmail.google_id !== profile.sub) {
+          return res.status(409).json({ success: false, error: 'This email belongs to another Google account', code: 'GOOGLE_ACCOUNT_CONFLICT' });
+        }
+        const hadPassword = Boolean(byEmail.password_hash);
+        const linked = await userModel.linkGoogleId(byEmail.id, profile.sub, { dropPassword: true });
+        if (linked && hadPassword) {
+          // Old sessions and the old password may belong to whoever registered the address first
+          await pool.query('DELETE FROM refresh_tokens WHERE user_id = $1', [byEmail.id]);
+          linkedExisting = true;
+        }
+        row = { ...byEmail, google_id: profile.sub };
+      } else {
+        const name = (profile.name || email.split('@')[0]).trim().slice(0, 100) || 'MathHelper';
+        try {
+          const created = await userModel.createGoogleUser({ name, email, googleId: profile.sub, language: language || 'al' });
+          row = { id: created.id };
+          isNewUser = true;
+        } catch (err) {
+          // Two sign-ins at once: the other one created the account first
+          if (err.code !== '23505') throw err;
+          row = (await userModel.findByGoogleId(profile.sub)) || (await userModel.findByEmail(email));
+          if (!row) throw err;
+        }
+      }
+    }
+
+    const { accessToken, refreshToken } = await issueTokens(row.id);
+    if (isNewUser) sendWelcomeEmail(email, (profile.name || email.split('@')[0]).trim(), language || 'al');
+
+    res.json({
+      success: true,
+      user: await userModel.findById(row.id),
+      accessToken,
+      refreshToken,
+      isNewUser,
+      linkedExisting,
+    });
+  } catch (err) {
+    console.error('Google login error:', err);
+    res.status(500).json({ success: false, error: 'Google sign-in failed' });
   }
 }
 
@@ -133,13 +207,20 @@ async function updateProfile(req, res) {
 
     const sensitiveChange = Boolean(updates.email || updates.password);
     if (sensitiveChange) {
-      const { currentPassword } = req.body;
-      if (!currentPassword) {
-        return res.status(400).json({ success: false, error: 'Current password is required', code: 'CURRENT_PASSWORD_REQUIRED' });
-      }
       const hash = await getPasswordHash(req.userId);
-      if (!hash || !(await userModel.comparePassword(currentPassword, hash))) {
-        return res.status(401).json({ success: false, error: 'Current password is incorrect', code: 'INVALID_CURRENT_PASSWORD' });
+      if (!hash) {
+        // Signed up with Google: nothing to re-check. A password can be added; the email is tied to Google
+        if (updates.email) {
+          return res.status(400).json({ success: false, error: 'Set a password before changing the email', code: 'SET_PASSWORD_FIRST' });
+        }
+      } else {
+        const { currentPassword } = req.body;
+        if (!currentPassword) {
+          return res.status(400).json({ success: false, error: 'Current password is required', code: 'CURRENT_PASSWORD_REQUIRED' });
+        }
+        if (!(await userModel.comparePassword(currentPassword, hash))) {
+          return res.status(401).json({ success: false, error: 'Current password is incorrect', code: 'INVALID_CURRENT_PASSWORD' });
+        }
       }
     }
 
@@ -330,24 +411,42 @@ async function cancelPaddleSubscriptions(userId) {
 }
 
 /**
- * DELETE /api/auth/account  body: { password }
+ * DELETE /api/auth/account  body: { password }  or, for an account without a password, { idToken }
  * Re-authenticates, cancels Paddle subscriptions immediately, then deletes all user data in one transaction.
  */
 async function deleteAccount(req, res) {
   const userId = req.userId;
-  const { password } = req.body || {};
-  if (!password || typeof password !== 'string') {
-    return res.status(400).json({ success: false, error: 'Password is required', code: 'PASSWORD_REQUIRED' });
-  }
+  const { password, idToken } = req.body || {};
 
   let client;
   try {
-    const hash = await getPasswordHash(userId);
-    if (!hash) {
+    const { rows: accountRows } = await pool.query('SELECT password_hash, google_id FROM users WHERE id = $1', [userId]);
+    const account = accountRows[0];
+    if (!account) {
       return res.status(404).json({ success: false, error: 'User not found' });
     }
-    if (!(await userModel.comparePassword(password, hash))) {
-      return res.status(401).json({ success: false, error: 'Invalid password', code: 'INVALID_PASSWORD' });
+
+    if (account.password_hash) {
+      if (!password || typeof password !== 'string') {
+        return res.status(400).json({ success: false, error: 'Password is required', code: 'PASSWORD_REQUIRED' });
+      }
+      if (!(await userModel.comparePassword(password, account.password_hash))) {
+        return res.status(401).json({ success: false, error: 'Invalid password', code: 'INVALID_PASSWORD' });
+      }
+    } else {
+      // Signed up with Google: confirm with a fresh Google token of the same Google account
+      if (!idToken || typeof idToken !== 'string') {
+        return res.status(400).json({ success: false, error: 'Confirm with Google', code: 'GOOGLE_REAUTH_REQUIRED' });
+      }
+      let profile;
+      try {
+        profile = await googleAuth.verifyGoogleIdToken(idToken);
+      } catch {
+        return res.status(401).json({ success: false, error: 'Invalid Google token', code: 'INVALID_GOOGLE_TOKEN' });
+      }
+      if (!account.google_id || profile.sub !== account.google_id) {
+        return res.status(401).json({ success: false, error: 'Invalid Google token', code: 'INVALID_GOOGLE_TOKEN' });
+      }
     }
 
     try {
@@ -385,4 +484,4 @@ async function deleteAccount(req, res) {
   }
 }
 
-module.exports = { register, login, logout, getMe, updateProfile, refreshTokens, forgotPassword, resetPassword, deleteAccount };
+module.exports = { register, login, googleLogin, logout, getMe, updateProfile, refreshTokens, forgotPassword, resetPassword, deleteAccount };

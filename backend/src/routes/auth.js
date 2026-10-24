@@ -16,6 +16,15 @@ const loginLimiter = rateLimit({
   legacyHeaders: false,
 });
 
+// Google sign-in is a login: same kind of limit, a bit looser because one tap can mean sign-in or sign-up
+const googleLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30,
+  message: { success: false, error: 'Too many sign-in attempts. Please try again in 15 minutes.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
 const registerLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5,
@@ -61,6 +70,12 @@ router.post('/register', registerLimiter, [
   body('password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   validate,
 ], authController.register);
+
+router.post('/google', googleLimiter, [
+  body('idToken').isString().isLength({ min: 20, max: 4096 }).withMessage('Google token is required'),
+  body('language').optional().isIn(['al', 'en', 'de']).withMessage('Unsupported language'),
+  validate,
+], authController.googleLogin);
 
 router.post('/login', loginLimiter, [
   body('email').isEmail().withMessage('Valid email is required'),

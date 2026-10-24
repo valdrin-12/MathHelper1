@@ -317,7 +317,9 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
   // Changing the email or the password requires re-authentication with the current password
   const emailChanged = editEmail.trim().toLowerCase() !== (user.email || '').trim().toLowerCase();
   const passwordChanging = !!(newPassword || confirmPassword);
-  const needsCurrentPassword = emailChanged || passwordChanging;
+  // Accounts created with Google have no password to confirm; they can add one, but not change the email yet
+  const hasPassword = user.hasPassword !== false;
+  const needsCurrentPassword = hasPassword && (emailChanged || passwordChanging);
 
   const handleSaveProfile = async () => {
     setEditError('');
@@ -406,7 +408,8 @@ export default function ProfileModal({ visible, onClose, onUpgrade }) {
           </View>
           <View style={styles.inputGroup}>
             <Text style={styles.label}>{t('auth.email')}</Text>
-            <TextInput style={styles.input} value={editEmail} onChangeText={(v) => { setEditEmail(v); setEditError(''); }} placeholder="email@example.com" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} accessibilityLabel={t('auth.email')} />
+            <TextInput style={[styles.input, !hasPassword && { opacity: 0.6 }]} value={editEmail} onChangeText={(v) => { setEditEmail(v); setEditError(''); }} placeholder="email@example.com" placeholderTextColor={colors.textMuted} keyboardType="email-address" autoCapitalize="none" autoCorrect={false} editable={hasPassword} accessibilityLabel={t('auth.email')} />
+            {!hasPassword && <Text style={styles.hint}>{t('editProfile.googleAccountHint')}</Text>}
           </View>
         </View>
         <View style={styles.formSection}>
