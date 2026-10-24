@@ -367,14 +367,14 @@ export default {
       "type": "choice",
       "correct": 3,
       "al": {
-        "question": "Cili numër plotëson barazimin □ ÷ 6 = 14?",
+        "question": "Cili numër plotëson barazimin ___ ÷ 6 = 14?",
         "options": [
           "8",
           "20",
           "7/3",
           "84"
         ],
-        "explanation": "Pjesëtimi zhbëhet me shumëzim: □ = 14 × 6 = 84. Kontroll: 84 ÷ 6 = 14. Rezultati: 84.",
+        "explanation": "Pjesëtimi zhbëhet me shumëzim: numri që mungon = 14 × 6 = 84. Kontroll: 84 ÷ 6 = 14. Rezultati: 84.",
         "hint": "Përdorni veprimin e kundërt të pjesëtimit.",
         "whyWrong": [
           "Keni zbritur 14 − 6 në vend që të shumëzoni.",
@@ -384,14 +384,14 @@ export default {
         ]
       },
       "en": {
-        "question": "Which number makes □ ÷ 6 = 14 true?",
+        "question": "Which number makes ___ ÷ 6 = 14 true?",
         "options": [
           "8",
           "20",
           "7/3",
           "84"
         ],
-        "explanation": "Division is undone by multiplication: □ = 14 × 6 = 84. Check: 84 ÷ 6 = 14. Result: 84.",
+        "explanation": "Division is undone by multiplication: the missing number = 14 × 6 = 84. Check: 84 ÷ 6 = 14. Result: 84.",
         "hint": "Use the inverse operation of division.",
         "whyWrong": [
           "You subtracted 14 − 6 instead of multiplying.",
@@ -401,14 +401,14 @@ export default {
         ]
       },
       "de": {
-        "question": "Welche Zahl erfüllt □ ÷ 6 = 14?",
+        "question": "Welche Zahl erfüllt ___ ÷ 6 = 14?",
         "options": [
           "8",
           "20",
           "7/3",
           "84"
         ],
-        "explanation": "Division wird durch Multiplikation umgekehrt: □ = 14 × 6 = 84. Probe: 84 ÷ 6 = 14. Ergebnis: 84.",
+        "explanation": "Division wird durch Multiplikation umgekehrt: die fehlende Zahl = 14 × 6 = 84. Probe: 84 ÷ 6 = 14. Ergebnis: 84.",
         "hint": "Verwenden Sie die Umkehroperation der Division.",
         "whyWrong": [
           "Sie haben 14 − 6 subtrahiert statt multipliziert.",

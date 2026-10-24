@@ -6,7 +6,7 @@
 export default {
   "id": "geo-easy",
   "difficulty": "beginner",
-  "icon": "△",
+  "icon": "π",
   "color": "#4ECDC4",
   "i18n": {
     "al": {

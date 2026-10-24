@@ -16,7 +16,7 @@ const KEYBOARD_TYPES = [
   { id: 'basic', icon: 'add', translationKey: 'mathKeyboard.basicMath' },
   { id: 'preAlgebra', icon: 'swap-horizontal', translationKey: 'mathKeyboard.preAlgebra' },
   { id: 'algebra', icon: 'code-working', translationKey: 'mathKeyboard.algebra' },
-  { id: 'trigonometry', icon: 'triangle', translationKey: 'mathKeyboard.trigonometry' },
+  { id: 'trigonometry', icon: 'pulse', translationKey: 'mathKeyboard.trigonometry' },
   { id: 'precalculus', icon: 'pulse', translationKey: 'mathKeyboard.precalculus' },
   { id: 'calculus', icon: 'infinite', translationKey: 'mathKeyboard.calculus' },
   { id: 'statistics', icon: 'bar-chart', translationKey: 'mathKeyboard.statistics' },
@@ -130,9 +130,9 @@ const KEYBOARD_LAYOUTS = {
     ],
   },
   physics: {
-    tabs: [{ label: 'F=ma', value: 'F=ma' }, { label: 'Δ', value: 'Δ' }],
+    tabs: [{ label: 'F=ma', value: 'F=ma' }, { label: 'v=s/t', value: 'v=s/t' }],
     rows: [
-      [{ label: 'Δ', value: 'Δ' }, { label: 'α', value: 'α', variable: true }, { label: 'β', value: 'β', variable: true }, { label: 'γ', value: 'γ', variable: true }, { label: 'ω', value: 'ω', variable: true }, { label: 'θ', value: 'θ', variable: true }],
+      [{ label: 'λ', value: 'λ', variable: true }, { label: 'α', value: 'α', variable: true }, { label: 'β', value: 'β', variable: true }, { label: 'γ', value: 'γ', variable: true }, { label: 'ω', value: 'ω', variable: true }, { label: 'θ', value: 'θ', variable: true }],
       [{ label: 'F', value: 'F', variable: true }, { label: '7', value: '7' }, { label: '8', value: '8' }, { label: '9', value: '9' }, { label: '÷', value: '÷', highlight: true }, { label: 'μ', value: 'μ', variable: true }],
       [{ label: 'v', value: 'v', variable: true }, { label: '4', value: '4' }, { label: '5', value: '5' }, { label: '6', value: '6' }, { label: '×', value: '×', highlight: true }, { label: '√', value: '√' }],
       [{ label: 'a', value: 'a', variable: true }, { label: '1', value: '1' }, { label: '2', value: '2' }, { label: '3', value: '3' }, { label: '−', value: '−', highlight: true }, { label: '^', value: '^' }],

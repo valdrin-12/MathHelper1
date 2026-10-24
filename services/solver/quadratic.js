@@ -111,7 +111,7 @@ export const quadraticSteps = (S, a, b, c, v, lang, opts = {}) => {
   const n = (x) => fmtNum(x, lang);
 
   S.addT('identifyCoefficients', null, `a = ${n(a)}${sep}b = ${n(b)}${sep}c = ${n(c)}`);
-  S.add(S.t('discriminantFormula'), `Δ = ${paren(n(b))}² − 4·${paren(n(a))}·${paren(n(c))} = ${n(b.mul(b))} ${isNeg(a.mul(c).mul(4)) ? '+' : '−'} ${n(a.mul(c).mul(4).abs())} = ${n(q.disc)}`);
+  S.add(S.t('discriminantFormula'), `D = ${paren(n(b))}² − 4·${paren(n(a))}·${paren(n(c))} = ${n(b.mul(b))} ${isNeg(a.mul(c).mul(4)) ? '+' : '−'} ${n(a.mul(c).mul(4).abs())} = ${n(q.disc)}`);
 
   const x12 = `${v}${sub(1)},${sub(2)}`;
   const minusB = isZero(b) ? '0' : isNeg(b) ? `−(${n(b)})` : `−${n(b)}`;

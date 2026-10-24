@@ -98,7 +98,7 @@ export const courseContents_calculus_en = {
     lessons: [
       {
         title: 'The Concept of the Derivative',
-        theory: 'The derivative of f at the point a is: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nThis measures the instantaneous rate of change, or the slope of the tangent line at a.\n\nNotations: f\'(x), df/dx, Df, ẏ. Each is preferred in certain contexts.\n\nThe derivative as the limit of the difference quotient: Δy/Δx → dy/dx as Δx→0.',
+        theory: 'The derivative of f at the point a is: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nThis measures the instantaneous rate of change, or the slope of the tangent line at a.\n\nNotations: f\'(x), df/dx, Df, ẏ. Each is preferred in certain contexts.\n\nThe derivative as the limit of the difference quotient: [f(x+h) − f(x)]/h → dy/dx as h→0.',
         keyPoints: [
           'f\'(a) = lim [f(a+h)-f(a)]/h as h→0',
           'Derivative = slope of the tangent line',

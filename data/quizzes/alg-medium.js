@@ -651,7 +651,7 @@ export default {
         "commonMistakes": [
           {
             "value": 4,
-            "why": "Keni llogaritur m = Δx : Δy = 1/2 në vend të Δy : Δx, prandaj b = 5 − 1 = 4."
+            "why": "Keni llogaritur m = (x₂ − x₁) : (y₂ − y₁) = 1/2 në vend të (y₂ − y₁) : (x₂ − x₁), prandaj b = 5 − 1 = 4."
           },
           {
             "value": 9,
@@ -666,7 +666,7 @@ export default {
         "commonMistakes": [
           {
             "value": 4,
-            "why": "You computed m = Δx ÷ Δy = 1/2 instead of Δy ÷ Δx, so b = 5 − 1 = 4."
+            "why": "You computed m = (x₂ − x₁) ÷ (y₂ − y₁) = 1/2 instead of (y₂ − y₁) ÷ (x₂ − x₁), so b = 5 − 1 = 4."
           },
           {
             "value": 9,
@@ -681,7 +681,7 @@ export default {
         "commonMistakes": [
           {
             "value": 4,
-            "why": "Sie haben m = Δx : Δy = 1/2 statt Δy : Δx berechnet, daher b = 5 − 1 = 4."
+            "why": "Sie haben m = (x₂ − x₁) : (y₂ − y₁) = 1/2 statt (y₂ − y₁) : (x₂ − x₁) berechnet, daher b = 5 − 1 = 4."
           },
           {
             "value": 9,

@@ -647,7 +647,7 @@ const baseContents = {
       },
       {
         title: 'Funksionet Lineare',
-        theory: 'Funksioni linear shprehet si f(x) = mx + b, ku m është pjerrësia (shpati) dhe b është prerja me boshtin y. Grafiku i funksionit linear është gjithmonë vijë e drejtë.\n\nPjerrësia m tregon sa ndryshon y kur x ndryshon me 1 njësi: m = Δy/Δx = (y₂-y₁)/(x₂-x₁). Nëse m > 0, vija shkon sipër-djathtas; nëse m < 0, shkon poshtë-djathtas.\n\nPrerja b tregon ku vija pret boshtin y (kur x = 0). Kjo pikë (0, b) quhet prerja me boshtin y.',
+        theory: 'Funksioni linear shprehet si f(x) = mx + b, ku m është pjerrësia (shpati) dhe b është prerja me boshtin y. Grafiku i funksionit linear është gjithmonë vijë e drejtë.\n\nPjerrësia m tregon sa ndryshon y kur x ndryshon me 1 njësi: m = (y₂-y₁)/(x₂-x₁). Nëse m > 0, vija shkon sipër-djathtas; nëse m < 0, shkon poshtë-djathtas.\n\nPrerja b tregon ku vija pret boshtin y (kur x = 0). Kjo pikë (0, b) quhet prerja me boshtin y.',
         keyPoints: [
           'Forma standarde: y = mx + b',
           'm = pjerrësia (ndryshimi i y / ndryshimi i x)',

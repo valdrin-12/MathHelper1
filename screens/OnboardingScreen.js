@@ -3,7 +3,7 @@ import {
   View,
   Text,
   StyleSheet,
-  Dimensions,
+  useWindowDimensions,
   TouchableOpacity,
   FlatList,
   Animated,
@@ -14,13 +14,14 @@ import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../theme/constants';
 import { useTheme } from '../context/ThemeContext';
 import { Button } from '../components/ui';
 
-const { width, height } = Dimensions.get('window');
-
 export default function OnboardingScreen({ onComplete }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
-  const styles = useMemo(() => makeStyles(colors), [colors]);
+  const { width, height } = useWindowDimensions();
+  const styles = useMemo(() => makeStyles(colors, width, height), [colors, width, height]);
   const flatListRef = useRef(null);
+  // While a button-driven scroll is animating, ignore scroll events so the label doesn't flicker back
+  const targetIndex = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -75,12 +76,28 @@ export default function OnboardingScreen({ onComplete }) {
     },
   ];
 
+  const goToIndex = (index) => {
+    targetIndex.current = index;
+    setCurrentIndex(index);
+    flatListRef.current?.scrollToOffset({ offset: index * width, animated: true });
+  };
+
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
-      flatListRef.current?.scrollToIndex({ index: currentIndex + 1 });
+      goToIndex(currentIndex + 1);
     } else {
       onComplete();
     }
+  };
+
+  // Keep the index in sync with the scroll position (works for swipes and for button presses, native and web)
+  const handleScroll = (e) => {
+    const index = Math.round(e.nativeEvent.contentOffset.x / width);
+    if (targetIndex.current !== null) {
+      if (index === targetIndex.current) targetIndex.current = null;
+      return;
+    }
+    if (index !== currentIndex && index >= 0 && index < slides.length) setCurrentIndex(index);
   };
 
   const renderSlide = ({ item }) => (
@@ -152,14 +169,12 @@ export default function OnboardingScreen({ onComplete }) {
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
+        getItemLayout={(_, index) => ({ length: width, offset: width * index, index })}
+        scrollEventThrottle={16}
         onScroll={Animated.event(
           [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
+          { useNativeDriver: false, listener: handleScroll }
         )}
-        onMomentumScrollEnd={(e) => {
-          const index = Math.round(e.nativeEvent.contentOffset.x / width);
-          setCurrentIndex(index);
-        }}
         keyExtractor={(_, index) => index.toString()}
       />
 
@@ -175,7 +190,7 @@ export default function OnboardingScreen({ onComplete }) {
   );
 }
 
-const makeStyles = (colors) => StyleSheet.create({
+const makeStyles = (colors, width, height) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
