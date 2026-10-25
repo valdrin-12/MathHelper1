@@ -1,0 +1,81 @@
+name: Publish to the deploy branch
+
+# Render builds from the `deploy` branch. It holds backend/ plus the freshly built web app in
+# backend/public, as ONE commit that replaces the previous one on every run, so the built bundle
+# never piles up in the history of main (it used to: 77 bundles, ~250 MB uncompressed).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: publish-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Build web app and publish
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # Public values of the app (they end up in the bundle anyway): set under Settings → Variables
+      - name: Build the web app
+        run: node scripts/buildWeb.js --out web-dist
+        env:
+          EXPO_PUBLIC_API_URL: ${{ vars.EXPO_PUBLIC_API_URL }}
+          EXPO_PUBLIC_MAX_IMAGE_SIZE_MB: ${{ vars.EXPO_PUBLIC_MAX_IMAGE_SIZE_MB }}
+          EXPO_PUBLIC_PADDLE_ENV: ${{ vars.EXPO_PUBLIC_PADDLE_ENV }}
+          EXPO_PUBLIC_PADDLE_CLIENT_TOKEN: ${{ vars.EXPO_PUBLIC_PADDLE_CLIENT_TOKEN }}
+          EXPO_PUBLIC_PADDLE_PRICE_MONTHLY: ${{ vars.EXPO_PUBLIC_PADDLE_PRICE_MONTHLY }}
+          EXPO_PUBLIC_PADDLE_PRICE_YEARLY: ${{ vars.EXPO_PUBLIC_PADDLE_PRICE_YEARLY }}
+
+      - name: Assemble what Render deploys
+        run: |
+          set -euo pipefail
+          mkdir -p deploy-out/backend/public
+          # the API code without installed packages, secrets and the old committed web files
+          rsync -a --exclude node_modules --exclude .env --exclude public backend/ deploy-out/backend/
+          cp -R web-dist/. deploy-out/backend/public/
+          echo "Built from ${GITHUB_SHA} by ${GITHUB_WORKFLOW} run ${GITHUB_RUN_ID}" > deploy-out/BUILD_INFO.txt
+
+      # Never publish an empty site: the API and a page that points to an existing bundle must be there
+      - name: Check the result
+        run: |
+          set -euo pipefail
+          cd deploy-out/backend
+          test -f package.json
+          test -f src/server.js
+          test -f migrations/migrate.js
+          test -f public/index.html
+          bundle=$(grep -o '/_expo/static/js/web/index-[a-f0-9]*\.js' public/index.html | head -1)
+          test -n "$bundle"
+          test -s "public${bundle}"
+          test -s public/fonts/ionicons.ttf
+          test -s public/favicon.png
+          echo "OK: bundle ${bundle} ($(du -h "public${bundle}" | cut -f1))"
+
+      - name: Publish as a single commit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SOURCE_MESSAGE: ${{ github.event.head_commit.message }}
+        run: |
+          set -euo pipefail
+          cd deploy-out
+          git init -q -b deploy
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Deploy ${GITHUB_SHA::7}" -m "${SOURCE_MESSAGE:-manual run}"
+          git push --force "https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" deploy

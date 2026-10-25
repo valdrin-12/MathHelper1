@@ -50,3 +50,7 @@ backend/.env
 
 # E2E regression tests live in their own repository
 e2e/
+
+# web build output (published from the deploy branch, never committed to main)
+web-dist/
+deploy-out/
