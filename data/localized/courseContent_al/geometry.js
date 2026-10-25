@@ -1,4 +1,4 @@
-export const courseContents_geometry = {
+export const courseContents_geometry_al = {
 
   // geo-002: Trekëndëshat (të avancuar)
   'geo-002': {

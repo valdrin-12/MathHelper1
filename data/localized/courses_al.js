@@ -1,5 +1,5 @@
 // Albanian course translations (original data)
-export const coursesTranslations_sq = {
+export const coursesTranslations_al = {
   'arith-001': {
     title: 'Numrat dhe Operacionet Bazë',
     duration: '2 orë',

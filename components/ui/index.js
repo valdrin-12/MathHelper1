@@ -266,25 +266,6 @@ export function EmptyState({ icon, title, message, style }) {
   );
 }
 
-// Icon-only round button (close, back, select…). `label` is required for screen readers.
-export function IconButton({ name, label, onPress, size = 18, color, style, hitSlop = 8, disabled }) {
-  const { colors } = useTheme();
-  return (
-    <TouchableOpacity
-      onPress={onPress}
-      style={style}
-      hitSlop={hitSlop}
-      activeOpacity={0.6}
-      disabled={disabled}
-      accessibilityRole="button"
-      accessibilityLabel={label}
-      accessibilityState={{ disabled: !!disabled }}
-    >
-      <Ionicons name={name} size={size} color={color || colors.textSubtle} />
-    </TouchableOpacity>
-  );
-}
-
 // Small non-blocking banner for offline / load errors with an optional Retry action
 export function StatusBanner({ message, icon = 'cloud-offline-outline', tone = 'warning', actionLabel, onAction, loading, style }) {
   const { colors } = useTheme();

@@ -1,4 +1,4 @@
-export const courseContents_calculus = {
+export const courseContents_calculus_al = {
 
   // calc-001: Limitet dhe Vazhdueshmëria
   'calc-001': {

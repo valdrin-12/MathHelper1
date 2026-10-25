@@ -70,7 +70,6 @@ export const isRecoverableError = (error) =>
   !!error && (error.isNetworkError === true || (typeof error.status === 'number' && error.status >= 500));
 
 export const isNetworkError = (error) => !!error && error.isNetworkError === true;
-export const isTimeoutError = (error) => !!error && error.isTimeout === true;
 
 // ---------------------------------------------------------------------------
 // Tokens
