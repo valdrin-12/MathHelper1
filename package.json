@@ -10,7 +10,9 @@
     "validate:quizzes": "node scripts/validateQuizzes.js --strict",
     "test:solver": "node scripts/testSolver.js",
     "test:graph": "node scripts/testFunctionAnalysis.js",
-    "test:verify": "node scripts/testVerify.js"
+    "test:verify": "node scripts/testVerify.js",
+    "test": "npm run validate:quizzes && npm run test:solver && npm run test:graph && npm run test:verify",
+    "test:backend": "npm --prefix backend run test:google"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -42,5 +44,9 @@
     "react-native-svg": "15.12.1",
     "react-native-web": "^0.21.0"
   },
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "@babel/core": "^7.29.7",
+    "@babel/plugin-transform-modules-commonjs": "^7.29.7"
+  }
 }

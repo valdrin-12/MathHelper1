@@ -1,13 +1,13 @@
 // Kurset e matematikës të organizuara sipas kategorisë dhe nivelit
 // With localization support for SQ, EN, DE
 
-import { coursesTranslations_sq } from './localized/courses_sq';
+import { coursesTranslations_al } from './localized/courses_al';
 import { coursesTranslations_en } from './localized/courses_en';
 import { coursesTranslations_de } from './localized/courses_de';
 import { getLocalizedCourseContents } from './courseContentData';
 
 const translationsMap = {
-  al: coursesTranslations_sq,
+  al: coursesTranslations_al,
   en: coursesTranslations_en,
   de: coursesTranslations_de,
 };

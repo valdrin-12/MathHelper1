@@ -13,8 +13,3 @@ export function useResponsive() {
   return { isWeb, isDesktop, isTablet, isMobile, showSidebar, width, height };
 }
 
-export function responsiveValue(mobile, tablet, desktop, breakpoint) {
-  if (breakpoint === 'desktop') return desktop;
-  if (breakpoint === 'tablet') return tablet;
-  return mobile;
-}

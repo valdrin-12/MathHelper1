@@ -1,4 +1,4 @@
-export const courseContents_other = {
+export const courseContents_other_al = {
 
   // ===== TRIGONOMETRI =====
 

@@ -302,4 +302,3 @@ export const tr = (lang, key, params = {}) => {
   return s;
 };
 
-export const TRANSLATION_KEYS = Object.keys(T);

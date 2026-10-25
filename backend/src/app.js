@@ -203,9 +203,8 @@ app.get('/premium/success', staticPageCsp, (req, res) => {
 </html>`);
 });
 
-// Screenshots static files
-app.use('/screenshots', express.static(path.join(__dirname, '..', 'pages', 'screenshots')));
-
+// LEGACY: graph page for store apps built before the graph was drawn on the device (react-native-svg).
+// Remove it, its CSP and its e2e checks once no app version older than 1.1.0 is in use.
 // Graph rendering endpoint — serves self-contained HTML with function-plot.
 // The expression is never turned into JS by us: it is embedded as JSON data and parsed by
 // function-plot's own math parser. The bootstrap script is static, so its CSP hash is constant.

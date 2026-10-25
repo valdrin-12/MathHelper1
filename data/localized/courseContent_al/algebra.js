@@ -1,4 +1,4 @@
-export const courseContents_algebra = {
+export const courseContents_algebra_al = {
 
   // alg-003: Inekuacionet dhe Vlera Absolute
   'alg-003': {
