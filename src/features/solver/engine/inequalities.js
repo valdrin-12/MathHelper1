@@ -4,6 +4,7 @@ import { Poly, lcmInt } from './poly';
 import { Steps, ok, fail } from './steps';
 import { pretty, fmtNum, relSymbol, isNeg, isZero, toNum, listSep, fabs, monomial } from './format';
 import { isolateLinear, prepareRelation } from './linear';
+import { solveSpecialInequality } from './nonPolynomial';
 
 const REL_RE = /(<=|>=|<|>)/;
 const FLIP = { '<': '>', '>': '<', '<=': '>=', '>=': '<=' };
@@ -34,8 +35,12 @@ const holds = (op, l, r) => ({ '<': l < r, '>': l > r, '<=': l <= r, '>=': l >= 
 /** Single linear inequality "lhs op rhs". */
 const solveSingle = (leftStr, op, rightStr, lang) => {
   const ctx = prepareRelation(leftStr, rightStr);
-  if (!ctx) return fail('Inequality must be linear in one variable');
-  if (ctx.degree > 1) return fail('Only linear inequalities are supported offline');
+  if (!ctx || ctx.degree > 1) {
+    // quadratic inequalities and |A| < c, |A| > c
+    const special = solveSpecialInequality(leftStr, op, rightStr, lang);
+    if (special) return special;
+    return fail(ctx ? 'Only linear and quadratic inequalities are supported offline' : 'Inequality must be linear in one variable');
+  }
   const { leftNode, rightNode, v, L, R } = ctx;
   const S = new Steps(lang);
   S.addT('givenInequality', null, `${pretty(leftNode, lang)} ${relSymbol(op)} ${pretty(rightNode, lang)}`);
