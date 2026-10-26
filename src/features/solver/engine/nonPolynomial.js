@@ -13,7 +13,7 @@ const FLIP = { '<': '>', '>': '<', '<=': '>=', '>=': '<=' };
 const holds = (op, l, r) => ({ '<': l < r, '>': l > r, '<=': l <= r + 1e-12, '>=': l >= r - 1e-12, '=': Math.abs(l - r) < 1e-9 * (1 + Math.abs(r)) }[op]);
 
 /** Exact fraction for a number when it is (close to) one with a small denominator, else null. */
-const asFrac = (x) => {
+export const asFrac = (x) => {
   if (math.isFraction(x)) return x;
   if (typeof x !== 'number' || !Number.isFinite(x)) return null;
   if (Number.isInteger(x)) return frac(x);
