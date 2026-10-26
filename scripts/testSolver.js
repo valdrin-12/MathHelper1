@@ -1,19 +1,19 @@
 #!/usr/bin/env node
-// Tests for the offline step-by-step solver (services/solver + services/mathCalculatorService.js).
+// Tests for the offline step-by-step solver (src/features/solver: engine/ + mathCalculatorService.js).
 // Usage: node scripts/testSolver.js [--verbose] [filter]
 const path = require('path');
 const Module = require('module');
 const babel = require('@babel/core');
 
 const root = path.join(__dirname, '..');
-const servicesDir = path.join(root, 'services') + path.sep;
+const srcDir = path.join(root, 'src') + path.sep;
 const verbose = process.argv.includes('--verbose');
 const filter = process.argv.slice(2).find((a) => !a.startsWith('--'));
 
-// Load the ES-module service files with Babel (only files under services/)
+// Load the ES-module service files with Babel (only files under src/)
 const originalLoader = Module._extensions['.js'];
 Module._extensions['.js'] = function load(m, file) {
-  if (file.startsWith(servicesDir)) {
+  if (file.startsWith(srcDir)) {
     const { code } = babel.transformFileSync(file, {
       plugins: ['@babel/plugin-transform-modules-commonjs'],
       babelrc: false, configFile: false, browserslistConfigFile: false,
@@ -23,8 +23,8 @@ Module._extensions['.js'] = function load(m, file) {
   return originalLoader(m, file);
 };
 
-const service = require(path.join(root, 'services', 'mathCalculatorService.js'));
-const { missingKeys } = require(path.join(root, 'services', 'solver', 'i18n.js'));
+const service = require(path.join(root, 'src', 'features', 'solver', 'mathCalculatorService.js'));
+const { missingKeys } = require(path.join(root, 'src', 'features', 'solver', 'engine', 'i18n.js'));
 const { solveMathProblem, solveWithTool } = service;
 
 const near = (a, b, eps = 1e-6) => Math.abs(a - b) <= eps * (1 + Math.abs(b));

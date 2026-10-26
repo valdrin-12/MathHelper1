@@ -2,7 +2,7 @@
 
 Aplikacion për mësimin e matematikës (klasat 6–12) në **shqip, anglisht dhe gjermanisht**, për iOS, Android dhe web ([mathhelper.online](https://mathhelper.online)).
 
-- **Zgjidhës hap pas hapi**: shkruani ose fotografoni një detyrë. Zgjidhësi pa internet (`services/solver`) e zgjidh vetë; nëse nuk mundet, shkon te Wolfram Alpha dhe Gemini AI. Përgjigjet e tyre kontrollohen me MathJS (`services/verifyAnswer.js`).
+- **Zgjidhës hap pas hapi**: shkruani ose fotografoni një detyrë. Zgjidhësi pa internet (`src/features/solver/engine`) e zgjidh vetë; nëse nuk mundet, shkon te Wolfram Alpha dhe Gemini AI. Përgjigjet e tyre kontrollohen me MathJS (`src/features/solver/verifyAnswer.js`).
 - **Grafik** me analizë automatike, **13 mjete llogaritëse** dhe fletë formulash, të gjitha pa internet.
 - **Kurse** (45) dhe **kuize** (23, me mënyrat Ushtrim dhe Test, XP dhe nivele).
 - **Llogari** me email ose Google; **Premium** me abonim (Paddle në web, Google Play dhe App Store në aplikacione).
@@ -19,24 +19,30 @@ Aplikacion për mësimin e matematikës (klasat 6–12) në **shqip, anglisht dh
 ## Struktura
 
 ```
-App.js, index.js     pika hyrëse e aplikacionit
-screens/             ekranet: Dashboard, Learn, Quiz, Saved, Settings, Auth, Onboarding, Splash
-components/          modalet dhe pjesët e ripërdorshme; components/ui është kiti i përbashkët
-context/             gjendja globale: User, Stats, SavedItems, Language, Theme
-services/            API-ja dhe logjika: apiClient, authService, geminiService, ...
-  solver/            zgjidhësi pa internet (18 module të vogla, të testuara)
-data/                kurset dhe kuizet
-  quizzes/           një skedar për çdo grup kuizi, me tri gjuhët brenda
-  localized/         kurset sipas gjuhës: courseContent_al|en|de/ dhe courses_al|en|de.js
-locales/             tekstet e ndërfaqes (al, en, de)
-utils/ hooks/ config/ theme/
+App.js, index.js     pika hyrëse e aplikacionit (Expo i pret te rrënja)
+src/
+  features/          një dosje për çdo veçori: ekrani, modalet, logjika dhe stilet e saj bashkë
+    auth/            hyrja, regjistrimi, Google, sesioni (UserContext)
+    onboarding/      splash dhe prezantimi i parë
+    home/            ekrani kryesor dhe rrjedha e zgjidhjes (useSolveFlow)
+    solver/          zgjidhësi pa internet (engine/, 18 module të testuara), Gemini, Wolfram, verifikimi
+    graph/  tools/   grafiku me analizë; mjetet llogaritëse dhe formulat
+    learn/  quiz/    kurset; kuizet (attempt/ = ekrani i një kuizi)
+    saved/  profile/ progress/  premium/  settings/
+  shared/            ajo që e përdorin të gjitha veçoritë
+    ui/              kiti i përbashkët (Button, Card, ListRow, dialogët, ...)
+    theme/  api/  i18n/  navigation/  utils/
+  content/           kurset (localized/), kuizet (quizzes/, një skedar për grup) dhe formulat
+assets/              ikonat dhe splash-i (app.json i lexon nga këtu)
 backend/             API-ja: src/ (routes → controllers → models/services), migrations/, pages/, scripts/
 scripts/             testet e aplikacionit dhe ndërtimi i web-it
 .github/workflows/   CI dhe publikimi
 docs/                dokumente shtesë (p.sh. integrimi i Paddle)
 ```
 
-Kodi i gjuhës shqipe është **`al`** (jo `sq`) kudo: te `locales/`, te skedarët e të dhënave dhe te API-ja.
+Rregulli: një skedar i ri shkon te veçoria që e përdor. Vetëm kur e përdorin dy ose më shumë veçori shkon te `src/shared/`.
+
+Kodi i gjuhës shqipe është **`al`** (jo `sq`) kudo: te `src/shared/i18n/locales/`, te skedarët e të dhënave dhe te API-ja.
 
 ## Si ta nisni
 

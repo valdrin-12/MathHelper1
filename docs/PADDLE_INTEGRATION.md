@@ -69,10 +69,10 @@ Country price overrides (monthly / yearly):
 3. **Created a client-side token** "MathHelper Web" (`ctkn_01m3ha9mwnhqc00wpe4wqzkvf1`) for Paddle.js.
 4. **Frontend (Expo web):**
    - `npm install @paddle/paddle-js`
-   - `services/paddleService.web.js`: initializes Paddle.js and throws a clear error if the env is missing or invalid, so it never silently defaults to sandbox or live. Also contains `fetchPrices()` and `openCheckout()`.
-   - `services/paddleService.js`: native stub (Paddle is web only).
-   - `config/plans.js`: plan features and price IDs (from env).
-   - `components/PremiumModal.js`: Monthly/Yearly chips, Paddle's formatted price shown as-is, overlay checkout with email prefill and `user_id`. Native flow untouched.
+   - `src/features/premium/paddleService.web.js`: initializes Paddle.js and throws a clear error if the env is missing or invalid, so it never silently defaults to sandbox or live. Also contains `fetchPrices()` and `openCheckout()`.
+   - `src/features/premium/paddleService.js`: native stub (Paddle is web only).
+   - `src/features/premium/plans.js`: plan features and price IDs (from env).
+   - `src/features/premium/PremiumModal.js`: Monthly/Yearly chips, Paddle's formatted price shown as-is, overlay checkout with email prefill and `user_id`. Native flow untouched.
    - Locales (`al`, `en`, `de`): new keys added; "one-time purchase" copy removed; limits fixed (Free: 3 analyses total, Premium: 10/day).
 5. **Backend:**
    - `npm install @paddle/paddle-node-sdk`, `npm uninstall paysera-nodejs`

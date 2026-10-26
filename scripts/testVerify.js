@@ -1,19 +1,19 @@
 #!/usr/bin/env node
-// Tests for the mathjs answer verifier (services/verifyAnswer.js).
+// Tests for the mathjs answer verifier (src/features/solver/verifyAnswer.js).
 // Usage: node scripts/testVerify.js [--verbose] [filter]
 const path = require('path');
 const Module = require('module');
 const babel = require('@babel/core');
 
 const root = path.join(__dirname, '..');
-const servicesDir = path.join(root, 'services') + path.sep;
+const srcDir = path.join(root, 'src') + path.sep;
 const verbose = process.argv.includes('--verbose');
 const filter = process.argv.slice(2).find((a) => !a.startsWith('--'));
 
-// Load the ES-module service files with Babel (only files under services/)
+// Load the ES-module service files with Babel (only files under src/)
 const originalLoader = Module._extensions['.js'];
 Module._extensions['.js'] = function load(m, file) {
-  if (file.startsWith(servicesDir)) {
+  if (file.startsWith(srcDir)) {
     const { code } = babel.transformFileSync(file, {
       plugins: ['@babel/plugin-transform-modules-commonjs'],
       babelrc: false, configFile: false, browserslistConfigFile: false,
@@ -23,7 +23,7 @@ Module._extensions['.js'] = function load(m, file) {
   return originalLoader(m, file);
 };
 
-const { verifyAnswer } = require(path.join(root, 'services', 'verifyAnswer.js'));
+const { verifyAnswer } = require(path.join(root, 'src', 'features', 'solver', 'verifyAnswer.js'));
 
 // [problem, answer, expected status, expected code (mismatch only)]
 const V = 'verified', M = 'mismatch', U = 'unknown';

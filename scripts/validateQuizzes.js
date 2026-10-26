@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Validates data/quizzes/*.js: structure, all languages complete, hints and wrong-answer explanations,
+// Validates src/content/quizzes/*.js: structure, all languages complete, hints and wrong-answer explanations,
 // numeric options consistent across languages, and a balanced correct-answer position.
 // Types: 'choice' (4 options, correct index, whyWrong[4]), 'input' (answer.value number, optional unit/placeholder/
 // commonMistakes per language), 'truefalse' (boolean correct, whyWrong string).
@@ -10,7 +10,7 @@ const Module = require('module');
 const babel = require('@babel/core');
 
 const root = path.join(__dirname, '..');
-const quizDir = path.join(root, 'data', 'quizzes');
+const quizDir = path.join(root, 'src', 'content', 'quizzes');
 const strict = process.argv.includes('--strict');
 const LANGS = ['al', 'en', 'de'];
 const onlyIds = process.argv.slice(2).filter((a) => !a.startsWith('--'));
