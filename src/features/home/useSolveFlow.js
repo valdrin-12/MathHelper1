@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { verifyAnswer } from '../solver/verifyAnswer';
 import * as imageService from '../solver/imageService';
 import * as geminiService from '../solver/geminiService';
 import * as mathCalculatorService from '../solver/mathCalculatorService';
 import { useLanguage } from '../../shared/i18n/LanguageContext';
+import { useStats } from '../progress/StatsContext';
 import { showAlert, confirmAction, getErrorMessage, getErrorCodeOf } from '../../shared/ui';
 import { getLimitCode, isConnectivityError } from './dashboardUtils';
 
@@ -21,6 +22,8 @@ export default function useSolveFlow({ inputMode, mathProblemText, selectedImage
   const [showResultModal, setShowResultModal] = useState(false);
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [limitType, setLimitType] = useState('free'); // 'free' or 'daily'
+  const { recordProblemSolved } = useStats();
+  const lastCountedRef = useRef(null);
 
   // Validate the current input; returns false (and tells the user) when there is nothing to solve
   const validateInput = () => {
@@ -38,6 +41,13 @@ export default function useSolveFlow({ inputMode, mathProblemText, selectedImage
   const showResult = (result, solverType) => {
     setAnalysisResult({ ...result, solverType });
     setShowResultModal(true);
+    // Every solved problem counts towards the daily goal, streak and achievements (saved or not).
+    // Solving the same input again right away is not counted twice.
+    const key = inputMode === 'camera' ? selectedImage : mathProblemText.trim();
+    if (key && key !== lastCountedRef.current) {
+      lastCountedRef.current = key;
+      recordProblemSolved(); // never throws; the stats refresh in the background
+    }
   };
 
   // AI / Wolfram answers are re-checked with mathjs when the problem text is known (typed or read from a photo)
