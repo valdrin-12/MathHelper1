@@ -13,6 +13,16 @@ import { useTranslation } from 'react-i18next';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../../shared/theme/constants';
 import { useTheme } from '../../shared/theme/ThemeContext';
 import { Button } from '../../shared/ui';
+import { courses, FREE_COURSE_IDS } from '../../content/coursesData';
+import { quizSets, FREE_QUIZ_IDS } from '../../content/quizData';
+
+// Counted from the data so the slides never promise more (or less) than the app has
+const COUNTS = {
+  courses: courses.length,
+  quizzes: quizSets.length,
+  freeCourses: FREE_COURSE_IDS.length,
+  freeQuizzes: FREE_QUIZ_IDS.length,
+};
 
 export default function OnboardingScreen({ onComplete }) {
   const { t } = useTranslation();
@@ -43,9 +53,9 @@ export default function OnboardingScreen({ onComplete }) {
       secondaryIcon: 'book',
       color: colors.success,
       title: t('onboarding.slide2Title'),
-      description: t('onboarding.slide2Desc'),
+      description: t('onboarding.slide2Desc', COUNTS),
       features: [
-        t('onboarding.slide2Feature1'),
+        t('onboarding.slide2Feature1', COUNTS),
         t('onboarding.slide2Feature2'),
         t('onboarding.slide2Feature3'),
       ],
@@ -67,7 +77,7 @@ export default function OnboardingScreen({ onComplete }) {
       secondaryIcon: 'star',
       color: colors.purple,
       title: t('onboarding.slide4Title'),
-      description: t('onboarding.slide4Desc'),
+      description: t('onboarding.slide4Desc', COUNTS),
       features: [
         t('onboarding.slide4Feature1'),
         t('onboarding.slide4Feature2'),
