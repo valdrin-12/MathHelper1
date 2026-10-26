@@ -78,7 +78,7 @@ Backend-i (`backend/.env`, sekrete, nuk futen kurrë në git): `DATABASE_URL`, `
 
 - **API-ja dhe web-i**: bashkimi i një PR te `main` nis `deploy.yml`, që ndërton paketën web dhe e vendos, bashkë me `backend/`, te dega `deploy` (një commit i vetëm, zëvendësohet çdo herë). Render ndërton nga ajo degë, dhe migrimet e bazës ekzekutohen gjatë ndërtimit.
 - **Aplikacionet e dyqaneve**: `npx eas-cli build --platform all --profile production` (duhet `eas login`). Numrat e versioneve rriten vetë.
-- Paketa e ndërtuar web **nuk futet në `main`**: mbahet vetëm te `deploy`.
+- Paketa e ndërtuar web **nuk futet në `main`**: mbahet vetëm te `deploy`. Për ta parë lokalisht nga backend-i: `npm run build:web -- --out backend/public`, pastaj `npm run dev` te `backend/`.
 
 ## Liçensa
 
