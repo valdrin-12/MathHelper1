@@ -13,6 +13,7 @@ import { factorTool, expandTool, simplifyTool, solvePolynomialEquation } from '.
 import { derivativeTool, integralTool } from './calculus';
 import { primeFactorsTool, gcdLcmTool, detectPrimeQuestion, isPrimeTool, detectCombinatorics, combinatoricsTool } from './numberTheory';
 import { detectFunctionDefinition, functionTool } from './functions';
+import { solveSpecialEquation } from './nonPolynomial';
 import { percentTool, detectPercent } from './percent';
 import { matrixTool } from './matrices';
 import { statisticsTool, parseDataList } from './statistics';
@@ -156,6 +157,9 @@ const solveEquationText = (text, lang) => {
   let ctx;
   try { ctx = prepareRelation(l, r); } catch (e) { return fail(`Could not parse equation: ${e.message}`); }
   if (!ctx) {
+    // |A| = c, √A = B, aᴬ = b, log(A) = c, sin(A) = c …
+    const special = solveSpecialEquation(l, r, lang);
+    if (special) return special;
     const node = tryParse(`(${l})-(${r})`);
     if (node && freeVariables(node).length > 1) return fail('Equation must contain exactly one variable');
     return fail('Equation is not polynomial - use AI');

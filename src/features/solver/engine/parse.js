@@ -37,9 +37,24 @@ const convertLogs = (input) => {
   return out;
 };
 
+/** Accepts "|x − 3|" style bars and rewrites them as abs(…). */
+const barsToAbs = (s) => {
+  if (!s.includes('|')) return s;
+  let out = '';
+  let depth = 0;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (ch !== '|') { out += ch; continue; }
+    const prev = out.replace(/\s+$/, '').slice(-1);
+    const opening = depth === 0 || prev === '' || /[(+\-*/^=<>,|]/.test(prev);
+    if (opening) { out += 'abs('; depth++; } else { out += ')'; depth--; }
+  }
+  return depth === 0 ? out : s;
+};
+
 /** Character-level clean-up shared by every solver path (no percent / degree logic). */
 export const normalizeCore = (input) => {
-  let s = String(input).trim();
+  let s = barsToAbs(String(input).trim());
   s = s
     .replace(/[−–—﹣－]/g, '-')
     .replace(/[×✕✖⋅·∙]/g, '*')

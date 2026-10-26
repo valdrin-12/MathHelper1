@@ -166,6 +166,34 @@ text('C(10;3)', 'C(10;3)', 'al', answerIs('C(10; 3) = 120'));
 text('V(5,2)', 'V(5,2)', 'al', answerIs('V(5; 2) = 20'));
 text('mixed numbers', '2 1/2 + 1 1/4', 'en', answerIs('15/4'));
 text('cube root symbol', '√16 + ∛27', 'en', answerIs('7'));
+// ---- absolute value, roots, exponentials, logarithms, trigonometry, quadratic inequalities ---
+text('|x−3| = 5', '|x-3|=5', 'en', answerHas('x₁ = −2', 'x₂ = 8'));
+text('|A| = negative', '|2x+1|=-4', 'en', answerIs('x ∈ ∅'));
+text('|A| = |B|', '|x-1|=|2x+3|', 'en', answerHas('x₁ = −4', 'x₂ = −2/3'));
+text('|A| = linear keeps B ≥ 0', '|x-2| = 2x - 1', 'en', answerIs('x = 1'));
+text('|−5| + 3 arithmetic', '|-5| + 3', 'en', answerIs('8'));
+text('√(x+3) = 5', 'sqrt(x+3)=5', 'en', answerIs('x = 22'));
+text('√(x+3) = x − 3 rejects x = 1', '√(x+3) = x - 3', 'en', (r) => (answerIs('x = 6')(r) === true && r.steps.some((s) => s.includes('rejected'))) || JSON.stringify(r.steps));
+text('√(2x−1) + 1 = 4', 'sqrt(2x-1) + 1 = 4', 'en', answerIs('x = 5'));
+text('2^x = 32', '2^x=32', 'en', answerIs('x = 5'));
+text('3^x = 1/9', '3^x = 1/9', 'en', answerIs('x = −2'));
+text('4^x = 2^(x+3)', '4^x = 2^(x+3)', 'en', answerIs('x = 3'));
+text('e^x = 5 exact', 'e^x = 5', 'en', answerIs('x = ln(5) ≈ 1.6094'));
+text('log(x) = 2', 'log(x)=2', 'en', answerIs('x = 100'));
+text('log_2(x) = 3', 'log_2(x) = 3', 'en', answerIs('x = 8'));
+text('ln(x) = 1', 'ln(x)=1', 'en', answerIs('x = e ≈ 2.7183'));
+text('sin(x) = 1/2', 'sin(x)=1/2', 'en', answerIs('x = π/6 + 2kπ, x = 5π/6 + 2kπ, k ∈ ℤ'));
+text('cos(x) = 1/2', 'cos(x)=1/2', 'en', answerIs('x = π/3 + 2kπ, x = −π/3 + 2kπ, k ∈ ℤ'));
+text('tan(x) = 1', 'tan(x)=1', 'en', answerIs('x = π/4 + kπ, k ∈ ℤ'));
+text('sin(2x) = √3/2', 'sin(2x)=sqrt(3)/2', 'en', answerIs('x = π/6 + kπ, x = π/3 + kπ, k ∈ ℤ'));
+text('cos(x) = 2 has no solution', 'cos(x)=2', 'en', answerIs('x ∈ ∅'));
+text('x² − 4 < 0', 'x^2-4<0', 'en', answerIs('x ∈ (−2, 2)'));
+text('x² − 5x + 6 ≥ 0', 'x^2 - 5x + 6 >= 0', 'al', answerIs('x ∈ (−∞; 2] ∪ [3; +∞)'));
+text('−x² + 4x − 3 > 0', '-x^2+4x-3>0', 'en', answerIs('x ∈ (1, 3)'));
+text('x² − 2 < 0 with roots', 'x^2-2<0', 'en', answerIs('x ∈ (−√2, √2)'));
+text('x² + 1 < 0', 'x^2+1<0', 'en', answerIs('x ∈ ∅'));
+text('|2x+1| ≤ 3', '|2x+1| <= 3', 'en', answerIs('x ∈ [−2, 1]'));
+text('|x−3| > 5', '|x-3| > 5', 'en', answerIs('x ∈ (−∞, −2) ∪ (8, +∞)'));
 // several variables: like terms collected, highest degree first
 text('expand (a+b)^3 collects terms', 'expand (a+b)^3', 'en', (r) => (answerIs('a³ + 3a²b + 3ab² + b³')(r) === true && r.steps.some((s) => s.startsWith('Cube of a binomial'))) || JSON.stringify(r));
 text('expand (a−b)^2', 'expand (a-b)^2', 'en', answerIs('a² − 2ab + b²'));
@@ -209,7 +237,7 @@ text('mesatarja (al, ;)', 'mesatarja e 2,5; 3,5', 'al', (r) => (r.extras?.stats?
 
 // ---- fallbacks -----------------------------------------------------------------------------
 text('two variables in an equation → fallback', 'x + y = 2x - 3', 'en', fails());
-text('sin(x) = 0.5 → fallback', 'sin(x) = 0.5', 'en', fails());
+text('sin(x) + cos(x) = 1 → fallback', 'sin(x) + cos(x) = 1', 'en', fails());
 text('x^5 + x + 1 = 0 → fallback', 'x^5 + x + 3 = 0', 'en', fails());
 tool('unknown tool', 'nope', {}, 'en', fails());
 
