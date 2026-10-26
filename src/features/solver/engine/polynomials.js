@@ -343,7 +343,128 @@ export const expandTool = (expr, lang) => {
     if (Poly.tryFromNode(node, v)) return expandPolyWithSteps(node, v, lang, 'expand');
     return fail('Not a polynomial');
   }
-  return genericSimplify(node, lang, 'expand');
+  return expandMultivariate(node, vars, lang) || genericSimplify(node, lang, 'expand');
+};
+
+// ---------------------------------------------------------------------------------------------
+// Expand with several variables, e.g. (a + b)³ = a³ + 3a²b + 3ab² + b³
+// A polynomial is a Map from an exponent key ("3,0" = a³ for vars [a, b]) to a fraction coefficient.
+// ---------------------------------------------------------------------------------------------
+
+const mvAddTo = (P, key, c) => {
+  const s = P.has(key) ? P.get(key).add(c) : c;
+  if (isZero(s)) P.delete(key); else P.set(key, s);
+};
+const mvAdd = (A, B, sign = 1) => {
+  const R = new Map(A);
+  B.forEach((c, k) => mvAddTo(R, k, sign < 0 ? c.neg() : c));
+  return R;
+};
+const mvMul = (A, B) => {
+  const R = new Map();
+  A.forEach((ca, ka) => B.forEach((cb, kb) => {
+    const ea = ka.split(',').map(Number);
+    const eb = kb.split(',').map(Number);
+    mvAddTo(R, ea.map((e, i) => e + eb[i]).join(','), ca.mul(cb));
+  }));
+  return R;
+};
+const mvConst = (vars, c) => {
+  const R = new Map();
+  if (!isZero(c)) R.set(vars.map(() => 0).join(','), c);
+  return R;
+};
+const mvIsConst = (P, vars) => [...P.keys()].every((k) => k === vars.map(() => 0).join(','));
+
+/** Throws for anything that is not a polynomial (functions, division by a variable, fractional powers…). */
+const mvFromNode = (node, vars) => {
+  if (node.isParenthesisNode) return mvFromNode(node.content, vars);
+  if (node.isConstantNode) return mvConst(vars, frac(node.value));
+  if (node.isSymbolNode) {
+    const i = vars.indexOf(node.name);
+    if (i < 0) throw new Error('Not a polynomial');
+    const R = new Map();
+    R.set(vars.map((_, j) => (j === i ? 1 : 0)).join(','), frac(1));
+    return R;
+  }
+  if (node.isOperatorNode) {
+    const [a, b] = node.args;
+    switch (node.fn) {
+      case 'add': return mvAdd(mvFromNode(a, vars), mvFromNode(b, vars));
+      case 'subtract': return mvAdd(mvFromNode(a, vars), mvFromNode(b, vars), -1);
+      case 'unaryMinus': return mvAdd(new Map(), mvFromNode(a, vars), -1);
+      case 'unaryPlus': return mvFromNode(a, vars);
+      case 'multiply': return mvMul(mvFromNode(a, vars), mvFromNode(b, vars));
+      case 'divide': {
+        const D = mvFromNode(b, vars);
+        if (!mvIsConst(D, vars) || D.size === 0) throw new Error('Not a polynomial');
+        const inv = frac(1).div([...D.values()][0]);
+        return mvMul(mvFromNode(a, vars), mvConst(vars, inv));
+      }
+      case 'pow': {
+        const E = mvFromNode(b, vars);
+        if (!mvIsConst(E, vars)) throw new Error('Not a polynomial');
+        const k = E.size ? [...E.values()][0] : frac(0);
+        if (k.d !== 1n || k.s < 0n || k.n > 12n) throw new Error('Not a polynomial');
+        const base = mvFromNode(a, vars);
+        let R = mvConst(vars, frac(1));
+        for (let i = 0n; i < k.n; i++) R = mvMul(R, base);
+        return R;
+      }
+      default: throw new Error('Not a polynomial');
+    }
+  }
+  throw new Error('Not a polynomial');
+};
+
+/** Highest total degree first, then by the first variable (a³, a²b, ab², b³). */
+const mvToString = (P, vars, lang) => {
+  const keys = [...P.keys()].map((k) => k.split(',').map(Number));
+  keys.sort((x, y) => {
+    const dx = x.reduce((s, e) => s + e, 0);
+    const dy = y.reduce((s, e) => s + e, 0);
+    if (dx !== dy) return dy - dx;
+    for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return y[i] - x[i];
+    return 0;
+  });
+  const terms = keys.map((e) => {
+    const body = e.map((n, i) => (n === 0 ? '' : n === 1 ? vars[i] : `${vars[i]}${sup(n)}`)).join('');
+    return monomial(P.get(e.join(',')), body, lang);
+  });
+  return joinTerms(terms);
+};
+
+const expandMultivariate = (node, vars, lang) => {
+  let P;
+  try {
+    P = mvFromNode(node, [...vars].sort());
+  } catch {
+    return null;
+  }
+  const sorted = [...vars].sort();
+  const res = mvToString(P, sorted, lang);
+  const given = pretty(node, lang);
+  const S = new Steps(lang);
+  S.addT('givenExpression', null, given);
+  // Name the formula for the two classic cases: (a ± b)² and (a ± b)³
+  const inner = unwrap(node);
+  if (inner.isOperatorNode && inner.fn === 'pow' && inner.args[1].isConstantNode && [2, 3].includes(Number(inner.args[1].value))) {
+    const base = unwrap(inner.args[0]);
+    const isSum = (n) => n.isOperatorNode && (n.fn === 'add' || n.fn === 'subtract');
+    // a binomial: a sum of exactly two terms, so (x + y + z)² is not named as one
+    if (isSum(base) && !base.args.some(isSum)) {
+      const n = Number(inner.args[1].value);
+      const minus = base.fn === 'subtract';
+      const formula = n === 2
+        ? (minus ? '(a − b)² = a² − 2ab + b²' : '(a + b)² = a² + 2ab + b²')
+        : '(a ± b)³ = a³ ± 3a²b + 3ab² ± b³';
+      S.add(S.t(n === 2 ? 'squareOfBinomial' : 'cubeOfBinomial'), `${given} = ${res}`, formula);
+      return ok({ type: 'expand', answer: res, steps: S, explanation: S.t('expandExplanation', { result: res }), extras: { result: res } });
+    }
+  }
+  if (res === given) S.addT('alreadySimplest', null, res);
+  else S.addT('expandResult', null, `${given} = ${res}`);
+  return ok({ type: 'expand', answer: res, steps: S, explanation: S.t('expandExplanation', { result: res }), extras: { result: res } });
 };
 
 /** Polynomial gcd (monic) via Euclid. */
