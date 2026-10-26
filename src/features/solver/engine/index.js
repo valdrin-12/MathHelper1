@@ -11,7 +11,8 @@ import { solveSystem, splitSystem } from './systems';
 import { looksLikeInequality, solveInequality, inequalityTool } from './inequalities';
 import { factorTool, expandTool, simplifyTool, solvePolynomialEquation } from './polynomials';
 import { derivativeTool, integralTool } from './calculus';
-import { primeFactorsTool, gcdLcmTool } from './numberTheory';
+import { primeFactorsTool, gcdLcmTool, detectPrimeQuestion, isPrimeTool, detectCombinatorics, combinatoricsTool } from './numberTheory';
+import { detectFunctionDefinition, functionTool } from './functions';
 import { percentTool, detectPercent } from './percent';
 import { matrixTool } from './matrices';
 import { statisticsTool, parseDataList } from './statistics';
@@ -177,6 +178,24 @@ const runKeywordTool = (tool, exprRaw, lang) => {
   return simplifyTool(expr, lang);
 };
 
+// An expression with variables and no "=": simplify / expand it when that changes something,
+// otherwise (one variable) read it as a function and analyse it.
+const solveBareExpression = (text, lang) => {
+  const expr = exprComma(normalizeCore(text));
+  const node = tryParse(expr);
+  if (!node) return fail('Could not parse expression');
+  const vars = freeVariables(node);
+  const same = (r) => r.answer.replace(/\s/g, '') === pretty(node, lang).replace(/\s/g, '');
+  if (vars.length === 1) {
+    const r = simplifyTool(expr, lang);
+    if (r.success && !same(r)) return r;
+    return functionTool({ name: 'f', v: vars[0], expr }, lang);
+  }
+  const r = expandTool(expr, lang);
+  if (r.success && !same(r)) return r;
+  return fail('Expression contains variables - use AI');
+};
+
 const detectAndSolve = (input, lang) => {
   const multiline = /\n/.test(String(input).trim());
   let text = multiline ? String(input).trim() : String(input).trim().replace(/\s+/g, ' ').replace(TRAIL, '');
@@ -189,6 +208,10 @@ const detectAndSolve = (input, lang) => {
   if (gl) return gcdLcmTool(gl, lang, gl.want);
   const pf = detectPrime(text);
   if (pf) return primeFactorsTool(pf, lang);
+  const pq = detectPrimeQuestion(text);
+  if (pq) return isPrimeTool(pq, lang);
+  const comb = detectCombinatorics(text);
+  if (comb) return combinatoricsTool(comb, lang);
   const mx = detectMatrix(text);
   if (mx) return matrixTool(mx, lang);
   const der = detectDerivative(text);
@@ -200,6 +223,15 @@ const detectAndSolve = (input, lang) => {
   for (const { tool, re } of KEYWORD_TOOLS) {
     const m = text.match(re);
     if (m) return runKeywordTool(tool, m[1], lang);
+  }
+
+  // f(x) = …, y = 2x + 1 → analyse the function
+  const fnDef = detectFunctionDefinition(text);
+  if (fnDef) {
+    const expr = exprComma(normalizeCore(cleanExpr(fnDef.expr)));
+    const node = tryParse(expr);
+    const vars = node ? freeVariables(node) : [];
+    if (node && vars.length === 1 && vars[0] === fnDef.v) return functionTool({ ...fnDef, expr }, lang);
   }
 
   if (WORD_PROBLEM.test(text)) return fail('Word problem detected - use AI');
@@ -216,7 +248,7 @@ const detectAndSolve = (input, lang) => {
   if (core.includes('=')) return fail('Unsupported comparison');
 
   const node = tryParse(exprComma(normalizeExpression(cleanExpr(text)).expr));
-  if (node && freeVariables(node).length) return fail('Expression contains variables - use AI');
+  if (node && freeVariables(node).length) return solveBareExpression(cleanExpr(text), lang);
   return solveArithmetic(cleanExpr(text), lang);
 };
 

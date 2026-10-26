@@ -81,3 +81,89 @@ export const gcdLcmTool = (input, lang, want = 'both') => {
     extras: { numbers: nums, gcd, lcm, factorizations: nums.map((n, i) => ({ n, factors: fs[i] })) },
   });
 };
+
+// ---------------------------------------------------------------------------------------------
+// Is n prime? (trial division up to √n)
+// ---------------------------------------------------------------------------------------------
+
+const PRIME_Q = [
+  /^(?:is\s+)?(\d+)\s+(?:a\s+)?prime(?:\s+number)?$/i,
+  /^is\s+(\d+)\s+(?:a\s+)?prime(?:\s+number)?$/i,
+  /^isprime\s*\(\s*(\d+)\s*\)$/i,
+  /^a\s+(?:është|eshte)\s+(?:numri\s+)?(\d+)\s+(?:numër|numer)?\s*(?:i\s+)?(?:thjeshtë|thjeshte|prim)$/i,
+  /^(?:numri\s+)?(\d+)\s+(?:a\s+)?(?:është|eshte)\s+(?:numër|numer)?\s*(?:i\s+)?(?:thjeshtë|thjeshte|prim)$/i,
+  /^ist\s+(\d+)\s+(?:eine\s+)?primzahl$/i,
+];
+
+export const detectPrimeQuestion = (text) => {
+  for (const re of PRIME_Q) {
+    const m = text.match(re);
+    if (m) return { n: Number(m[1]) };
+  }
+  return null;
+};
+
+export const isPrimeTool = ({ n }, lang) => {
+  if (!validInt(n) || n < 2) return fail('Enter a whole number from 2 to 10¹²');
+  const S = new Steps(lang);
+  const root = Math.floor(Math.sqrt(n));
+  S.addT('primeCheckRule', { n }, `√${n} ≈ ${Math.sqrt(n).toFixed(2).replace('.', lang === 'en' ? '.' : ',')}`);
+  let divisor = null;
+  for (let p = 2; p <= root; p += p === 2 ? 1 : 2) { if (n % p === 0) { divisor = p; break; } }
+  if (divisor === null) {
+    const tried = [];
+    for (let p = 2; p <= root && tried.length < 12; p++) if (primeFactorize(p).length === 1 && primeFactorize(p)[0].exp === 1) tried.push(p);
+    if (tried.length) S.addT('primeNoDivisor', null, `${n} : ${tried.join(', ')}${root > tried[tried.length - 1] && tried.length === 12 ? ', …' : ''}`);
+    S.addT('isPrime', { n });
+    return ok({ type: 'isPrime', answer: S.t('answerIsPrime', { n }), steps: S, explanation: S.t('isPrime', { n }), extras: { n, isPrime: true } });
+  }
+  S.addT('primeFoundDivisor', { n, d: divisor }, `${n} = ${divisor} · ${n / divisor}`);
+  const text = factorsText(primeFactorize(n));
+  if (text !== `${divisor} · ${n / divisor}`) S.addT('writeAsProduct', null, `${n} = ${text}`);
+  return ok({ type: 'isPrime', answer: S.t('answerNotPrime', { n, text }), steps: S, explanation: S.t('answerNotPrime', { n, text }), extras: { n, isPrime: false } });
+};
+
+// ---------------------------------------------------------------------------------------------
+// Combinations C(n, k) and variations / permutations V(n, k) = P(n, k)
+// ---------------------------------------------------------------------------------------------
+
+const COMB_RES = [
+  { kind: 'C', re: /^(\d+)\s*(?:choose|c|ncr|mbi)\s*(\d+)$/i },
+  { kind: 'C', re: /^(?:c|ncr|binom|binomial|komb\w*|kombination\w*)\s*\(\s*(\d+)\s*[,;]\s*(\d+)\s*\)$/i },
+  { kind: 'V', re: /^(\d+)\s*(?:p|npr)\s*(\d+)$/i },
+  { kind: 'V', re: /^(?:p|npr|v|a|var\w*|perm\w*)\s*\(\s*(\d+)\s*[,;]\s*(\d+)\s*\)$/i },
+];
+
+export const detectCombinatorics = (text) => {
+  const t = text.replace(/\s+/g, ' ').trim();
+  for (const { kind, re } of COMB_RES) {
+    const m = t.match(re);
+    if (m) return { kind, n: Number(m[1]), k: Number(m[2]) };
+  }
+  return null;
+};
+
+const fallingProduct = (n, k) => { let r = 1n; for (let i = 0; i < k; i++) r *= BigInt(n - i); return r; };
+const factorialBig = (k) => fallingProduct(k, k);
+
+export const combinatoricsTool = ({ kind, n, k }, lang) => {
+  if (!Number.isInteger(n) || !Number.isInteger(k) || n < 0 || k < 0 || n > 1000) return fail('Enter whole numbers 0 ≤ k ≤ n ≤ 1000');
+  if (k > n) return fail('k must not be greater than n');
+  const S = new Steps(lang);
+  const name = kind === 'C' ? `C(${n}${listSep(lang)}${k})` : `V(${n}${listSep(lang)}${k})`;
+  const factors = [];
+  for (let i = 0; i < k; i++) factors.push(n - i);
+  const shown = factors.length <= 8 ? factors.join(' · ') : `${factors.slice(0, 3).join(' · ')} · … · ${factors[factors.length - 1]}`;
+  const num = fallingProduct(n, k);
+  if (kind === 'C') {
+    S.addT('combFormula', null, `C(n${listSep(lang)}k) = n! / (k! · (n − k)!)`);
+    const den = factorialBig(k);
+    const result = num / den;
+    S.addT('combSubstitute', null, `${name} = ${n}! / (${k}! · ${n - k}!) = (${k ? shown : '1'}) / ${k}!`);
+    S.addT('calculate', null, `${name} = ${num} / ${den} = ${result}`);
+    return ok({ type: 'combinatorics', answer: `${name} = ${result}`, steps: S, explanation: S.t('combExplanation', { n, k, r: String(result) }), extras: { kind, n, k, result: String(result) } });
+  }
+  S.addT('varFormula', null, `V(n${listSep(lang)}k) = n! / (n − k)! = n · (n − 1) · … · (n − k + 1)`);
+  S.addT('calculate', null, `${name} = ${k ? shown : '1'} = ${num}`);
+  return ok({ type: 'combinatorics', answer: `${name} = ${num}`, steps: S, explanation: S.t('varExplanation', { n, k, r: String(num) }), extras: { kind, n, k, result: String(num) } });
+};
