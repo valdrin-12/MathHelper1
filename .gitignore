@@ -54,3 +54,6 @@ e2e/
 # web build output (published from the deploy branch, never committed to main)
 web-dist/
 deploy-out/
+
+# built web app: generated, published from the deploy branch (npm run build:web -- --out backend/public to serve it locally)
+backend/public/
