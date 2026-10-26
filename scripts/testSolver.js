@@ -147,6 +147,13 @@ text('faktorizo (al)', 'faktorizo x²−9', 'al', answerIs('(x − 3)(x + 3)'));
 text('faktorisiere (de)', 'Faktorisiere 6x^2 + x - 2', 'de', answerIs('(2x − 1)(3x + 2)'));
 tool('expand (x+2)(x−3)', 'expand', { expression: '(x+2)(x-3)' }, 'en', answerIs('x² − x − 6'));
 text('expand (x+3)^2 binomial', 'expand (x+3)^2', 'en', (r) => (answerIs('x² + 6x + 9')(r) === true && r.steps.some((s) => s.startsWith('Square of a binomial'))) || JSON.stringify(r));
+// several variables: like terms collected, highest degree first
+text('expand (a+b)^3 collects terms', 'expand (a+b)^3', 'en', (r) => (answerIs('a³ + 3a²b + 3ab² + b³')(r) === true && r.steps.some((s) => s.startsWith('Cube of a binomial'))) || JSON.stringify(r));
+text('expand (a−b)^2', 'expand (a-b)^2', 'en', answerIs('a² − 2ab + b²'));
+text('zbërthe (2a − 3b)(a + b)', 'zbërthe (2a - 3b)(a + b)', 'al', answerIs('2a² − ab − 3b²'));
+text('expand trinomial square (not called a binomial)', 'expand (x+y+z)^2', 'en', (r) => (answerIs('x² + 2xy + 2xz + y² + 2yz + z²')(r) === true && !r.steps.some((s) => s.includes('binomial'))) || JSON.stringify(r));
+text('expand difference of cubes of binomials', 'expand (a+b)^3 - (a-b)^3', 'en', answerIs('6a²b + 2b³'));
+text('expand with a fraction coefficient', 'expand (a/2 + b)^2', 'en', answerIs('a²/4 + ab + b²'));
 text('zbërthe (al)', 'zbërthe 2(x − 1)^2 − x', 'al', answerIs('2x² − 5x + 2'));
 text('ausmultiplizieren (de)', 'ausmultiplizieren (a+b)^2', 'de', (r) => (r.success && /a.*b/.test(r.answer)) || JSON.stringify(r));
 tool('simplify 3x + 2x − 4 + x', 'simplify', { expression: '3x + 2x - 4 + x' }, 'en', answerIs('6x − 4'));
