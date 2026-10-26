@@ -9,11 +9,12 @@
 - ThemeContext for dark/light mode
 
 ## Key Architecture
+- Layout: `src/features/<feature>/` (screen, modals, logic and styles of one feature), `src/shared/` (ui kit, theme, api client, i18n, utils), `src/content/` (courses, quizzes, formulas); `App.js`/`index.js` stay at the root
 - Screens: DashboardScreen, LearnScreen, QuizScreen, SavedScreen, SettingsScreen, AuthScreen, OnboardingScreen, SplashScreen
 - Modals: CourseDetailModal, ActiveQuizModal, QuizResultModal, ProfileModal, ResultsModal
 - Context: UserContext, StatsContext, SavedItemsContext, LanguageContext, ThemeContext
-- Theme: theme/constants.js (COLORS, SPACING, BORDER_RADIUS, SHADOWS, TYPOGRAPHY)
-- Locales: locales/al/ui.json, locales/en/ui.json, locales/de/ui.json
+- Theme: src/shared/theme/constants.js (COLORS, SPACING, BORDER_RADIUS, SHADOWS, TYPOGRAPHY)
+- Locales: src/shared/i18n/locales/{al,en,de}/ui.json
 
 ## Course Progress
 - Saved to AsyncStorage under key `@mathhelper_course_progress`

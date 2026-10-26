@@ -1,17 +1,17 @@
 #!/usr/bin/env node
-// Tests services/functionAnalysis.js (offline graph analysis) with plain Node.
+// Tests src/features/graph/functionAnalysis.js (offline graph analysis) with plain Node.
 // Usage: node scripts/testFunctionAnalysis.js
 const path = require('path');
 const Module = require('module');
 const babel = require('@babel/core');
 
 const root = path.join(__dirname, '..');
-const servicesDir = path.join(root, 'services') + path.sep;
+const srcDir = path.join(root, 'src') + path.sep;
 
-// Load the ES-module service files with Babel (only project files under services/)
+// Load the ES-module service files with Babel (only project files under src/)
 const originalLoader = Module._extensions['.js'];
 Module._extensions['.js'] = function load(m, file) {
-  if (file.startsWith(servicesDir)) {
+  if (file.startsWith(srcDir)) {
     const { code } = babel.transformFileSync(file, {
       plugins: ['@babel/plugin-transform-modules-commonjs'],
       babelrc: false,
@@ -23,8 +23,8 @@ Module._extensions['.js'] = function load(m, file) {
   return originalLoader(m, file);
 };
 
-const fa = require(path.join(root, 'services', 'functionAnalysis.js'));
-const gs = require(path.join(root, 'services', 'graphService.js'));
+const fa = require(path.join(root, 'src', 'features', 'graph', 'functionAnalysis.js'));
+const gs = require(path.join(root, 'src', 'features', 'graph', 'graphService.js'));
 
 let passed = 0;
 let failed = 0;
