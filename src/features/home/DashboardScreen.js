@@ -31,7 +31,7 @@ export default function DashboardScreen() {
   const { t } = useTranslation();
   const { addItem, savedItems, removeItem } = useSavedItems();
   const { user } = useUser();
-  const { todayProblems, completedCoursesCount, completedQuizzesCount, streak, recordProblemSolved, refresh } = useStats();
+  const { todayProblems, totalProblems, completedCoursesCount, completedQuizzesCount, streak, refresh } = useStats();
   const { colors } = useTheme();
   const { isWeb } = useResponsive();
   const styles = useDashboardStyles();
@@ -109,8 +109,7 @@ export default function DashboardScreen() {
         steps: solve.analysisResult.steps,
         explanation: solve.analysisResult.explanation,
       };
-      await addItem(savedItem);
-      await recordProblemSolved();
+      await addItem(savedItem); // the problem was already counted as solved when the result appeared
     } catch (error) {
       console.error('Gabim gjate ruajtjes:', error);
       throw error;
@@ -189,7 +188,7 @@ export default function DashboardScreen() {
           </ListSection>
 
           <StatsGrid
-            problems={savedItems.length}
+            problems={totalProblems}
             streak={streak}
             courses={completedCoursesCount}
             quizzes={completedQuizzesCount}

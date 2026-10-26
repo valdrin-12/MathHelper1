@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '../auth/UserContext';
 import { useStats } from '../progress/StatsContext';
-import { useSavedItems } from '../saved/SavedItemsContext';
 import { useTheme } from '../../shared/theme/ThemeContext';
 import { isPremiumActive } from '../premium/isPremium';
 import { useProgress } from '../progress/progress';
@@ -32,9 +31,8 @@ export default function ProfileView({ fadeAnim, scaleAnim, onClose, onEdit, onUp
   const { t } = useTranslation();
   const { user, logout } = useUser();
   const {
-    completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, earnedAchievementsCount, stats, todayKey,
+    completedCoursesCount, completedQuizzesCount, streak, longestStreak, achievements, earnedAchievementsCount, stats, todayKey, totalProblems,
   } = useStats();
-  const { savedItems } = useSavedItems();
   const { colors } = useTheme();
   const styles = useProfileStyles();
   const isPremium = isPremiumActive(user);
@@ -107,7 +105,7 @@ export default function ProfileView({ fadeAnim, scaleAnim, onClose, onEdit, onUp
         <Card style={styles.circularStatsRow}>
           <View style={styles.circularStatItem}>
             <CircularProgress size={72} strokeWidth={5} progress={dailyProgress} color={colors.primary}>
-              <Text style={styles.circularStatValue}>{savedItems.length}</Text>
+              <Text style={styles.circularStatValue}>{totalProblems}</Text>
             </CircularProgress>
             <Text style={styles.circularStatLabel}>{t('profileModal.problemsSolved')}</Text>
           </View>
