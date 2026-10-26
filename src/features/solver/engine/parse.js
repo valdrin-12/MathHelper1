@@ -51,7 +51,12 @@ export const normalizeCore = (input) => {
     .replace(/≥|=>|⩾/g, '>=')
     .replace(/√\s*\(/g, 'sqrt(')
     .replace(/√\s*(\d+(?:\.\d+)?)/g, 'sqrt($1)')
-    .replace(/√\s*([a-zA-Z])/g, 'sqrt($1)');
+    .replace(/√\s*([a-zA-Z])/g, 'sqrt($1)')
+    .replace(/∛\s*\(/g, 'cbrt(')
+    .replace(/∛\s*(\d+(?:\.\d+)?)/g, 'cbrt($1)')
+    .replace(/∛\s*([a-zA-Z])/g, 'cbrt($1)');
+  // Mixed numbers as taught in school: "2 1/2" = 2 + 1/2
+  s = s.replace(/(^|[^\d.,\w)])(\d+)\s+(\d+)\s*\/\s*(\d+)(?![\d.,\w(])/g, '$1($2+$3/$4)');
   // "sin x", "ln 2x", "cos 30°" → sin(x), ln(2x), cos(30°)
   s = s.replace(/\b(sin|cos|tan|cot|sec|csc|ln|log|sqrt|exp|arcsin|arccos|arctan|asin|acos|atan)\s+(\d*\.?\d*[a-zA-Z]?\d*°?)(?![a-zA-Z(])/g,
     (m, fn, arg) => (arg ? `${fn}(${arg})` : m));

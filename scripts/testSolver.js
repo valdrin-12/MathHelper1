@@ -147,6 +147,25 @@ text('faktorizo (al)', 'faktorizo x²−9', 'al', answerIs('(x − 3)(x + 3)'));
 text('faktorisiere (de)', 'Faktorisiere 6x^2 + x - 2', 'de', answerIs('(2x − 1)(3x + 2)'));
 tool('expand (x+2)(x−3)', 'expand', { expression: '(x+2)(x-3)' }, 'en', answerIs('x² − x − 6'));
 text('expand (x+3)^2 binomial', 'expand (x+3)^2', 'en', (r) => (answerIs('x² + 6x + 9')(r) === true && r.steps.some((s) => s.startsWith('Square of a binomial'))) || JSON.stringify(r));
+// ---- bare expressions, functions, primes, combinatorics, mixed numbers, roots ---------------
+text('bare expression is simplified', '2x+3x', 'en', answerIs('5x'));
+text('bare binomial square is expanded', '(x+3)^2', 'en', answerIs('x² + 6x + 9'));
+text('bare expression in two variables is expanded', '(a+b)^2', 'en', answerIs('a² + 2ab + b²'));
+text('bare quadratic is analysed as a function', 'x^2-4x+3', 'en', answerHas('x₁ = 1', 'x₂ = 3', 'V(2, −1)'));
+text('f(x) quadratic: zeros, vertex, range', 'f(x)=x^2-4x+3', 'al', (r) => (answerHas('x₁ = 1', 'x₂ = 3', 'V(2; −1)')(r) === true && r.steps.some((s) => s.includes('[−1; +∞)'))) || JSON.stringify(r.steps));
+text('f(x) with a trailing "find the vertex"', 'f(x) = x^2 - 4x + 3, find the vertex', 'en', answerHas('V(2, −1)'));
+text('y = kx + n', 'y = 2x + 1', 'en', (r) => (answerHas('x = −1/2', 'k = 2')(r) === true && r.steps.some((s) => s.includes('y = 0'))) || JSON.stringify(r.steps));
+text('quadratic without real zeros', 'g(t)=t^2+1', 'en', answerHas('none', 'V(0, 1)'));
+text('rational function: domain without the pole', 'f(x)=1/(x-2)', 'al', (r) => (r.success && r.steps.some((s) => s.includes('ℝ \\ {2}')) && r.steps.some((s) => s.includes('x = 2'))) || JSON.stringify(r.steps));
+text('ln domain', 'f(x)=ln(x)', 'en', (r) => (answerHas('x = 1')(r) === true && r.steps.some((s) => s.includes('(0, +∞)'))) || JSON.stringify(r.steps));
+text('is 97 prime', 'is 97 prime', 'en', answerIs('97 is a prime number'));
+text('a është 91 numër i thjeshtë', 'a është 91 numër i thjeshtë', 'al', answerHas('91 nuk është', '7 · 13'));
+text('ist 101 eine Primzahl', 'ist 101 eine Primzahl', 'de', answerIs('101 ist eine Primzahl'));
+text('10 choose 3', '10 choose 3', 'en', answerIs('C(10, 3) = 120'));
+text('C(10;3)', 'C(10;3)', 'al', answerIs('C(10; 3) = 120'));
+text('V(5,2)', 'V(5,2)', 'al', answerIs('V(5; 2) = 20'));
+text('mixed numbers', '2 1/2 + 1 1/4', 'en', answerIs('15/4'));
+text('cube root symbol', '√16 + ∛27', 'en', answerIs('7'));
 // several variables: like terms collected, highest degree first
 text('expand (a+b)^3 collects terms', 'expand (a+b)^3', 'en', (r) => (answerIs('a³ + 3a²b + 3ab² + b³')(r) === true && r.steps.some((s) => s.startsWith('Cube of a binomial'))) || JSON.stringify(r));
 text('expand (a−b)^2', 'expand (a-b)^2', 'en', answerIs('a² − 2ab + b²'));
@@ -189,7 +208,7 @@ text('mean of (text)', 'mean of 3, 5, 7', 'en', (r) => (r.extras?.stats?.mean ==
 text('mesatarja (al, ;)', 'mesatarja e 2,5; 3,5', 'al', (r) => (r.extras?.stats?.mean === 3) || JSON.stringify(r));
 
 // ---- fallbacks -----------------------------------------------------------------------------
-text('y = 2x + 3 → fallback', 'y = 2x + 3', 'en', fails());
+text('two variables in an equation → fallback', 'x + y = 2x - 3', 'en', fails());
 text('sin(x) = 0.5 → fallback', 'sin(x) = 0.5', 'en', fails());
 text('x^5 + x + 1 = 0 → fallback', 'x^5 + x + 3 = 0', 'en', fails());
 tool('unknown tool', 'nope', {}, 'en', fails());
