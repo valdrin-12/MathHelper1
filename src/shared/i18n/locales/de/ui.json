@@ -643,6 +643,11 @@
     "tagline": "Ihr KI-Mathe-Assistent"
   },
   "graph": {
+    "parameters": "Parameter",
+    "parametersHint": "Bewegen Sie die Regler und sehen Sie, wie sich der Graph ändert.",
+    "resetParams": "Zurücksetzen",
+    "parameterLabel": "Parameter {{name}}",
+    "tryExample": "Mit Parametern ausprobieren:",
     "title": "Funktionsgraph",
     "placeholder": "z. B. x^2 − 4",
     "addFunction": "Funktion hinzufügen",

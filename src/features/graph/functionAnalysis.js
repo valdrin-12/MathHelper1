@@ -12,7 +12,7 @@
 import { create, all } from 'mathjs';
 import { toMathExpression, MAX_GRAPH_FUNCTIONS } from './graphService';
 
-const math = create(all, { predictable: true }); // predictable: sqrt(-1), log(-1) → NaN (no complex results)
+export const math = create(all, { predictable: true }); // predictable: sqrt(-1), log(-1) → NaN (no complex results)
 
 const ALLOWED_FUNCTIONS = new Set([
   'sin', 'cos', 'tan', 'cot', 'sec', 'csc', 'asin', 'acos', 'atan', 'acot',

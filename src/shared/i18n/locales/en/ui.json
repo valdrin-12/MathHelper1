@@ -643,6 +643,11 @@
     "tagline": "Your AI Math Assistant"
   },
   "graph": {
+    "parameters": "Parameters",
+    "parametersHint": "Move the sliders and watch the graph change.",
+    "resetParams": "Reset",
+    "parameterLabel": "Parameter {{name}}",
+    "tryExample": "Try with parameters:",
     "title": "Graph",
     "placeholder": "e.g. x^2 − 4",
     "addFunction": "Add function",

@@ -748,6 +748,11 @@
     "tagline": "Asistenti juaj i matematikës me AI"
   },
   "graph": {
+    "parameters": "Parametrat",
+    "parametersHint": "Lëvizni rrëshqitësit dhe shikoni si ndryshon grafiku.",
+    "resetParams": "Rivendos",
+    "parameterLabel": "Parametri {{name}}",
+    "tryExample": "Provoni me parametra:",
     "title": "Grafik",
     "placeholder": "p.sh. x^2 − 4",
     "addFunction": "Shto funksion",
