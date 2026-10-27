@@ -14,6 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../../shared/theme/constants';
 import { useTheme } from '../../shared/theme/ThemeContext';
 import { Button, Pill } from '../../shared/ui';
+import Confetti from '../../shared/ui/Confetti';
 import { getLevelInfo } from '../progress/progress';
 import { formatNumber, parseNumericAnswer, findCommonMistake } from './quizAttempt';
 
@@ -355,6 +356,8 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
           />
           </View>
         </View>
+        {/* 80 % or more: a short burst of confetti */}
+        <Confetti trigger={visible && percentage >= 80 ? result : null} />
       </SafeAreaView>
     </Modal>
   );

@@ -10,6 +10,7 @@ import { showAlert } from '../../shared/ui';
 import CourseOverview from './course/CourseOverview';
 import LessonViewer from './course/LessonViewer';
 import { loadCourseProgress, saveCourseProgress } from './course/courseProgress';
+import Confetti from '../../shared/ui/Confetti';
 
 // A course in a sheet: first its overview, then (after "Start" / "Continue") the lessons.
 // This component owns the state and the progress; what is drawn lives in ./course/.
@@ -23,6 +24,7 @@ export default function CourseDetailModal({ visible, course, onClose, onProgress
   // Course progress is per user so it never leaks between accounts on a shared device
   const progressKey = getUserScopedKey(COURSE_PROGRESS_KEY, user?.id);
   const [completing, setCompleting] = useState(false);
+  const [completedBurst, setCompletedBurst] = useState(0);
   const [showContent, setShowContent] = useState(false);
 
   // Lesson viewer state
@@ -111,11 +113,14 @@ export default function CourseDetailModal({ visible, course, onClose, onProgress
       return;
     }
     const title = course.title;
-    // Close the course modal immediately, then show success alert
-    onClose();
+    // A moment of confetti, then close the course and confirm
+    setCompletedBurst(Date.now());
     setTimeout(() => {
-      showAlert(t('courseContent.courseCompleted'), t('courseContent.courseCompletedMessage', { title }));
-    }, 300);
+      onClose();
+      setTimeout(() => {
+        showAlert(t('courseContent.courseCompleted'), t('courseContent.courseCompletedMessage', { title }));
+      }, 300);
+    }, 1200);
   };
 
   const togglePractice = (index) => {
@@ -158,6 +163,7 @@ export default function CourseDetailModal({ visible, course, onClose, onProgress
           onStart={handleStartCourse}
         />
       )}
+      <Confetti trigger={completedBurst} />
     </Modal>
   );
 }
