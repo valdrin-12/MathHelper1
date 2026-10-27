@@ -4,7 +4,7 @@ import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as authService from './authService';
 import { setOnAuthLost, isRecoverableError } from '../../shared/api/apiClient';
-import { setCurrentUserId, clearUserLocalData, CACHED_USER_KEY } from './userStorage';
+import { setCurrentUserId, clearUserLocalData, CACHED_USER_KEY, takeGuestLocalData, restoreGuestLocalData } from './userStorage';
 
 const UserContext = createContext();
 
@@ -188,10 +188,7 @@ export const UserProvider = ({ children }) => {
       const result = await authService.loginUser({ email, password });
       if (result.success) {
         // Make sure nothing from a previous account survives on this device
-        await clearUserLocalData();
-        setOffline(false);
-        setAuthError(null);
-        setUser(result.user);
+        await startSession(result.user);
       }
       return { success: result.success, error: result.error, code: result.code };
     } catch (error) {
@@ -208,10 +205,7 @@ export const UserProvider = ({ children }) => {
     try {
       const result = await authService.loginWithGoogle({ idToken, language });
       if (result.success) {
-        await clearUserLocalData();
-        setOffline(false);
-        setAuthError(null);
-        setUser(result.user);
+        await startSession(result.user);
       }
       return { success: result.success, error: result.error, code: result.code, isNewUser: result.isNewUser, linkedExisting: result.linkedExisting };
     } catch (error) {
@@ -228,10 +222,7 @@ export const UserProvider = ({ children }) => {
     try {
       const result = await authService.registerUser({ name, email, password, language });
       if (result.success) {
-        await clearUserLocalData();
-        setOffline(false);
-        setAuthError(null);
-        setUser(result.user);
+        await startSession(result.user);
       }
       return { success: result.success, error: result.error, code: result.code };
     } catch (error) {
@@ -291,6 +282,17 @@ export const UserProvider = ({ children }) => {
       console.error('Gabim gjatë përditësimit:', error);
       return { success: false, error: 'UNEXPECTED_ERROR', code: 'UNEXPECTED_ERROR' };
     }
+  };
+
+  // After a successful sign-in: wipe what a previous account left on this device, but keep what
+  // the user just did as a guest (course progress, practice XP) and move it to their account.
+  const startSession = async (nextUser) => {
+    const guestData = await takeGuestLocalData();
+    await clearUserLocalData();
+    await restoreGuestLocalData(guestData, nextUser?.id);
+    setOffline(false);
+    setAuthError(null);
+    setUser(nextUser);
   };
 
   const continueAsGuest = useCallback(() => {

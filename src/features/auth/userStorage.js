@@ -67,6 +67,32 @@ export const clearUserLocalData = async () => {
   }
 };
 
+const ANONYMOUS_SUFFIX = '::user:anonymous';
+
+/**
+ * Local data a guest made (stored under the 'anonymous' scope), read before signing in wipes it.
+ * Never throws. @returns {Promise<Array<[string, string]>>}
+ */
+export const takeGuestLocalData = async () => {
+  try {
+    const keys = (await AsyncStorage.getAllKeys()).filter((k) => k.endsWith(ANONYMOUS_SUFFIX));
+    if (!keys.length) return [];
+    return (await AsyncStorage.multiGet(keys)).filter(([, v]) => v !== null);
+  } catch {
+    return [];
+  }
+};
+
+/** Store data from takeGuestLocalData() under the signed-in user's scope. Never throws. */
+export const restoreGuestLocalData = async (pairs, userId) => {
+  if (!pairs?.length || userId === undefined || userId === null) return;
+  try {
+    await AsyncStorage.multiSet(pairs.map(([k, v]) => [`${k.slice(0, -ANONYMOUS_SUFFIX.length)}::user:${userId}`, v]));
+  } catch {
+    // best-effort
+  }
+};
+
 export default {
   COURSE_PROGRESS_KEY,
   CHALLENGE_KEY_PREFIX,

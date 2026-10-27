@@ -77,6 +77,71 @@ async function quizCompleted(req, res) {
   }
 }
 
+// Limits for importing a guest's progress (generous for real use, small enough to stop abuse)
+const MAX_IMPORT_DAYS = 400;
+const MAX_DAILY_COUNT = 500;
+const MAX_IMPORT_COURSES = 200;
+const MAX_IMPORT_QUIZZES = 500; // keeps the body under the 100 kB JSON limit
+const DATE_KEY_RE = /^\d{4}-\d{2}-\d{2}$/;
+
+const count = (v) => (Number.isInteger(v) && v >= 0 && v <= MAX_DAILY_COUNT ? v : null);
+/** An ISO time not in the future; anything else becomes "now". */
+const pastTime = (v) => {
+  const t = typeof v === 'string' ? Date.parse(v) : NaN;
+  return Number.isNaN(t) || t > Date.now() + 60_000 ? new Date() : new Date(t);
+};
+
+/** POST /api/stats/import-guest — progress made without an account, added once after sign-in. */
+async function importGuest(req, res) {
+  try {
+    const body = req.body || {};
+    const latest = statsModel.resolveDayKey(body.localDate);
+    const dailyActivity = {};
+    const days = Object.entries(body.dailyActivity && typeof body.dailyActivity === 'object' ? body.dailyActivity : {});
+    if (days.length > MAX_IMPORT_DAYS) return res.status(400).json({ success: false, error: 'Too many days' });
+    for (const [day, a] of days) {
+      if (!DATE_KEY_RE.test(day) || Number.isNaN(Date.parse(`${day}T00:00:00Z`)) || day > latest) {
+        return res.status(400).json({ success: false, error: `Invalid day ${String(day).slice(0, 20)}` });
+      }
+      const problems = count(a?.problems ?? 0);
+      const courses = count(a?.courses ?? 0);
+      const quizzes = count(a?.quizzes ?? 0);
+      if (problems === null || courses === null || quizzes === null) {
+        return res.status(400).json({ success: false, error: `Invalid counts for ${day}` });
+      }
+      if (problems + courses + quizzes > 0) dailyActivity[day] = { problems, courses, quizzes };
+    }
+    const rawCourses = Array.isArray(body.completedCourses) ? body.completedCourses : [];
+    const rawQuizzes = Array.isArray(body.completedQuizzes) ? body.completedQuizzes : [];
+    if (rawCourses.length > MAX_IMPORT_COURSES || rawQuizzes.length > MAX_IMPORT_QUIZZES) {
+      return res.status(400).json({ success: false, error: 'Too many items' });
+    }
+    const completedCourses = [];
+    for (const c of rawCourses) {
+      const courseId = cleanString(c?.courseId, MAX_ID_LENGTH);
+      const title = cleanString(c?.title, MAX_TITLE_LENGTH);
+      if (!courseId || !title) return res.status(400).json({ success: false, error: 'Invalid course' });
+      completedCourses.push({ courseId, title, completedAt: pastTime(c.completedAt) });
+    }
+    const completedQuizzes = [];
+    for (const q of rawQuizzes) {
+      const quizId = cleanString(q?.quizId, MAX_ID_LENGTH);
+      const title = cleanString(q?.title, MAX_TITLE_LENGTH);
+      const { score, total } = q || {};
+      if (!quizId || !title || !Number.isInteger(total) || total < 1 || total > MAX_QUIZ_TOTAL
+        || !Number.isInteger(score) || score < 0 || score > total) {
+        return res.status(400).json({ success: false, error: 'Invalid quiz' });
+      }
+      completedQuizzes.push({ quizId, title, score, total, completedAt: pastTime(q.completedAt) });
+    }
+    await statsModel.importGuestStats(req.userId, { dailyActivity, completedCourses, completedQuizzes });
+    res.json({ success: true, imported: { days: Object.keys(dailyActivity).length, courses: completedCourses.length, quizzes: completedQuizzes.length } });
+  } catch (err) {
+    console.error('ImportGuest error:', err);
+    res.status(500).json({ success: false, error: 'Failed to import progress' });
+  }
+}
+
 // Same limits and premium rule (incl. premium_expires_at) as the analyze rate limiter
 async function getUsage(req, res) {
   try {
@@ -91,4 +156,4 @@ async function getUsage(req, res) {
   }
 }
 
-module.exports = { getStats, getUsage, problemSolved, courseCompleted, quizCompleted };
+module.exports = { getStats, getUsage, problemSolved, courseCompleted, quizCompleted, importGuest };

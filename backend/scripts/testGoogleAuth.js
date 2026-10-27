@@ -168,6 +168,36 @@ async function waitForDb() {
   r = await call('DELETE', '/api/auth/account', { password: 'new-carol-pw-2' }, carol.body.accessToken);
   check('delete with the right password: 200', r.status === 200, r);
 
+  // 11. a guest's progress is added to the account after sign-in
+  const gina = await call('POST', '/api/auth/register', { name: 'Gina', email: 'gina@example.com', password: 'gina-password-1' });
+  const ginaTok = gina.body.accessToken;
+  const today = new Date().toISOString().slice(0, 10);
+  const dayKey = (n) => new Date(Date.now() - n * 86400000).toISOString().slice(0, 10);
+  await call('POST', '/api/stats/problem-solved', { localDate: today }, ginaTok); // already active today on the account
+  r = await call('POST', '/api/stats/import-guest', {
+    localDate: today,
+    dailyActivity: { [dayKey(2)]: { problems: 3 }, [dayKey(1)]: { problems: 1, quizzes: 1 }, [today]: { problems: 2, courses: 1 } },
+    completedCourses: [{ courseId: 'arith-001', title: 'Numbers', completedAt: new Date().toISOString() }],
+    completedQuizzes: [{ quizId: 'arith-easy', title: 'Basic', score: 9, total: 13, completedAt: new Date(Date.now() - 86400000).toISOString() }],
+  }, ginaTok);
+  check('import guest progress: 200', r.status === 200 && r.body.imported?.days === 3, r);
+  r = await call('GET', `/api/stats?today=${today}`, null, ginaTok);
+  const st = r.body.stats || {};
+  check('import: today counts added to the account\'s own', st.dailyActivity?.[today]?.problems === 3, st.dailyActivity);
+  check('import: course and quiz added', st.completedCourses?.length === 1 && st.completedQuizzes?.length === 1 && st.completedQuizzes[0].percentage === 69, st);
+  check('import: streak rebuilt over 3 days', st.streak?.current === 3 && st.streak?.longest === 3, st.streak);
+  r = await call('POST', '/api/stats/import-guest', { completedCourses: [{ courseId: 'arith-001', title: 'Numbers' }] }, ginaTok);
+  const { rows: cc } = await pool.query("SELECT COUNT(*)::int AS n FROM completed_courses c JOIN users u ON u.id = c.user_id WHERE u.email = 'gina@example.com'");
+  check('import: a course is never counted twice', r.status === 200 && cc[0].n === 1, { r, cc });
+  r = await call('POST', '/api/stats/import-guest', { dailyActivity: { '2999-01-01': { problems: 1 } } }, ginaTok);
+  check('import: future day rejected', r.status === 400, r);
+  r = await call('POST', '/api/stats/import-guest', { dailyActivity: { [today]: { problems: 100000 } } }, ginaTok);
+  check('import: absurd count rejected', r.status === 400, r);
+  r = await call('POST', '/api/stats/import-guest', { completedQuizzes: [{ quizId: 'q', title: 'Q', score: 20, total: 10 }] }, ginaTok);
+  check('import: score above total rejected', r.status === 400, r);
+  r = await call('POST', '/api/stats/import-guest', { dailyActivity: {} });
+  check('import: needs a session', r.status === 401, r);
+
   server.close();
   await pool.end();
   console.log(`${pass}/${pass + fails.length} passed`);

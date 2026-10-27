@@ -4,7 +4,10 @@ import * as statsService from './statsService';
 import { getErrorCode } from '../auth/authService';
 import { getLocalDateKey } from '../../shared/utils/localDate';
 import { useUser } from '../auth/UserContext';
-import { loadGuestStats, guestRecordProblemSolved, guestRecordCourseCompleted, guestRecordQuizCompleted } from './guestStats';
+import {
+  loadGuestStats, guestRecordProblemSolved, guestRecordCourseCompleted, guestRecordQuizCompleted,
+  readGuestStatsForImport, clearGuestStats,
+} from './guestStats';
 
 const StatsContext = createContext();
 
@@ -27,6 +30,19 @@ export const StatsProvider = ({ children }) => {
 
   const loadStats = useCallback(async () => {
     try {
+      // Signed in with progress from guest mode on this device: add it to the account once.
+      // If that fails (offline) it stays on the device and is tried again on the next load.
+      if (!isGuest) {
+        const pending = await readGuestStatsForImport();
+        if (pending) {
+          try {
+            await statsService.importGuestStats(pending);
+            await clearGuestStats();
+          } catch (e) {
+            console.warn('Guest progress not imported yet:', e?.code || e?.message);
+          }
+        }
+      }
       const data = isGuest ? await loadGuestStats() : await statsService.getStats();
       setStats(data);
       setError(null);

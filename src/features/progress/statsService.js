@@ -40,6 +40,11 @@ export const recordQuizCompleted = async (quizId, title, score, total) => {
   });
 };
 
+/** Add a guest's progress ({ dailyActivity, completedCourses, completedQuizzes }) to the account. Errors propagate. */
+export const importGuestStats = async ({ dailyActivity, completedCourses, completedQuizzes }) => {
+  await api.post('/api/stats/import-guest', { dailyActivity, completedCourses, completedQuizzes, localDate: getLocalDateKey() });
+};
+
 /**
  * Achievement catalogue. Titles/descriptions live in locales: achievements.<id>.title / .desc
  */
