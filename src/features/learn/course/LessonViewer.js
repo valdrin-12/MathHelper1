@@ -41,6 +41,8 @@ export default function LessonViewer({
       )}
 
       <LessonBody
+        key={currentLesson}
+        courseId={course.id}
         lesson={lessons[currentLesson]}
         currentLesson={currentLesson}
         tint={tint}
