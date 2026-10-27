@@ -28,7 +28,7 @@ import { useResponsive } from '../../shared/utils/responsive';
 export default function SettingsScreen() {
   const { isWeb } = useResponsive();
   const { t } = useTranslation();
-  const { user, logout, deleteAccount } = useUser();
+  const { user, logout, deleteAccount, isGuest, exitGuest } = useUser();
   const { completedCoursesCount, completedQuizzesCount, streak, achievements, earnedAchievementsCount } = useStats();
   const { isDark, toggleTheme, colors } = useTheme();
   const [infoModal, setInfoModal] = useState(null);
@@ -158,8 +158,8 @@ export default function SettingsScreen() {
               <Text style={styles.avatarText}>{initials}</Text>
             </View>
           }
-          title={user?.name || t('settings.user')}
-          subtitle={user?.email || ''}
+          title={isGuest ? t('settings.guestTitle') : (user?.name || t('settings.user'))}
+          subtitle={isGuest ? t('settings.guestSubtitle') : (user?.email || '')}
           right={
             <View style={[styles.streakChip, { backgroundColor: colors.warningLight }]}>
               <Ionicons name="flame" size={14} color={colors.secondary} />
@@ -167,6 +167,15 @@ export default function SettingsScreen() {
             </View>
           }
         />
+        {isGuest && (
+          <ListRow
+            icon="person-add"
+            iconColor={colors.primary}
+            title={t('settings.signInOrRegister')}
+            subtitle={t('settings.signInOrRegisterDesc')}
+            onPress={() => exitGuest('register')}
+          />
+        )}
       </ListSection>
 
       {/* Preferences */}
@@ -238,13 +247,17 @@ export default function SettingsScreen() {
         <ListRow icon="information-circle" iconColor={colors.textMuted} title={t('settings.aboutApp')} onPress={openAbout} />
       </ListSection>
 
-      {/* Account */}
-      <ListSection>
-        <ListRow title={t('settings.logout')} centered onPress={handleLogout} />
-      </ListSection>
-      <ListSection style={styles.tightSection}>
-        <ListRow title={t('settings.deleteAccount')} destructive centered onPress={handleDeleteAccount} />
-      </ListSection>
+      {/* Account (not for guests: there is nothing to sign out of or delete) */}
+      {!isGuest && (
+        <>
+          <ListSection>
+            <ListRow title={t('settings.logout')} centered onPress={handleLogout} />
+          </ListSection>
+          <ListSection style={styles.tightSection}>
+            <ListRow title={t('settings.deleteAccount')} destructive centered onPress={handleDeleteAccount} />
+          </ListSection>
+        </>
+      )}
 
       {/* Delete Account Modal */}
       <Modal

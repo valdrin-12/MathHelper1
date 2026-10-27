@@ -16,12 +16,12 @@ import ForgotPasswordOverlay from './ForgotPasswordOverlay';
 // Sign-in screen: brand header, Log In / Sign Up tabs, the form, Google, and the password-reset overlay.
 // Each form keeps its own fields, so switching tabs (or finishing a reset) starts it from a clean state.
 export default function AuthScreen() {
-  const { login, register, loginWithGoogle } = useUser();
+  const { login, register, loginWithGoogle, authMode, continueAsGuest } = useUser();
   const { t, i18n } = useTranslation();
   const { colors } = useTheme();
   const styles = useAuthStyles();
 
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(authMode !== 'register');
   const [loading, setLoading] = useState(false);
   const [formKey, setFormKey] = useState(0); // changing it remounts the form = clears it
   const [forgot, setForgot] = useState(null); // { email } while the password reset is open
@@ -88,6 +88,16 @@ export default function AuthScreen() {
           <View style={styles.languageSwitcherTop}>
             <LanguageSwitcher variant="light" />
           </View>
+          {/* Use the app without an account (offline solver, tools, free courses and quizzes) */}
+          <TouchableOpacity
+            onPress={continueAsGuest}
+            style={styles.guestButton}
+            accessibilityRole="button"
+            accessibilityHint={t('auth.guestHint')}
+          >
+            <Text style={styles.guestButtonText}>{t('auth.continueAsGuest')}</Text>
+            <Ionicons name="arrow-forward" size={15} color={colors.primary} style={{ marginLeft: 4 }} />
+          </TouchableOpacity>
         </View>
 
         {/* Form Card */}

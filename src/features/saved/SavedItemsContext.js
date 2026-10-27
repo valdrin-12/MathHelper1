@@ -16,7 +16,9 @@ export const useSavedItems = () => {
 };
 
 export const SavedItemsProvider = ({ children }) => {
-  const { offline } = useUser();
+  const { offline, user } = useUser();
+  // Saving needs an account; a guest simply has an empty list
+  const isGuest = !user;
   const [savedItems, setSavedItems] = useState([]);
   const [loading, setLoading] = useState(true);
   // Load error: { code, message } or null. The list keeps its last good value on error.
@@ -25,6 +27,12 @@ export const SavedItemsProvider = ({ children }) => {
   errorRef.current = error;
 
   const loadSavedItems = useCallback(async () => {
+    if (isGuest) {
+      setSavedItems([]);
+      setError(null);
+      setLoading(false);
+      return true;
+    }
     try {
       setLoading(true);
       const items = await storageService.getSavedItems();
@@ -38,7 +46,7 @@ export const SavedItemsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isGuest]);
 
   // Ngarko të dhënat kur komponenti montohet
   useEffect(() => {

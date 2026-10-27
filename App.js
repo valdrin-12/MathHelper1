@@ -293,7 +293,7 @@ function ConnectionBanner({ bottomOffset }) {
 }
 
 function MainApp() {
-  const { user, loading } = useUser();
+  const { user, loading, isGuest } = useUser();
   const { t } = useTranslation();
   const { colors, isDark } = useTheme();
   const { width } = useWindowDimensions();
@@ -336,7 +336,7 @@ function MainApp() {
     return <OnboardingScreen onComplete={handleOnboardingComplete} />;
   }
 
-  if (!user) {
+  if (!user && !isGuest) {
     return <AuthScreen />;
   }
 

@@ -24,7 +24,7 @@ import { PREMIUM_PLAN, BILLING_INTERVALS } from './plans';
 
 export default function PremiumModal({ visible, onClose }) {
   const { t } = useTranslation();
-  const { user, refreshUser } = useUser();
+  const { user, refreshUser, isGuest, exitGuest } = useUser();
   const { language } = useLanguage();
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -106,6 +106,12 @@ export default function PremiumModal({ visible, onClose }) {
   };
 
   const handleBuyPremium = async () => {
+    if (isGuest) {
+      // buying needs an account to attach Premium to
+      onClose?.();
+      exitGuest('register');
+      return;
+    }
     if (isWeb) {
       // Web: Paddle overlay checkout. The webhook matches the payment to the user via user_id.
       if (!user?.id) {
@@ -146,6 +152,7 @@ export default function PremiumModal({ visible, onClose }) {
   };
 
   const handleRestore = async () => {
+    if (isGuest) { onClose?.(); exitGuest('login'); return; }
     try {
       setRestoring(true);
       const result = await purchaseService.restorePurchases();
