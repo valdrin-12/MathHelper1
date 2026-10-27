@@ -190,6 +190,21 @@ export const makeAuthStyles = (colors) => StyleSheet.create({
     color: colors.primary,
     fontWeight: '600',
   },
+  guestButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 14,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 18,
+    backgroundColor: `${colors.primary}14`,
+  },
+  guestButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: colors.primary,
+    letterSpacing: -0.2,
+  },
 
   // ─── Error Banners ──────────────────────────────────────────────────────────
   loginErrorBox: {

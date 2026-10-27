@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../shared/i18n/LanguageContext';
 import { getLocale } from '../../shared/i18n/i18n';
 import { useSavedItems } from './SavedItemsContext';
+import { useUser } from '../auth/UserContext';
 import * as storageService from '../../shared/api/storageService';
 import SavedItemDetailModal from './SavedItemDetailModal';
 import { useTabNavigate } from '../../shared/navigation/TabNavigationContext';
@@ -72,6 +73,7 @@ export default function SavedScreen() {
   const navigateToTab = useTabNavigate();
   const { language } = useLanguage();
   const { savedItems, removeItem, refresh, loading, error, retry } = useSavedItems();
+  const { isGuest, exitGuest } = useUser();
   const [selectedItem, setSelectedItem] = useState(null);
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -233,7 +235,13 @@ export default function SavedScreen() {
     </>
   );
 
-  const emptyComponent = showInitialLoading ? (
+  const emptyComponent = isGuest ? (
+    <View>
+      <EmptyState icon="person-add-outline" title={t('saved.guestTitle')} message={t('saved.guestHint')} />
+      <Button style={styles.emptyButton} icon="person-add" title={t('accountPrompt.create')} onPress={() => exitGuest('register')} />
+      <Button style={styles.emptyButton} variant="plain" title={t('accountPrompt.signIn')} onPress={() => exitGuest('login')} />
+    </View>
+  ) : showInitialLoading ? (
     <View style={styles.loadingBox}>
       <ActivityIndicator color={colors.textMuted} />
     </View>

@@ -8,6 +8,9 @@ import { setCurrentUserId, clearUserLocalData, CACHED_USER_KEY } from './userSto
 
 const UserContext = createContext();
 
+// "Continue without an account": the offline parts of the app work, progress stays on the device.
+const GUEST_KEY = '@mathhelper_guest';
+
 // Retry delays while the server is unreachable (ms); the last value repeats.
 const OFFLINE_RETRY_DELAYS = [15000, 30000, 60000, 120000, 300000];
 
@@ -44,6 +47,9 @@ export const UserProvider = ({ children }) => {
   const [offline, setOffline] = useState(false);
   // last session-check error code (NETWORK_ERROR / TIMEOUT / SERVER_ERROR) or null
   const [authError, setAuthError] = useState(null);
+  // guest = using the app without an account; authMode = which tab the sign-in screen opens on
+  const [guest, setGuest] = useState(false);
+  const [authMode, setAuthMode] = useState('login');
 
   const retryTimer = useRef(null);
   const retryAttempt = useRef(0);
@@ -52,6 +58,11 @@ export const UserProvider = ({ children }) => {
   // Keep userStorage's current id in sync synchronously so userKey() is correct on first render.
   const setUser = useCallback((next) => {
     setCurrentUserId(next?.id ?? null);
+    if (next) {
+      // signed in: no longer a guest
+      setGuest(false);
+      AsyncStorage.removeItem(GUEST_KEY).catch(() => {});
+    }
     setUserState(next);
     writeCachedUser(next);
   }, []);
@@ -138,10 +149,13 @@ export const UserProvider = ({ children }) => {
     [checkCurrentUser],
   );
 
-  // Initial session check
+  // Initial session check (the guest flag is read first so the sign-in screen never flashes)
   useEffect(() => {
     mounted.current = true;
-    checkCurrentUser();
+    AsyncStorage.getItem(GUEST_KEY)
+      .then((v) => { if (mounted.current) setGuest(v === 'true'); })
+      .catch(() => {})
+      .finally(() => checkCurrentUser());
     return () => {
       mounted.current = false;
       clearRetry();
@@ -279,9 +293,25 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const continueAsGuest = useCallback(() => {
+    setGuest(true);
+    AsyncStorage.setItem(GUEST_KEY, 'true').catch(() => {});
+  }, []);
+
+  /** Leave guest mode and show the sign-in screen, on the "register" or "login" tab. */
+  const exitGuest = useCallback((mode = 'register') => {
+    setAuthMode(mode);
+    setGuest(false);
+    AsyncStorage.removeItem(GUEST_KEY).catch(() => {});
+  }, []);
+
   const value = {
     user,
     loading,
+    isGuest: !user && guest,
+    authMode,
+    continueAsGuest,
+    exitGuest,
     offline,
     authError,
     login,

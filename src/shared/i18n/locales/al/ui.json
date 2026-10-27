@@ -26,6 +26,8 @@
     "settings": "Cilësimet"
   },
   "auth": {
+    "continueAsGuest": "Vazhdoni pa llogari",
+    "guestHint": "Zgjidhësi pa internet, mjetet dhe kurset e kuizet falas funksionojnë edhe pa llogari.",
     "continueWithGoogle": "Vazhdo me Google",
     "googleConsentPrefix": "Duke vazhduar me Google, pranoni ",
     "googleConsentTerms": "Kushtet e Shërbimit",
@@ -167,6 +169,8 @@
     "startMode": "Fillo: {{mode}}"
   },
   "saved": {
+    "guestTitle": "Ruajtja kërkon llogari",
+    "guestHint": "Krijoni një llogari falas për t’i ruajtur problemet dhe për t’i parë në çdo pajisje.",
     "loadErrorTitle": "Problemet e ruajtura nuk u ngarkuan",
     "title": "Të Ruajtura",
     "itemCount_one": "{{count}} problem i ruajtur",
@@ -190,6 +194,10 @@
     "confirmBulkDelete": "Jeni i sigurt që doni të fshini {{count}} probleme?"
   },
   "settings": {
+    "guestTitle": "Vizitor",
+    "guestSubtitle": "Progresi ruhet vetëm në këtë pajisje",
+    "signInOrRegister": "Hyni ose krijoni llogari",
+    "signInOrRegisterDesc": "Analizat me AI, ruajtja e problemeve dhe Premium",
     "deleteAccountGoogleConfirm": "Konfirmoni me Google që ta fshini llogarinë.",
     "streak": "Seria",
     "deletePasswordLabel": "Shkruani fjalëkalimin për ta konfirmuar",
@@ -985,5 +993,17 @@
         "data": "Të dhënat"
       }
     }
+  },
+  "accountPrompt": {
+    "title": "Krijoni një llogari falas",
+    "ai": "Analiza me AI kërkon llogari. Me llogarinë falas merrni 3 analiza me AI.",
+    "aiFallback": "Ky problem nuk zgjidhet pa internet. Me një llogari falas mund ta zgjidhni me AI (3 analiza falas).",
+    "photo": "Leximi i problemit nga fotoja kërkon llogari. Pa llogari mund ta shkruani problemin me tastierë.",
+    "save": "Për të ruajtur problemet ju duhet një llogari.",
+    "premium": "Për Premium ju duhet së pari një llogari.",
+    "profile": "Me llogari, progresi juaj ruhet dhe është i njëjtë në çdo pajisje.",
+    "create": "Krijoni llogari",
+    "signIn": "Kam llogari, hyni",
+    "later": "Jo tani"
   }
 }

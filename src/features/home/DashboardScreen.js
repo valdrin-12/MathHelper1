@@ -25,6 +25,7 @@ import SolveCard from './SolveCard';
 import StatsGrid from './StatsGrid';
 import RecentActivity from './RecentActivity';
 import LimitModal from './LimitModal';
+import AccountPrompt from '../auth/AccountPrompt';
 
 // Home tab: greeting, daily goal, the solve card, tools, statistics and recent activity.
 export default function DashboardScreen() {
@@ -54,6 +55,8 @@ export default function DashboardScreen() {
   const [showTools, setShowTools] = useState(false);
   // The graph opened from Tools starts empty; the Graph button uses the typed problem
   const [graphFromTools, setGraphFromTools] = useState(false);
+  // guest: 'save' | 'profile' while the "create an account" prompt is open
+  const [guestPrompt, setGuestPrompt] = useState(null);
 
   const solve = useSolveFlow({ inputMode, mathProblemText, selectedImage, selectedImageSize });
 
@@ -148,7 +151,7 @@ export default function DashboardScreen() {
           right={
             <TouchableOpacity
               style={styles.avatar}
-              onPress={() => setShowProfile(true)}
+              onPress={() => (user ? setShowProfile(true) : setGuestPrompt('profile'))}
               activeOpacity={0.7}
               accessibilityRole="button"
               accessibilityLabel={t('a11y.profile')}
@@ -208,7 +211,18 @@ export default function DashboardScreen() {
         result={solve.analysisResult}
         imageUri={selectedImage}
         onClose={solve.closeResult}
-        onSave={handleSaveResult}
+        onSave={user ? handleSaveResult : () => {
+          // one modal at a time: close the result, then ask for an account
+          solve.closeResult();
+          setTimeout(() => setGuestPrompt('save'), 400);
+          return new Promise(() => {}); // the result screen is closing, keep its button idle
+        }}
+      />
+
+      <AccountPrompt
+        visible={!!(solve.accountPrompt || guestPrompt)}
+        reason={solve.accountPrompt || guestPrompt || 'profile'}
+        onClose={() => { solve.closeAccountPrompt(); setGuestPrompt(null); }}
       />
 
       <GraphModal

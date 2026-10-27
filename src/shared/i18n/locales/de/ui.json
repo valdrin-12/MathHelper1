@@ -26,6 +26,8 @@
     "settings": "Einstellungen"
   },
   "auth": {
+    "continueAsGuest": "Ohne Konto fortfahren",
+    "guestHint": "Der Offline-Löser, die Werkzeuge und die kostenlosen Kurse und Quizze funktionieren ohne Konto.",
     "continueWithGoogle": "Weiter mit Google",
     "googleConsentPrefix": "Wenn Sie mit Google fortfahren, stimmen Sie den ",
     "googleConsentTerms": "Nutzungsbedingungen",
@@ -167,6 +169,8 @@
     "startMode": "Starten: {{mode}}"
   },
   "saved": {
+    "guestTitle": "Speichern braucht ein Konto",
+    "guestHint": "Erstellen Sie ein kostenloses Konto, um Aufgaben zu speichern und auf jedem Gerät zu sehen.",
     "loadErrorTitle": "Gespeicherte Aufgaben konnten nicht geladen werden",
     "title": "Gespeichert",
     "itemCount_one": "{{count}} gespeicherte Aufgabe",
@@ -190,6 +194,10 @@
     "confirmBulkDelete": "Möchten Sie wirklich {{count}} Aufgaben löschen?"
   },
   "settings": {
+    "guestTitle": "Gast",
+    "guestSubtitle": "Fortschritt nur auf diesem Gerät gespeichert",
+    "signInOrRegister": "Anmelden oder Konto erstellen",
+    "signInOrRegisterDesc": "KI-Analysen, gespeicherte Aufgaben und Premium",
     "deleteAccountGoogleConfirm": "Bestätigen Sie mit Google, um Ihr Konto zu löschen.",
     "streak": "Serie",
     "deletePasswordLabel": "Geben Sie zur Bestätigung Ihr Passwort ein",
@@ -880,5 +888,17 @@
         "data": "Daten"
       }
     }
+  },
+  "accountPrompt": {
+    "title": "Kostenloses Konto erstellen",
+    "ai": "Die KI-Analyse braucht ein Konto. Ein kostenloses Konto enthält 3 KI-Analysen.",
+    "aiFallback": "Diese Aufgabe lässt sich offline nicht lösen. Mit einem kostenlosen Konto können Sie sie mit KI lösen (3 kostenlose Analysen).",
+    "photo": "Das Lesen einer Aufgabe aus einem Foto braucht ein Konto. Ohne Konto können Sie die Aufgabe eintippen.",
+    "save": "Zum Speichern von Aufgaben brauchen Sie ein Konto.",
+    "premium": "Für Premium brauchen Sie zuerst ein Konto.",
+    "profile": "Mit einem Konto wird Ihr Fortschritt gespeichert und ist auf jedem Gerät gleich.",
+    "create": "Konto erstellen",
+    "signIn": "Ich habe ein Konto",
+    "later": "Nicht jetzt"
   }
 }

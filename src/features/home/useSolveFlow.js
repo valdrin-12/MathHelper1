@@ -6,6 +6,7 @@ import * as geminiService from '../solver/geminiService';
 import * as mathCalculatorService from '../solver/mathCalculatorService';
 import { useLanguage } from '../../shared/i18n/LanguageContext';
 import { useStats } from '../progress/StatsContext';
+import { useUser } from '../auth/UserContext';
 import { showAlert, confirmAction, getErrorMessage, getErrorCodeOf } from '../../shared/ui';
 import { getLimitCode, isConnectivityError } from './dashboardUtils';
 
@@ -23,6 +24,9 @@ export default function useSolveFlow({ inputMode, mathProblemText, selectedImage
   const [showLimitModal, setShowLimitModal] = useState(false);
   const [limitType, setLimitType] = useState('free'); // 'free' or 'daily'
   const { recordProblemSolved } = useStats();
+  const { user } = useUser();
+  // Guests get the offline solver; anything that needs the server asks them to create an account
+  const [accountPrompt, setAccountPrompt] = useState(null); // 'ai' | 'aiFallback' | 'photo' | null
   const lastCountedRef = useRef(null);
 
   // Validate the current input; returns false (and tells the user) when there is nothing to solve
@@ -92,6 +96,7 @@ export default function useSolveFlow({ inputMode, mathProblemText, selectedImage
   const handleCalculate = async () => {
     setAnalysisResult(null); // reset so modal never shows stale data
     if (!validateInput()) return;
+    if (!user && inputMode === 'camera') { setAccountPrompt('photo'); return; }
     setIsAnalyzing(true);
     let ticket = null;
     try {
@@ -123,7 +128,8 @@ export default function useSolveFlow({ inputMode, mathProblemText, selectedImage
         }
       }
 
-      // 2) Counted chain: Wolfram → AI, one ticket for the whole chain
+      // 2) Counted chain: Wolfram → AI, one ticket for the whole chain (needs an account)
+      if (!user) { setAccountPrompt('aiFallback'); return; }
       ticket = await geminiService.recordAnalysis();
       let lastError = null;
 
@@ -161,6 +167,7 @@ export default function useSolveFlow({ inputMode, mathProblemText, selectedImage
   const handleAnalyzeWithAI = async () => {
     setAnalysisResult(null); // reset so modal never shows stale data
     if (!validateInput()) return;
+    if (!user) { setAccountPrompt('ai'); return; }
     setIsAnalyzing(true);
     try {
       // Read the photo before recording so image errors never consume an analysis
@@ -195,5 +202,7 @@ export default function useSolveFlow({ inputMode, mathProblemText, selectedImage
     closeLimit: () => setShowLimitModal(false),
     handleCalculate,
     handleAnalyzeWithAI,
+    accountPrompt,
+    closeAccountPrompt: () => setAccountPrompt(null),
   };
 }

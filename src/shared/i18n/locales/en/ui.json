@@ -26,6 +26,8 @@
     "settings": "Settings"
   },
   "auth": {
+    "continueAsGuest": "Continue without an account",
+    "guestHint": "The offline solver, the tools and the free courses and quizzes work without an account.",
     "continueWithGoogle": "Continue with Google",
     "googleConsentPrefix": "By continuing with Google, you agree to the ",
     "googleConsentTerms": "Terms of Service",
@@ -167,6 +169,8 @@
     "startMode": "Start: {{mode}}"
   },
   "saved": {
+    "guestTitle": "Saving needs an account",
+    "guestHint": "Create a free account to save problems and see them on every device.",
     "loadErrorTitle": "Couldn't Load Saved Problems",
     "title": "Saved",
     "itemCount_one": "{{count}} saved problem",
@@ -190,6 +194,10 @@
     "confirmBulkDelete": "Are you sure you want to delete {{count}} problems?"
   },
   "settings": {
+    "guestTitle": "Guest",
+    "guestSubtitle": "Progress is kept on this device only",
+    "signInOrRegister": "Sign in or create an account",
+    "signInOrRegisterDesc": "AI analyses, saved problems and Premium",
     "deleteAccountGoogleConfirm": "Confirm with Google to delete your account.",
     "streak": "Streak",
     "deletePasswordLabel": "Enter your password to confirm",
@@ -880,5 +888,17 @@
         "data": "Data"
       }
     }
+  },
+  "accountPrompt": {
+    "title": "Create a free account",
+    "ai": "AI analysis needs an account. A free account includes 3 AI analyses.",
+    "aiFallback": "This problem cannot be solved offline. With a free account you can solve it with AI (3 free analyses).",
+    "photo": "Reading a problem from a photo needs an account. Without one you can type the problem.",
+    "save": "You need an account to save problems.",
+    "premium": "You need an account before upgrading to Premium.",
+    "profile": "With an account your progress is saved and the same on every device.",
+    "create": "Create account",
+    "signIn": "I have an account",
+    "later": "Not now"
   }
 }

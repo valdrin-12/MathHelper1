@@ -4,6 +4,7 @@ import * as statsService from './statsService';
 import { getErrorCode } from '../auth/authService';
 import { getLocalDateKey } from '../../shared/utils/localDate';
 import { useUser } from '../auth/UserContext';
+import { loadGuestStats, guestRecordProblemSolved, guestRecordCourseCompleted, guestRecordQuizCompleted } from './guestStats';
 
 const StatsContext = createContext();
 
@@ -14,7 +15,9 @@ export const useStats = () => {
 };
 
 export const StatsProvider = ({ children }) => {
-  const { offline } = useUser();
+  const { offline, user } = useUser();
+  // Without an account (guest) progress lives on the device; it is not sent anywhere
+  const isGuest = !user;
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   // Load error: { code, message } or null. Stats keep their last good value on error.
@@ -24,7 +27,7 @@ export const StatsProvider = ({ children }) => {
 
   const loadStats = useCallback(async () => {
     try {
-      const data = await statsService.getStats();
+      const data = isGuest ? await loadGuestStats() : await statsService.getStats();
       setStats(data);
       setError(null);
       return true;
@@ -35,7 +38,7 @@ export const StatsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [isGuest]);
 
   useEffect(() => {
     loadStats();
@@ -69,12 +72,12 @@ export const StatsProvider = ({ children }) => {
   };
 
   const recordCourseCompleted = (courseId, title) =>
-    runWrite(() => statsService.recordCourseCompleted(courseId, title), { waitForReload: false });
+    runWrite(() => (isGuest ? guestRecordCourseCompleted(courseId, title) : statsService.recordCourseCompleted(courseId, title)), { waitForReload: false });
 
   const recordQuizCompleted = (quizId, title, score, total) =>
-    runWrite(() => statsService.recordQuizCompleted(quizId, title, score, total));
+    runWrite(() => (isGuest ? guestRecordQuizCompleted(quizId, title, score, total) : statsService.recordQuizCompleted(quizId, title, score, total)));
 
-  const recordProblemSolved = () => runWrite(() => statsService.recordProblemSolved());
+  const recordProblemSolved = () => runWrite(() => (isGuest ? guestRecordProblemSolved() : statsService.recordProblemSolved()));
 
   const totalProblems = Object.values(stats?.dailyActivity || {}).reduce(
     (sum, day) => sum + (day.problems || 0), 0
