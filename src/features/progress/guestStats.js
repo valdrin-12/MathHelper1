@@ -72,3 +72,18 @@ export const guestRecordQuizCompleted = (quizId, title, score, total) => update(
   s.completedQuizzes.unshift({ quizId, title, score, total, percentage: total > 0 ? Math.round((score / total) * 100) : 0, completedAt: new Date().toISOString() });
   bump(s, 'quizzes');
 });
+
+/** The stored guest progress if there is any, else null (used to move it into a new account). */
+export const readGuestStatsForImport = async () => {
+  try {
+    const raw = await AsyncStorage.getItem(GUEST_STATS_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    const has = Object.keys(s.dailyActivity || {}).length || (s.completedCourses || []).length || (s.completedQuizzes || []).length;
+    return has ? { dailyActivity: s.dailyActivity || {}, completedCourses: s.completedCourses || [], completedQuizzes: s.completedQuizzes || [] } : null;
+  } catch {
+    return null;
+  }
+};
+
+export const clearGuestStats = () => AsyncStorage.removeItem(GUEST_STATS_KEY).catch(() => {});

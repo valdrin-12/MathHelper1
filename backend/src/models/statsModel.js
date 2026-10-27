@@ -190,6 +190,75 @@ async function recordQuizCompleted(userId, quizId, title, score, total, dayKey =
   await recalcStreak(userId, dayKey);
 }
 
+/** Rebuild the streak from every active day: longest run ever, current run ending at the last active day. */
+async function rebuildStreak(client, userId) {
+  const { rows } = await client.query(
+    `SELECT activity_date::text AS d FROM daily_activity
+     WHERE user_id = $1 AND (problems + courses + quizzes) > 0 ORDER BY activity_date`,
+    [userId]
+  );
+  if (!rows.length) return;
+  let longest = 0;
+  let run = 0;
+  let prev = null;
+  for (const { d } of rows) {
+    run = prev && shiftKey(prev, 1) === d ? run + 1 : 1;
+    longest = Math.max(longest, run);
+    prev = d;
+  }
+  await client.query(
+    `INSERT INTO user_streaks (user_id, current_streak, longest_streak, last_active_date)
+     VALUES ($1, $2, $3, $4)
+     ON CONFLICT (user_id) DO UPDATE SET current_streak = $2,
+       longest_streak = GREATEST(user_streaks.longest_streak, $3), last_active_date = $4`,
+    [userId, run, longest, prev]
+  );
+}
+
+/**
+ * Add the progress a user made as a guest (kept on the device) to their account, in one transaction.
+ * Input is validated by the controller. Activity counts are added; courses already completed are
+ * kept as they are; quiz attempts are added with their original time.
+ */
+async function importGuestStats(userId, { dailyActivity, completedCourses, completedQuizzes }) {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    for (const [day, a] of Object.entries(dailyActivity)) {
+      await client.query(
+        `INSERT INTO daily_activity (user_id, activity_date, problems, courses, quizzes)
+         VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (user_id, activity_date) DO UPDATE SET
+           problems = daily_activity.problems + $3,
+           courses = daily_activity.courses + $4,
+           quizzes = daily_activity.quizzes + $5`,
+        [userId, day, a.problems, a.courses, a.quizzes]
+      );
+    }
+    for (const c of completedCourses) {
+      await client.query(
+        `INSERT INTO completed_courses (user_id, course_id, title, completed_at)
+         VALUES ($1, $2, $3, $4) ON CONFLICT (user_id, course_id) DO NOTHING`,
+        [userId, c.courseId, c.title, c.completedAt]
+      );
+    }
+    for (const q of completedQuizzes) {
+      await client.query(
+        `INSERT INTO completed_quizzes (user_id, quiz_id, title, score, total, percentage, completed_at)
+         VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [userId, q.quizId, q.title, q.score, q.total, Math.round((q.score / q.total) * 100), q.completedAt]
+      );
+    }
+    await rebuildStreak(client, userId);
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK').catch(() => {});
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
 module.exports = {
-  getStats, recordProblemSolved, recordCourseCompleted, recordQuizCompleted, resolveDayKey, ACHIEVEMENT_RULES,
+  getStats, recordProblemSolved, recordCourseCompleted, recordQuizCompleted, importGuestStats, resolveDayKey, ACHIEVEMENT_RULES,
 };
