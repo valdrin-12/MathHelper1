@@ -30,6 +30,8 @@ import {
   MAX_GRAPH_FUNCTIONS,
 } from './graphService';
 import { analyzeFunctions, compileFunction } from './functionAnalysis';
+import { detectParams, substituteParams, PARAM_MIN, PARAM_MAX, PARAM_STEP, PARAM_EXAMPLES } from './params';
+import Slider from '../../shared/ui/Slider';
 
 const FUNCTION_NAMES = ['f', 'g', 'h'];
 const ANALYSIS_DEBOUNCE_MS = 400;
@@ -125,7 +127,10 @@ export default function GraphModal({ visible, functionText, onClose }) {
   const graphHeight = Math.round(Math.min(380, Math.max(240, Math.min(windowWidth, 700) * 0.72)));
 
   const [inputs, setInputs] = useState(['']);
-  const [committed, setCommitted] = useState(['']);
+  // inputs as last analysed (debounced while typing); parameters a, b, c… get sliders
+  const [committedRaw, setCommittedRaw] = useState(['']);
+  const [params, setParams] = useState({});
+  const [committedParams, setCommittedParams] = useState({});
   const [scrollEnabled, setScrollEnabled] = useState(true);
 
   // Prefill with the detected function whenever the sheet opens
@@ -133,27 +138,47 @@ export default function GraphModal({ visible, functionText, onClose }) {
     if (!visible) return;
     const initial = functionText ? normalizeFunction(functionText) : '';
     setInputs([initial]);
-    setCommitted([initial]);
+    setCommittedRaw([initial]);
   }, [visible, functionText]);
 
   // Re-analyse shortly after typing stops
   useEffect(() => {
-    const id = setTimeout(() => setCommitted(inputs), ANALYSIS_DEBOUNCE_MS);
+    const id = setTimeout(() => setCommittedRaw(inputs), ANALYSIS_DEBOUNCE_MS);
     return () => clearTimeout(id);
   }, [inputs]);
 
+  // Parameters in the functions; a new one starts at 1
+  const paramNames = useMemo(() => detectParams(inputs), [inputs]);
+  useEffect(() => {
+    const missing = paramNames.filter((n) => params[n] === undefined);
+    if (!missing.length) return;
+    const next = { ...params };
+    missing.forEach((n) => { next[n] = 1; });
+    setParams(next);
+    setCommittedParams(next);
+  }, [paramNames, params]);
+  // The analysis follows the sliders shortly after they stop moving
+  useEffect(() => {
+    const id = setTimeout(() => setCommittedParams(params), ANALYSIS_DEBOUNCE_MS);
+    return () => clearTimeout(id);
+  }, [params]);
+
   const fnColors = [colors.primary, colors.secondary, colors.success];
+
+  const committed = useMemo(() => committedRaw.map((text) => substituteParams(text, committedParams)), [committedRaw, committedParams]);
+  const live = useMemo(() => inputs.map((text) => substituteParams(text, params)), [inputs, params]);
 
   const result = useMemo(() => (visible ? analyzeFunctions(committed) : null), [visible, committed]);
 
+  // The curve follows the sliders immediately; analysis points are shown once they match the curve
   const plotted = useMemo(() => {
     if (!result) return [];
-    return committed
-      .map((text, i) => ({ i, analysis: result.functions[i], compiled: compileFunction(text) }))
-      .filter((p) => p.analysis && p.analysis.ok && p.compiled.ok)
+    return live
+      .map((text, i) => ({ i, text, compiled: compileFunction(text), analysis: committed[i] === text ? result.functions[i] : null }))
+      .filter((p) => p.text && p.text.trim() && p.compiled.ok && (!p.analysis || p.analysis.ok))
       .map((p) => ({ key: String(p.i), index: p.i, f: p.compiled.f, color: fnColors[p.i], analysis: p.analysis }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [result, committed, colors]);
+  }, [result, committed, live, colors]);
 
   const intersectionPoints = useMemo(
     () => (result ? result.intersections.flatMap((r) => r.points) : []),
@@ -166,11 +191,13 @@ export default function GraphModal({ visible, functionText, onClose }) {
   const addInput = () => setInputs((prev) => (prev.length < MAX_GRAPH_FUNCTIONS ? [...prev, ''] : prev));
   const removeInput = (i) => {
     setInputs((prev) => prev.filter((_, j) => j !== i));
-    setCommitted((prev) => prev.filter((_, j) => j !== i));
+    setCommittedRaw((prev) => prev.filter((_, j) => j !== i));
   };
+  const setParam = (name, value) => setParams((prev) => ({ ...prev, [name]: value }));
 
   const firstError = result ? result.functions.find((a) => !a.ok && a.error !== 'empty') : null;
-  const resetKey = committed.join('|');
+  // only typing resets the view; moving a slider keeps it, so the change is visible
+  const resetKey = committedRaw.join('|');
   const nameOf = (i) => `${FUNCTION_NAMES[i]}(x)`;
 
   const renderAnalysis = (p) => {
@@ -233,7 +260,7 @@ export default function GraphModal({ visible, functionText, onClose }) {
           {/* Function inputs */}
           <View style={[styles.inputCard, { backgroundColor: colors.surface }]}>
             {inputs.map((value, i) => {
-              const a = result && committed[i] === value ? result.functions[i] : null;
+              const a = result && committedRaw[i] === value ? result.functions[i] : null;
               const showError = value.trim() && a && !a.ok;
               return (
                 <View key={`in${i}`}>
@@ -251,7 +278,7 @@ export default function GraphModal({ visible, functionText, onClose }) {
                       autoCorrect={false}
                       spellCheck={false}
                       returnKeyType="done"
-                      onSubmitEditing={() => setCommitted(inputs)}
+                      onSubmitEditing={() => setCommittedRaw(inputs)}
                       accessibilityLabel={nameOf(i)}
                     />
                     {i > 0 ? (
@@ -288,6 +315,58 @@ export default function GraphModal({ visible, functionText, onClose }) {
             ) : null}
           </View>
 
+          {/* Examples with parameters, while the field is empty */}
+          {inputs.length === 1 && !inputs[0].trim() ? (
+            <View style={styles.examples}>
+              <Text style={[styles.examplesLabel, { color: colors.textSubtle }]}>{t('graph.tryExample')}</Text>
+              <View style={styles.exampleRow}>
+                {PARAM_EXAMPLES.map((ex) => (
+                  <TouchableOpacity
+                    key={ex}
+                    style={[styles.exampleChip, { backgroundColor: `${colors.primary}14` }]}
+                    onPress={() => { setInputs([ex]); setCommittedRaw([ex]); }}
+                    accessibilityRole="button"
+                  >
+                    <Text style={[styles.exampleText, { color: colors.primary }]}>{ex.replace(/\*/g, '·').replace(/\^2/g, '²')}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          ) : null}
+
+          {/* Sliders for the parameters (Desmos-style) */}
+          {paramNames.length ? (
+            <View style={[styles.paramCard, { backgroundColor: colors.surface }]}>
+              <View style={styles.paramHeader}>
+                <Text style={[styles.paramTitle, { color: colors.text }]}>{t('graph.parameters')}</Text>
+                <TouchableOpacity
+                  onPress={() => { const reset = Object.fromEntries(paramNames.map((n) => [n, 1])); setParams(reset); setCommittedParams(reset); }}
+                  accessibilityRole="button"
+                  hitSlop={8}
+                >
+                  <Text style={[styles.paramReset, { color: colors.primary }]}>{t('graph.resetParams')}</Text>
+                </TouchableOpacity>
+              </View>
+              {paramNames.map((name) => (
+                <View key={name} style={styles.paramRow}>
+                  <Text style={[styles.paramName, { color: colors.text }]}>{name} = {formatNumber(params[name] ?? 1, lang)}</Text>
+                  <Slider
+                    style={styles.paramSlider}
+                    value={params[name] ?? 1}
+                    min={PARAM_MIN}
+                    max={PARAM_MAX}
+                    step={PARAM_STEP}
+                    onValueChange={(v) => setParam(name, v)}
+                    onSlidingStart={() => setScrollEnabled(false)}
+                    onSlidingComplete={(v) => { setScrollEnabled(true); setCommittedParams((prev) => ({ ...prev, [name]: v })); }}
+                    accessibilityLabel={t('graph.parameterLabel', { name })}
+                  />
+                </View>
+              ))}
+              <Text style={[styles.paramHint, { color: colors.textSubtle }]}>{t('graph.parametersHint')}</Text>
+            </View>
+          ) : null}
+
           {/* Graph */}
           <View style={styles.graphWrap}>
             {plotted.length ? (
@@ -318,7 +397,7 @@ export default function GraphModal({ visible, functionText, onClose }) {
           </View>
 
           {/* Analysis */}
-          {plotted.map(renderAnalysis)}
+          {plotted.filter((p) => p.analysis).map(renderAnalysis)}
 
           {/* Intersections */}
           {plotted.length > 1 ? (
@@ -329,7 +408,7 @@ export default function GraphModal({ visible, functionText, onClose }) {
                   icon="git-merge-outline"
                   iconColor={colors.primary}
                   title={`${FUNCTION_NAMES[r.a]} ∩ ${FUNCTION_NAMES[r.b]}`}
-                  value={r.identical ? t('graph.identical') : fmt.points(r.points, plotted.some((p) => p.analysis.periodic))}
+                  value={r.identical ? t('graph.identical') : fmt.points(r.points, plotted.some((p) => p.analysis?.periodic))}
                   styles={styles}
                   colors={colors}
                 />
@@ -446,6 +525,65 @@ const makeStyles = (colors) => StyleSheet.create({
   placeholderText: {
     ...TYPOGRAPHY.subhead,
     textAlign: 'center',
+  },
+  examples: {
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.md,
+  },
+  examplesLabel: {
+    ...TYPOGRAPHY.footnote,
+    marginBottom: SPACING.xs,
+  },
+  exampleRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  exampleChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 7,
+    borderRadius: 16,
+  },
+  exampleText: {
+    ...TYPOGRAPHY.subhead,
+    fontWeight: '600',
+  },
+  paramCard: {
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.md,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+  },
+  paramHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: SPACING.xs,
+  },
+  paramTitle: {
+    ...TYPOGRAPHY.headline,
+  },
+  paramReset: {
+    ...TYPOGRAPHY.subhead,
+    fontWeight: '600',
+  },
+  paramRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: SPACING.md,
+  },
+  paramName: {
+    ...TYPOGRAPHY.subheadBold,
+    width: 64,
+    fontVariant: ['tabular-nums'],
+  },
+  paramSlider: {
+    flex: 1,
+  },
+  paramHint: {
+    ...TYPOGRAPHY.footnote,
+    marginTop: SPACING.xs,
   },
   hint: {
     ...TYPOGRAPHY.footnote,
