@@ -19,7 +19,7 @@
     "retry": "Provo Përsëri"
   },
   "navigation": {
-    "dashboard": "Kontrolli",
+    "dashboard": "Ballina",
     "saved": "Të Ruajtura",
     "learn": "Mëso",
     "quiz": "Kuiz",
@@ -180,7 +180,7 @@
     "itemCount_other": "{{count}} probleme të ruajtura",
     "noSavedItems": "Asnjë Problem i Ruajtur",
     "savedItemsHint": "Problemet që analizoni dhe ruani do të shfaqen këtu.",
-    "goToDashboard": "Shkoni te Kontrolli për të analizuar një problem të ri!",
+    "goToDashboard": "Shkoni te Ballina për të zgjidhur një problem të ri!",
     "photoItem": "Problem me Foto",
     "textItem": "Problem me Tekst",
     "answer": "Përgjigja:",
@@ -647,6 +647,8 @@
     "recordError": "Nuk u regjistrua analiza. Provoni përsëri."
   },
   "mathKeyboard": {
+    "show": "Hap tastierën matematikore",
+    "hide": "Mbyll tastierën matematikore",
     "selectKeyboard": "Zgjidhni një tastierë",
     "basicMath": "Tastiera e Matematikës Bazë",
     "preAlgebra": "Tastiera Para-Algjebrës",

@@ -21,6 +21,7 @@ import { pickFromGallery, takeWithCamera } from './imagePicking';
 import useSolveFlow from './useSolveFlow';
 import { useDashboardStyles } from './dashboardStyles';
 import DailyGoalCard from './DailyGoalCard';
+import { useProgress } from '../progress/progress';
 import SolveCard from './SolveCard';
 import StatsGrid from './StatsGrid';
 import RecentActivity from './RecentActivity';
@@ -32,7 +33,8 @@ export default function DashboardScreen() {
   const { t } = useTranslation();
   const { addItem, savedItems, removeItem } = useSavedItems();
   const { user } = useUser();
-  const { todayProblems, totalProblems, completedCoursesCount, completedQuizzesCount, streak, refresh } = useStats();
+  const { todayProblems, totalProblems, completedCoursesCount, completedQuizzesCount, streak, refresh, stats } = useStats();
+  const { xp, level } = useProgress(stats, user?.id);
   const { colors } = useTheme();
   const { isWeb } = useResponsive();
   const styles = useDashboardStyles();
@@ -162,7 +164,13 @@ export default function DashboardScreen() {
         />
 
         <View style={styles.content}>
-          <DailyGoalCard todayProblems={todayProblems} />
+          <DailyGoalCard
+            todayProblems={todayProblems}
+            streak={streak}
+            level={level}
+            xp={xp.total}
+            onPress={() => (user ? setShowProfile(true) : setGuestPrompt('profile'))}
+          />
 
           <SolveCard
             inputMode={inputMode}

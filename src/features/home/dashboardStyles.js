@@ -46,8 +46,50 @@ export const makeStyles = (colors) => StyleSheet.create({
   goalTitle: {
     ...TYPOGRAPHY.headline,
     color: colors.text,
+  },
+  stripRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  stripText: {
     flex: 1,
     marginLeft: SPACING.md,
+  },
+  stripChips: {
+    alignItems: 'flex-end',
+    gap: 6,
+    marginLeft: SPACING.sm,
+  },
+  stripChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 9,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  stripChipText: {
+    ...TYPOGRAPHY.footnote,
+    fontWeight: '700',
+  },
+  keyboardToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: 6,
+    marginTop: SPACING.md,
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+  },
+  keyboardToggleText: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.primary,
+    fontWeight: '600',
+  },
+  ringText: {
+    ...TYPOGRAPHY.caption,
+    fontWeight: '800',
+    color: colors.primary,
   },
   goalCount: {
     ...TYPOGRAPHY.subheadBold,
@@ -66,7 +108,7 @@ export const makeStyles = (colors) => StyleSheet.create({
   goalEncouragement: {
     ...TYPOGRAPHY.footnote,
     color: colors.textSubtle,
-    marginTop: SPACING.sm + 2,
+    marginTop: 2,
   },
 
   // Solve
