@@ -169,6 +169,9 @@
     "startMode": "Start: {{mode}}"
   },
   "saved": {
+    "searchPlaceholder": "Search saved problems…",
+    "noResultsTitle": "No results",
+    "noResults": "No saved problem contains “{{query}}”.",
     "guestTitle": "Saving needs an account",
     "guestHint": "Create a free account to save problems and see them on every device.",
     "loadErrorTitle": "Couldn't Load Saved Problems",

@@ -169,6 +169,9 @@
     "startMode": "Fillo: {{mode}}"
   },
   "saved": {
+    "searchPlaceholder": "Kërkoni në problemet e ruajtura…",
+    "noResultsTitle": "Asnjë rezultat",
+    "noResults": "Asnjë problem i ruajtur nuk përmban “{{query}}”.",
     "guestTitle": "Ruajtja kërkon llogari",
     "guestHint": "Krijoni një llogari falas për t’i ruajtur problemet dhe për t’i parë në çdo pajisje.",
     "loadErrorTitle": "Problemet e ruajtura nuk u ngarkuan",

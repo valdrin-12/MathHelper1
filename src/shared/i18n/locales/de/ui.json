@@ -169,6 +169,9 @@
     "startMode": "Starten: {{mode}}"
   },
   "saved": {
+    "searchPlaceholder": "Gespeicherte Aufgaben durchsuchen…",
+    "noResultsTitle": "Keine Ergebnisse",
+    "noResults": "Keine gespeicherte Aufgabe enthält „{{query}}“.",
     "guestTitle": "Speichern braucht ein Konto",
     "guestHint": "Erstellen Sie ein kostenloses Konto, um Aufgaben zu speichern und auf jedem Gerät zu sehen.",
     "loadErrorTitle": "Gespeicherte Aufgaben konnten nicht geladen werden",

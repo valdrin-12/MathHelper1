@@ -21,11 +21,15 @@ import { Ionicons } from '@expo/vector-icons';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../../shared/theme/constants';
 import { useTheme } from '../../shared/theme/ThemeContext';
 import {
-  ScreenHeader, ListRow, Button, EmptyState, showAlert, confirmAction, getErrorMessage,
+  ScreenHeader, ListRow, Button, EmptyState, SearchField, showAlert, confirmAction, getErrorMessage,
 } from '../../shared/ui';
 import { useResponsive } from '../../shared/utils/responsive';
 
 const WEB_MAX_WIDTH = 900;
+
+// Lower-case without accents (ë → e, ç → c), so typing without them still finds the problem
+const fold = (s) => String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const matches = (item, q) => fold([item.problemText, item.answer, item.explanation, ...(item.steps || [])].join(' ')).includes(q);
 
 // One row of the grouped list. Thumbnails are never decoded in the list: items only carry
 // `hasImage`, the photo itself is loaded by the detail modal.
@@ -81,6 +85,7 @@ export default function SavedScreen() {
   const [deleting, setDeleting] = useState(false);
   const [selectionMode, setSelectionMode] = useState(false);
   const [selectedIds, setSelectedIds] = useState(() => new Set());
+  const [query, setQuery] = useState('');
 
   const { colors } = useTheme();
   const styles = useMemo(() => makeStyles(colors), [colors]);
@@ -99,8 +104,12 @@ export default function SavedScreen() {
     });
   }, []);
 
+  // what the list shows: everything, or the items matching the search
+  const q = fold(query.trim());
+  const visibleItems = useMemo(() => (q ? savedItems.filter((i) => matches(i, q)) : savedItems), [savedItems, q]);
+
   const selectAll = () =>
-    setSelectedIds(new Set(savedItems.map(i => i.id)));
+    setSelectedIds(new Set(visibleItems.map(i => i.id)));
 
   const handleBulkDelete = async () => {
     if (selectedIds.size === 0 || deleting) return;
@@ -231,11 +240,21 @@ export default function SavedScreen() {
           />
         </View>
       )}
+      {savedItems.length > 0 && (
+        <SearchField
+          style={styles.search}
+          value={query}
+          onChangeText={setQuery}
+          placeholder={t('saved.searchPlaceholder')}
+        />
+      )}
       {savedItems.length > 0 ? <View style={styles.listTopSpacer} /> : null}
     </>
   );
 
-  const emptyComponent = isGuest ? (
+  const emptyComponent = q && savedItems.length > 0 ? (
+    <EmptyState icon="search-outline" title={t('saved.noResultsTitle')} message={t('saved.noResults', { query: query.trim() })} />
+  ) : isGuest ? (
     <View>
       <EmptyState icon="person-add-outline" title={t('saved.guestTitle')} message={t('saved.guestHint')} />
       <Button style={styles.emptyButton} icon="person-add" title={t('accountPrompt.create')} onPress={() => exitGuest('register')} />
@@ -273,7 +292,7 @@ export default function SavedScreen() {
     </View>
   );
 
-  const lastIndex = savedItems.length - 1;
+  const lastIndex = visibleItems.length - 1;
 
   const renderItem = ({ item, index }) => {
     const meta = [
@@ -304,7 +323,7 @@ export default function SavedScreen() {
       <FlatList
         style={styles.contentContainer}
         contentContainerStyle={Platform.OS === 'web' ? styles.webContent : null}
-        data={savedItems}
+        data={visibleItems}
         keyExtractor={(item, index) => String(item.id ?? index)}
         renderItem={renderItem}
         extraData={{ selectionMode, selectedIds, colors }}
@@ -376,6 +395,10 @@ const makeStyles = (colors) => StyleSheet.create({
   selectionCount: {
     ...TYPOGRAPHY.footnote,
     color: colors.textSubtle,
+  },
+  search: {
+    marginHorizontal: SPACING.lg,
+    marginTop: SPACING.sm,
   },
   listTopSpacer: {
     height: SPACING.md,
