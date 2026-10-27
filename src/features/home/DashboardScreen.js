@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback, useEffect } from 'react';
+import React, { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Keyboard } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -20,7 +20,8 @@ import { getGreeting } from './dashboardUtils';
 import { pickFromGallery, takeWithCamera } from './imagePicking';
 import useSolveFlow from './useSolveFlow';
 import { useDashboardStyles } from './dashboardStyles';
-import DailyGoalCard from './DailyGoalCard';
+import DailyGoalCard, { DAILY_GOAL } from './DailyGoalCard';
+import Confetti from '../../shared/ui/Confetti';
 import { useProgress } from '../progress/progress';
 import SolveCard from './SolveCard';
 import StatsGrid from './StatsGrid';
@@ -33,7 +34,7 @@ export default function DashboardScreen() {
   const { t } = useTranslation();
   const { addItem, savedItems, removeItem } = useSavedItems();
   const { user } = useUser();
-  const { todayProblems, totalProblems, completedCoursesCount, completedQuizzesCount, streak, refresh, stats } = useStats();
+  const { todayProblems, totalProblems, completedCoursesCount, completedQuizzesCount, streak, refresh, stats, loading: statsLoading } = useStats();
   const { xp, level } = useProgress(stats, user?.id);
   const { colors } = useTheme();
   const { isWeb } = useResponsive();
@@ -61,6 +62,23 @@ export default function DashboardScreen() {
   const [guestPrompt, setGuestPrompt] = useState(null);
 
   const solve = useSolveFlow({ inputMode, mathProblemText, selectedImage, selectedImageSize });
+
+  // Celebrate when today's goal is reached in this session (not when the app opens with it already
+  // done), once the result screen has closed so the confetti is visible
+  const prevToday = useRef(null);
+  const goalPending = useRef(false);
+  const [goalBurst, setGoalBurst] = useState(0);
+  useEffect(() => {
+    if (statsLoading) return;
+    if (prevToday.current !== null && prevToday.current < DAILY_GOAL && todayProblems >= DAILY_GOAL) goalPending.current = true;
+    prevToday.current = todayProblems;
+  }, [todayProblems, statsLoading]);
+  useEffect(() => {
+    if (goalPending.current && !solve.showResultModal) {
+      goalPending.current = false;
+      setGoalBurst(Date.now());
+    }
+  }, [solve.showResultModal, todayProblems]);
 
   const navigation = useNavigation();
   const [greeting, setGreeting] = useState(() => getGreeting(t));
@@ -211,6 +229,8 @@ export default function DashboardScreen() {
         </View>
         </WebContainer>
       </ScrollView>
+
+      <Confetti trigger={goalBurst} />
 
       <LoadingOverlay visible={solve.isAnalyzing} />
 

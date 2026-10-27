@@ -19,6 +19,7 @@ import TrueFalseOptions from './attempt/TrueFalseOptions';
 import NumericInput from './attempt/NumericInput';
 import ExplanationCard from './attempt/ExplanationCard';
 import QuitDialog from './attempt/QuitDialog';
+import { haptic } from '../../shared/ui/haptics';
 
 /**
  * Runs one quiz attempt. Question types: 'choice', 'input' (numeric), 'truefalse'.
@@ -111,8 +112,13 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
   const handleOptionSelect = (value) => {
     if (answered) return;
     setSelectedOption(value);
-    // Practice: immediate feedback. Test: just remember the choice (can still change it)
-    if (!isTest) setShowExplanation(true);
+    // Practice: immediate feedback (also felt: success / error haptic). Test: just remember the choice
+    if (!isTest) {
+      setShowExplanation(true);
+      haptic(gradeAnswer(currentQuestion, value, showHint).correct ? 'success' : 'error');
+    } else {
+      haptic('light');
+    }
   };
 
   const handleCheckInput = () => {
@@ -122,6 +128,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
     }
     setInputError(false);
     setShowExplanation(true);
+    haptic(gradeAnswer(currentQuestion, inputText.trim(), showHint).correct ? 'success' : 'error');
   };
 
   const handleNext = () => {
