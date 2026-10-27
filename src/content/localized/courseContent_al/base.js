@@ -71,7 +71,7 @@ export const courseContents_base_al = {
       },
       {
         title: 'Shumëzimi dhe Pjesëtimi',
-        theory: 'Shumëzimi është mbledhja e përsëritur e të njëjtit numër. Simboli është "×" ose "·". Për shembull, 4 × 3 do të thotë "shto 4, tre herë": 4 + 4 + 4 = 12. Numrat që shumëzojmë quhen faktorë, rezultati quhet prodhim.\n\nPjesëtimi është shpërndarja e barabartë e një sasie në grupe. Simboli është "÷" ose "/". Pjesëtimi është operacioni i kundërt i shumëzimit. Numri i cili pjesëtohet quhet i ndarësi, numri me të cilin pjesëtojmë quhet ndarës, dhe rezultati quhet herësi.\n\nKujdes: pjesëtimi me zero nuk është i definuar - nuk mund të ndash asgjë me zero!',
+        theory: 'Shumëzimi është mbledhja e përsëritur e të njëjtit numër. Simboli është "×" ose "·". Për shembull, 4 × 3 do të thotë "shto 4, tre herë": 4 + 4 + 4 = 12. Numrat që shumëzojmë quhen faktorë, rezultati quhet prodhim.\n\nPjesëtimi është shpërndarja e barabartë e një sasie në grupe. Simboli është "÷" ose "/". Pjesëtimi është operacioni i kundërt i shumëzimit. Numri që pjesëtohet quhet i pjesëtueshëm, numri me të cilin pjesëtojmë quhet pjesëtues, dhe rezultati quhet herës.\n\nKujdes: pjesëtimi me zero nuk është i përkufizuar, asgjë nuk mund të pjesëtohet me zero!',
         keyPoints: [
           'Shumëzimi është komutativ: a × b = b × a',
           'Çdo numër i shumëzuar me 0 jep 0: a × 0 = 0',
@@ -103,7 +103,7 @@ export const courseContents_base_al = {
       },
       {
         title: 'Rendi i Operacioneve (PEMDAS)',
-        theory: 'Kur kemi shumë operacione në të njëjtën shprehje, duhet të dimë cilën të kryejmë të parën. Rendi i operacioneve ose PEMDAS (Paranteza, Eksponentë, Mbledhje/Zbritje, Dhe Anë të tjera Shprehje) na tregon si të procedojmë.\n\nRregulli: 1) Kryej operacionet brenda Parantezave, 2) Pastaj Eksponentët, 3) Shumëzimi dhe Pjesëtimi (nga e majta në të djathtë), 4) Mbledhja dhe Zbritja (nga e majta në të djathtë).\n\nNëse nuk ndjekim këtë rend, rezultate të ndryshme njerëz do të marrin përgjigje të ndryshme për të njëjtën problem - kjo do të ishte kaos!',
+        theory: 'Kur kemi shumë operacione në të njëjtën shprehje, duhet të dimë cilën të kryejmë të parën. Rendi i veprimeve (në anglisht PEMDAS) na tregon si të vazhdojmë: kllapat, fuqitë, shumëzimi e pjesëtimi, dhe në fund mbledhja e zbritja.\n\nRregulli: 1) veprimet brenda kllapave, 2) pastaj fuqitë, 3) shumëzimi dhe pjesëtimi (nga e majta në të djathtë), 4) mbledhja dhe zbritja (nga e majta në të djathtë).\n\nPa këtë rend, njerëz të ndryshëm do të merrnin përgjigje të ndryshme për të njëjtin problem!',
         keyPoints: [
           'P = Parantezat (operacionet brenda { }, [ ], ( ) kryhen të para)',
           'E = Eksponentët dhe rrënjët katrore',
@@ -136,7 +136,7 @@ export const courseContents_base_al = {
       },
       {
         title: 'Vetitë e Numrave',
-        theory: 'Numrat kanë veti të ndryshme që na ndihmojnë të llogarisim më shpejt dhe të kuptojmë strukturën e matematikës. Veti si komutativiteti, asociativiteti dhe distributiviteti janë rregullo themelore.\n\nNumrat çift janë të gjithë numrat që ndahen me 2 pa mbetje: 2, 4, 6, 8, 10...\nNumrat tek janë ata që nuk ndahen me 2 pa mbetje: 1, 3, 5, 7, 9...\nNumrat plotëfishe të N janë: N, 2N, 3N, 4N...\nNumrat dretpërdrejtë (primorë) kanë saktësisht dy ndarës: 1 dhe vetveten.',
+        theory: 'Numrat kanë veti të ndryshme që na ndihmojnë të llogarisim më shpejt dhe të kuptojmë strukturën e matematikës. Veti si komutativiteti, asociativiteti dhe distributiviteti janë rregulla themelore.\n\nNumrat çift janë të gjithë numrat që ndahen me 2 pa mbetje: 2, 4, 6, 8, 10...\nNumrat tek janë ata që nuk ndahen me 2 pa mbetje: 1, 3, 5, 7, 9...\nShumëfishat e N janë: N, 2N, 3N, 4N...\nNumrat e thjeshtë (primë) kanë saktësisht dy pjesëtues: 1 dhe vetveten.',
         keyPoints: [
           'Veti komutative: a + b = b + a dhe a × b = b × a',
           'Veti asociative: (a+b)+c = a+(b+c) dhe (a×b)×c = a×(b×c)',
@@ -175,7 +175,7 @@ export const courseContents_base_al = {
     lessons: [
       {
         title: 'Koncepti i Thyesave',
-        theory: 'Thyesa është një mënyrë për të shprehur një pjesë të tërsisë. Për shembull, nëse kemi një tortë të prerë në 4 pjesë të barabarta dhe marrim 1 pjesë, kemi marrë 1/4 të tortës.\n\nThyesa ka dy pjesë: numëruesi (numri sipër) tregon sa pjesë kemi marrë, dhe emëruesi (numri poshtë) tregon në sa pjesë është ndarë e tëra.\n\nThyesat mund të jenë: të duhura (numëruesi < emëruesi, p.sh. 3/4), jo të duhura (numëruesi ≥ emëruesi, p.sh. 7/4), dhe numra të përzier (pjesë e plotë + thyesë, p.sh. 1¾).',
+        theory: 'Thyesa është një mënyrë për të shprehur një pjesë të së tërës. Për shembull, nëse kemi një tortë të prerë në 4 pjesë të barabarta dhe marrim 1 pjesë, kemi marrë 1/4 të tortës.\n\nThyesa ka dy pjesë: numëruesi (numri sipër) tregon sa pjesë kemi marrë, dhe emëruesi (numri poshtë) tregon në sa pjesë është ndarë e tëra.\n\nThyesat mund të jenë: të duhura (numëruesi < emëruesi, p.sh. 3/4), jo të duhura (numëruesi ≥ emëruesi, p.sh. 7/4), dhe numra të përzier (pjesë e plotë + thyesë, p.sh. 1¾).',
         keyPoints: [
           'Numëruesi tregon sa pjesë kemi (sipër vijës)',
           'Emëruesi tregon sa pjesë gjithsej (poshtë vijës)',
@@ -208,21 +208,21 @@ export const courseContents_base_al = {
       },
       {
         title: 'Thjeshtimi i Thyesave',
-        theory: 'Thjeshtimi i thyesave (ose reduktimi) është procesi i gjetjes së formës më të thjeshtë të thyesës, duke e mbajtur të njëjtën vlerë. Thyesa 6/8 dhe 3/4 kanë të njëjtën vlerë, por 3/4 është forma e thjeshtuar.\n\nPër të thjeshtuar një thyesë, gjejmë Ndarësin e Madh të Përbashkët (NMÇP) të numëruesit dhe emëruesit, pastaj ndajmë të dyja me atë numër.\n\nKur ndarësi i madh i përbashkët është 1, thyesa është tashmë në formën e thjeshtuar dhe quhet thyesë e pakthyeshme.',
+        theory: 'Thjeshtimi i thyesave (ose reduktimi) është procesi i gjetjes së formës më të thjeshtë të thyesës, duke e mbajtur të njëjtën vlerë. Thyesa 6/8 dhe 3/4 kanë të njëjtën vlerë, por 3/4 është forma e thjeshtuar.\n\nPër të thjeshtuar një thyesë, gjejmë pjesëtuesin më të madh të përbashkët (PMP) të numëruesit dhe emëruesit, pastaj i pjesëtojmë të dy me atë numër.\n\nKur PMP është 1, thyesa është tashmë në formën e thjeshtuar dhe quhet thyesë e pakthyeshme.',
         keyPoints: [
-          'Ndarësi i Madh i Përbashkët (NMÇP) ndihmon të thjeshtojmë thyesat',
-          'Thyesa është e thjeshtuar kur NMÇP(numëruesi, emëruesi) = 1',
+          'Pjesëtuesi më i madh i përbashkët (PMP) ndihmon të thjeshtojmë thyesat',
+          'Thyesa është e thjeshtuar kur PMP(numëruesi, emëruesi) = 1',
           'Mund të thjeshtojmë hap-pas-hapi duke ndarë me faktorë të vegjël',
           'Thjeshtimi nuk ndryshon vlerën e thyesës',
         ],
         examples: [
           {
             example: 'Thjeshtoje thyesën 18/24.',
-            solution: 'Faktorët e 18: 1, 2, 3, 6, 9, 18\nFaktorët e 24: 1, 2, 3, 4, 6, 8, 12, 24\nNMÇP(18, 24) = 6\n18/24 = (18÷6)/(24÷6) = 3/4',
+            solution: 'Faktorët e 18: 1, 2, 3, 6, 9, 18\nFaktorët e 24: 1, 2, 3, 4, 6, 8, 12, 24\nPMP(18, 24) = 6\n18/24 = (18÷6)/(24÷6) = 3/4',
           },
           {
             example: 'Thjeshtoje thyesën 45/60.',
-            solution: '45 = 3² × 5 = 9 × 5\n60 = 4 × 15 = 2² × 3 × 5\nNMÇP = 3 × 5 = 15\n45/60 = (45÷15)/(60÷15) = 3/4',
+            solution: '45 = 3² × 5 = 9 × 5\n60 = 4 × 15 = 2² × 3 × 5\nPMP = 3 × 5 = 15\n45/60 = (45÷15)/(60÷15) = 3/4',
           },
         ],
         practice: [
@@ -230,9 +230,9 @@ export const courseContents_base_al = {
             problem: 'Thjeshtoje thyesën 36/48.',
             solution: '36/48 = 3/4',
             steps: [
-              'Gjej NMÇP(36, 48)',
+              'Gjej PMP(36, 48)',
               '36 = 2² × 3² dhe 48 = 2⁴ × 3',
-              'NMÇP = 2² × 3 = 12',
+              'PMP = 2² × 3 = 12',
               '36 ÷ 12 = 3',
               '48 ÷ 12 = 4',
               'Rezultati: 3/4',
@@ -242,11 +242,11 @@ export const courseContents_base_al = {
       },
       {
         title: 'Mbledhja dhe Zbritja e Thyesave',
-        theory: 'Për të mbledhur ose zbritur thyesa, duhet të kemi emërues të njëjtë. Kur thyesat kanë të njëjtin emërues (thyesa homogjene), thjesht mbledhim ose zbresim numëruesit.\n\nKur thyesat kanë emërues të ndryshëm (thyesa heterogjene), duhet të gjejmë emëruesin e përbashkët më të vogël (EPMV) - shumëfishi më i vogël i përbashkët i emëruesve.\n\nPas llogaritjes, gjithmonë thjeshtojmë rezultatin nëse është e mundur.',
+        theory: 'Për të mbledhur ose zbritur thyesa, duhet të kemi emërues të njëjtë. Kur thyesat kanë të njëjtin emërues (thyesa homogjene), thjesht mbledhim ose zbresim numëruesit.\n\nKur thyesat kanë emërues të ndryshëm (thyesa heterogjene), duhet të gjejmë emëruesin e përbashkët më të vogël, që është shumëfishi më i vogël i përbashkët (SHVP) i emëruesve.\n\nPas llogaritjes, gjithmonë thjeshtojmë rezultatin nëse është e mundur.',
         keyPoints: [
           'Thyesat me emërues të njëjtë: mblidh/zbrit vetëm numëruesit',
-          'Thyesat me emërues të ndryshëm: gjej EPMV (emëruesi i përbashkët)',
-          'EPMV = Shumëfishi Më i Vogël i Përbashkët i emëruesve',
+          'Thyesat me emërues të ndryshëm: gjej SHVP (emëruesin e përbashkët)',
+          'SHVP = shumëfishi më i vogël i përbashkët i emëruesve',
           'Gjithmonë thjeshtoje rezultatin',
         ],
         examples: [
@@ -256,7 +256,7 @@ export const courseContents_base_al = {
           },
           {
             example: 'Llogarit: 1/3 + 1/4',
-            solution: 'EPMV(3, 4) = 12\n1/3 = 4/12\n1/4 = 3/12\n4/12 + 3/12 = 7/12',
+            solution: 'SHVP(3, 4) = 12\n1/3 = 4/12\n1/4 = 3/12\n4/12 + 3/12 = 7/12',
           },
         ],
         practice: [
@@ -264,12 +264,12 @@ export const courseContents_base_al = {
             problem: 'Llogarit: 3/4 - 1/6',
             solution: '3/4 - 1/6 = 7/12',
             steps: [
-              'Gjej EPMV(4, 6)',
-              '4 = 2², 6 = 2 × 3, EPMV = 2² × 3 = 12',
+              'Gjej SHVP(4, 6)',
+              '4 = 2², 6 = 2 × 3, SHVP = 2² × 3 = 12',
               'Konverto: 3/4 = 9/12',
               'Konverto: 1/6 = 2/12',
               '9/12 - 2/12 = 7/12',
-              'Verifiko nëse mund të thjeshtosh: NMÇP(7,12)=1, pra 7/12 është e thjeshtuar',
+              'Verifiko nëse mund të thjeshtosh: PMP(7,12)=1, pra 7/12 është e thjeshtuar',
             ],
           },
         ],
@@ -309,7 +309,7 @@ export const courseContents_base_al = {
       },
       {
         title: 'Numrat Dhjetorë',
-        theory: 'Numrat dhjetorë janë mënyrë tjetër e shprehjes së thyesave. Ata përdorin sistemin dhjetor - çifra pas presjes dhjetore (.) reprezentojnë dhjetërat, qindësat, mijësat, etj.\n\nPër shembull: 3.14 = 3 + 1/10 + 4/100 = 3 + 0.1 + 0.04\n\nNumrat dhjetorë mund të jenë: të fundshëm (p.sh. 0.5, 1.25), periodikë (p.sh. 0.333... = 0.3̄, 0.142857...), ose irracionalë (p.sh. π = 3.14159...). Numrat dhjetorë të fundshëm dhe periodikë mund të shprehen si thyesa.',
+        theory: 'Numrat dhjetorë janë mënyrë tjetër e shprehjes së thyesave. Ata përdorin sistemin dhjetor - shifrat pas presjes dhjetore paraqesin të dhjetat, të qindtat, të mijtat, etj.\n\nPër shembull: 3.14 = 3 + 1/10 + 4/100 = 3 + 0.1 + 0.04\n\nNumrat dhjetorë mund të jenë: të fundshëm (p.sh. 0.5, 1.25), periodikë (p.sh. 0.333... = 0.3̄, 0.142857...), ose irracionalë (p.sh. π = 3.14159...). Numrat dhjetorë të fundshëm dhe periodikë mund të shprehen si thyesa.',
         keyPoints: [
           'Presja dhjetore ndahet pozicionet: dhjetëra (0.1), qindësa (0.01), mijësa (0.001)',
           'Thyesat me emëruesi 10, 100, 1000 konvertohen lehtë në dhjetorë',
@@ -319,7 +319,7 @@ export const courseContents_base_al = {
         examples: [
           {
             example: 'Konverto 0.375 në thyesë.',
-            solution: '0.375 = 375/1000\nThjeshtoje: NMÇP(375, 1000) = 125\n375/1000 = 3/8',
+            solution: '0.375 = 375/1000\nThjeshtoje: PMP(375, 1000) = 125\n375/1000 = 3/8',
           },
           {
             example: 'Konverto thyesën 7/8 në dhjetor.',

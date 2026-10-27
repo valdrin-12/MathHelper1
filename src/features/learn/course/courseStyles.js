@@ -324,6 +324,57 @@ export const makeLessonStyles = (colors) => StyleSheet.create({
   cardSpaced: {
     marginBottom: SPACING.md,
   },
+  // ── step-by-step theory and questions between paragraphs
+  theoryParagraph: {
+    marginBottom: SPACING.md,
+  },
+  checkCard: {
+    marginBottom: SPACING.md,
+    borderWidth: 1.5,
+  },
+  checkLabel: {
+    ...TYPOGRAPHY.captionBold,
+    textTransform: 'uppercase',
+    letterSpacing: 0.4,
+    marginBottom: SPACING.xs,
+  },
+  checkQuestion: {
+    ...TYPOGRAPHY.bodyBold,
+    color: colors.text,
+    marginBottom: SPACING.md,
+    lineHeight: 23,
+  },
+  checkFeedback: {
+    marginTop: SPACING.md,
+    borderRadius: BORDER_RADIUS.sm,
+    padding: SPACING.md,
+  },
+  checkFeedbackTitle: {
+    ...TYPOGRAPHY.subheadBold,
+    marginBottom: 4,
+  },
+  checkFeedbackText: {
+    ...TYPOGRAPHY.subhead,
+    color: colors.text,
+    lineHeight: 21,
+  },
+  continueBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: 12,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.md,
+  },
+  continueText: {
+    ...TYPOGRAPHY.headline,
+    color: '#FFFFFF',
+  },
+  showAllLink: {
+    ...TYPOGRAPHY.subhead,
+    fontWeight: '600',
+  },
   theoryText: {
     ...TYPOGRAPHY.body,
     lineHeight: 25,

@@ -295,6 +295,12 @@
     "startCourse": "Kurs starten"
   },
   "courseContent": {
+    "quickCheck": "Kurze Frage",
+    "notQuite": "Nicht ganz",
+    "continue": "Weiter",
+    "answerToContinue": "Beantworten Sie die Frage, um fortzufahren",
+    "showEverything": "Ganze Lektion anzeigen",
+    "tryThenShow": "Selbst probieren, dann Lösung zeigen",
     "completeError": "Der Kursabschluss konnte nicht gespeichert werden. Bitte prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
     "lessonLabel": "Lektion {{number}}",
     "theory": "Theorie",

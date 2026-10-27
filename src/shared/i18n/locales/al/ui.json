@@ -295,6 +295,12 @@
     "startCourse": "Fillo Kursin"
   },
   "courseContent": {
+    "quickCheck": "Pyetje e shpejtë",
+    "notQuite": "Jo tamam",
+    "continue": "Vazhdo",
+    "answerToContinue": "Përgjigjuni pyetjes për të vazhduar",
+    "showEverything": "Shfaq gjithë mësimin",
+    "tryThenShow": "Provoni vetë, pastaj shikoni zgjidhjen",
     "completeError": "Përfundimi i kursit nuk u ruajt. Kontrolloni lidhjen dhe provoni përsëri.",
     "lessonLabel": "Mësimi {{number}}",
     "theory": "Teoria",

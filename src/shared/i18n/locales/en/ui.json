@@ -295,6 +295,12 @@
     "startCourse": "Start Course"
   },
   "courseContent": {
+    "quickCheck": "Quick check",
+    "notQuite": "Not quite",
+    "continue": "Continue",
+    "answerToContinue": "Answer the question to continue",
+    "showEverything": "Show the whole lesson",
+    "tryThenShow": "Try it yourself, then show the solution",
     "completeError": "Could not save your course completion. Please check your connection and try again.",
     "lessonLabel": "Lesson {{number}}",
     "theory": "Theory",

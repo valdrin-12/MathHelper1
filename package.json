@@ -11,9 +11,10 @@
     "test:solver": "node scripts/testSolver.js",
     "test:graph": "node scripts/testFunctionAnalysis.js",
     "test:verify": "node scripts/testVerify.js",
-    "test": "npm run validate:quizzes && npm run test:solver && npm run test:graph && npm run test:verify",
+    "test": "npm run validate:quizzes && npm run validate:lessons && npm run test:solver && npm run test:graph && npm run test:verify",
     "test:backend": "npm --prefix backend run test:google",
-    "build:web": "node scripts/buildWeb.js"
+    "build:web": "node scripts/buildWeb.js",
+    "validate:lessons": "node scripts/validateLessonChecks.js"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
