@@ -14,6 +14,7 @@ import { derivativeTool, integralTool } from './calculus';
 import { primeFactorsTool, gcdLcmTool, detectPrimeQuestion, isPrimeTool, detectCombinatorics, combinatoricsTool } from './numberTheory';
 import { detectFunctionDefinition, functionTool } from './functions';
 import { solveSpecialEquation } from './nonPolynomial';
+import { detectLimit, limitTool } from './limits';
 import { percentTool, detectPercent } from './percent';
 import { matrixTool } from './matrices';
 import { statisticsTool, parseDataList } from './statistics';
@@ -184,7 +185,13 @@ const runKeywordTool = (tool, exprRaw, lang) => {
 
 // An expression with variables and no "=": simplify / expand it when that changes something,
 // otherwise (one variable) read it as a function and analyse it.
+// Function names that may appear as letter runs of 4+; any other such run is a word ("area", "radius").
+const MATH_WORDS = new Set(['sqrt', 'cbrt', 'sinh', 'cosh', 'tanh', 'asin', 'acos', 'atan', 'arcsin', 'arccos', 'arctan', 'log10', 'exp']);
+
 const solveBareExpression = (text, lang) => {
+  // "area of a circle with radius 5" is a sentence, not the product a·r·e·a·…: leave it to the AI
+  const words = (text.match(/[a-zA-ZëçÇËäöüÄÖÜß]{4,}/g) || []).filter((w) => !MATH_WORDS.has(w.toLowerCase()));
+  if (words.length) return fail('Text with words - use AI');
   const expr = exprComma(normalizeCore(text));
   const node = tryParse(expr);
   if (!node) return fail('Could not parse expression');
@@ -222,6 +229,8 @@ const detectAndSolve = (input, lang) => {
   if (der) return derivativeTool(der, lang);
   const integ = detectIntegral(text);
   if (integ) return integralTool(integ, lang);
+  const lim = detectLimit(text.replace(/→/g, '->'));
+  if (lim) return limitTool(lim, lang);
   const pc = detectPercent(text);
   if (pc) return percentTool(pc, lang);
   for (const { tool, re } of KEYWORD_TOOLS) {

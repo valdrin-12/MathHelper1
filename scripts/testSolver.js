@@ -149,6 +149,10 @@ tool('expand (x+2)(x−3)', 'expand', { expression: '(x+2)(x-3)' }, 'en', answer
 text('expand (x+3)^2 binomial', 'expand (x+3)^2', 'en', (r) => (answerIs('x² + 6x + 9')(r) === true && r.steps.some((s) => s.startsWith('Square of a binomial'))) || JSON.stringify(r));
 // ---- bare expressions, functions, primes, combinatorics, mixed numbers, roots ---------------
 text('bare expression is simplified', '2x+3x', 'en', answerIs('5x'));
+text('a sentence is not algebra → fallback', 'area of a circle with radius 5', 'en', fails());
+text('round … to 2 decimals → fallback', 'round 3.14159 to 2 decimals', 'en', fails());
+text('perimeter of rectangle 4 by 7 → fallback', 'perimeter of rectangle 4 by 7', 'en', fails());
+text('sqrt in a bare expression still works', 'sqrt(x)*sqrt(x) + 2x', 'en', (r) => r.success || JSON.stringify(r));
 text('bare binomial square is expanded', '(x+3)^2', 'en', answerIs('x² + 6x + 9'));
 text('bare expression in two variables is expanded', '(a+b)^2', 'en', answerIs('a² + 2ab + b²'));
 text('bare quadratic is analysed as a function', 'x^2-4x+3', 'en', answerHas('x₁ = 1', 'x₂ = 3', 'V(2, −1)'));
@@ -194,6 +198,22 @@ text('x² − 2 < 0 with roots', 'x^2-2<0', 'en', answerIs('x ∈ (−√2, √2
 text('x² + 1 < 0', 'x^2+1<0', 'en', answerIs('x ∈ ∅'));
 text('|2x+1| ≤ 3', '|2x+1| <= 3', 'en', answerIs('x ∈ [−2, 1]'));
 text('|x−3| > 5', '|x-3| > 5', 'en', answerIs('x ∈ (−∞, −2) ∪ (8, +∞)'));
+// ---- limits --------------------------------------------------------------------------------
+text('lim x→0 sin(x)/x (known limit)', 'lim x->0 sin(x)/x', 'en', (r) => (answerIs('lim(x→0) sin(x)/x = 1')(r) === true && r.steps.some((s) => s.startsWith('Known limit'))) || JSON.stringify(r.steps));
+text('lim sin(3x)/x', 'limit sin(3x)/x x->0', 'en', answerIs('lim(x→0) sin(3x)/x = 3'));
+text('lim x/sin(2x)', 'lim x->0 x/sin(2x)', 'en', answerIs('lim(x→0) x/sin(2x) = 1/2'));
+text('0/0 cancelled', 'lim(x->2) (x^2-4)/(x-2)', 'en', (r) => (answerIs('lim(x→2) (x² − 4)/(x − 2) = 4')(r) === true && r.steps.some((s) => s.startsWith('Factor and cancel'))) || JSON.stringify(r.steps));
+text('limiti … kur x → 3 (al)', 'limiti i (x^2-9)/(x-3) kur x -> 3', 'al', answerIs('lim(x→3) (x² − 9)/(x − 3) = 6'));
+text('rational at +∞, equal degrees', 'lim x->inf (2x+1)/(x-3)', 'en', answerIs('lim(x→+∞) (2x + 1)/(x − 3) = 2'));
+text('rational at −∞, higher degree', 'lim x->-inf (3x^3-x)/(x^2+1)', 'en', answerIs('lim(x→−∞) (3x³ − x)/(x² + 1) = −∞'));
+text('1/x at 0 does not exist', 'lim x->0 1/x', 'en', answerIs('lim(x→0) 1/x does not exist'));
+text('1/x² at 0 is +∞', 'lim x->0 1/x^2', 'en', answerIs('lim(x→0) 1/x² = +∞'));
+text('(1 + 1/x)^x → e', 'lim x->inf (1+1/x)^x', 'en', answerIs('lim(x→+∞) (1 + 1/x)^x = e'));
+text('(1 − cos x)/x² → 1/2', 'lim x->0 (1-cos(x))/x^2', 'en', answerIs('lim(x→0) (1 − cos(x))/x² = 1/2'));
+text('(sin x − x)/x³ → −1/6', 'lim x->0 (sin(x)-x)/x^3', 'en', answerIs('lim(x→0) (sin(x) − x)/x³ = −1/6'));
+text('x·ln x one-sided → 0', 'lim x->0 x*ln(x)', 'en', answerIs('lim(x→0) x·ln(x) = 0'));
+text('√(x+1) − √x at ∞', 'lim x->inf sqrt(x+1)-sqrt(x)', 'en', answerIs('lim(x→+∞) √(x + 1) − √x = 0'));
+text('continuous: substitute', 'lim x->3 x^2+1', 'en', answerIs('lim(x→3) x² + 1 = 10'));
 // several variables: like terms collected, highest degree first
 text('expand (a+b)^3 collects terms', 'expand (a+b)^3', 'en', (r) => (answerIs('a³ + 3a²b + 3ab² + b³')(r) === true && r.steps.some((s) => s.startsWith('Cube of a binomial'))) || JSON.stringify(r));
 text('expand (a−b)^2', 'expand (a-b)^2', 'en', answerIs('a² − 2ab + b²'));
