@@ -19,7 +19,7 @@
     "retry": "Try Again"
   },
   "navigation": {
-    "dashboard": "Dashboard",
+    "dashboard": "Home",
     "saved": "Saved",
     "learn": "Learn",
     "quiz": "Quiz",
@@ -180,7 +180,7 @@
     "itemCount_other": "{{count}} saved problems",
     "noSavedItems": "No Saved Problems",
     "savedItemsHint": "Problems you analyze and save will appear here.",
-    "goToDashboard": "Go to Dashboard to analyze a new problem!",
+    "goToDashboard": "Go to Home to solve a new problem!",
     "photoItem": "Photo Problem",
     "textItem": "Text Problem",
     "answer": "Answer:",
@@ -542,6 +542,8 @@
     "recordError": "Could not record the analysis. Please try again."
   },
   "mathKeyboard": {
+    "show": "Show math keyboard",
+    "hide": "Hide math keyboard",
     "selectKeyboard": "Select a keyboard",
     "basicMath": "Basic Math keyboard",
     "preAlgebra": "Pre-Algebra keyboard",

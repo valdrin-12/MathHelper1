@@ -19,7 +19,7 @@
     "retry": "Erneut versuchen"
   },
   "navigation": {
-    "dashboard": "Übersicht",
+    "dashboard": "Start",
     "saved": "Gespeichert",
     "learn": "Lernen",
     "quiz": "Quiz",
@@ -180,7 +180,7 @@
     "itemCount_other": "{{count}} gespeicherte Aufgaben",
     "noSavedItems": "Keine gespeicherten Aufgaben",
     "savedItemsHint": "Aufgaben, die Sie analysieren und speichern, erscheinen hier.",
-    "goToDashboard": "Gehen Sie zur Übersicht, um ein neues Problem zu analysieren!",
+    "goToDashboard": "Gehen Sie zu Start, um eine neue Aufgabe zu lösen!",
     "photoItem": "Foto-Aufgabe",
     "textItem": "Text-Aufgabe",
     "answer": "Antwort:",
@@ -542,6 +542,8 @@
     "recordError": "Analyse konnte nicht aufgezeichnet werden. Bitte versuchen Sie es erneut."
   },
   "mathKeyboard": {
+    "show": "Mathe-Tastatur anzeigen",
+    "hide": "Mathe-Tastatur ausblenden",
     "selectKeyboard": "Tastatur auswählen",
     "basicMath": "Grundrechenarten-Tastatur",
     "preAlgebra": "Vor-Algebra-Tastatur",

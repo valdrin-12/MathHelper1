@@ -28,37 +28,16 @@ import { ScreenHeader, Chip, Pill, IconBadge, Button } from '../../shared/ui';
 import WebContainer from '../../shared/ui/WebContainer';
 import PressableCard from '../../shared/ui/PressableCard';
 import { useResponsive } from '../../shared/utils/responsive';
+import ProgressRing from '../../shared/ui/ProgressRing';
 import { getUserScopedKey, CHALLENGE_KEY_PREFIX } from '../auth/userStorage';
 import { getLocalDateKey } from '../../shared/utils/localDate';
 
-// Mini circular progress for quiz cards
+// Mini circular progress for quiz cards (best score)
 function MiniProgressRing({ progress, size = 44, strokeWidth = 3, color }) {
   return (
-    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
-      {/* Background ring */}
-      <View style={{
-        position: 'absolute',
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        borderWidth: strokeWidth,
-        borderColor: color + '20',
-      }} />
-      {/* Progress ring - use border trick for partial circle */}
-      <View style={{
-        position: 'absolute',
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        borderWidth: strokeWidth,
-        borderColor: color,
-        borderRightColor: progress >= 0.75 ? color : 'transparent',
-        borderBottomColor: progress >= 0.5 ? color : 'transparent',
-        borderLeftColor: progress >= 0.25 ? color : 'transparent',
-        transform: [{ rotate: '-90deg' }],
-      }} />
+    <ProgressRing progress={progress} size={size} strokeWidth={strokeWidth} color={color}>
       <Text style={{ fontSize: 11, fontWeight: '800', color }}>{Math.round(progress * 100)}%</Text>
-    </View>
+    </ProgressRing>
   );
 }
 

@@ -1,5 +1,6 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, Animated } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../shared/theme/ThemeContext';
@@ -7,6 +8,8 @@ import { isPlottableFunction } from '../graph/graphService';
 import MathKeyboard from '../solver/MathKeyboard';
 import { Card, Button, SegmentedControl } from '../../shared/ui';
 import { useDashboardStyles } from './dashboardStyles';
+
+const KEYBOARD_KEY = '@mathhelper_math_keyboard';
 
 // Keyboard / Camera switch with the problem field (or photo) and the Calculate / Analyze with AI buttons.
 export default function SolveCard({
@@ -17,6 +20,18 @@ export default function SolveCard({
   const { colors } = useTheme();
   const styles = useDashboardStyles();
   const canSubmit = !!text.trim() && !isAnalyzing;
+
+  // The math keyboard takes half the screen: closed until asked for, and the choice is remembered
+  const [showKeyboard, setShowKeyboard] = useState(false);
+  useEffect(() => {
+    AsyncStorage.getItem(KEYBOARD_KEY).then((v) => { if (v === 'open') setShowKeyboard(true); }).catch(() => {});
+  }, []);
+  const toggleKeyboard = () => {
+    setShowKeyboard((open) => {
+      AsyncStorage.setItem(KEYBOARD_KEY, open ? 'closed' : 'open').catch(() => {});
+      return !open;
+    });
+  };
 
   // ── Micro-animations ─────────────────────────────────────────────────────────
   const galleryAnim = useRef(new Animated.Value(1)).current;
@@ -84,11 +99,25 @@ export default function SolveCard({
             />
           )}
 
-          <MathKeyboard
-            onKeyPress={(value) => onChangeText((prev) => prev + value)}
-            onBackspace={() => onChangeText((prev) => prev.slice(0, -1))}
-            onClear={() => onChangeText('')}
-          />
+          <TouchableOpacity
+            style={styles.keyboardToggle}
+            onPress={toggleKeyboard}
+            activeOpacity={0.7}
+            accessibilityRole="button"
+            accessibilityState={{ expanded: showKeyboard }}
+          >
+            <Ionicons name="calculator-outline" size={17} color={colors.primary} />
+            <Text style={styles.keyboardToggleText}>{showKeyboard ? t('mathKeyboard.hide') : t('mathKeyboard.show')}</Text>
+            <Ionicons name={showKeyboard ? 'chevron-up' : 'chevron-down'} size={16} color={colors.textSubtle} />
+          </TouchableOpacity>
+
+          {showKeyboard && (
+            <MathKeyboard
+              onKeyPress={(value) => onChangeText((prev) => prev + value)}
+              onBackspace={() => onChangeText((prev) => prev.slice(0, -1))}
+              onClear={() => onChangeText('')}
+            />
+          )}
         </View>
       ) : image ? (
         <View>

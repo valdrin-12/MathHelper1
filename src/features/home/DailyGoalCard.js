@@ -1,46 +1,57 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from 'react-i18next';
 import { useTheme } from '../../shared/theme/ThemeContext';
-import { Card, IconBadge } from '../../shared/ui';
+import { Card } from '../../shared/ui';
+import ProgressRing from '../../shared/ui/ProgressRing';
 import { useDashboardStyles } from './dashboardStyles';
 
-const DAILY_GOAL = 10;
+export const DAILY_GOAL = 10;
 
-// "Daily goal: n/10 problems" with a progress bar and a short encouragement.
-export default function DailyGoalCard({ todayProblems }) {
+// Compact progress strip at the top of Home: the daily-goal ring (n/10), the streak and the level.
+// Readable at a glance, like Apple Fitness rings and Duolingo's top bar.
+export default function DailyGoalCard({ todayProblems, streak = 0, level, xp, onPress }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useDashboardStyles();
 
-  const dailyProgress = Math.min(todayProblems, DAILY_GOAL);
-  const progressPercent = (dailyProgress / DAILY_GOAL) * 100;
-  const goalDone = progressPercent >= 100;
+  const done = Math.min(todayProblems, DAILY_GOAL);
+  const goalDone = done >= DAILY_GOAL;
+  const encouragement = goalDone ? t('dashboard.goalReached') : done >= DAILY_GOAL / 2 ? t('dashboard.keepGoing') : t('dashboard.startSolving');
 
   return (
     <Card style={styles.block}>
-      <View style={styles.goalHeader}>
-        <IconBadge name={goalDone ? 'trophy' : 'flag'} color={goalDone ? colors.success : colors.secondary} />
-        <Text style={styles.goalTitle}>{t('dashboard.dailyGoal')}</Text>
-        <Text style={[styles.goalCount, goalDone && { color: colors.success }]}>
-          {t('dashboard.problemsProgress', { done: dailyProgress, total: DAILY_GOAL })}
-        </Text>
-      </View>
-      <View style={styles.progressTrack}>
-        <View
-          style={[
-            styles.progressFill,
-            { width: `${Math.max(progressPercent, 2)}%`, backgroundColor: goalDone ? colors.success : colors.primary },
-          ]}
-        />
-      </View>
-      <Text style={styles.goalEncouragement}>
-        {goalDone
-          ? t('dashboard.goalReached')
-          : progressPercent >= 50
-          ? t('dashboard.keepGoing')
-          : t('dashboard.startSolving')}
-      </Text>
+      <TouchableOpacity
+        style={styles.stripRow}
+        onPress={onPress}
+        disabled={!onPress}
+        activeOpacity={0.7}
+        accessibilityRole={onPress ? 'button' : undefined}
+        accessibilityLabel={`${t('dashboard.dailyGoal')}: ${t('dashboard.problemsProgress', { done, total: DAILY_GOAL })}`}
+      >
+        <ProgressRing progress={done / DAILY_GOAL} size={52} strokeWidth={5} color={goalDone ? colors.success : colors.primary}>
+          {goalDone
+            ? <Ionicons name="checkmark" size={22} color={colors.success} />
+            : <Text style={styles.ringText}>{done}/{DAILY_GOAL}</Text>}
+        </ProgressRing>
+        <View style={styles.stripText}>
+          <Text style={styles.goalTitle} numberOfLines={1}>{t('dashboard.dailyGoal')}</Text>
+          <Text style={styles.goalEncouragement} numberOfLines={2}>{encouragement}</Text>
+        </View>
+        <View style={styles.stripChips}>
+          <View style={[styles.stripChip, { backgroundColor: colors.warningLight }]}>
+            <Ionicons name="flame" size={14} color={colors.secondary} />
+            <Text style={[styles.stripChipText, { color: colors.secondary }]}>{streak}</Text>
+          </View>
+          {level ? (
+            <View style={[styles.stripChip, { backgroundColor: `${colors.primary}1A` }]} accessibilityLabel={`${t('progress.levelN', { level: level.level })}, ${xp} XP`}>
+              <Ionicons name="star" size={13} color={colors.primary} />
+              <Text style={[styles.stripChipText, { color: colors.primary }]}>{t('progress.levelShort', { level: level.level })}</Text>
+            </View>
+          ) : null}
+        </View>
+      </TouchableOpacity>
     </Card>
   );
 }
