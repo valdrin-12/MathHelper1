@@ -1,9 +1,11 @@
 // Context për menaxhimin e problemeve të ruajtura
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { AppState } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as storageService from '../../shared/api/storageService';
 import { getErrorCode } from '../auth/authService';
 import { useUser } from '../auth/UserContext';
+import { getUserScopedKey, SAVED_ITEMS_CACHE_KEY } from '../auth/userStorage';
 
 const SavedItemsContext = createContext();
 
@@ -24,6 +26,8 @@ export const SavedItemsProvider = ({ children }) => {
   // Load error: { code, message } or null. The list keeps its last good value on error.
   const [error, setError] = useState(null);
   const errorRef = useRef(null);
+  // true once the server answered for the current user; the cached list must not replace that answer
+  const freshRef = useRef(false);
   errorRef.current = error;
 
   const loadSavedItems = useCallback(async () => {
@@ -33,11 +37,14 @@ export const SavedItemsProvider = ({ children }) => {
       setLoading(false);
       return true;
     }
+    const cacheKey = getUserScopedKey(SAVED_ITEMS_CACHE_KEY, user?.id);
     try {
       setLoading(true);
       const items = await storageService.getSavedItems();
+      freshRef.current = true;
       setSavedItems(items);
       setError(null);
+      AsyncStorage.setItem(cacheKey, JSON.stringify(items)).catch(() => {});
       return true;
     } catch (e) {
       console.warn('Gabim gjatë ngarkimit:', e?.code || e?.message);
@@ -46,12 +53,23 @@ export const SavedItemsProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  }, [isGuest]);
+  }, [isGuest, user?.id]);
 
-  // Ngarko të dhënat kur komponenti montohet
+  // Show the last known list right away (also offline), then refresh it from the server
   useEffect(() => {
+    let cancelled = false;
+    freshRef.current = false;
+    if (!isGuest) {
+      AsyncStorage.getItem(getUserScopedKey(SAVED_ITEMS_CACHE_KEY, user?.id))
+        .then((raw) => {
+          const cached = raw ? JSON.parse(raw) : null;
+          if (!cancelled && !freshRef.current && Array.isArray(cached)) setSavedItems(cached);
+        })
+        .catch(() => {});
+    }
     loadSavedItems();
-  }, [loadSavedItems]);
+    return () => { cancelled = true; };
+  }, [loadSavedItems, isGuest, user?.id]);
 
   // Retry automatically when the app returns to the foreground or the session comes back online
   useEffect(() => {
