@@ -25,6 +25,7 @@ Module._extensions['.js'] = function load(m, file) {
 
 const fa = require(path.join(root, 'src', 'features', 'graph', 'functionAnalysis.js'));
 const gs = require(path.join(root, 'src', 'features', 'graph', 'graphService.js'));
+const { placeLabels } = require(path.join(root, 'src', 'features', 'graph', 'labelLayout.js'));
 
 let passed = 0;
 let failed = 0;
@@ -196,6 +197,25 @@ section('performance', () => {
   fa.analyzeFunctions(['x^3 - 3x', 'sin(x)', 'x/(x^2-4)']);
   const ms = Date.now() - t0;
   check(`3 functions analysed in ${ms} ms (< 3000 ms on Node)`, ms < 3000);
+});
+
+section('point labels never overlap', () => {
+  const W = 360; const H = 300;
+  const boxesOverlap = (a, b) => a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+  const run = (name, pts) => {
+    const spots = placeLabels(pts, W, H);
+    const boxes = spots.filter(Boolean).map((s) => s.box);
+    const clash = boxes.some((a, i) => boxes.some((b, j) => j > i && boxesOverlap(a, b)));
+    const inside = boxes.every((b) => b.x >= 0 && b.y >= 0 && b.x + b.w <= W && b.y + b.h <= H);
+    const onPoint = spots.some((s, i) => s && pts.some((p) => boxesOverlap(s.box, { x: p.X - 6, y: p.Y - 6, w: 12, h: 12 })));
+    check(`${name}: no overlap, inside, not on a point (${boxes.length}/${pts.length} labelled)`, !clash && inside && !onPoint, spots);
+    return spots;
+  };
+  // vertex right next to the y-intercept (the case seen in the app)
+  const s1 = run('vertex next to y-intercept', [{ X: 182, Y: 120, text: '(0,083; 1,042)' }, { X: 180, Y: 124, text: '(0; 1)' }, { X: 150, Y: 200, text: '(−0,333; 0)' }, { X: 215, Y: 200, text: '(0,5; 0)' }]);
+  check('close pair: both get a label', s1[0] && s1[1]);
+  run('five points in a cluster', [0, 1, 2, 3, 4].map((k) => ({ X: 180 + k * 6, Y: 150 + (k % 2) * 5, text: `(${k}; ${k})` })));
+  run('points at the edges', [{ X: 2, Y: 2, text: '(−10; 10)' }, { X: W - 2, Y: H - 2, text: '(10; −10)' }, { X: W - 3, Y: 3, text: '(10; 10)' }]);
 });
 
 console.log(`\n${passed} passed, ${failed} failed`);

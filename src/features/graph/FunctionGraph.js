@@ -5,15 +5,17 @@
  */
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, PanResponder } from 'react-native';
-import Svg, { Path, Line, Circle, Text as SvgText, G } from 'react-native-svg';
+import Svg, { Path, Line, Circle, Rect, Text as SvgText, G } from 'react-native-svg';
 import { useTranslation } from 'react-i18next';
 import { Ionicons } from '@expo/vector-icons';
+import { placeLabels } from './labelLayout';
 import { useTheme } from '../../shared/theme/ThemeContext';
 import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../../shared/theme/constants';
 import { sampleSegments } from './functionAnalysis';
 import { formatNumber, formatPoint } from './graphService';
 
 const PADDING = 0; // plot fills the whole surface; labels are drawn inside
+const LABEL_FONT = 10;
 const TAP_RADIUS = 24;
 const MAX_INLINE_LABELS = 6;
 
@@ -246,6 +248,9 @@ export default function FunctionGraph({
     return X >= -4 && X <= W + 4 && Y >= -4 && Y <= H + 4;
   });
   const showInlineLabels = visiblePoints.length <= MAX_INLINE_LABELS;
+  const labelSpots = showInlineLabels
+    ? placeLabels(visiblePoints.map((p) => ({ X: px(p.x), Y: py(p.y), text: formatPoint(p, lang, { pi: periodic }) })), W, H)
+    : [];
 
   const kindLabel = (k) => t(`graph.point.${k}`);
   const selectedVisible = selected && visiblePoints.some((p) => p.x === selected.x && p.y === selected.y) ? selected : null;
@@ -306,25 +311,27 @@ export default function FunctionGraph({
               <Path key={p.key} d={p.d} stroke={p.color} strokeWidth={2.5} fill="none" strokeLinejoin="round" strokeLinecap="round" />
             ))}
             {/* key points */}
-            {visiblePoints.map((p) => {
+            {visiblePoints.map((p, i) => {
               const X = px(p.x);
               const Y = py(p.y);
               const isSel = selectedVisible && selectedVisible.x === p.x && selectedVisible.y === p.y;
               return (
                 <G key={`kp${p.fi}${p.kinds.join()}${p.x}${p.y}`}>
                   <Circle cx={X} cy={Y} r={isSel ? 7 : 5} fill={colors.surface} stroke={p.color} strokeWidth={2.5} />
-                  {showInlineLabels && !isSel ? (
-                    <SvgText
-                      x={Math.min(Math.max(X + 7, 2), W - 2)}
-                      y={Y > 16 ? Y - 8 : Y + 16}
-                      fontSize={10}
-                      fontWeight="600"
-                      fill={colors.textSecondary}
-                      textAnchor={X > W - 70 ? 'end' : 'start'}
-                    >
-                      {formatPoint(p, lang, { pi: periodic })}
-                    </SvgText>
-                  ) : null}
+                </G>
+              );
+            })}
+            {/* point labels, placed so they never overlap (drawn after all points) */}
+            {visiblePoints.map((p, i) => {
+              const spot = labelSpots[i];
+              const isSel = selectedVisible && selectedVisible.x === p.x && selectedVisible.y === p.y;
+              if (!spot || isSel) return null;
+              return (
+                <G key={`lb${p.fi}${p.kinds.join()}${p.x}${p.y}`}>
+                  <Rect x={spot.box.x} y={spot.box.y} width={spot.box.w} height={spot.box.h} rx={4} fill={colors.surface} opacity={0.85} />
+                  <SvgText x={spot.x} y={spot.y} fontSize={LABEL_FONT} fontWeight="600" fill={colors.textSecondary} textAnchor={spot.anchor}>
+                    {formatPoint(p, lang, { pi: periodic })}
+                  </SvgText>
                 </G>
               );
             })}
