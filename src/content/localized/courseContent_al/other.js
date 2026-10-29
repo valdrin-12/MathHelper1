@@ -7,22 +7,22 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Raportet Trigonometrike',
-        theory: 'Trigonometria studion marrëdhëniet ndërmjet këndet dhe anëve të trekëndëshave. Gjashtë raportet trigonometrike definohen me anët e trekëndëshit kënddrejtë: sin, cos, tan, cot, sec, csc.\n\nPër këndin θ: sin θ = i kundërt / hipotenuzë, cos θ = i afërt / hipotenuzë, tan θ = i kundërt / i afërt.\n\nMnemonikë: SOH-CAH-TOA (Sin=Opposite/Hypotenuse, Cos=Adjacent/Hypotenuse, Tan=Opposite/Adjacent)',
+        theory: 'Trigonometria studion lidhjet ndërmjet këndeve dhe brinjëve të trekëndëshave. Gjashtë raportet trigonometrike përkufizohen me brinjët e trekëndëshit kënddrejtë: sin, cos, tan, cot, sec, csc.\n\nPër këndin θ: sin θ = kateti përballë / hipotenuza, cos θ = kateti pranë / hipotenuza, tan θ = kateti përballë / kateti pranë.\n\nNë anglisht mbahet mend me SOH-CAH-TOA (Sin = Opposite/Hypotenuse, Cos = Adjacent/Hypotenuse, Tan = Opposite/Adjacent).',
         keyPoints: [
-          'sin θ = o/h (i kundërt/hipotenuzë)',
-          'cos θ = a/h (i afërt/hipotenuzë)',
-          'tan θ = o/a = sin/cos',
+          'sin θ = kateti përballë / hipotenuza',
+          'cos θ = kateti pranë / hipotenuza',
+          'tan θ = kateti përballë / kateti pranë = sin/cos',
           'sin²θ + cos²θ = 1 (identiteti bazë)',
         ],
         examples: [
           {
-            example: 'Trekëndësh kënddrejtë: katetet 3 dhe 4, hipotenuzë 5. Gjej sin, cos, tan të këndit θ (kundrejt katetes 3).',
-            solution: 'sin θ = 3/5 = 0.6\ncos θ = 4/5 = 0.8\ntan θ = 3/4 = 0.75',
+            example: 'Trekëndësh kënddrejtë: katetet 3 dhe 4, hipotenuzë 5. Gjej sin, cos dhe tan të këndit θ (përballë katetit 3).',
+            solution: 'sin θ = 3/5 = 0,6\ncos θ = 4/5 = 0,8\ntan θ = 3/4 = 0,75',
           },
         ],
         practice: [
           {
-            problem: 'sin θ = 5/13. Gjej cos θ dhe tan θ (θ është kënd i parë).',
+            problem: 'sin θ = 5/13. Gjej cos θ dhe tan θ (θ është në kuadrantin e parë).',
             solution: 'cos θ = 12/13, tan θ = 5/12',
             steps: [
               'sin²θ + cos²θ = 1',
@@ -36,7 +36,7 @@ export const courseContents_other_al = {
       },
       {
         title: 'Vlerat Trigonometrike të Këndeve Speciale',
-        theory: 'Këndet 0°, 30°, 45°, 60°, 90° kanë vlera trigonometrike ekzakte që duhet të memorizohen:\n- sin 30° = cos 60° = 1/2\n- sin 45° = cos 45° = √2/2\n- sin 60° = cos 30° = √3/2\n- tan 30° = √3/3, tan 45° = 1, tan 60° = √3\n\nTruk memorizimi: sin dhe cos janë "pasqyra" njëra-tjetrës rreth 45°.',
+        theory: 'Këndet 0°, 30°, 45°, 60°, 90° kanë vlera trigonometrike të sakta që mirë është t’i mbani mend:\n- sin 30° = cos 60° = 1/2\n- sin 45° = cos 45° = √2/2\n- sin 60° = cos 30° = √3/2\n- tan 30° = √3/3, tan 45° = 1, tan 60° = √3\n\nNdihmë për kujtesë: sin dhe cos janë "pasqyrim" i njëri-tjetrit rreth 45° (sin α = cos(90° - α)).',
         keyPoints: [
           'sin 0° = 0, cos 0° = 1',
           'sin 30° = 1/2, cos 30° = √3/2',
@@ -52,7 +52,7 @@ export const courseContents_other_al = {
         practice: [
           {
             problem: 'Llogarit: 2sin 60° + 3cos 30° - tan 45°',
-            solution: '= 2√3',
+            solution: '= 5√3/2 - 1 ≈ 3,33',
             steps: [
               'sin 60° = √3/2, cos 30° = √3/2, tan 45° = 1',
               '= 2(√3/2) + 3(√3/2) - 1',
@@ -64,7 +64,7 @@ export const courseContents_other_al = {
       },
       {
         title: 'Zgjidhja e Trekëndëshave',
-        theory: 'Ligji i Sinusit: a/sin A = b/sin B = c/sin C. Përdoret kur dihen: AAS, ASA, ose SSA.\n\nLigji i Kosinusit: c² = a² + b² - 2ab cos C. Përdoret kur dihen: SAS ose SSS.\n\nPjona e Zgjidhjes: 1) Identifiko tiparin e dhënë (AAS, SSS, etj.), 2) Zgjidhur trekëndëshin, 3) Kontrollo (shuma këndesh = 180°).',
+        theory: 'Ligji i Sinusit: a/sin A = b/sin B = c/sin C. Përdoret kur dihen: AAS, ASA, ose SSA.\n\nLigji i Kosinusit: c² = a² + b² - 2ab cos C. Përdoret kur dihen: SAS ose SSS.\n\nPlani i zgjidhjes: 1) shiko çfarë është dhënë (AAS, SSS etj.), 2) zgjidhe trekëndëshin, 3) kontrollo (shuma e këndeve = 180°).',
         keyPoints: [
           'Ligji i Sinusit: a/sin A = b/sin B = c/sin C',
           'Ligji i Kosinusit: c² = a²+b²-2ab cos C',
@@ -79,8 +79,8 @@ export const courseContents_other_al = {
         ],
         practice: [
           {
-            problem: 'Trekëndësh me a=5, b=7, C=60°. Gjej c.',
-            solution: 'c = √39 ≈ 6.24',
+            problem: 'Në trekëndëshin me a=5, b=7, C=60°, gjej c.',
+            solution: 'c = √39 ≈ 6,24',
             steps: [
               'c² = a² + b² - 2ab cos C',
               'c² = 25 + 49 - 2(5)(7) cos 60°',
@@ -98,11 +98,11 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Rrethi Njësi',
-        theory: 'Rrethi njësi ka rreze 1 dhe qendër në origjinë. Çdo pikë mbi të ka koordinata (cos θ, sin θ) ku θ është këndi nga boshti pozitiv x.\n\nKjo përgjithëson funksionet trig për çdo kënd (jo vetëm 0-90°). Këndet: kuadrant I (0°-90°), II (90°-180°), III (180°-270°), IV (270°-360°).\n\nShenja e sin/cos sipas kuadrantit: "Të gjithë Shkojnë Tangjent Cos" (All Students Take Calculus - ASTC): I-të gjithë +, II-vetëm sin+, III-vetëm tan+, IV-vetëm cos+.',
+        theory: 'Rrethi njësi ka rreze 1 dhe qendër në origjinë. Çdo pikë mbi të ka koordinata (cos θ, sin θ) ku θ është këndi nga boshti pozitiv x.\n\nKështu funksionet trigonometrike përkufizohen për çdo kënd (jo vetëm 0°–90°). Kuadrantet: I (0°–90°), II (90°–180°), III (180°–270°), IV (270°–360°).\n\nShenjat sipas kuadrantit: I: të gjitha +, II: vetëm sin +, III: vetëm tan +, IV: vetëm cos +.',
         keyPoints: [
           '(cos θ, sin θ) janë koordinata mbi rrethin njësi',
-          'ASTC për shenjat sipas kuadranteve',
-          'Këndet bashkëdhenatike: sin(180-θ) = sin θ',
+          'Shenjat: I të gjitha +, II sin +, III tan +, IV cos +',
+          'Këndet shtuese: sin(180° - θ) = sin θ',
           'Perioda e sin dhe cos: 2π',
         ],
         examples: [
@@ -126,9 +126,9 @@ export const courseContents_other_al = {
       },
       {
         title: 'Grafikat e Sinusit dhe Kosinusit',
-        theory: 'y = A sin(Bx + C) + D - forma e përgjithshme.\nA = amplitudë (lartësia maksimale nga qendra)\nB: perioda T = 2π/|B|\nC: zhvendosja fazike (horizontal shift)\nD: zhvendosja vertikale\n\nGrafiku i kosinusit është si sinusi por i zhvendosur me π/2 majtas (ose cos x = sin(x + π/2)).',
+        theory: 'y = A sin(Bx + C) + D - forma e përgjithshme.\nA = amplituda (largësia më e madhe nga vija e mesit)\nB: perioda T = 2π/|B|\nC: përcakton zhvendosjen horizontale (fazën), -C/B\nD: zhvendosja vertikale\n\nGrafiku i kosinusit është si sinusi por i zhvendosur me π/2 majtas (ose cos x = sin(x + π/2)).',
         keyPoints: [
-          'Amplitudë |A|',
+          'Amplituda |A|',
           'Perioda T = 2π/|B|',
           'Zhvendosja fazike = -C/B',
           'Zhvendosja vertikale D',
@@ -136,7 +136,7 @@ export const courseContents_other_al = {
         examples: [
           {
             example: 'Gjej amplitudën dhe periodën e y = 3 sin(2x - π)',
-            solution: 'Amplitudë = 3\nPerioda = 2π/2 = π',
+            solution: 'Amplituda = 3\nPerioda = 2π/2 = π',
           },
         ],
         practice: [
@@ -160,7 +160,7 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Identitetet Themelore',
-        theory: 'Identitetet trigonometrike janë barazime të vërteta për çdo vlerë të këndit. Grupi kryesor: identitetet Pitagorike, identitetet e reciprokut, identitetet e kuotientit.\n\nIdentitetet Pitagorike: sin²θ + cos²θ = 1, 1 + tan²θ = sec²θ, 1 + cot²θ = csc²θ.\n\nIdentitetet e shumës/diferencës: sin(A±B) = sin A cos B ± cos A sin B, cos(A±B) = cos A cos B ∓ sin A sin B.',
+        theory: 'Identitetet trigonometrike janë barazime të vërteta për çdo vlerë të këndit. Grupet kryesore: identitetet e Pitagorës, identitetet e të anasjelltave dhe identitetet e herësit.\n\nIdentitetet e Pitagorës: sin²θ + cos²θ = 1, 1 + tan²θ = sec²θ, 1 + cot²θ = csc²θ.\n\nIdentitetet e shumës/diferencës: sin(A±B) = sin A cos B ± cos A sin B, cos(A±B) = cos A cos B ∓ sin A sin B.',
         keyPoints: [
           'sin²θ + cos²θ = 1 (bazë)',
           'sin(A+B) = sinA cosB + cosA sinB',
@@ -178,7 +178,7 @@ export const courseContents_other_al = {
             problem: 'Thjeshtoje: (1 - cos²θ)/sin²θ',
             solution: '= 1',
             steps: [
-              '1 - cos²θ = sin²θ (identiteti Pitagorik)',
+              '1 - cos²θ = sin²θ (identiteti i Pitagorës)',
               'sin²θ/sin²θ = 1',
             ],
           },
@@ -192,17 +192,17 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Aplikime të Avancuara të Ligjeve',
-        theory: 'Kombinimi i ligjit të sinusit dhe kosinusit me sipërfaqen e trekëndëshit S = (1/2)ab sinC lejon zgjidhjen e çdo trekëndëshi duke dhënë mjaftueshëm informacion.\n\nKëto metoda aplikohen gjerësisht në: sondazh (surveying), navigacion, fizikë (vektorë forçash), arkitekturë dhe inxhinieri.',
+        theory: 'Kombinimi i ligjit të sinusit dhe kosinusit me sipërfaqen e trekëndëshit S = (1/2)ab sinC lejon zgjidhjen e çdo trekëndëshi kur jepen mjaftueshëm të dhëna.\n\nKëto metoda përdoren gjerësisht në: gjeodezi (matjen e terrenit), navigim, fizikë (vektorët e forcave), arkitekturë dhe inxhinieri.',
         keyPoints: [
           'S = (1/2)ab sin C (sipërfaqja)',
-          'Ligji i sinusit: ambiguity (SSA mund të japë 0, 1 ose 2 trekëndësha)',
+          'Ligji i sinusit, rasti i dykuptimtë: SSA mund të japë 0, 1 ose 2 trekëndësha',
           'Ligji i kosinusit: c² = a²+b²-2ab cos C',
           'Kombinohen për zgjidhjen e çdo trekëndëshi',
         ],
         examples: [
           {
-            example: 'Dy krahë muri formojnë këndin 120°, gjatësia 4m dhe 6m. Sa është distanca ndërmjet majave?',
-            solution: 'c² = 16+36-2(4)(6)cos120° = 52+24 = 76\nc = 2√19 ≈ 8.72 m',
+            example: 'Dy mure formojnë kënd 120° dhe kanë gjatësi 4 m dhe 6 m. Sa është largësia ndërmjet skajeve të tyre?',
+            solution: 'c² = 16+36-2(4)(6)cos120° = 52+24 = 76\nc = 2√19 ≈ 8,72 m',
           },
         ],
         practice: [
@@ -227,22 +227,22 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Bazat e Probabilitetit',
-        theory: 'Probabiliteti mat shanset që ndodh një ngjarje. Variron nga 0 (impossibël) deri 1 (i sigurt). Probabiliteti klasik: P(A) = numri i rasteve favorabile / numri total i rasteve (baraz-probabilistë).\n\nNotacioni: S = hapësira mostrore, A = ngjarje, P(A) = probabiliteti\n\nAksiomat e Kolmogorovit: 0 ≤ P(A) ≤ 1, P(S) = 1, P(A∪B) = P(A)+P(B) nëse A,B disjunkte.',
+        theory: 'Probabiliteti mat mundësinë që të ndodhë një ngjarje. Merr vlera nga 0 (e pamundur) deri në 1 (e sigurt). Probabiliteti klasik: P(A) = numri i rasteve të favorshme / numri i të gjitha rasteve (kur rastet janë njëlloj të mundshme).\n\nShënimet: S = hapësira mostrore, A = ngjarje, P(A) = probabiliteti\n\nAksiomat e Kolmogorovit: 0 ≤ P(A) ≤ 1, P(S) = 1, P(A∪B) = P(A)+P(B) nëse A dhe B përjashtojnë njëra-tjetrën.',
         keyPoints: [
-          'P(A) = rastet favorabile / rastet totale',
+          'P(A) = rastet e favorshme / të gjitha rastet',
           '0 ≤ P(A) ≤ 1',
-          'P(të kundërtës) = 1 - P(A)',
+          'P(ngjarjes së kundërt) = 1 - P(A)',
           'P(S) = 1, P(∅) = 0',
         ],
         examples: [
           {
-            example: 'Hedhim zare me 6 faqe. Sa është P(numër çift)?',
+            example: 'Hedhim një zar me 6 faqe. Sa është P(numër çift)?',
             solution: 'Çift: {2, 4, 6} → 3 raste\nP(çift) = 3/6 = 1/2',
           },
         ],
         practice: [
           {
-            problem: 'Kuti me 3 topa të kuq, 5 blu, 2 të gjelbër. P(nuk nxjerr të kuq)?',
+            problem: 'Një kuti ka 3 topa të kuq, 5 blu dhe 2 të gjelbër. Sa është probabiliteti që topi i nxjerrë të mos jetë i kuq?',
             solution: 'P = 7/10',
             steps: [
               'P(të kuq) = 3/10',
@@ -253,22 +253,22 @@ export const courseContents_other_al = {
       },
       {
         title: 'Rregullat e Probabilitetit',
-        theory: 'Rregulla e Shumës: P(A∪B) = P(A) + P(B) - P(A∩B)\nNgjarjet disjunkte (ekskluzive): P(A∩B) = 0, pra P(A∪B) = P(A) + P(B)\n\nRregulla e Prodhimit (ngjarje të pavarura): P(A∩B) = P(A) × P(B)\nProbabiliteti i kushtëzuar: P(A|B) = P(A∩B)/P(B)',
+        theory: 'Rregulla e Shumës: P(A∪B) = P(A) + P(B) - P(A∩B)\nNgjarjet që përjashtojnë njëra-tjetrën: P(A∩B) = 0, pra P(A∪B) = P(A) + P(B)\n\nRregulla e Prodhimit (ngjarje të pavarura): P(A∩B) = P(A) × P(B)\nProbabiliteti i kushtëzuar: P(A|B) = P(A∩B)/P(B)',
         keyPoints: [
           'Rregulla e shumës: P(A∪B) = P(A)+P(B)-P(A∩B)',
           'Ngjarje të pavarura: P(A∩B) = P(A)·P(B)',
           'P(A|B) = P(A∩B)/P(B)',
-          'Teorema e Bayes: P(A|B) = P(B|A)P(A)/P(B)',
+          'Teorema e Bayesit: P(A|B) = P(B|A)P(A)/P(B)',
         ],
         examples: [
           {
-            example: 'P(A)=0.4, P(B)=0.3, P(A∩B)=0.1. Gjej P(A∪B).',
-            solution: 'P(A∪B) = 0.4 + 0.3 - 0.1 = 0.6',
+            example: 'P(A)=0,4, P(B)=0,3, P(A∩B)=0,1. Gjej P(A∪B).',
+            solution: 'P(A∪B) = 0,4 + 0,3 - 0,1 = 0,6',
           },
         ],
         practice: [
           {
-            problem: 'Hedhim dy monedha. P(të paktën njëra koka)?',
+            problem: 'Hedhim dy monedha. Sa është probabiliteti që të bjerë të paktën një kokë? (K = kokë, P = pilë)',
             solution: 'P = 3/4',
             steps: [
               'Hapësira: {KK, KP, PK, PP}',
@@ -286,26 +286,26 @@ export const courseContents_other_al = {
   'stat-003': {
     lessons: [
       {
-        title: 'Kampionimi dhe Shpërndarjet',
-        theory: 'Statistika inferenciale nxjerr përfundime për popullatën nga kampioni. Shpërndarja normale (Gauss) është e rëndësishme: simetrike rreth mesatares, me rregullën 68-95-99.7 (1σ, 2σ, 3σ).\n\nTeorema e Limitit Qendror: mesataret e kampioneve të mëdha shpërndahen normalisht, pavarësisht nga shpërndarja e popullatës. Kjo i lejon test-et statistikore.',
+        title: 'Mostrat dhe Shpërndarjet',
+        theory: 'Statistika inferenciale nxjerr përfundime për popullatën nga mostra. Shpërndarja normale (Gauss) është e rëndësishme: simetrike rreth mesatares, me rregullën 68-95-99,7 (1σ, 2σ, 3σ).\n\nTeorema qendrore e limitit: mesataret e mostrave të mëdha shpërndahen afërsisht normalisht, pavarësisht nga shpërndarja e popullatës. Kjo i bën të mundshme testet statistikore.',
         keyPoints: [
           'Shpërndarja normale: N(μ, σ²)',
-          'Rregulla 68-95-99.7',
-          'Teorema e Limitit Qendror',
-          'Z-score: z = (x - μ)/σ',
+          'Rregulla 68-95-99,7',
+          'Teorema qendrore e limitit',
+          'Vlera z: z = (x - μ)/σ',
         ],
         examples: [
           {
-            example: 'Nxënësit kanë notë mesatare μ=70, σ=10. Çfarë % kanë note 60-80?',
+            example: 'Nxënësit kanë notë mesatare μ=70 dhe σ=10. Sa % kanë notë nga 60 deri në 80?',
             solution: '60-80 është μ ± σ → rreth 68% e nxënësve',
           },
         ],
         practice: [
           {
-            problem: 'Gjej z-score nëse x=85, μ=70, σ=10.',
-            solution: 'z = 1.5',
+            problem: 'Gjej vlerën z nëse x=85, μ=70, σ=10.',
+            solution: 'z = 1,5',
             steps: [
-              'z = (x - μ)/σ = (85 - 70)/10 = 15/10 = 1.5',
+              'z = (x - μ)/σ = (85 - 70)/10 = 15/10 = 1,5',
             ],
           },
         ],
@@ -318,26 +318,26 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Regresioni Linear',
-        theory: 'Regresioni linear modelon marrëdhënien ndërmjet dy variablave: y = β₀ + β₁x + ε.\nβ₀ = intercepti (vlera y kur x=0)\nβ₁ = koeficienti i pjerrësisë (ndryshimi i y për njësi ndryshim të x)\n\nMetoda e katrorëve minimë: minimizo shumën Σ(yᵢ - ŷᵢ)².\nKoeficienti i korrelacionit r (-1 ≤ r ≤ 1) tregon forcën e marrëdhënies.',
+        theory: 'Regresioni linear modelon marrëdhënien ndërmjet dy variablave: y = β₀ + β₁x + ε.\nβ₀ = termi i lirë (vlera e y kur x=0)\nβ₁ = koeficienti i pjerrësisë (ndryshimi i y për njësi ndryshim të x)\n\nMetoda e katrorëve më të vegjël: minimizo shumën Σ(yᵢ - ŷᵢ)².\nKoeficienti i korrelacionit r (-1 ≤ r ≤ 1) tregon forcën e marrëdhënies.',
         keyPoints: [
-          'ŷ = β₀ + β₁x (vijë regresioni)',
+          'ŷ = β₀ + β₁x (drejtëza e regresionit)',
           'β₁ = Σ(x-x̄)(y-ȳ) / Σ(x-x̄)²',
-          'R² = koeficienti i determinimit',
+          'R² = koeficienti i përcaktimit',
           '|r| afër 1: lidhje e fortë lineare',
         ],
         examples: [
           {
-            example: 'r = 0.85 ndërmjet studimit dhe notave. Çfarë tregon?',
+            example: 'r = 0,85 ndërmjet studimit dhe notave. Çfarë tregon?',
             solution: 'Korrelacion pozitiv i fortë: sa më shumë studim, aq më e lartë nota.',
           },
         ],
         practice: [
           {
-            problem: 'Nëse β₁ = 2.5 dhe β₀ = 10, parashiko y kur x = 8.',
+            problem: 'Nëse β₁ = 2,5 dhe β₀ = 10, parashiko y kur x = 8.',
             solution: 'ŷ = 30',
             steps: [
               'ŷ = β₀ + β₁x',
-              'ŷ = 10 + 2.5(8)',
+              'ŷ = 10 + 2,5(8)',
               'ŷ = 10 + 20 = 30',
             ],
           },
@@ -350,29 +350,29 @@ export const courseContents_other_al = {
   'stat-005': {
     lessons: [
       {
-        title: 'Teorema e Bayes',
-        theory: 'Teorema e Bayes: P(A|B) = P(B|A)·P(A) / P(B)\nP(A) = probabiliteti a priori (para të dhënave)\nP(A|B) = probabiliteti a posteriori (pas të dhënave)\nP(B|A) = verosimëllëria (likelihood)\n\nQasja Bayesiane: nis me besim a priori, përditëso me të dhëna për të marrë a posteriori.',
+        title: 'Teorema e Bayesit',
+        theory: 'Teorema e Bayesit: P(A|B) = P(B|A)·P(A) / P(B)\nP(A) = probabiliteti a priori (para të dhënave)\nP(A|B) = probabiliteti a posteriori (pas të dhënave)\nP(B|A) = përgjasia (likelihood)\n\nQasja Bayesiane: nis me besim a priori, përditëso me të dhëna për të marrë a posteriori.',
         keyPoints: [
           'P(A|B) = P(B|A)P(A)/P(B)',
           'A priori: besimi para të dhënave',
           'A posteriori: besimi pas të dhënave',
-          'Verosimëllëria = P(të dhënat | hipoteza)',
+          'Përgjasia = P(të dhënat | hipoteza)',
         ],
         examples: [
           {
-            example: 'Test diagnostik: saktësi 95%. Sëmundja prek 1%. Nëse testi pozitiv, sa është probabiliteti i sëmundjes?',
-            solution: 'P(sëmundje|+) = 0.95×0.01/(0.95×0.01 + 0.05×0.99) ≈ 16%\nEdhe me test pozitiv, vetëm 16% shanc!',
+            example: 'Një test diagnostik ka saktësi 95%. Sëmundja prek 1% të njerëzve. Nëse testi del pozitiv, sa është probabiliteti që personi të jetë i sëmurë?',
+            solution: 'P(sëmundje|+) = 0,95×0,01/(0,95×0,01 + 0,05×0,99) ≈ 16%\nEdhe me test pozitiv, gjasat janë vetëm rreth 16%!',
           },
         ],
         practice: [
           {
-            problem: 'Dy kuti: A(3 të kuq, 2 blu), B(1 të kuq, 4 blu). Zgjidhet kuti rastësisht, nxirret i kuq. Sa P(nga kutia A)?',
+            problem: 'Dy kuti: A (3 të kuq, 2 blu) dhe B (1 i kuq, 4 blu). Zgjedhim rastësisht një kuti dhe nxjerrim një top të kuq. Sa është probabiliteti që të jetë nga kutia A?',
             solution: 'P(A|kuq) = 3/4',
             steps: [
-              'P(A)=P(B)=0.5',
+              'P(A)=P(B)=0,5',
               'P(kuq|A)=3/5, P(kuq|B)=1/5',
-              'P(kuq) = 0.5(3/5)+0.5(1/5) = 2/5',
-              'P(A|kuq) = (3/5×0.5)/(2/5) = 3/4',
+              'P(kuq) = 0,5(3/5)+0,5(1/5) = 2/5',
+              'P(A|kuq) = (3/5×0,5)/(2/5) = 3/4',
             ],
           },
         ],
@@ -385,25 +385,25 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Komponentet e Serive Kohore',
-        theory: 'Seria kohore është sekuencë vëzhgimesh në kohë. Komponentet: trend (drejtim afatgjatë), sezonaliteti (variacion i rregullt periodik), cikli (lëvizje afatmesme), rastësia (luhatje e parregullt).\n\nY_t = T_t + S_t + C_t + R_t (model aditiv)\nY_t = T_t × S_t × C_t × R_t (model multiplikativ)',
+        theory: 'Seria kohore është një varg vëzhgimesh në kohë. Përbërësit: trendi (drejtimi afatgjatë), sezonaliteti (luhatje e rregullt periodike), cikli (lëvizje afatmesme), rastësia (luhatje e parregullt).\n\nY_t = T_t + S_t + C_t + R_t (model shtues)\nY_t = T_t × S_t × C_t × R_t (model shumëzues)',
         keyPoints: [
           'Trend: drejtim afatgjatë',
           'Sezonaliteti: periodik (vjetor, javor)',
           'Cikli: lëvizje ekonomike 3-10 vjeçare',
-          'Mesatarja lëvizëse: eliminon rastësinë',
+          'Mesatarja rrëshqitëse zbut rastësinë',
         ],
         examples: [
           {
-            example: 'Shitjet janë: Jan=100, Feb=90, Mar=120, Apr=110. Gjej mesataren lëvizëse me dritare 3.',
-            solution: 'M₂ = (100+90+120)/3 = 103.3\nM₃ = (90+120+110)/3 = 106.7',
+            example: 'Shitjet janë: Jan=100, Feb=90, Mar=120, Apr=110. Gjej mesataren rrëshqitëse me dritare 3.',
+            solution: 'M₂ = (100+90+120)/3 = 103,3\nM₃ = (90+120+110)/3 = 106,7',
           },
         ],
         practice: [
           {
-            problem: 'Cila komponent e serisë kohore shpjegon shitje të larta në Dhjetor çdo vit?',
-            solution: 'Sezonaliteti - variacion periodik vjetor',
+            problem: 'Cili përbërës i serisë kohore shpjegon shitjet e larta në dhjetor çdo vit?',
+            solution: 'Sezonaliteti: luhatje periodike vjetore',
             steps: [
-              'Ndodh çdo Dhjetor = i rregullt dhe periodik',
+              'Ndodh çdo dhjetor, pra është i rregullt dhe periodik',
               'Perioda = 1 vit',
               'Kjo është sezonaliteti',
             ],
@@ -420,7 +420,7 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Vektorët dhe Operacionet',
-        theory: 'Vektori ka madhësi (moduli) dhe drejtim. Shënohet si v = (v₁, v₂, ..., vₙ).\nMbledhja: u + v = (u₁+v₁, u₂+v₂, ...)\nShumëzimi skalar: kv = (kv₁, kv₂, ...)\nProdukti skalar: u·v = Σuᵢvᵢ = |u||v|cos θ\n\nProdukti vektorial (3D): u × v = determinant i matricës 3×3. Rezultati ⊥ të dy vektorëve.',
+        theory: 'Vektori ka madhësi (moduli) dhe drejtim. Shënohet si v = (v₁, v₂, ..., vₙ).\nMbledhja: u + v = (u₁+v₁, u₂+v₂, ...)\nShumëzimi skalar: kv = (kv₁, kv₂, ...)\nProdhimi skalar: u·v = Σuᵢvᵢ = |u||v|cos θ\n\nProdhimi vektorial (3D): u × v llogaritet si përcaktor 3×3; rezultati është pingul me të dy vektorët.',
         keyPoints: [
           'u + v = (u₁+v₁, u₂+v₂)',
           'u·v = Σuᵢvᵢ (prodhim skalar)',
@@ -446,12 +446,12 @@ export const courseContents_other_al = {
       },
       {
         title: 'Matricat dhe Operacionet',
-        theory: 'Matricë m×n ka m rreshta dhe n kolona. Operacionet:\nMbledhja/Zbritja: A ± B (të njëjta dimensione)\nShumëzimi skalar: kA\nShumëzimi i matricave: A(m×n) × B(n×p) = C(m×p). Elementi cᵢⱼ = rreshti i-të i A × kolona j-të e B.\n\nMatrica identitet I: A×I = I×A = A. Matricë inverse A⁻¹: A×A⁻¹ = I.',
+        theory: 'Matrica m×n ka m rreshta dhe n kolona. Veprimet:\nMbledhja/Zbritja: A ± B (me të njëjtat përmasa)\nShumëzimi skalar: kA\nShumëzimi i matricave: A(m×n) × B(n×p) = C(m×p). Elementi cᵢⱼ = rreshti i-të i A × kolona j-të e B.\n\nMatrica njësi I: A×I = I×A = A. Matrica e anasjellë A⁻¹: A×A⁻¹ = I.',
         keyPoints: [
-          'A×B: kolona B = rreshta A (duhet të pajtohen)',
+          'A×B: numri i kolonave të A = numri i rreshtave të B',
           'AB ≠ BA (jo komutativ)',
           '(AB)C = A(BC) (asociativ)',
-          'Matrica inverse: A×A⁻¹ = I',
+          'Matrica e anasjellë: A×A⁻¹ = I',
         ],
         examples: [
           {
@@ -478,13 +478,13 @@ export const courseContents_other_al = {
   'linalg-002': {
     lessons: [
       {
-        title: 'Zgjidhja e Sistemeve me Elim. Gaussiane',
-        theory: 'Sistemin e ekuacioneve lineare mund ta zgjidhim me matricën e zgjeruar [A|b]. Eliminimi Gaussi transformon matricën në formë eшеlon (shkallë) duke përdorur operacionet elementare të rreshtave: shkëmbim, shumëzim me skalar, shtonje e shumëfishit.\n\nFormë eшelon e reduktuar (RREF): çdo kolona udhëzuese ka 1 dhe zero kudo tjetër. Kjo jep zgjidhjen direkt.',
+        title: 'Zgjidhja e Sistemeve me Eliminimin e Gausit',
+        theory: 'Sistemin e ekuacioneve lineare mund ta zgjidhim me matricën e zgjeruar [A|b]. Eliminimi i Gausit e shndërron matricën në formë shkallore duke përdorur veprimet elementare me rreshtat: ndërrimi i dy rreshtave, shumëzimi i një rreshti me numër, shtimi i një shumëfishi të një rreshti tjetër.\n\nForma shkallore e reduktuar: çdo kolonë kryesore ka 1 dhe zero kudo tjetër. Kjo jep zgjidhjen direkt.',
         keyPoints: [
           'Matrica e zgjeruar [A|b]',
           'Operacionet elementare: Rᵢ ↔ Rⱼ, kRᵢ, Rᵢ+kRⱼ',
-          'RREF: 1 udhëzues, zero kudo tjetër',
-          'n variabla-n-ekuacione = 1 zgjidhje zakonisht',
+          'Forma e reduktuar: 1 kryesor, zero kudo tjetër',
+          'n ekuacione me n të panjohura: zakonisht një zgjidhje',
         ],
         examples: [
           {
@@ -512,25 +512,25 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Hapësirat Vektoriale dhe Nënhapësirat',
-        theory: 'Hapësia vektoriale V mbi fushën F plotëson 8 aksiomat (mbyllja nën mbledhje dhe shumëzim skalar, etj.). Shembuj: ℝⁿ, C[a,b] (funksione continue), Pₙ (polinome).\n\nNënhapësira: nënbashkësi e mbyllur nën operacione, me vektorin zero. Span{v₁,...,vₖ} është nënhapësira e gjeneruar.\n\nIndependencë lineare: v₁,...,vₖ janë independent linearisht nëse c₁v₁+...+cₖvₖ=0 nënkupton cᵢ=0.',
+        theory: 'Hapësira vektoriale V mbi fushën F plotëson 8 aksioma (mbyllja ndaj mbledhjes dhe shumëzimit me skalar etj.). Shembuj: ℝⁿ, C[a,b] (funksionet e vazhdueshme), Pₙ (polinomet).\n\nNënhapësira: nënbashkësi e mbyllur ndaj veprimeve, që përmban vektorin zero. Span{v₁,...,vₖ} (mbështjellja lineare) është nënhapësira që ata krijojnë.\n\nPavarësia lineare: v₁,...,vₖ janë linearisht të pavarur nëse c₁v₁+...+cₖvₖ=0 nënkupton cᵢ=0.',
         keyPoints: [
           '8 aksioma të hapësirës vektoriale',
           'Nënhapësira: mbyllje + vektor zero',
-          'Span: gjithë kombinime lineare',
-          'Bazë: independent linearisht + span i tërë',
+          'Span: të gjitha kombinimet lineare',
+          'Baza: vektorë linearisht të pavarur që e mbështjellin gjithë hapësirën',
         ],
         examples: [
           {
-            example: 'A janë v₁=(1,0,1), v₂=(0,1,1), v₃=(1,1,0) independent linearisht?',
-            solution: 'det[v₁ v₂ v₃] = 1(0-1)-0+1(0-1) = -2 ≠ 0\nPo, janë independent.',
+            example: 'A janë v₁=(1,0,1), v₂=(0,1,1), v₃=(1,1,0) linearisht të pavarur?',
+            solution: 'det[v₁ v₂ v₃] = 1(0-1)-0+1(0-1) = -2 ≠ 0\nPo, janë të pavarur.',
           },
         ],
         practice: [
           {
             problem: 'Gjej një bazë të nënhapësirës Span{(1,2,3),(2,4,6)}.',
-            solution: '{(1,2,3)} - vetëm njëri vektor (tjetri proporcional)',
+            solution: '{(1,2,3)}: mjafton një vektor (tjetri është shumëfish i tij)',
             steps: [
-              '(2,4,6) = 2(1,2,3) → proporcional',
+              '(2,4,6) = 2(1,2,3) → shumëfish',
               'Janë të varur linearisht',
               'Bazë: {(1,2,3)}',
             ],
@@ -544,26 +544,26 @@ export const courseContents_other_al = {
   'linalg-004': {
     lessons: [
       {
-        title: 'Eigenvalues dhe Eigenvectors',
-        theory: 'Eigenvektori v dhe eigenvalori λ plotësojnë Av = λv. Polinomi karakteristik: det(A - λI) = 0 jep eigenvalores.\n\nHapat: 1) Zgjidh det(A-λI)=0 për λ, 2) Për secilën λ, zgjidh (A-λI)v=0 për v.\n\nAplikimet: Page Rank (Google), PCA (machine learning), oscilimet natyrore, kuantum mekanikë.',
+        title: 'Vlerat dhe Vektorët Vetjakë',
+        theory: 'Vektori vetjak v dhe vlera vetjake λ plotësojnë Av = λv. Ekuacioni karakteristik det(A - λI) = 0 jep vlerat vetjake.\n\nHapat: 1) Zgjidh det(A-λI)=0 për λ, 2) Për secilën λ, zgjidh (A-λI)v=0 për v.\n\nZbatime: PageRank (Google), PCA (mësimi automatik), lëkundjet natyrore, mekanika kuantike.',
         keyPoints: [
-          'Av = λv (definicioni)',
+          'Av = λv (përkufizimi)',
           'det(A-λI)=0 (polinom karakteristik)',
-          'Eigenspace = null(A-λI)',
+          'Hapësira vetjake = bërthama e (A-λI)',
           'Diagonalizimi: A = PDP⁻¹',
         ],
         examples: [
           {
-            example: 'Gjej eigenvalores e A = [[2,1],[0,3]]',
+            example: 'Gjej vlerat vetjake të A = [[2,1],[0,3]]',
             solution: 'det(A-λI) = (2-λ)(3-λ) = 0\nλ₁=2, λ₂=3',
           },
         ],
         practice: [
           {
-            problem: 'Gjej eigenvaloren e A = [[5,0],[0,2]]',
+            problem: 'Gjej vlerat vetjake të A = [[5,0],[0,2]]',
             solution: 'λ₁=5, λ₂=2',
             steps: [
-              'Matricë diagonale: eigenvalores = elemente diagonale',
+              'Matricë diagonale: vlerat vetjake janë elementet e diagonales',
               'λ₁=5, λ₂=2',
             ],
           },
@@ -577,27 +577,27 @@ export const courseContents_other_al = {
     lessons: [
       {
         title: 'Metoda Newton-Raphson',
-        theory: 'Newton-Raphson gjen rrënjët e f(x)=0: xₙ₊₁ = xₙ - f(xₙ)/f\'(xₙ). Konvergjenca është kuadratike (numri i shifrash korrekte pothuaj dyfishohet çdo iteracion).\n\nHapat: 1) Nis me hamë fillestare x₀, 2) Zbato formulën deri konvergjencë, 3) Ndalo kur |f(xₙ)| < tolerancë.',
+        theory: 'Newton-Raphson gjen rrënjët e f(x)=0: xₙ₊₁ = xₙ - f(xₙ)/f\'(xₙ). Konvergjenca është kuadratike (numri i shifrave të sakta afërsisht dyfishohet në çdo hap).\n\nHapat: 1) nis me një vlerë fillestare x₀, 2) zbato formulën derisa vlerat të stabilizohen, 3) ndalo kur |f(xₙ)| < toleranca.',
         keyPoints: [
           'xₙ₊₁ = xₙ - f(xₙ)/f\'(xₙ)',
           'Konvergjencë kuadratike',
-          'Kërkon f të derivueshëm',
+          'Kërkon që f të jetë e derivueshme',
           'Nis pranë rrënjës për konvergjencë',
         ],
         examples: [
           {
             example: 'Gjej √2 duke zgjidhur x²-2=0 me Newton (x₀=1)',
-            solution: 'x₁ = 1 - (1-2)/(2) = 1.5\nx₂ = 1.5 - (2.25-2)/3 = 1.417\nx₃ ≈ 1.4142 (≈ √2)',
+            solution: 'x₁ = 1 - (1-2)/(2) = 1,5\nx₂ = 1,5 - (2,25-2)/3 = 1,417\nx₃ ≈ 1,4142 (≈ √2)',
           },
         ],
         practice: [
           {
             problem: 'Zbato Newton-Raphson një herë: f(x)=x³-2, x₀=1.',
-            solution: 'x₁ = 1.667',
+            solution: 'x₁ = 4/3 ≈ 1,333',
             steps: [
               'f(1) = 1-2 = -1',
               "f'(x) = 3x², f'(1) = 3",
-              'x₁ = 1 - (-1)/3 = 1 + 1/3 = 4/3 ≈ 1.333',
+              'x₁ = 1 - (-1)/3 = 1 + 1/3 = 4/3 ≈ 1,333',
             ],
           },
         ],
@@ -611,38 +611,38 @@ export const courseContents_other_al = {
   'numth-001': {
     lessons: [
       {
-        title: 'Ndarësi dhe NMÇP/SMÇV',
-        theory: 'a ndan b (a|b) nëse b = a×k për ndonjë numër të plotë k. NMÇP (Ndarësi Më i Madh i Përbashkët) gjindet me algoritmin e Euklid-it: NMÇP(a, b) = NMÇP(b, a mod b).\n\nSMÇV (Shumëfishi Më i Vogël i Përbashkët): SMÇV(a, b) = a×b / NMÇP(a, b).\n\nNumrat primorë kanë saktësisht dy ndarës: 1 dhe vetëveten. Teorema bazë e aritmetikës: çdo numër > 1 faktorizohet unike në primorë.',
+        title: 'Pjesëtueshmëria, PMP dhe SHVP',
+        theory: 'a e pjesëton b (a|b) nëse b = a×k për ndonjë numër të plotë k. PMP (pjesëtuesi më i madh i përbashkët) gjendet me algoritmin e Euklidit: PMP(a, b) = PMP(b, a mod b).\n\nSHVP (shumëfishi më i vogël i përbashkët): SHVP(a, b) = a×b / PMP(a, b).\n\nNumrat e thjeshtë kanë saktësisht dy pjesëtues: 1 dhe vetveten. Teorema themelore e aritmetikës: çdo numër > 1 shkruhet në mënyrë të vetme si prodhim numrash të thjeshtë.',
         keyPoints: [
-          'NMÇP algoritmi i Euklidit: NMÇP(a,b)=NMÇP(b,a%b)',
-          'SMÇV(a,b) = a×b/NMÇP(a,b)',
-          'Faktorizimi primar: unik',
-          'Infinitë numra primorë (Euklidi)',
+          'PMP algoritmi i Euklidit: PMP(a,b)=PMP(b,a%b)',
+          'SHVP(a,b) = a×b/PMP(a,b)',
+          'Zbërthimi në faktorë të thjeshtë është i vetëm',
+          'Ka pafund numra të thjeshtë (Euklidi)',
         ],
         examples: [
           {
-            example: 'Gjej NMÇP(48, 18)',
-            solution: 'NMÇP(48,18)=NMÇP(18,12)=NMÇP(12,6)=NMÇP(6,0)=6',
+            example: 'Gjej PMP(48, 18)',
+            solution: 'PMP(48,18)=PMP(18,12)=PMP(12,6)=PMP(6,0)=6',
           },
           {
-            example: 'Gjej SMÇV(12, 8)',
-            solution: 'NMÇP(12,8)=4\nSMÇV = 12×8/4 = 24',
+            example: 'Gjej SHVP(12, 8)',
+            solution: 'PMP(12,8)=4\nSHVP = 12×8/4 = 24',
           },
         ],
         practice: [
           {
-            problem: 'Gjej NMÇP dhe SMÇV të 60 dhe 45.',
-            solution: 'NMÇP=15, SMÇV=180',
+            problem: 'Gjej PMP dhe SHVP të 60 dhe 45.',
+            solution: 'PMP=15, SHVP=180',
             steps: [
-              'NMÇP(60,45)=NMÇP(45,15)=NMÇP(15,0)=15',
-              'SMÇV = 60×45/15 = 180',
+              'PMP(60,45)=PMP(45,15)=PMP(15,0)=15',
+              'SHVP = 60×45/15 = 180',
             ],
           },
         ],
       },
       {
         title: 'Kongruenca dhe Aritmetika Modulo',
-        theory: 'a ≡ b (mod n) do të thotë n ndan (a-b), ose a dhe b kanë të njëjtën mbetje kur ndahen me n.\n\nOdat aritmetike mbajtën: (a+b) mod n = ((a mod n)+(b mod n)) mod n, dhe ngjashëm për shumëzim.\n\nTeorema e Fermat-it të vogël: nëse p primar dhe p∤a, atëherë aᵖ⁻¹ ≡ 1 (mod p). Kjo ka aplikime kriptografike.',
+        theory: 'a ≡ b (mod n) do të thotë se n e pjesëton (a-b), pra a dhe b japin të njëjtën mbetje kur pjesëtohen me n.\n\nVeprimet aritmetike ruhen: (a+b) mod n = ((a mod n)+(b mod n)) mod n, dhe ngjashëm për shumëzim.\n\nTeorema e vogël e Fermatit: nëse p është numër i thjeshtë dhe p∤a, atëherë aᵖ⁻¹ ≡ 1 (mod p). Kjo ka zbatime në kriptografi.',
         keyPoints: [
           'a ≡ b (mod n) ↔ n|(a-b)',
           'Mbledhja dhe shumëzimi ruhen mod n',
@@ -657,14 +657,13 @@ export const courseContents_other_al = {
         ],
         practice: [
           {
-            problem: 'Cili ditë i javës është pas 100 ditësh të premten? (1=e hënë, 7=e dielë)',
-            solution: 'E premtja',
+            problem: 'Sot është e premte. Cila ditë e javës do të jetë pas 100 ditësh? (1 = e hëna, …, 7 = e diela)',
+            solution: 'E diela',
             steps: [
               'E premtja = dita 5',
               '(5 + 100) mod 7 = 105 mod 7',
-              '105 = 15×7 + 0 → 105 mod 7 = 0',
-              '0 mod 7 = 0 = e dielë',
-              'Wait: 105/7=15 saktë, pra saktësisht e dielë',
+              '105 = 15 × 7 + 0 → mbetja është 0',
+              'Mbetja 0 i përgjigjet ditës 7 = e diela',
             ],
           },
         ],
@@ -676,27 +675,27 @@ export const courseContents_other_al = {
   'numth-002': {
     lessons: [
       {
-        title: 'Ekuacionet Diofantine',
-        theory: 'Ekuacionet Diofantine kërkojnë zgjidhje të plota (integer). Ekuacioni linear: ax + by = c ka zgjidhje nëse dhe vetëm nëse NMÇP(a,b)|c.\n\nAlgoritmi i zgjeruar i Euklidit gjen koeficientët x, y në NMÇP(a,b) = ax + by, i cili na ndihmon të gjejmë zgjidhjen.\n\nEkuacionet Diofantine kuadratike janë shumë më të vështira dhe lidhura me Teoremën e Fundit të Fermat-it.',
+        title: 'Ekuacionet Diofantike',
+        theory: 'Ekuacionet diofantike kërkojnë zgjidhje me numra të plotë. Ekuacioni linear: ax + by = c ka zgjidhje nëse dhe vetëm nëse PMP(a,b)|c.\n\nAlgoritmi i zgjeruar i Euklidit gjen koeficientët x, y në PMP(a,b) = ax + by, i cili na ndihmon të gjejmë zgjidhjen.\n\nEkuacionet diofantike të shkallëve më të larta janë shumë më të vështira dhe lidhen me Teoremën e Madhe të Fermatit.',
         keyPoints: [
-          'ax+by=c: zgjidhje ↔ NMÇP(a,b)|c',
+          'ax+by=c: zgjidhje ↔ PMP(a,b)|c',
           'Algoritmi i zgjeruar i Euklidit',
-          'Nëse (x₀,y₀) zgjidhje, tjetrat: x=x₀+bt, y=y₀-at',
-          'Triplet Pitagore: a²+b²=c² (diofantine)',
+          'Nëse (x₀,y₀) është zgjidhje dhe PMP(a,b)=1, të tjerat: x=x₀+bt, y=y₀-at',
+          'Treshet e Pitagorës: a²+b²=c² (ekuacion diofantik)',
         ],
         examples: [
           {
             example: 'Zgjidh: 3x + 5y = 1',
-            solution: 'NMÇP(3,5)=1|1 ✓\nMe Euklid: 5=1×3+2, 3=1×2+1\n1=3-1×2=3-(5-3)=2×3-5\nx₀=2, y₀=-1',
+            solution: 'PMP(3,5)=1|1 ✓\nMe Euklid: 5=1×3+2, 3=1×2+1\n1=3-1×2=3-(5-3)=2×3-5\nx₀=2, y₀=-1',
           },
         ],
         practice: [
           {
             problem: 'A ka zgjidhje 6x + 4y = 3?',
-            solution: 'Jo, NMÇP(6,4)=2, por 2∤3',
+            solution: 'Jo, PMP(6,4)=2, por 2∤3',
             steps: [
-              'NMÇP(6,4) = 2',
-              '2 ndan 3? 3/2 = 1.5 (jo)',
+              'PMP(6,4) = 2',
+              'A e pjesëton 2 numrin 3? 3/2 = 1,5 (jo)',
               'Kushti 2|3 nuk plotësohet',
               'Asnjë zgjidhje e plotë',
             ],

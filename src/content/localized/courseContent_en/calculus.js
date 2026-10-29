@@ -320,7 +320,7 @@ export const courseContents_calculus_en = {
     lessons: [
       {
         title: 'Volume by Integration',
-        theory: 'A solid of revolution is formed by revolving the region under f(x) about the x-axis or y-axis.\n\nDisk method: V = π∫ₐᵇ [f(x)]²dx (revolution about the x-axis)\nWasher method: V = π∫ₐᵇ {[f(x)]² - [g(x)]²}dx\nShell method: V = 2π∫ₐᵇ x·f(x)dx',
+        theory: 'A solid of revolution is formed by revolving the region under f(x) about the x-axis or y-axis.\n\nDisk method: V = π∫ₐᵇ [f(x)]²dx (revolution about the x-axis)\nWasher method: V = π∫ₐᵇ {[f(x)]² - [g(x)]²}dx\nShell method: V = 2π∫ₐᵇ x·f(x)dx (revolution about the y-axis)',
         keyPoints: [
           'Disk: V = π∫[f(x)]²dx',
           'Washer: V = π∫{[f]²-[g]²}dx',

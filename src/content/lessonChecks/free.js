@@ -1,9 +1,5 @@
-// Short "check yourself" questions shown between the theory paragraphs of a lesson (Brilliant-style).
-// courseId → one array per lesson; each question: after = index of the theory paragraph it follows,
-// type 'choice' (correct = option index) | 'truefalse' (correct = true/false) | 'input' (answer.value),
-// and the texts in every language (al = Albanian source, en, de). Formal address ("ju" / "Sie").
-
-const LESSON_CHECKS = {
+// The two free courses (written in the long form)
+export default {
   'arith-001': [
     // 0 · Natural numbers
     [
@@ -159,27 +155,3 @@ const LESSON_CHECKS = {
     ],
   ],
 };
-
-/**
- * The questions of one lesson in the given language, ready for the quiz components:
- * [{ id, after, type, correct?, answer?, question, options?, explanation }]
- */
-export const getLessonChecks = (courseId, lessonIndex, lang = 'al') => {
-  const list = LESSON_CHECKS[courseId]?.[lessonIndex] || [];
-  const l = ['al', 'en', 'de'].includes(lang) ? lang : 'al';
-  return list.map((c, i) => {
-    const text = c[l] || c.al;
-    return {
-      id: `${courseId}:${lessonIndex}:${i}`,
-      after: c.after,
-      type: c.type,
-      correct: c.correct,
-      answer: c.answer,
-      question: text.question,
-      options: text.options,
-      explanation: text.explanation,
-    };
-  });
-};
-
-export default LESSON_CHECKS;

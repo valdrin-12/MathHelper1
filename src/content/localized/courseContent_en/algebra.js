@@ -84,12 +84,12 @@ export const courseContents_algebra_en = {
         ],
         practice: [
           {
-            problem: 'A student needs to achieve an average above 75 across 5 exams. The scores so far are: 70, 80, 65, 90. What is the minimum score needed on the 5th exam?',
+            problem: 'A student needs an average of at least 75 across 5 exams. The scores so far are: 70, 80, 65, 90. What is the minimum score needed on the 5th exam?',
             solution: 'Minimum score = 70',
             steps: [
               'Sum of 4 scores: 70+80+65+90 = 305',
-              'Total sum must be > 375 (75\u00d75)',
-              '5th score > 375 - 305 = 70',
+              'Total sum must be \u2265 375 (75\u00d75)',
+              '5th score \u2265 375 - 305 = 70',
               'Minimum: 70',
             ],
           },
@@ -406,12 +406,11 @@ export const courseContents_algebra_en = {
         practice: [
           {
             problem: 'Simplify: (x\u00b2-4)/(x\u00b2-x-6)',
-            solution: '(x+2)/(x+3)',
+            solution: '(x-2)/(x-3)',
             steps: [
               'Numerator: x\u00b2-4 = (x-2)(x+2)',
               'Denominator: x\u00b2-x-6 = (x-3)(x+2)',
               'Result: (x-2)(x+2)/[(x-3)(x+2)] = (x-2)/(x-3)',
-              'Wait - (x+2) cancels: (x+2)/(x+3)... Let me check: x\u00b2-x-6=(x-3)(x+2) \u2192 (x-2)(x+2)/[(x-3)(x+2)] = (x-2)/(x-3)',
             ],
           },
         ],
@@ -617,7 +616,7 @@ export const courseContents_algebra_en = {
           'r = \u221a(a\u00b2+b\u00b2) (modulus/amplitude)',
           '\u03b8 = arctan(b/a) (argument/phase)',
           'De Moivre: z\u207f = r\u207f(cos n\u03b8 + i sin n\u03b8)',
-          'n nth roots: r\u207f\u221a \u00b7 cis((\u03b8+2k\u03c0)/n)',
+          'n nth roots: \u207f\u221ar \u00b7 cis((\u03b8+2k\u03c0)/n)',
         ],
         examples: [
           {

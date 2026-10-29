@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Validates src/content/lessonChecks.js against the lessons: every question follows a theory paragraph
+// Validates src/content/lessonChecks/ against the lessons: every question follows a theory paragraph
 // that exists in al, en and de, has its texts in every language and a valid answer.
 const path = require('path');
 const Module = require('module');
@@ -20,7 +20,7 @@ Module._extensions['.js'] = function load(m, file) {
 };
 
 const LANGS = ['al', 'en', 'de'];
-const checks = require(path.join(root, 'src', 'content', 'lessonChecks.js')).default;
+const checks = require(path.join(root, 'src', 'content', 'lessonChecks', 'index.js')).default;
 const content = {};
 LANGS.forEach((l) => {
   content[l] = {};
