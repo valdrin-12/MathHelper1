@@ -24,15 +24,25 @@ import linalgMedium from './quizzes/linalg-medium';
 import linalgHard from './quizzes/linalg-hard';
 import numthEasy from './quizzes/numth-easy';
 import numthMedium from './quizzes/numth-medium';
+import gradeQuizSets from './quizzes/grades';
 
 // Free tier quiz IDs (available without premium)
 export const FREE_QUIZ_IDS = ['arith-easy', 'arith-medium', 'alg-easy'];
+
+// Grade 6–12 quizzes are free for now; set to false to put them behind premium like the other quizzes.
+export const GRADE_QUIZZES_FREE = true;
+
+/** Can this quiz be started without premium? */
+export const isQuizFree = (quiz) => FREE_QUIZ_IDS.includes(quiz?.id ?? quiz)
+  || (GRADE_QUIZZES_FREE && quiz?.grade != null);
 
 // Display order (kept from the original list)
 const RAW_QUIZ_SETS = [
   arithEasy, arithMedium, algEasy, algHard, geoEasy, geoMedium, trigMedium, arithHard,
   algMedium, geoHard, trigEasy, trigHard, calcEasy, calcMedium, calcHard,
   statEasy, statMedium, statHard, linalgEasy, linalgMedium, linalgHard, numthEasy, numthMedium,
+  // grade 6–12 sets come after the General Math ones
+  ...gradeQuizSets,
 ];
 
 const LANGS = ['al', 'en', 'de'];
@@ -50,6 +60,7 @@ const localizeSet = (set, lang) => {
     difficulty: set.difficulty,
     icon: set.icon,
     color: set.color,
+    ...(set.grade != null ? { grade: set.grade, theme: set.theme, order: set.order } : {}),
     questions: set.questions.map((q) => {
       const t = q[l] || q.al;
       const type = q.type || 'choice';
@@ -59,6 +70,11 @@ const localizeSet = (set, lang) => {
         question: t.question,
         explanation: t.explanation,
         hint: t.hint || q.al.hint || '',
+        // grade sets: optional picture (drawn from data) and per-question difficulty
+        ...(q.visual ? { visual: q.visual } : {}),
+        ...(q.difficulty ? { difficulty: q.difficulty } : {}),
+        // grade sets read typed numbers by language ("48,800" = 48800 in English)
+        ...(set.grade != null ? { numberLang: l } : {}),
       };
       if (type === 'input') {
         // Numeric typed answer: { value, tolerance?, alternatives? } is language-independent

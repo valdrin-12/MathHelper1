@@ -173,7 +173,7 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
   const givenText = (q, a) => {
     if (a?.given === null || a?.given === undefined) return null;
     if (q.type === 'input') {
-      const v = parseNumericAnswer(a.given, q.unit);
+      const v = parseNumericAnswer(a.given, q.unit, q.numberLang);
       return Number.isFinite(v) ? `${formatNumber(v, lang)}${unitOf(q)}` : String(a.given);
     }
     if (q.type === 'truefalse') return tfLabel(a.given);
@@ -186,7 +186,7 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
   };
   const whyWrongFor = (q, a) => {
     if (a?.correct || a?.given === null || a?.given === undefined) return null;
-    if (q.type === 'input') return findCommonMistake(q, parseNumericAnswer(a.given, q.unit))?.why || null;
+    if (q.type === 'input') return findCommonMistake(q, parseNumericAnswer(a.given, q.unit, q.numberLang))?.why || null;
     if (q.type === 'truefalse') return q.whyWrong || null;
     return q.whyWrong?.[a.given] || null;
   };

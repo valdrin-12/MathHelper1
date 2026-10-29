@@ -1,0 +1,138 @@
+#!/usr/bin/env node
+// Completeness and quality gate for the grade 6–12 content (published grades only, see curriculum.js):
+//  - every curriculum subtopic has a lesson, in al/en/de, with every section filled:
+//    objectives 2–3, theory, key rules, ≥2 worked examples, 1–3 common mistakes, 3–5 practice problems
+//  - lessons have a picture unless they say why not (noVisual), every picture has alt text in 3 languages
+//  - every theme has one quiz with 8–10 questions mixing easy/medium/hard, all with a verify entry
+//  - no placeholders, no concept used before the grade that introduces it
+const path = require('path');
+const fs = require('fs');
+const { root, loadSrc, requireSrc } = require('./lib/loadSrc');
+
+const LANGS = ['al', 'en', 'de'];
+const VISUAL_TYPES = ['numberLine', 'fractionBar', 'pieModel', 'geoFigure', 'functionPlot', 'barChart', 'pieChart',
+  'histogram', 'boxPlot', 'scatterPlot', 'treeDiagram', 'vennDiagram', 'valueTable', 'solid'];
+const PLACEHOLDER = /\b(TODO|TBD|FIXME|lorem|ipsum)\b|\?\?\?|XXX/i;
+// concept → first grade where the curriculum introduces it
+const CONCEPTS = [
+  { name: 'square roots', grade: 7, re: /√/ },
+  { name: 'Pythagoras', grade: 7, re: /pitagor|pythagor/i },
+  { name: 'powers with negative exponents', grade: 8, re: /⁻/ },
+  { name: 'vectors', grade: 8, re: /\bvektor|\bvector/i },
+  { name: 'trigonometry', grade: 9, re: /\b(sin|cos|tg|tan|cotg|cot)\b|trigonometr/i },
+  { name: 'logarithms', grade: 11, re: /\blog\b|logarit/i },
+  { name: 'calculus', grade: 12, re: /derivat|ableitung|integral|∫|\blim\s*[([]|limes|limiti/i },
+];
+
+const { CURRICULUM, PUBLISHED_GRADES } = requireSrc('content/grades/curriculum.js');
+const { publishedThemes } = requireSrc('content/grades/index.js');
+const quizSets = loadSrc('content/quizzes/grades/index.js');
+
+const errors = [];
+const err = (where, msg) => errors.push(`${where}: ${msg}`);
+const nonEmpty = (s) => typeof s === 'string' && s.trim().length > 0;
+const allStrings = (obj, out = []) => {
+  if (typeof obj === 'string') out.push(obj);
+  else if (Array.isArray(obj)) obj.forEach((v) => allStrings(v, out));
+  else if (obj && typeof obj === 'object') Object.values(obj).forEach((v) => allStrings(v, out));
+  return out;
+};
+const textCheck = (where, grade, obj) => {
+  allStrings(obj).forEach((s) => {
+    if (PLACEHOLDER.test(s)) err(where, `placeholder text "${s.slice(0, 40)}"`);
+    CONCEPTS.forEach((c) => { if (grade < c.grade && c.re.test(s)) err(where, `uses ${c.name} (introduced in grade ${c.grade}): "${s.slice(0, 60)}"`); });
+  });
+};
+const checkVisual = (where, v) => {
+  if (!v || !VISUAL_TYPES.includes(v.type)) { err(where, `unknown visual type ${v?.type}`); return; }
+  LANGS.forEach((l) => { if (!nonEmpty(v.alt?.[l])) err(where, `visual ${v.type} has no ${l} alt text`); });
+};
+const checkAnswers = (where, list, count) => {
+  if (!Array.isArray(list) || list.length !== count) { err(where, `answers needs ${count} entries, has ${list?.length ?? 0}`); return; }
+  list.forEach((a, i) => {
+    if (a === 'text') return;
+    if (!Array.isArray(a) || !a.length || !a.every((p) => Array.isArray(p) && typeof p[0] === 'string')) err(where, `answers[${i}] must be 'text' or [[expr, expected], …]`);
+  });
+};
+
+let lessonCount = 0; let visualCount = 0; let quizCount = 0; let questionCount = 0;
+const counts = {};
+
+CURRICULUM.filter((g) => PUBLISHED_GRADES.includes(g.grade)).forEach(({ grade, themes }) => {
+  counts[grade] = { themes: themes.length, lessons: 0, quizzes: 0, questions: 0, visuals: 0 };
+  const published = publishedThemes().filter((t) => t.grade === grade);
+  themes.forEach((theme) => {
+    const where = theme.slug;
+    const data = published.find((t) => t.slug === theme.slug)?.data;
+    if (!data) { err(where, 'theme file missing (or not listed in grades/g<N>/index.js)'); return; }
+    LANGS.forEach((l) => {
+      if (!nonEmpty(data.i18n?.[l]?.title) || !nonEmpty(data.i18n?.[l]?.description)) err(where, `course title/description missing in ${l}`);
+    });
+    textCheck(where, grade, data.i18n);
+    // one lesson per subtopic, same order
+    if (data.lessons.length !== theme.subtopics.length) err(where, `${theme.subtopics.length} subtopics but ${data.lessons.length} lessons`);
+    theme.subtopics.forEach((sub, i) => {
+      const lesson = data.lessons[i];
+      const lw = sub.slug;
+      if (!lesson) { err(lw, 'lesson missing'); return; }
+      if (lesson.slug !== sub.slug) { err(lw, `lesson ${i} has slug ${lesson.slug}`); return; }
+      lessonCount++; counts[grade].lessons++;
+      const n = {};
+      LANGS.forEach((l) => {
+        const t = lesson[l];
+        const w = `${lw} [${l}]`;
+        if (!t) { err(w, 'language missing'); return; }
+        if (!nonEmpty(t.title)) err(w, 'title');
+        if (!Array.isArray(t.objectives) || t.objectives.length < 2 || t.objectives.length > 3 || !t.objectives.every(nonEmpty)) err(w, 'objectives must be 2–3');
+        if (!nonEmpty(t.theory)) err(w, 'theory');
+        if (!Array.isArray(t.keyPoints) || !t.keyPoints.length || !t.keyPoints.every(nonEmpty)) err(w, 'key rules');
+        if (!Array.isArray(t.examples) || t.examples.length < 2 || !t.examples.every((e) => nonEmpty(e.example) && nonEmpty(e.solution))) err(w, 'needs ≥2 worked examples');
+        if (!Array.isArray(t.commonMistakes) || t.commonMistakes.length < 1 || t.commonMistakes.length > 3
+          || !t.commonMistakes.every((m) => nonEmpty(m.mistake) && nonEmpty(m.fix))) err(w, 'common mistakes must be 1–3');
+        if (!Array.isArray(t.practice) || t.practice.length < 3 || t.practice.length > 5
+          || !t.practice.every((p) => nonEmpty(p.problem) && nonEmpty(p.solution) && Array.isArray(p.steps) && p.steps.length && p.steps.every(nonEmpty))) err(w, 'practice must be 3–5 with solution and steps');
+        n[l] = { ex: t.examples?.length, pr: t.practice?.length, km: t.keyPoints?.length, cm: t.commonMistakes?.length, ob: t.objectives?.length };
+        textCheck(w, grade, t);
+      });
+      if (n.al && LANGS.some((l) => JSON.stringify(n[l]) !== JSON.stringify(n.al))) err(lw, `section sizes differ between languages ${JSON.stringify(n)}`);
+      const visuals = [...(lesson.visuals || []), ...(lesson.exampleVisuals || []).filter(Boolean)];
+      if (!visuals.length && !nonEmpty(lesson.noVisual)) err(lw, 'no visual (add one or give noVisual: reason)');
+      visuals.forEach((v) => checkVisual(lw, v));
+      textCheck(lw, grade, visuals.map((v) => v.alt));
+      visualCount += visuals.length; counts[grade].visuals += visuals.length;
+      checkAnswers(`${lw} examples`, lesson.answers?.examples, n.al?.ex);
+      checkAnswers(`${lw} practice`, lesson.answers?.practice, n.al?.pr);
+    });
+    // quiz of the theme
+    const quiz = quizSets.find((q) => q.theme === theme.slug);
+    if (!quiz) { err(where, 'quiz missing'); return; }
+    quizCount++; counts[grade].quizzes++;
+    if (quiz.id !== `${theme.slug}-quiz` || quiz.grade !== grade || quiz.order !== theme.order) err(quiz.id, 'id/grade/order do not match the curriculum');
+    const qs = quiz.questions || [];
+    questionCount += qs.length; counts[grade].questions += qs.length;
+    if (qs.length < 8 || qs.length > 10) err(quiz.id, `needs 8–10 questions, has ${qs.length}`);
+    const diffs = new Set(qs.map((q) => q.difficulty));
+    ['easy', 'medium', 'hard'].forEach((d) => { if (!diffs.has(d)) err(quiz.id, `no ${d} question`); });
+    qs.forEach((q) => {
+      const w = `${quiz.id} q${q.id}`;
+      if (!['easy', 'medium', 'hard'].includes(q.difficulty)) err(w, 'difficulty must be easy/medium/hard');
+      if (q.verify === undefined) err(w, "verify missing ('text' or [expr, expected])");
+      if (q.visual) { checkVisual(w, q.visual); visualCount++; counts[grade].visuals++; }
+      LANGS.forEach((l) => { if (!q[l]) err(w, `${l} missing`); });
+      textCheck(w, grade, [q.al, q.en, q.de]);
+    });
+    textCheck(quiz.id, grade, quiz.i18n);
+  });
+});
+
+// quiz files on disk must all be registered
+const gradeQuizDir = path.join(root, 'src', 'content', 'quizzes', 'grades');
+fs.readdirSync(gradeQuizDir).filter((f) => /^g\d+-.*\.js$/.test(f)).forEach((f) => {
+  const set = loadSrc(`content/quizzes/grades/${f}`);
+  if (PUBLISHED_GRADES.includes(set.grade) && !quizSets.some((q) => q.id === set.id)) err(f, 'quiz file not registered in quizzes/grades/index.js');
+});
+
+if (errors.length) { console.log(errors.join('\n')); console.log(`${errors.length} problem(s) in grade content`); process.exit(1); }
+Object.entries(counts).forEach(([g, c]) => console.log(`  grade ${g}: ${c.themes} themes, ${c.lessons} lessons × 3 languages, ${c.quizzes} quizzes (${c.questions} questions), ${c.visuals} visuals`));
+console.log(`OK grade content: ${lessonCount} lessons, ${quizCount} quizzes, ${questionCount} questions, ${visualCount} visuals in al/en/de`
+  + ` (published grades: ${PUBLISHED_GRADES.join(', ') || 'none'})`);

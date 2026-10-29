@@ -1,5 +1,6 @@
 // Course lessons per language (al = Albanian, en, de). Each language has the same five parts, in
 // localized/courseContent_<lang>/: base (arithmetic, fractions, ...), algebra, geometry, calculus, other.
+import { gradeCourseContents } from './grades';
 import { courseContents_base_al } from './localized/courseContent_al/base';
 import { courseContents_algebra_al } from './localized/courseContent_al/algebra';
 import { courseContents_geometry_al } from './localized/courseContent_al/geometry';
@@ -42,5 +43,11 @@ const contentsMap = {
   },
 };
 
+// Grade 6–12 lessons are added after the existing courses (existing entries are never overwritten)
+const withGrades = {};
+Object.keys(contentsMap).forEach((lang) => {
+  withGrades[lang] = { ...gradeCourseContents(lang), ...contentsMap[lang] };
+});
+
 // Get localized course contents (Albanian when the language is unknown)
-export const getLocalizedCourseContents = (lang = 'al') => contentsMap[lang] || contentsMap.al;
+export const getLocalizedCourseContents = (lang = 'al') => withGrades[lang] || withGrades.al;

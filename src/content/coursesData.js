@@ -5,6 +5,7 @@ import { coursesTranslations_al } from './localized/courses_al';
 import { coursesTranslations_en } from './localized/courses_en';
 import { coursesTranslations_de } from './localized/courses_de';
 import { getLocalizedCourseContents } from './courseContentData';
+import { gradeCourseStructures, gradeCourseTexts } from './grades';
 
 const translationsMap = {
   al: coursesTranslations_al,
@@ -59,6 +60,13 @@ const difficultyNames = {
 
 // Free tier course IDs (available without premium)
 export const FREE_COURSE_IDS = ['arith-001', 'arith-002'];
+
+// Grade 6–12 courses are free for now; set to false to put them behind premium like the other courses.
+export const GRADE_CONTENT_FREE = true;
+
+/** Can this course be opened without premium? */
+export const isCourseFree = (course) => FREE_COURSE_IDS.includes(course?.id ?? course)
+  || (GRADE_CONTENT_FREE && course?.grade != null);
 
 // Structural course data (language-independent).
 // NOTE: `plannedLessons` is the originally planned size of the course. The `lessons` value exposed
@@ -155,8 +163,9 @@ export const getLessonCount = (courseId, lang = 'al') => {
 };
 
 export const getLocalizedCourses = (lang = 'al') => {
-  const translations = translationsMap[lang] || translationsMap.al;
-  return coursesStructure.map(course => {
+  const translations = { ...gradeCourseTexts(lang), ...(translationsMap[lang] || translationsMap.al) };
+  // existing (General Math) courses first, then the grade 6–12 theme courses
+  return [...coursesStructure, ...gradeCourseStructures()].map(course => {
     const t = translations[course.id] || translationsMap.al[course.id] || {};
     return {
       ...course,
