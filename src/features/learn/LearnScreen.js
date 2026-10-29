@@ -10,7 +10,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useLocalizedCourses } from '../../content/useLocalizedData';
 import { useStats } from '../progress/StatsContext';
 import { useUser } from '../auth/UserContext';
-import { FREE_COURSE_IDS } from '../../content/coursesData';
+import { isCourseFree } from '../../content/coursesData';
+import { sectionsByGrade } from '../../content/grades/filterByGrade';
+import { formatPeriod } from '../../content/grades/period';
+import useGradeFilter from '../../shared/grade/useGradeFilter';
+import GradeSelector, { GradeSectionHeader } from '../../shared/grade/GradeSelector';
 import { isPremiumActive } from '../premium/isPremium';
 import CourseDetailModal from './CourseDetailModal';
 import PremiumModal from '../premium/PremiumModal';
@@ -25,11 +29,12 @@ import { getUserScopedKey, COURSE_PROGRESS_KEY } from '../auth/userStorage';
 
 export default function LearnScreen() {
   const { isWeb, isDesktop } = useResponsive();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { courses, categories, difficultyLevels, search } = useLocalizedCourses();
   const { stats } = useStats();
   const { user } = useUser();
   const isPremium = isPremiumActive(user);
+  const [grade, setGrade] = useGradeFilter(user?.id);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,10 +92,14 @@ export default function LearnScreen() {
     return result;
   }, [selectedCategory, selectedDifficulty, searchQuery, courses]);
 
-  const isCourseLocked = (courseId) => !isPremium && !FREE_COURSE_IDS.includes(courseId);
+  // grade selector: General Math shows everything in sections, a grade only its own theme courses
+  const courseSections = useMemo(() => sectionsByGrade(filteredCourses, grade), [filteredCourses, grade]);
+  const shownCount = courseSections.reduce((n, s) => n + s.items.length, 0);
+
+  const isCourseLocked = (course) => !isPremium && !isCourseFree(course);
 
   const handleCoursePress = (course) => {
-    if (isCourseLocked(course.id)) {
+    if (isCourseLocked(course)) {
       setShowPremiumModal(true);
       return;
     }
@@ -130,6 +139,9 @@ export default function LearnScreen() {
         placeholder={t('learn.searchPlaceholder')}
       />
 
+      {/* Grade (General Math, 6–12) */}
+      <GradeSelector value={grade} onChange={setGrade} style={styles.gradeRow} />
+
       {/* Category & Difficulty Filters - compact single rows */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContent}>
         <Chip icon="grid" label={t('common.all')} active={selectedCategory === 'all'} onPress={() => setSelectedCategory('all')} />
@@ -158,21 +170,29 @@ export default function LearnScreen() {
         ))}
       </ScrollView>
 
-      <Text style={styles.resultsCount}>{t('learn.courseCount', { count: filteredCourses.length })}</Text>
+      <Text style={styles.resultsCount}>{t('learn.courseCount', { count: shownCount })}</Text>
       </WebContainer>
 
       {/* Courses List */}
       <ScrollView style={styles.coursesContainer} showsVerticalScrollIndicator={false}>
         <WebContainer>
-        {filteredCourses.length === 0 ? (
-          <EmptyState icon="book-outline" title={t('learn.noCourseFound')} message={t('learn.tryDifferentFilters')} />
-        ) : (
+        {shownCount === 0 ? (
+          grade !== 'general' && !courses.some((c) => c.grade === grade) ? (
+            <EmptyState icon="construct-outline" title={t('grades.comingSoonTitle', { n: grade })} message={t('grades.comingSoonText')} />
+          ) : (
+            <EmptyState icon="book-outline" title={t('learn.noCourseFound')} message={t('learn.tryDifferentFilters')} />
+          )
+        ) : courseSections.map((section) => (
+          <View key={section.key}>
+          {(grade !== 'general' || courseSections.length > 1) && (
+            <GradeSectionHeader grade={section.grade} count={t('learn.courseCount', { count: section.items.length })} />
+          )}
           <View style={[styles.coursesGrid, isDesktop && styles.coursesGridDesktop]}>
-            {filteredCourses.map((course) => {
+            {section.items.map((course) => {
               const category = getCategoryInfo(course.category);
               const difficulty = getDifficultyInfo(course.difficulty);
               const status = statusInfo[getCourseStatus(course.id)];
-              const locked = isCourseLocked(course.id);
+              const locked = isCourseLocked(course);
               const tint = category?.color || colors.primary;
 
               return (
@@ -193,7 +213,9 @@ export default function LearnScreen() {
 
                   <View style={styles.courseMetaRow}>
                     <Text style={styles.courseMetaText} numberOfLines={1}>
-                      {difficulty?.emoji} {difficulty?.name}  ·  {course.duration}  ·  {course.lessons} {t('learn.lessons')}
+                      {course.grade != null
+                        ? [t('grades.themeN', { n: course.order }), formatPeriod(course.period, (i18n.language || 'al').slice(0, 2)), `${course.lessons} ${t('learn.lessons')}`].filter(Boolean).join('  ·  ')
+                        : `${difficulty?.emoji} ${difficulty?.name}  ·  ${course.duration}  ·  ${course.lessons} ${t('learn.lessons')}`}
                     </Text>
                   </View>
 
@@ -211,7 +233,8 @@ export default function LearnScreen() {
               );
             })}
           </View>
-        )}
+          </View>
+        ))}
 
         <View style={{ height: isWeb ? 20 : 100 }} />
         </WebContainer>
@@ -245,6 +268,9 @@ const makeStyles = (colors) => StyleSheet.create({
   },
   filterScroll: {
     flexGrow: 0,
+    marginTop: SPACING.sm + 2,
+  },
+  gradeRow: {
     marginTop: SPACING.sm + 2,
   },
   filterContent: {

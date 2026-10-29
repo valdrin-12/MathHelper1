@@ -294,7 +294,23 @@
     "prerequisitesHint_other": "Rekomandohet të keni përfunduar {{count}} kurse para fillimit të këtij kursi.",
     "startCourse": "Fillo Kursin"
   },
+  "grades": {
+    "label": "Klasa",
+    "selectorLabel": "Zgjidhni klasën",
+    "general": "Të përgjithshme",
+    "sectionGeneral": "Matematikë e përgjithshme",
+    "grade": "Klasa {{n}}",
+    "themeN": "Tema {{n}}",
+    "comingSoonTitle": "Klasa {{n}} po përgatitet",
+    "comingSoonText": "Mësimet dhe kuizet për këtë klasë shtohen së shpejti. Ndërkohë provoni Matematikën e përgjithshme."
+  },
   "courseContent": {
+    "objectives": "Çfarë do të mësoni",
+    "keyRules": "Rregullat kryesore",
+    "commonMistakes": "Gabime të shpeshta",
+    "mistakeLabel": "Gabim",
+    "fixLabel": "Si ta shmangni",
+    "figure": "Figura",
     "quickCheck": "Pyetje e shpejtë",
     "notQuite": "Jo tamam",
     "continue": "Vazhdo",
