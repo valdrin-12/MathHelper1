@@ -5,7 +5,7 @@ export const courseContents_calculus_de = {
     lessons: [
       {
         title: 'Der Begriff des Grenzwerts',
-        theory: 'Der Grenzwert von f(x) fuer x → a ist der Wert L, dem sich f(x) annähert, während x sich a nähert. Man schreibt lim(x→a) f(x) = L. Es muss weder f(a) = L gelten noch f(a) existieren.\n\nDie ε-δ-Definition: ∀ε > 0, ∃δ > 0: |x-a| < δ → |f(x)-L| < ε\n\nIntuitive Deutung: Man kann f(x) beliebig nahe an L bringen, indem man x hinreichend nahe an a wählt.',
+        theory: 'Der Grenzwert von f(x) für x → a ist der Wert L, dem sich f(x) annähert, während x sich a nähert. Man schreibt lim(x→a) f(x) = L. Es muss weder f(a) = L gelten noch f(a) existieren.\n\nDie ε-δ-Definition: ∀ε > 0, ∃δ > 0: |x-a| < δ → |f(x)-L| < ε\n\nIntuitive Deutung: Man kann f(x) beliebig nahe an L bringen, indem man x hinreichend nahe an a wählt.',
         keyPoints: [
           'Der Grenzwert kann existieren, auch wenn f(a) nicht existiert',
           'Linksseitiger Grenzwert = rechtsseitiger Grenzwert → der Grenzwert existiert',
@@ -320,7 +320,7 @@ export const courseContents_calculus_de = {
     lessons: [
       {
         title: 'Volumenberechnung durch Integration',
-        theory: 'Ein Rotationskörper entsteht durch Rotation der Fläche unter f(x) um die x-Achse oder y-Achse.\n\nScheibenmethode: V = π∫ₐᵇ [f(x)]²dx (Rotation um die x-Achse)\nRingmethode: V = π∫ₐᵇ {[f(x)]² - [g(x)]²}dx\nZylinderschalenmethode: V = 2π∫ₐᵇ x·f(x)dx',
+        theory: 'Ein Rotationskörper entsteht durch Rotation der Fläche unter f(x) um die x-Achse oder y-Achse.\n\nScheibenmethode: V = π∫ₐᵇ [f(x)]²dx (Rotation um die x-Achse)\nRingmethode: V = π∫ₐᵇ {[f(x)]² - [g(x)]²}dx\nZylinderschalenmethode: V = 2π∫ₐᵇ x·f(x)dx (Rotation um die y-Achse)',
         keyPoints: [
           'Scheibe: V = π∫[f(x)]²dx',
           'Ring: V = π∫{[f]²-[g]²}dx',

@@ -2,21 +2,21 @@ export const courseContents_other_de = {
 
   // ===== TRIGONOMETRIE =====
 
-  // trig-001: Einfuehrung in die Trigonometrie
+  // trig-001: Einführung in die Trigonometrie
   'trig-001': {
     lessons: [
       {
-        title: 'Trigonometrische Verhaeltnisse',
-        theory: 'Die Trigonometrie untersucht die Beziehungen zwischen Winkeln und Seiten von Dreiecken. Die sechs trigonometrischen Verhaeltnisse werden anhand der Seiten des rechtwinkligen Dreiecks definiert: sin, cos, tan, cot, sec, csc.\n\nFuer den Winkel \u03b8: sin \u03b8 = Gegenkathete / Hypotenuse, cos \u03b8 = Ankathete / Hypotenuse, tan \u03b8 = Gegenkathete / Ankathete.\n\nMerkhilfe: SOH-CAH-TOA (Sin=Opposite/Hypotenuse, Cos=Adjacent/Hypotenuse, Tan=Opposite/Adjacent)',
+        title: 'Trigonometrische Verhältnisse',
+        theory: 'Die Trigonometrie untersucht die Beziehungen zwischen Winkeln und Seiten von Dreiecken. Die sechs trigonometrischen Verhältnisse werden anhand der Seiten des rechtwinkligen Dreiecks definiert: sin, cos, tan, cot, sec, csc.\n\nFür den Winkel \u03b8: sin \u03b8 = Gegenkathete / Hypotenuse, cos \u03b8 = Ankathete / Hypotenuse, tan \u03b8 = Gegenkathete / Ankathete.\n\nMerkhilfe: SOH-CAH-TOA (Sin=Opposite/Hypotenuse, Cos=Adjacent/Hypotenuse, Tan=Opposite/Adjacent)',
         keyPoints: [
           'sin \u03b8 = o/h (Gegenkathete/Hypotenuse)',
           'cos \u03b8 = a/h (Ankathete/Hypotenuse)',
           'tan \u03b8 = o/a = sin/cos',
-          'sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1 (Grundidentitaet)',
+          'sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1 (Grundidentität)',
         ],
         examples: [
           {
-            example: 'Rechtwinkliges Dreieck: Katheten 3 und 4, Hypotenuse 5. Bestimme sin, cos, tan des Winkels \u03b8 (gegenueber der Kathete 3).',
+            example: 'Rechtwinkliges Dreieck: Katheten 3 und 4, Hypotenuse 5. Bestimme sin, cos, tan des Winkels \u03b8 (gegenüber der Kathete 3).',
             solution: 'sin \u03b8 = 3/5 = 0.6\ncos \u03b8 = 4/5 = 0.8\ntan \u03b8 = 3/4 = 0.75',
           },
         ],
@@ -52,7 +52,7 @@ export const courseContents_other_de = {
         practice: [
           {
             problem: 'Berechne: 2sin 60\u00b0 + 3cos 30\u00b0 - tan 45\u00b0',
-            solution: '= 2\u221a3',
+            solution: '= 5√3/2 - 1 ≈ 3.33',
             steps: [
               'sin 60\u00b0 = \u221a3/2, cos 30\u00b0 = \u221a3/2, tan 45\u00b0 = 1',
               '= 2(\u221a3/2) + 3(\u221a3/2) - 1',
@@ -63,8 +63,8 @@ export const courseContents_other_de = {
         ],
       },
       {
-        title: 'Loesen von Dreiecken',
-        theory: 'Sinussatz: a/sin A = b/sin B = c/sin C. Wird angewendet bei: AAS, ASA oder SSA.\n\nKosinussatz: c\u00b2 = a\u00b2 + b\u00b2 - 2ab cos C. Wird angewendet bei: SAS oder SSS.\n\nLoesungsstrategie: 1) Bestimme die gegebene Konfiguration (AAS, SSS, usw.), 2) Loese das Dreieck, 3) Pruefe (Winkelsumme = 180\u00b0).',
+        title: 'Lösen von Dreiecken',
+        theory: 'Sinussatz: a/sin A = b/sin B = c/sin C. Wird angewendet bei: AAS, ASA oder SSA.\n\nKosinussatz: c\u00b2 = a\u00b2 + b\u00b2 - 2ab cos C. Wird angewendet bei: SAS oder SSS.\n\nLösungsstrategie: 1) Bestimme die gegebene Konfiguration (AAS, SSS, usw.), 2) Löse das Dreieck, 3) Prüfe (Winkelsumme = 180\u00b0).',
         keyPoints: [
           'Sinussatz: a/sin A = b/sin B = c/sin C',
           'Kosinussatz: c\u00b2 = a\u00b2+b\u00b2-2ab cos C',
@@ -98,10 +98,10 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Der Einheitskreis',
-        theory: 'Der Einheitskreis hat den Radius 1 und den Mittelpunkt im Ursprung. Jeder Punkt darauf hat die Koordinaten (cos \u03b8, sin \u03b8), wobei \u03b8 der Winkel von der positiven x-Achse ist.\n\nDies verallgemeinert die trigonometrischen Funktionen fuer jeden Winkel (nicht nur 0\u00b0-90\u00b0). Winkel: Quadrant I (0\u00b0-90\u00b0), II (90\u00b0-180\u00b0), III (180\u00b0-270\u00b0), IV (270\u00b0-360\u00b0).\n\nVorzeichen von sin/cos nach Quadrant: \"All Students Take Calculus\" (ASTC): I \u2013 alle positiv, II \u2013 nur sin positiv, III \u2013 nur tan positiv, IV \u2013 nur cos positiv.',
+        theory: 'Der Einheitskreis hat den Radius 1 und den Mittelpunkt im Ursprung. Jeder Punkt darauf hat die Koordinaten (cos \u03b8, sin \u03b8), wobei \u03b8 der Winkel von der positiven x-Achse ist.\n\nDies verallgemeinert die trigonometrischen Funktionen für jeden Winkel (nicht nur 0\u00b0-90\u00b0). Winkel: Quadrant I (0\u00b0-90\u00b0), II (90\u00b0-180\u00b0), III (180\u00b0-270\u00b0), IV (270\u00b0-360\u00b0).\n\nVorzeichen von sin/cos nach Quadrant: \"All Students Take Calculus\" (ASTC): I \u2013 alle positiv, II \u2013 nur sin positiv, III \u2013 nur tan positiv, IV \u2013 nur cos positiv.',
         keyPoints: [
           '(cos \u03b8, sin \u03b8) sind die Koordinaten auf dem Einheitskreis',
-          'ASTC fuer die Vorzeichen nach Quadranten',
+          'ASTC für die Vorzeichen nach Quadranten',
           'Supplementwinkel: sin(180\u00b0-\u03b8) = sin \u03b8',
           'Periode von sin und cos: 2\u03c0',
         ],
@@ -155,21 +155,21 @@ export const courseContents_other_de = {
     ],
   },
 
-  // trig-003: Trigonometrische Identitaeten
+  // trig-003: Trigonometrische Identitäten
   'trig-003': {
     lessons: [
       {
-        title: 'Grundlegende Identitaeten',
-        theory: 'Trigonometrische Identitaeten sind Gleichungen, die fuer jeden Winkelwert gelten. Hauptgruppen: pythagoraeische Identitaeten, Kehrwertidentitaeten, Quotientenidentitaeten.\n\nPythagoraeische Identitaeten: sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1, 1 + tan\u00b2\u03b8 = sec\u00b2\u03b8, 1 + cot\u00b2\u03b8 = csc\u00b2\u03b8.\n\nAdditionstheoreme: sin(A\u00b1B) = sin A cos B \u00b1 cos A sin B, cos(A\u00b1B) = cos A cos B \u2213 sin A sin B.',
+        title: 'Grundlegende Identitäten',
+        theory: 'Trigonometrische Identitäten sind Gleichungen, die für jeden Winkelwert gelten. Hauptgruppen: pythagoreische Identitäten, Kehrwertidentitäten, Quotientenidentitäten.\n\nPythagoreische Identitäten: sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1, 1 + tan\u00b2\u03b8 = sec\u00b2\u03b8, 1 + cot\u00b2\u03b8 = csc\u00b2\u03b8.\n\nAdditionstheoreme: sin(A\u00b1B) = sin A cos B \u00b1 cos A sin B, cos(A\u00b1B) = cos A cos B \u2213 sin A sin B.',
         keyPoints: [
-          'sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1 (Grundidentitaet)',
+          'sin\u00b2\u03b8 + cos\u00b2\u03b8 = 1 (Grundidentität)',
           'sin(A+B) = sinA cosB + cosA sinB',
           'cos(A+B) = cosA cosB - sinA sinB',
           'tan(A+B) = (tanA + tanB)/(1 - tanA tanB)',
         ],
         examples: [
           {
-            example: 'Beweise die Identitaet: sin 75\u00b0 = sin(45\u00b0 + 30\u00b0)',
+            example: 'Beweise die Identität: sin 75\u00b0 = sin(45\u00b0 + 30\u00b0)',
             solution: '= sin45\u00b0 cos30\u00b0 + cos45\u00b0 sin30\u00b0\n= (\u221a2/2)(\u221a3/2) + (\u221a2/2)(1/2)\n= \u221a6/4 + \u221a2/4 = (\u221a6+\u221a2)/4',
           },
         ],
@@ -178,7 +178,7 @@ export const courseContents_other_de = {
             problem: 'Vereinfache: (1 - cos\u00b2\u03b8)/sin\u00b2\u03b8',
             solution: '= 1',
             steps: [
-              '1 - cos\u00b2\u03b8 = sin\u00b2\u03b8 (pythagoraeische Identitaet)',
+              '1 - cos\u00b2\u03b8 = sin\u00b2\u03b8 (pythagoreische Identität)',
               'sin\u00b2\u03b8/sin\u00b2\u03b8 = 1',
             ],
           },
@@ -191,23 +191,23 @@ export const courseContents_other_de = {
   'trig-004': {
     lessons: [
       {
-        title: 'Fortgeschrittene Anwendungen der Saetze',
-        theory: 'Die Kombination von Sinussatz und Kosinussatz mit der Dreiecksflaechenformel S = (1/2)ab sinC ermoeglicht die Loesung jedes Dreiecks bei ausreichender Information.\n\nDiese Methoden finden breite Anwendung in: Vermessungskunde, Navigation, Physik (Kraftvektoren), Architektur und Ingenieurwesen.',
+        title: 'Fortgeschrittene Anwendungen der Sätze',
+        theory: 'Die Kombination von Sinussatz und Kosinussatz mit der Dreiecksflächenformel S = (1/2)ab sinC ermöglicht die Lösung jedes Dreiecks bei ausreichender Information.\n\nDiese Methoden finden breite Anwendung in: Vermessungskunde, Navigation, Physik (Kraftvektoren), Architektur und Ingenieurwesen.',
         keyPoints: [
-          'S = (1/2)ab sin C (Flaecheninhalt)',
+          'S = (1/2)ab sin C (Flächeninhalt)',
           'Sinussatz: Mehrdeutigkeit (SSA kann 0, 1 oder 2 Dreiecke ergeben)',
           'Kosinussatz: c\u00b2 = a\u00b2+b\u00b2-2ab cos C',
-          'Kombination zur Loesung jedes Dreiecks',
+          'Kombination zur Lösung jedes Dreiecks',
         ],
         examples: [
           {
-            example: 'Zwei Mauerarme bilden einen Winkel von 120\u00b0, Laengen 4m und 6m. Wie gross ist der Abstand zwischen den Endpunkten?',
+            example: 'Zwei Mauerarme bilden einen Winkel von 120\u00b0, Längen 4m und 6m. Wie groß ist der Abstand zwischen den Endpunkten?',
             solution: 'c\u00b2 = 16+36-2(4)(6)cos120\u00b0 = 52+24 = 76\nc = 2\u221a19 \u2248 8.72 m',
           },
         ],
         practice: [
           {
-            problem: 'Bestimme den Flaecheninhalt des Dreiecks mit b=8, c=11, A=30\u00b0.',
+            problem: 'Bestimme den Flächeninhalt des Dreiecks mit b=8, c=11, A=30\u00b0.',
             solution: 'S = 22 cm\u00b2',
             steps: [
               'S = (1/2)bc sin A',
@@ -227,22 +227,22 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Grundlagen der Wahrscheinlichkeit',
-        theory: 'Die Wahrscheinlichkeit misst die Chance, dass ein Ereignis eintritt. Sie variiert von 0 (unmoeglich) bis 1 (sicher). Klassische Wahrscheinlichkeit: P(A) = Anzahl der guenstigen Ergebnisse / Gesamtanzahl der Ergebnisse (Gleichwahrscheinlichkeit).\n\nNotation: S = Ergebnisraum, A = Ereignis, P(A) = Wahrscheinlichkeit\n\nAxiome von Kolmogorow: 0 \u2264 P(A) \u2264 1, P(S) = 1, P(A\u222aB) = P(A)+P(B) falls A, B disjunkt.',
+        theory: 'Die Wahrscheinlichkeit misst die Chance, dass ein Ereignis eintritt. Sie variiert von 0 (unmöglich) bis 1 (sicher). Klassische Wahrscheinlichkeit: P(A) = Anzahl der günstigen Ergebnisse / Gesamtanzahl der Ergebnisse (Gleichwahrscheinlichkeit).\n\nNotation: S = Ergebnisraum, A = Ereignis, P(A) = Wahrscheinlichkeit\n\nAxiome von Kolmogorow: 0 \u2264 P(A) \u2264 1, P(S) = 1, P(A\u222aB) = P(A)+P(B) falls A, B disjunkt.',
         keyPoints: [
-          'P(A) = guenstige Ergebnisse / Gesamtergebnisse',
+          'P(A) = günstige Ergebnisse / Gesamtergebnisse',
           '0 \u2264 P(A) \u2264 1',
           'P(Gegenereignis) = 1 - P(A)',
           'P(S) = 1, P(\u2205) = 0',
         ],
         examples: [
           {
-            example: 'Wir werfen einen Wuerfel mit 6 Seiten. Wie gross ist P(gerade Zahl)?',
+            example: 'Wir werfen einen Würfel mit 6 Seiten. Wie groß ist P(gerade Zahl)?',
             solution: 'Gerade: {2, 4, 6} \u2192 3 Ergebnisse\nP(gerade) = 3/6 = 1/2',
           },
         ],
         practice: [
           {
-            problem: 'Urne mit 3 roten, 5 blauen, 2 gruenen Kugeln. P(keine rote Kugel gezogen)?',
+            problem: 'Urne mit 3 roten, 5 blauen, 2 grünen Kugeln. P(keine rote Kugel gezogen)?',
             solution: 'P = 7/10',
             steps: [
               'P(rot) = 3/10',
@@ -253,10 +253,10 @@ export const courseContents_other_de = {
       },
       {
         title: 'Rechenregeln der Wahrscheinlichkeit',
-        theory: 'Additionsregel: P(A\u222aB) = P(A) + P(B) - P(A\u2229B)\nDisjunkte (sich ausschliessende) Ereignisse: P(A\u2229B) = 0, also P(A\u222aB) = P(A) + P(B)\n\nMultiplikationsregel (unabhaengige Ereignisse): P(A\u2229B) = P(A) \u00d7 P(B)\nBedingte Wahrscheinlichkeit: P(A|B) = P(A\u2229B)/P(B)',
+        theory: 'Additionsregel: P(A\u222aB) = P(A) + P(B) - P(A\u2229B)\nDisjunkte (sich ausschließende) Ereignisse: P(A\u2229B) = 0, also P(A\u222aB) = P(A) + P(B)\n\nMultiplikationsregel (unabhängige Ereignisse): P(A\u2229B) = P(A) \u00d7 P(B)\nBedingte Wahrscheinlichkeit: P(A|B) = P(A\u2229B)/P(B)',
         keyPoints: [
           'Additionsregel: P(A\u222aB) = P(A)+P(B)-P(A\u2229B)',
-          'Unabhaengige Ereignisse: P(A\u2229B) = P(A)\u00b7P(B)',
+          'Unabhängige Ereignisse: P(A\u2229B) = P(A)\u00b7P(B)',
           'P(A|B) = P(A\u2229B)/P(B)',
           'Satz von Bayes: P(A|B) = P(B|A)P(A)/P(B)',
         ],
@@ -268,7 +268,7 @@ export const courseContents_other_de = {
         ],
         practice: [
           {
-            problem: 'Wir werfen zwei Muenzen. P(mindestens einmal Kopf)?',
+            problem: 'Wir werfen zwei Münzen. P(mindestens einmal Kopf)?',
             solution: 'P = 3/4',
             steps: [
               'Ergebnisraum: {KK, KZ, ZK, ZZ}',
@@ -282,12 +282,12 @@ export const courseContents_other_de = {
     ],
   },
 
-  // stat-003: Schliessende Statistik
+  // stat-003: Schließende Statistik
   'stat-003': {
     lessons: [
       {
         title: 'Stichproben und Verteilungen',
-        theory: 'Die schliessende Statistik zieht Rueckschluesse ueber die Grundgesamtheit anhand einer Stichprobe. Die Normalverteilung (Gauss) ist besonders wichtig: symmetrisch um den Mittelwert, mit der 68-95-99,7-Regel (1\u03c3, 2\u03c3, 3\u03c3).\n\nZentraler Grenzwertsatz: Die Mittelwerte grosser Stichproben sind annaehernd normalverteilt, unabhaengig von der Verteilung der Grundgesamtheit. Dies ermoeglicht statistische Tests.',
+        theory: 'Die schließende Statistik zieht Rückschlüsse über die Grundgesamtheit anhand einer Stichprobe. Die Normalverteilung (Gauß) ist besonders wichtig: symmetrisch um den Mittelwert, mit der 68-95-99,7-Regel (1\u03c3, 2\u03c3, 3\u03c3).\n\nZentraler Grenzwertsatz: Die Mittelwerte großer Stichproben sind annähernd normalverteilt, unabhängig von der Verteilung der Grundgesamtheit. Dies ermöglicht statistische Tests.',
         keyPoints: [
           'Normalverteilung: N(\u03bc, \u03c3\u00b2)',
           'Regel 68-95-99,7',
@@ -296,13 +296,13 @@ export const courseContents_other_de = {
         ],
         examples: [
           {
-            example: 'Schueler haben eine Durchschnittsnote \u03bc=70, \u03c3=10. Welcher Prozentsatz hat Noten zwischen 60 und 80?',
-            solution: '60-80 ist \u03bc \u00b1 \u03c3 \u2192 etwa 68 % der Schueler',
+            example: 'Schüler haben eine Durchschnittsnote \u03bc=70, \u03c3=10. Welcher Prozentsatz hat Noten zwischen 60 und 80?',
+            solution: '60-80 ist \u03bc \u00b1 \u03c3 \u2192 etwa 68 % der Schüler',
           },
         ],
         practice: [
           {
-            problem: 'Bestimme den Z-Wert fuer x=85, \u03bc=70, \u03c3=10.',
+            problem: 'Bestimme den Z-Wert für x=85, \u03bc=70, \u03c3=10.',
             solution: 'z = 1.5',
             steps: [
               'z = (x - \u03bc)/\u03c3 = (85 - 70)/10 = 15/10 = 1.5',
@@ -318,22 +318,22 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Lineare Regression',
-        theory: 'Die lineare Regression modelliert die Beziehung zwischen zwei Variablen: y = \u03b2\u2080 + \u03b2\u2081x + \u03b5.\n\u03b2\u2080 = Achsenabschnitt (y-Wert bei x=0)\n\u03b2\u2081 = Steigungskoeffizient (Aenderung von y pro Einheitsaenderung von x)\n\nMethode der kleinsten Quadrate: minimiere die Summe \u03a3(y\u1d62 - \u0177\u1d62)\u00b2.\nDer Korrelationskoeffizient r (-1 \u2264 r \u2264 1) zeigt die Staerke der Beziehung an.',
+        theory: 'Die lineare Regression modelliert die Beziehung zwischen zwei Variablen: y = \u03b2\u2080 + \u03b2\u2081x + \u03b5.\n\u03b2\u2080 = Achsenabschnitt (y-Wert bei x=0)\n\u03b2\u2081 = Steigungskoeffizient (Änderung von y pro Einheitsänderung von x)\n\nMethode der kleinsten Quadrate: minimiere die Summe \u03a3(y\u1d62 - \u0177\u1d62)\u00b2.\nDer Korrelationskoeffizient r (-1 \u2264 r \u2264 1) zeigt die Stärke der Beziehung an.',
         keyPoints: [
           '\u0177 = \u03b2\u2080 + \u03b2\u2081x (Regressionsgerade)',
           '\u03b2\u2081 = \u03a3(x-x\u0304)(y-\u0233) / \u03a3(x-x\u0304)\u00b2',
-          'R\u00b2 = Bestimmtheitsmass',
+          'R\u00b2 = Bestimmtheitsmaß',
           '|r| nahe 1: starker linearer Zusammenhang',
         ],
         examples: [
           {
             example: 'r = 0.85 zwischen Lernzeit und Noten. Was bedeutet das?',
-            solution: 'Starke positive Korrelation: Je mehr gelernt wird, desto hoeher die Note.',
+            solution: 'Starke positive Korrelation: Je mehr gelernt wird, desto höher die Note.',
           },
         ],
         practice: [
           {
-            problem: 'Wenn \u03b2\u2081 = 2.5 und \u03b2\u2080 = 10, prognostiziere y fuer x = 8.',
+            problem: 'Wenn \u03b2\u2081 = 2.5 und \u03b2\u2080 = 10, prognostiziere y für x = 8.',
             solution: '\u0177 = 30',
             steps: [
               '\u0177 = \u03b2\u2080 + \u03b2\u2081x',
@@ -351,11 +351,11 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Satz von Bayes',
-        theory: 'Satz von Bayes: P(A|B) = P(B|A)\u00b7P(A) / P(B)\nP(A) = A-priori-Wahrscheinlichkeit (vor den Daten)\nP(A|B) = A-posteriori-Wahrscheinlichkeit (nach den Daten)\nP(B|A) = Likelihood (Plausibilitaet)\n\nBayesscher Ansatz: Beginne mit einer A-priori-Ueberzeugung, aktualisiere sie mit Daten, um die A-posteriori-Ueberzeugung zu erhalten.',
+        theory: 'Satz von Bayes: P(A|B) = P(B|A)\u00b7P(A) / P(B)\nP(A) = A-priori-Wahrscheinlichkeit (vor den Daten)\nP(A|B) = A-posteriori-Wahrscheinlichkeit (nach den Daten)\nP(B|A) = Likelihood (Plausibilität)\n\nBayesscher Ansatz: Beginne mit einer A-priori-Überzeugung, aktualisiere sie mit Daten, um die A-posteriori-Überzeugung zu erhalten.',
         keyPoints: [
           'P(A|B) = P(B|A)P(A)/P(B)',
-          'A priori: Ueberzeugung vor den Daten',
-          'A posteriori: Ueberzeugung nach den Daten',
+          'A priori: Überzeugung vor den Daten',
+          'A posteriori: Überzeugung nach den Daten',
           'Likelihood = P(Daten | Hypothese)',
         ],
         examples: [
@@ -366,7 +366,7 @@ export const courseContents_other_de = {
         ],
         practice: [
           {
-            problem: 'Zwei Urnen: A (3 rote, 2 blaue), B (1 rote, 4 blaue). Eine Urne wird zufaellig gewaehlt, eine rote Kugel gezogen. Wie gross ist P(aus Urne A)?',
+            problem: 'Zwei Urnen: A (3 rote, 2 blaue), B (1 rote, 4 blaue). Eine Urne wird zufällig gewählt, eine rote Kugel gezogen. Wie groß ist P(aus Urne A)?',
             solution: 'P(A|rot) = 3/4',
             steps: [
               'P(A)=P(B)=0.5',
@@ -385,27 +385,27 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Komponenten von Zeitreihen',
-        theory: 'Eine Zeitreihe ist eine Folge von Beobachtungen ueber die Zeit. Komponenten: Trend (langfristige Richtung), Saisonalitaet (regelmaessige periodische Schwankung), Zyklus (mittelfristige Bewegung), Zufall (unregelmaessige Schwankung).\n\nY_t = T_t + S_t + C_t + R_t (additives Modell)\nY_t = T_t \u00d7 S_t \u00d7 C_t \u00d7 R_t (multiplikatives Modell)',
+        theory: 'Eine Zeitreihe ist eine Folge von Beobachtungen über die Zeit. Komponenten: Trend (langfristige Richtung), Saisonalität (regelmäßige periodische Schwankung), Zyklus (mittelfristige Bewegung), Zufall (unregelmäßige Schwankung).\n\nY_t = T_t + S_t + C_t + R_t (additives Modell)\nY_t = T_t \u00d7 S_t \u00d7 C_t \u00d7 R_t (multiplikatives Modell)',
         keyPoints: [
           'Trend: langfristige Richtung',
-          'Saisonalitaet: periodisch (jaehrlich, woechentlich)',
-          'Zyklus: wirtschaftliche Schwankungen ueber 3\u201310 Jahre',
+          'Saisonalität: periodisch (jährlich, wöchentlich)',
+          'Zyklus: wirtschaftliche Schwankungen über 3\u201310 Jahre',
           'Gleitender Durchschnitt: eliminiert Zufallsschwankungen',
         ],
         examples: [
           {
-            example: 'Verkaeufe sind: Jan=100, Feb=90, Mrz=120, Apr=110. Bestimme den gleitenden Durchschnitt mit Fensterbreite 3.',
+            example: 'Verkäufe sind: Jan=100, Feb=90, Mrz=120, Apr=110. Bestimme den gleitenden Durchschnitt mit Fensterbreite 3.',
             solution: 'M\u2082 = (100+90+120)/3 = 103.3\nM\u2083 = (90+120+110)/3 = 106.7',
           },
         ],
         practice: [
           {
-            problem: 'Welche Komponente der Zeitreihe erklaert hohe Verkaeufe im Dezember jedes Jahres?',
-            solution: 'Saisonalitaet \u2013 jaehrliche periodische Schwankung',
+            problem: 'Welche Komponente der Zeitreihe erklärt hohe Verkäufe im Dezember jedes Jahres?',
+            solution: 'Saisonalität \u2013 jährliche periodische Schwankung',
             steps: [
-              'Tritt jeden Dezember auf = regelmaessig und periodisch',
+              'Tritt jeden Dezember auf = regelmäßig und periodisch',
               'Periode = 1 Jahr',
-              'Dies ist die Saisonalitaet',
+              'Dies ist die Saisonalität',
             ],
           },
         ],
@@ -420,7 +420,7 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Vektoren und Operationen',
-        theory: 'Ein Vektor hat Betrag (Laenge) und Richtung. Er wird als v = (v\u2081, v\u2082, ..., v\u2099) geschrieben.\nAddition: u + v = (u\u2081+v\u2081, u\u2082+v\u2082, ...)\nSkalarmultiplikation: kv = (kv\u2081, kv\u2082, ...)\nSkalarprodukt: u\u00b7v = \u03a3u\u1d62v\u1d62 = |u||v|cos \u03b8\n\nKreuzprodukt (3D): u \u00d7 v = Determinante der 3\u00d73-Matrix. Das Ergebnis steht senkrecht auf beiden Vektoren.',
+        theory: 'Ein Vektor hat Betrag (Länge) und Richtung. Er wird als v = (v\u2081, v\u2082, ..., v\u2099) geschrieben.\nAddition: u + v = (u\u2081+v\u2081, u\u2082+v\u2082, ...)\nSkalarmultiplikation: kv = (kv\u2081, kv\u2082, ...)\nSkalarprodukt: u\u00b7v = \u03a3u\u1d62v\u1d62 = |u||v|cos \u03b8\n\nKreuzprodukt (3D): u \u00d7 v = Determinante der 3\u00d73-Matrix. Das Ergebnis steht senkrecht auf beiden Vektoren.',
         keyPoints: [
           'u + v = (u\u2081+v\u2081, u\u2082+v\u2082)',
           'u\u00b7v = \u03a3u\u1d62v\u1d62 (Skalarprodukt)',
@@ -448,7 +448,7 @@ export const courseContents_other_de = {
         title: 'Matrizen und Operationen',
         theory: 'Eine Matrix m\u00d7n hat m Zeilen und n Spalten. Operationen:\nAddition/Subtraktion: A \u00b1 B (gleiche Dimensionen)\nSkalarmultiplikation: kA\nMatrizenmultiplikation: A(m\u00d7n) \u00d7 B(n\u00d7p) = C(m\u00d7p). Das Element c\u1d62\u2c7c = i-te Zeile von A \u00d7 j-te Spalte von B.\n\nEinheitsmatrix I: A\u00d7I = I\u00d7A = A. Inverse Matrix A\u207b\u00b9: A\u00d7A\u207b\u00b9 = I.',
         keyPoints: [
-          'A\u00d7B: Spalten von B = Zeilen von A (muessen uebereinstimmen)',
+          'A\u00d7B: Spaltenzahl von A = Zeilenzahl von B (müssen übereinstimmen)',
           'AB \u2260 BA (nicht kommutativ)',
           '(AB)C = A(BC) (assoziativ)',
           'Inverse Matrix: A\u00d7A\u207b\u00b9 = I',
@@ -478,23 +478,23 @@ export const courseContents_other_de = {
   'linalg-002': {
     lessons: [
       {
-        title: 'Loesen von Gleichungssystemen mit Gauss-Elimination',
-        theory: 'Ein lineares Gleichungssystem kann mit der erweiterten Koeffizientenmatrix [A|b] geloest werden. Die Gauss-Elimination transformiert die Matrix in Zeilenstufenform durch elementare Zeilenoperationen: Vertauschen, Skalarmultiplikation, Addition eines Vielfachen.\n\nReduzierte Zeilenstufenform (RREF): Jede Pivotspalte hat eine 1 und sonst ueberall Nullen. Dies liefert die Loesung direkt.',
+        title: 'Lösen von Gleichungssystemen mit Gauß-Elimination',
+        theory: 'Ein lineares Gleichungssystem kann mit der erweiterten Koeffizientenmatrix [A|b] gelöst werden. Die Gauß-Elimination transformiert die Matrix in Zeilenstufenform durch elementare Zeilenoperationen: Vertauschen, Skalarmultiplikation, Addition eines Vielfachen.\n\nReduzierte Zeilenstufenform (RREF): Jede Pivotspalte hat eine 1 und sonst überall Nullen. Dies liefert die Lösung direkt.',
         keyPoints: [
           'Erweiterte Koeffizientenmatrix [A|b]',
           'Elementare Zeilenoperationen: R\u1d62 \u2194 R\u2c7c, kR\u1d62, R\u1d62+kR\u2c7c',
-          'RREF: Pivot 1, sonst ueberall Nullen',
-          'n Variablen \u2013 n Gleichungen = in der Regel 1 Loesung',
+          'RREF: Pivot 1, sonst überall Nullen',
+          'n Variablen \u2013 n Gleichungen = in der Regel 1 Lösung',
         ],
         examples: [
           {
-            example: 'Loese: x+y=5 und 2x-y=4',
+            example: 'Löse: x+y=5 und 2x-y=4',
             solution: '[1 1|5]\n[2 -1|4]\nR\u2082 = R\u2082-2R\u2081:\n[1 1|5]\n[0 -3|-6]\nAlso y=2, x=3',
           },
         ],
         practice: [
           {
-            problem: 'Loese mit Elimination: x+2y=8, 3x-y=3',
+            problem: 'Löse mit Elimination: x+2y=8, 3x-y=3',
             solution: 'x=2, y=3',
             steps: [
               '[1 2|8], [3 -1|3]',
@@ -507,22 +507,22 @@ export const courseContents_other_de = {
     ],
   },
 
-  // linalg-003: Vektorraeume
+  // linalg-003: Vektorräume
   'linalg-003': {
     lessons: [
       {
-        title: 'Vektorraeume und Unterraeume',
-        theory: 'Ein Vektorraum V ueber dem Koerper F erfuellt 8 Axiome (Abgeschlossenheit unter Addition und Skalarmultiplikation usw.). Beispiele: \u211d\u207f, C[a,b] (stetige Funktionen), P\u2099 (Polynome).\n\nUnterraum: eine Teilmenge, die unter den Operationen abgeschlossen ist und den Nullvektor enthaelt. Span{v\u2081,...,v\u2096} ist der erzeugte Unterraum.\n\nLineare Unabhaengigkeit: v\u2081,...,v\u2096 sind linear unabhaengig, wenn c\u2081v\u2081+...+c\u2096v\u2096=0 nur fuer c\u1d62=0 gilt.',
+        title: 'Vektorräume und Unterräume',
+        theory: 'Ein Vektorraum V über dem Körper F erfüllt 8 Axiome (Abgeschlossenheit unter Addition und Skalarmultiplikation usw.). Beispiele: \u211d\u207f, C[a,b] (stetige Funktionen), P\u2099 (Polynome).\n\nUnterraum: eine Teilmenge, die unter den Operationen abgeschlossen ist und den Nullvektor enthält. Span{v\u2081,...,v\u2096} ist der erzeugte Unterraum.\n\nLineare Unabhängigkeit: v\u2081,...,v\u2096 sind linear unabhängig, wenn c\u2081v\u2081+...+c\u2096v\u2096=0 nur für c\u1d62=0 gilt.',
         keyPoints: [
           '8 Axiome des Vektorraums',
           'Unterraum: Abgeschlossenheit + Nullvektor',
           'Span: alle Linearkombinationen',
-          'Basis: linear unabhaengig + erzeugt den gesamten Raum',
+          'Basis: linear unabhängig + erzeugt den gesamten Raum',
         ],
         examples: [
           {
-            example: 'Sind v\u2081=(1,0,1), v\u2082=(0,1,1), v\u2083=(1,1,0) linear unabhaengig?',
-            solution: 'det[v\u2081 v\u2082 v\u2083] = 1(0-1)-0+1(0-1) = -2 \u2260 0\nJa, sie sind linear unabhaengig.',
+            example: 'Sind v\u2081=(1,0,1), v\u2082=(0,1,1), v\u2083=(1,1,0) linear unabhängig?',
+            solution: 'det[v\u2081 v\u2082 v\u2083] = 1(0-1)-0+1(0-1) = -2 \u2260 0\nJa, sie sind linear unabhängig.',
           },
         ],
         practice: [
@@ -531,7 +531,7 @@ export const courseContents_other_de = {
             solution: '{(1,2,3)} \u2013 nur ein Vektor (der andere ist proportional)',
             steps: [
               '(2,4,6) = 2(1,2,3) \u2192 proportional',
-              'Sie sind linear abhaengig',
+              'Sie sind linear abhängig',
               'Basis: {(1,2,3)}',
             ],
           },
@@ -545,7 +545,7 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Eigenwerte und Eigenvektoren',
-        theory: 'Der Eigenvektor v und der Eigenwert \u03bb erfuellen Av = \u03bbv. Das charakteristische Polynom: det(A - \u03bbI) = 0 liefert die Eigenwerte.\n\nVorgehensweise: 1) Loese det(A-\u03bbI)=0 nach \u03bb, 2) Fuer jeden Eigenwert \u03bb loese (A-\u03bbI)v=0 nach v.\n\nAnwendungen: PageRank (Google), PCA (maschinelles Lernen), natuerliche Schwingungen, Quantenmechanik.',
+        theory: 'Der Eigenvektor v und der Eigenwert \u03bb erfüllen Av = \u03bbv. Das charakteristische Polynom: det(A - \u03bbI) = 0 liefert die Eigenwerte.\n\nVorgehensweise: 1) Löse det(A-\u03bbI)=0 nach \u03bb, 2) Für jeden Eigenwert \u03bb löse (A-\u03bbI)v=0 nach v.\n\nAnwendungen: PageRank (Google), PCA (maschinelles Lernen), natürliche Schwingungen, Quantenmechanik.',
         keyPoints: [
           'Av = \u03bbv (Definition)',
           'det(A-\u03bbI)=0 (charakteristisches Polynom)',
@@ -582,18 +582,18 @@ export const courseContents_other_de = {
           'x\u2099\u208a\u2081 = x\u2099 - f(x\u2099)/f\'(x\u2099)',
           'Quadratische Konvergenz',
           'Erfordert Differenzierbarkeit von f',
-          'Startwert nahe der Nullstelle fuer Konvergenz waehlen',
+          'Startwert nahe der Nullstelle für Konvergenz wählen',
         ],
         examples: [
           {
-            example: 'Bestimme \u221a2 durch Loesen von x\u00b2-2=0 mit Newton (x\u2080=1)',
+            example: 'Bestimme \u221a2 durch Lösen von x\u00b2-2=0 mit Newton (x\u2080=1)',
             solution: 'x\u2081 = 1 - (1-2)/(2) = 1.5\nx\u2082 = 1.5 - (2.25-2)/3 = 1.417\nx\u2083 \u2248 1.4142 (\u2248 \u221a2)',
           },
         ],
         practice: [
           {
             problem: 'Wende Newton-Raphson einmal an: f(x)=x\u00b3-2, x\u2080=1.',
-            solution: 'x\u2081 = 1.667',
+            solution: 'x₁ = 4/3 ≈ 1.333',
             steps: [
               'f(1) = 1-2 = -1',
               "f'(x) = 3x\u00b2, f'(1) = 3",
@@ -612,7 +612,7 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Teiler und ggT/kgV',
-        theory: 'a teilt b (a|b), wenn b = a\u00d7k fuer eine ganze Zahl k gilt. Der ggT (groesster gemeinsamer Teiler) wird mit dem euklidischen Algorithmus bestimmt: ggT(a, b) = ggT(b, a mod b).\n\nkgV (kleinstes gemeinsames Vielfaches): kgV(a, b) = a\u00d7b / ggT(a, b).\n\nPrimzahlen haben genau zwei Teiler: 1 und sich selbst. Fundamentalsatz der Arithmetik: Jede Zahl > 1 laesst sich eindeutig in Primfaktoren zerlegen.',
+        theory: 'a teilt b (a|b), wenn b = a\u00d7k für eine ganze Zahl k gilt. Der ggT (größter gemeinsamer Teiler) wird mit dem euklidischen Algorithmus bestimmt: ggT(a, b) = ggT(b, a mod b).\n\nkgV (kleinstes gemeinsames Vielfaches): kgV(a, b) = a\u00d7b / ggT(a, b).\n\nPrimzahlen haben genau zwei Teiler: 1 und sich selbst. Fundamentalsatz der Arithmetik: Jede Zahl > 1 lässt sich eindeutig in Primfaktoren zerlegen.',
         keyPoints: [
           'ggT mit euklidischem Algorithmus: ggT(a,b)=ggT(b,a%b)',
           'kgV(a,b) = a\u00d7b/ggT(a,b)',
@@ -642,7 +642,7 @@ export const courseContents_other_de = {
       },
       {
         title: 'Kongruenz und Modulararithmetik',
-        theory: 'a \u2261 b (mod n) bedeutet, dass n die Differenz (a-b) teilt, oder dass a und b denselben Rest bei Division durch n haben.\n\nDie Rechenregeln bleiben erhalten: (a+b) mod n = ((a mod n)+(b mod n)) mod n, und ebenso fuer die Multiplikation.\n\nKleiner Satz von Fermat: Wenn p eine Primzahl ist und p\u2224a, dann gilt a\u1d56\u207b\u00b9 \u2261 1 (mod p). Dies hat Anwendungen in der Kryptographie.',
+        theory: 'a \u2261 b (mod n) bedeutet, dass n die Differenz (a-b) teilt, oder dass a und b denselben Rest bei Division durch n haben.\n\nDie Rechenregeln bleiben erhalten: (a+b) mod n = ((a mod n)+(b mod n)) mod n, und ebenso für die Multiplikation.\n\nKleiner Satz von Fermat: Wenn p eine Primzahl ist und p\u2224a, dann gilt a\u1d56\u207b\u00b9 \u2261 1 (mod p). Dies hat Anwendungen in der Kryptographie.',
         keyPoints: [
           'a \u2261 b (mod n) \u2194 n|(a-b)',
           'Addition und Multiplikation bleiben erhalten mod n',
@@ -657,14 +657,13 @@ export const courseContents_other_de = {
         ],
         practice: [
           {
-            problem: 'Welcher Wochentag ist 100 Tage nach einem Freitag? (1=Montag, 7=Sonntag)',
-            solution: 'Freitag',
+            problem: 'Heute ist Freitag. Welcher Wochentag ist in 100 Tagen? (1 = Montag, …, 7 = Sonntag)',
+            solution: 'Sonntag',
             steps: [
               'Freitag = Tag 5',
               '(5 + 100) mod 7 = 105 mod 7',
-              '105 = 15\u00d77 + 0 \u2192 105 mod 7 = 0',
-              '0 mod 7 = 0 = Sonntag',
-              'Hinweis: 105/7=15 genau, also genau Sonntag',
+              '105 = 15 × 7 + 0 → der Rest ist 0',
+              'Rest 0 entspricht Tag 7 = Sonntag',
             ],
           },
         ],
@@ -677,28 +676,28 @@ export const courseContents_other_de = {
     lessons: [
       {
         title: 'Diophantische Gleichungen',
-        theory: 'Diophantische Gleichungen suchen ganzzahlige Loesungen. Die lineare Gleichung ax + by = c hat genau dann eine Loesung, wenn ggT(a,b)|c.\n\nDer erweiterte euklidische Algorithmus findet die Koeffizienten x, y in ggT(a,b) = ax + by, was uns bei der Bestimmung der Loesung hilft.\n\nQuadratische diophantische Gleichungen sind wesentlich schwieriger und stehen im Zusammenhang mit dem Grossen Fermatschen Satz.',
+        theory: 'Diophantische Gleichungen suchen ganzzahlige Lösungen. Die lineare Gleichung ax + by = c hat genau dann eine Lösung, wenn ggT(a,b)|c.\n\nDer erweiterte euklidische Algorithmus findet die Koeffizienten x, y in ggT(a,b) = ax + by, was uns bei der Bestimmung der Lösung hilft.\n\nQuadratische diophantische Gleichungen sind wesentlich schwieriger und stehen im Zusammenhang mit dem Großen Fermatschen Satz.',
         keyPoints: [
-          'ax+by=c: Loesung \u2194 ggT(a,b)|c',
+          'ax+by=c: Lösung \u2194 ggT(a,b)|c',
           'Erweiterter euklidischer Algorithmus',
-          'Wenn (x\u2080,y\u2080) eine Loesung ist, dann: x=x\u2080+bt, y=y\u2080-at',
-          'Pythagoraeische Tripel: a\u00b2+b\u00b2=c\u00b2 (diophantisch)',
+          'Wenn (x\u2080,y\u2080) eine Lösung ist, dann: x=x\u2080+bt, y=y\u2080-at',
+          'Pythagoreische Tripel: a\u00b2+b\u00b2=c\u00b2 (diophantisch)',
         ],
         examples: [
           {
-            example: 'Loese: 3x + 5y = 1',
+            example: 'Löse: 3x + 5y = 1',
             solution: 'ggT(3,5)=1|1 \u2713\nMit Euklid: 5=1\u00d73+2, 3=1\u00d72+1\n1=3-1\u00d72=3-(5-3)=2\u00d73-5\nx\u2080=2, y\u2080=-1',
           },
         ],
         practice: [
           {
-            problem: 'Hat 6x + 4y = 3 eine Loesung?',
+            problem: 'Hat 6x + 4y = 3 eine Lösung?',
             solution: 'Nein, ggT(6,4)=2, aber 2\u22243',
             steps: [
               'ggT(6,4) = 2',
               'Teilt 2 die Zahl 3? 3/2 = 1.5 (nein)',
-              'Die Bedingung 2|3 ist nicht erfuellt',
-              'Keine ganzzahlige Loesung',
+              'Die Bedingung 2|3 ist nicht erfüllt',
+              'Keine ganzzahlige Lösung',
             ],
           },
         ],

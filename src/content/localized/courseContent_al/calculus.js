@@ -5,12 +5,12 @@ export const courseContents_calculus_al = {
     lessons: [
       {
         title: 'Koncepti i Limitit',
-        theory: 'Limiti i f(x) kur x → a është vlera L të cilën f(x) i afrohet ndërkohë që x i afrohet a. Shënohet lim(x→a) f(x) = L. Nuk duhet që f(a) = L ose ndonjë që f(a) të ekzistojë.\n\nLigjëzimi i ε-δ: ∀ε > 0, ∃δ > 0: |x-a| < δ → |f(x)-L| < ε\n\nLigjëzimi intuitiv: mund ta bëjmë f(x) aq afër L sa duam, duke zgjedhur x mjaftueshëm afër a.',
+        theory: 'Limiti i f(x) kur x → a është vlera L së cilës i afrohet f(x) ndërsa x i afrohet a. Shënohet lim(x→a) f(x) = L. Nuk kërkohet që f(a) = L, madje as që f(a) të ekzistojë.\n\nPërkufizimi ε-δ: ∀ε > 0, ∃δ > 0: |x-a| < δ → |f(x)-L| < ε\n\nNë mënyrë intuitive: mund ta bëjmë f(x) aq afër L sa duam, duke zgjedhur x mjaftueshëm afër a.',
         keyPoints: [
           'Limiti mund të ekzistojë edhe nëse f(a) nuk ekziston',
-          'Limiti nga majta = lim nga djathta → limiti ekziston',
-          'Ligjet e limitit: shuma, prodhimi, thyesa',
-          'Limiti i zakonshëm: zëvendëso a direkt nëse f është continue',
+          'Limiti nga e majta = limiti nga e djathta → limiti ekziston',
+          'Vetitë e limitit: për shumën, prodhimin, herësin',
+          'Nëse f është e vazhdueshme, zëvendëso a drejtpërdrejt',
         ],
         examples: [
           {
@@ -19,7 +19,7 @@ export const courseContents_calculus_al = {
           },
           {
             example: 'Gjej lim(x→0) sin(x)/x',
-            solution: 'Kjo është limit i famshëm: lim(x→0) sin(x)/x = 1',
+            solution: 'Ky është limit i njohur: lim(x→0) sin(x)/x = 1',
           },
         ],
         practice: [
@@ -36,39 +36,39 @@ export const courseContents_calculus_al = {
       },
       {
         title: 'Vazhdueshmëria',
-        theory: 'Funksioni f është i vazhdueshëm te a nëse: 1) f(a) ekziston, 2) lim(x→a) f(x) ekziston, 3) lim(x→a) f(x) = f(a). Nëse plotësohen të tre kushtet, funksioni "mund të vizatohet pa ngritur lapsin".\n\nLlojet e ndërprerjeve: të larggueshme (vrimë - mund të fiksosh), të kërcimit (limitet njëanëshme ndryshojnë), dhe esenciale (limit nuk ekziston).\n\nTeorema e Vlerës Ndërmjetme (IVT): nëse f continue në [a,b] dhe f(a) dhe f(b) kanë shenja të ndryshme, atëherë ka x∈(a,b) ku f(x)=0.',
+        theory: 'Funksioni f është i vazhdueshëm te a nëse: 1) f(a) ekziston, 2) lim(x→a) f(x) ekziston, 3) lim(x→a) f(x) = f(a). Nëse plotësohen të tre kushtet, funksioni "mund të vizatohet pa ngritur lapsin".\n\nLlojet e ndërprerjeve: e evitueshme (një vrimë që mund të mbushet), me kërcim (limitet e njëanshme ndryshojnë) dhe thelbësore (limiti nuk ekziston).\n\nTeorema e vlerës së ndërmjetme: nëse f është e vazhdueshme në [a,b] dhe f(a) dhe f(b) kanë shenja të ndryshme, atëherë ka x∈(a,b) ku f(x)=0.',
         keyPoints: [
-          'Tre kushtet e vazhdueshmërisë: f(a) ekziston, limit ekziston, barazohen',
-          'Polinomet janë continue kudo',
-          'Funksionet racionale: continue kudo ku emëruesi ≠ 0',
-          'IVT: nënkupton ekzistencën e rrënjëve',
+          'Tri kushtet e vazhdueshmërisë: f(a) ekziston, limiti ekziston dhe janë të barabartë',
+          'Polinomet janë të vazhdueshëm kudo',
+          'Funksionet racionale: të vazhdueshëm kudo ku emëruesi ≠ 0',
+          'Teorema e vlerës së ndërmjetme garanton ekzistencën e rrënjëve',
         ],
         examples: [
           {
             example: 'Kontrollo nëse f(x) = (x²-1)/(x-1) është e vazhdueshme te x=1',
-            solution: 'f(1) nuk ekziston (0/0). Nuk është e vazhdueshme te x=1 (vrimë e larggueshme).',
+            solution: 'f(1) nuk ekziston (0/0). Nuk është e vazhdueshme te x=1 (ndërprerje e evitueshme).',
           },
         ],
         practice: [
           {
             problem: 'Trego se ekuacioni x³ - x - 1 = 0 ka të paktën një rrënjë reale.',
-            solution: 'Nga IVT: f(1)=-1<0 dhe f(2)=5>0 → rrënjë ∈ (1,2)',
+            solution: 'Nga teorema e vlerës së ndërmjetme: f(1)=-1<0 dhe f(2)=5>0 → rrënjë ∈ (1,2)',
             steps: [
-              'f(x) = x³-x-1 është continue',
+              'f(x) = x³-x-1 është e vazhdueshme',
               'f(1) = 1-1-1 = -1 < 0',
               'f(2) = 8-2-1 = 5 > 0',
-              'Shenja ndryshon → nga IVT ka rrënjë në (1,2)',
+              'Shenja ndryshon → sipas teoremës ka rrënjë në (1,2)',
             ],
           },
         ],
       },
       {
-        title: 'Limitet në Infinit dhe Asimptota',
-        theory: 'lim(x→∞) f(x) = L do të thotë f(x) afrohet L ndërkohë x rritet pa kufi. Kjo jep asimptotën horizontale.\n\nNëse lim(x→a) f(x) = ±∞, x=a është asimptotë vertikale.\n\nRregullë e dobishme: kur x→∞ në polinom/polinom, vetëm termat me shkallën më të lartë janë dominuese.',
+        title: 'Limitet në Pafundësi dhe Asimptotat',
+        theory: 'lim(x→∞) f(x) = L do të thotë se f(x) i afrohet L ndërsa x rritet pa kufi. Kjo jep asimptotën horizontale.\n\nNëse lim(x→a) f(x) = ±∞, x=a është asimptotë vertikale.\n\nRregull i dobishëm: kur x→∞ te një herës polinomesh, vendosin vetëm termat me fuqinë më të madhe.',
         keyPoints: [
           'lim f(x) = L → asimptotë horizontale y=L',
           'lim f(x) = ∞ → asimptotë vertikale',
-          'Fuqia dominante fituese kur x→∞',
+          'Kur x→∞ vendos termi me fuqinë më të madhe',
           '1/xⁿ → 0 kur x→∞ (për n>0)',
         ],
         examples: [
@@ -82,7 +82,7 @@ export const courseContents_calculus_al = {
             problem: 'Gjej lim(x→∞) (2x³ - x)/(x³ + 4)',
             solution: '2',
             steps: [
-              'Ndaj numërator dhe emërator me x³',
+              'Pjesëto numëruesin dhe emëruesin me x³',
               '= (2 - 1/x²)/(1 + 4/x³)',
               'Kur x→∞: 1/x²→0, 4/x³→0',
               'Limiti = 2/1 = 2',
@@ -98,22 +98,22 @@ export const courseContents_calculus_al = {
     lessons: [
       {
         title: 'Koncepti i Derivatit',
-        theory: 'Derivati i f te pika a është: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nKjo mat shkallën e ndryshimit të menjëhershme ose pjerrësinë e tangentit te a.\n\nNotacionet: f\'(x), df/dx, Df, ẏ. Secila ka kontekste ku preferohet.\n\nDerivati si limit i raportit të diferencave: [f(x+h) − f(x)]/h → dy/dx kur h→0.',
+        theory: 'Derivati i f te pika a është: f\'(a) = lim(h→0) [f(a+h) - f(a)] / h\nAi mat shpejtësinë e ndryshimit në atë çast, pra pjerrësinë e tangjentes në a.\n\nShënimet: f\'(x), df/dx, Df, ẏ, secili i përdorur në kontekste të caktuara.\n\nDerivati si limit i raportit të diferencave: [f(x+h) − f(x)]/h → dy/dx kur h→0.',
         keyPoints: [
           'f\'(a) = lim [f(a+h)-f(a)]/h kur h→0',
-          'Derivati = pjerrësia e tangentit',
+          'Derivati = pjerrësia e tangjentes',
           'Derivati = shpejtësia e menjëhershme',
           'f\'(x) ekziston → f është e derivueshme dhe e vazhdueshme',
         ],
         examples: [
           {
-            example: 'Gjej f\'(x) nga definicioni nëse f(x) = x²',
+            example: 'Gjej f\'(x) nga përkufizimi nëse f(x) = x²',
             solution: 'f\'(x) = lim [(x+h)²-x²]/h\n= lim [2xh+h²]/h\n= lim(2x+h) = 2x',
           },
         ],
         practice: [
           {
-            problem: 'Gjej derivatin nga definicioni: f(x) = 3x + 5',
+            problem: 'Gjej derivatin nga përkufizimi: f(x) = 3x + 5',
             solution: 'f\'(x) = 3',
             steps: [
               'f\'(x) = lim [(3(x+h)+5)-(3x+5)]/h',
@@ -125,11 +125,11 @@ export const courseContents_calculus_al = {
       },
       {
         title: 'Rregullat e Derivimit',
-        theory: 'Rregullat themelore të derivimit:\n- (c)\'= 0 (konstant)\n- (xⁿ)\'= nxⁿ⁻¹ (fuqia)\n- (f±g)\'= f\'±g\'\n- (fg)\'= f\'g + fg\' (produkti)\n- (f/g)\'= (f\'g - fg\')/g² (thyesa)\n- (f∘g)\'= f\'(g)·g\' (zinxhiri/chain rule)\n\nKëto rregulla na kursejnë nga llogaritja me límite çdo herë.',
+        theory: 'Rregullat themelore të derivimit:\n- (c)\'= 0 (konstant)\n- (xⁿ)\'= nxⁿ⁻¹ (fuqia)\n- (f±g)\'= f\'±g\'\n- (fg)\'= f\'g + fg\' (prodhimi)\n- (f/g)\'= (f\'g - fg\')/g² (herësi)\n- (f∘g)\'= f\'(g)·g\' (rregulli i zinxhirit)\n\nKëto rregulla na kursejnë nga llogaritja me limite çdo herë.',
         keyPoints: [
           'Fuqia: d(xⁿ)/dx = nxⁿ⁻¹',
-          'Produkti: (fg)\' = f\'g + fg\'',
-          'Thyesa: (f/g)\' = (f\'g - fg\')/g²',
+          'Prodhimi: (fg)\' = f\'g + fg\'',
+          'Herësi: (f/g)\' = (f\'g - fg\')/g²',
           'Zinxhiri: d[f(g(x))]/dx = f\'(g(x))·g\'(x)',
         ],
         examples: [
@@ -156,11 +156,11 @@ export const courseContents_calculus_al = {
       },
       {
         title: 'Derivatet e Funksioneve Trigonometrike dhe Speciale',
-        theory: 'Derivatët trigonometrik: (sin x)\' = cos x, (cos x)\' = -sin x, (tan x)\' = sec²x.\nEksponencial: (eˣ)\' = eˣ, (aˣ)\' = aˣ ln a.\nLogaritmik: (ln x)\' = 1/x, (log_a x)\' = 1/(x ln a).\n\nKëto derivate janë të kujtuar, por mund të njihen nga definicioni dhe identitetet trig.',
+        theory: 'Derivatet trigonometrike: (sin x)\' = cos x, (cos x)\' = -sin x, (tan x)\' = sec²x.\nEksponencial: (eˣ)\' = eˣ, (aˣ)\' = aˣ ln a.\nLogaritmik: (ln x)\' = 1/x, (log_a x)\' = 1/(x ln a).\n\nKëto derivate mësohen përmendsh, por mund të nxirren nga përkufizimi dhe identitetet trigonometrike.',
         keyPoints: [
           '(sin x)\' = cos x',
           '(cos x)\' = -sin x',
-          '(eˣ)\' = eˣ (vetë derivat!)',
+          '(eˣ)\' = eˣ (është derivati i vetvetes!)',
           '(ln x)\' = 1/x',
         ],
         examples: [
@@ -192,17 +192,17 @@ export const courseContents_calculus_al = {
   'calc-003': {
     lessons: [
       {
-        title: 'Ekstreme dhe Teorema e Fermat',
-        theory: 'Pikat kritike të f janë ku f\'(x) = 0 ose f\'(x) nuk ekziston. Extremet lokale (minimumet dhe maksimumet lokale) ndodhin vetëm te pikat kritike (Teorema e Fermat).\n\nTesti i derivatit të parë: nëse f\' ndryshon + → -, minimum lokal; - → +, maksimum lokal.\nTesti i derivatit të dytë: nëse f\'\'(c) > 0, minimum; f\'\'(c) < 0, maksimum; f\'\'(c) = 0, i papërcaktuar.',
+        title: 'Ekstremet dhe Teorema e Fermatit',
+        theory: 'Pikat kritike të f janë ku f\'(x) = 0 ose f\'(x) nuk ekziston. Ekstremet lokale (minimumet dhe maksimumet lokale) ndodhin vetëm në pikat kritike (teorema e Fermatit).\n\nTesti i derivatit të parë: nëse f\' ndryshon nga + në -, kemi maksimum lokal; nga - në +, minimum lokal.\nTesti i derivatit të dytë: nëse f\'\'(c) > 0, minimum; f\'\'(c) < 0, maksimum; f\'\'(c) = 0, i papërcaktuar.',
         keyPoints: [
           'Pikë kritike: f\'=0 ose f\' nuk ekziston',
-          'Ekstreme globale: kufij + pikat kritike',
+          'Ekstremet globale: krahaso vlerat në skaje dhe në pikat kritike',
           "Konkavitet: f''>0 konkav lart, f''<0 konkav poshtë",
           'Pika infleksioni: f\'\' ndryshon shenjë',
         ],
         examples: [
           {
-            example: 'Gjej ekstreme lokale të f(x) = x³ - 3x',
+            example: 'Gjej ekstremet lokale të f(x) = x³ - 3x',
             solution: 'f\'(x) = 3x² - 3 = 0 → x = ±1\nf\'\'(1) = 6 > 0 → minimum te (1, -2)\nf\'\'(-1) = -6 < 0 → maksimum te (-1, 2)',
           },
         ],
@@ -221,11 +221,11 @@ export const courseContents_calculus_al = {
       },
       {
         title: 'Optimizimi',
-        theory: 'Optimizimi është gjetja e vlerës maksimale ose minimale të funksionit. Hapat: 1) Identifiko funksionin objektiv, 2) Shpreh me një variabël duke përdorur kushtet, 3) Gjej pikat kritike, 4) Verifiko nëse janë maksimum/minimum.\n\nAplikimet janë të shumta: minimizim i kostos, maksimizim i fitimit, optimizim i formave, problemet e rrugëve të shkurtëra.',
+        theory: 'Optimizimi është gjetja e vlerës maksimale ose minimale të funksionit. Hapat: 1) përcakto funksionin që duam ta optimizojmë, 2) shprehe me një variabël duke përdorur kushtet, 3) gjej pikat kritike, 4) kontrollo nëse janë maksimum apo minimum.\n\nZbatimet janë të shumta: minimizimi i kostos, maksimizimi i fitimit, format optimale, rrugët më të shkurtra.',
         keyPoints: [
-          'Lidh funksionin objektiv me kushtet',
+          'Lidh funksionin që optimizohet me kushtet',
           'Shpreh me një variabël',
-          'Gjej pikat kritike (deriv. = 0)',
+          'Gjej pikat kritike (derivati = 0)',
           'Verifiko natyrën (min ose max)',
         ],
         examples: [
@@ -254,8 +254,8 @@ export const courseContents_calculus_al = {
   'calc-004': {
     lessons: [
       {
-        title: 'Anti-derivati dhe Integrali i Pacaktuar',
-        theory: 'Anti-derivati (primitiva) i f është funksion F ku F\' = f. Integrali i pacaktuar: ∫f(x)dx = F(x) + C ku C është konstant i integrimit.\n\nRregullat themelore: ∫xⁿdx = xⁿ⁺¹/(n+1) + C (n≠-1), ∫eˣdx = eˣ + C, ∫(1/x)dx = ln|x| + C, ∫sin x dx = -cos x + C, ∫cos x dx = sin x + C.',
+        title: 'Primitiva dhe Integrali i Pacaktuar',
+        theory: 'Primitiva e f është një funksion F i tillë që F\' = f. Integrali i pacaktuar: ∫f(x)dx = F(x) + C, ku C është konstantja e integrimit.\n\nRregullat themelore: ∫xⁿdx = xⁿ⁺¹/(n+1) + C (n≠-1), ∫eˣdx = eˣ + C, ∫(1/x)dx = ln|x| + C, ∫sin x dx = -cos x + C, ∫cos x dx = sin x + C.',
         keyPoints: [
           '∫xⁿdx = xⁿ⁺¹/(n+1) + C',
           '∫eˣdx = eˣ + C',
@@ -287,11 +287,11 @@ export const courseContents_calculus_al = {
       },
       {
         title: 'Integrali i Caktuar dhe Sipërfaqja',
-        theory: 'Teorema Fondamentale e Kalkulusit: ∫ₐᵇ f(x)dx = F(b) - F(a) ku F\' = f. Kjo lidh integralin me derivatin.\n\nInterpretimi gjeometrik: ∫ₐᵇ f(x)dx = sipërfaqja ndërmjet grafikut të f dhe boshtit x (me shenjë: zone poshtë boshtit = negative).\n\nSipërfaqja ndërmjet dy kurbave: S = ∫ₐᵇ |f(x) - g(x)|dx',
+        theory: 'Teorema themelore e analizës: ∫ₐᵇ f(x)dx = F(b) - F(a) ku F\' = f. Kjo lidh integralin me derivatin.\n\nInterpretimi gjeometrik: ∫ₐᵇ f(x)dx = sipërfaqja ndërmjet grafikut të f dhe boshtit x (me shenjë: zona poshtë boshtit jep vlerë negative).\n\nSipërfaqja ndërmjet dy kurbave: S = ∫ₐᵇ |f(x) - g(x)|dx',
         keyPoints: [
           '∫ₐᵇ f(x)dx = F(b) - F(a)',
           'Sipërfaqe = integral (me shenjë)',
-          'Zone poshtë x-boshtit: integral negativ',
+          'Zona poshtë boshtit x: integral negativ',
           'Ndërmjet dy kurbash: ∫(f-g)dx',
         ],
         examples: [
@@ -319,17 +319,17 @@ export const courseContents_calculus_al = {
   'calc-005': {
     lessons: [
       {
-        title: 'Vëllimi me Integracion',
-        theory: 'Solidi i rrotullimit formohet duke rrotulluar sipërfaqen nën f(x) rreth boshtit x ose y.\n\nMetoda e diskut: V = π∫ₐᵇ [f(x)]²dx (rrotullim rreth x-boshtit)\nMetoda e unazës: V = π∫ₐᵇ {[f(x)]² - [g(x)]²}dx\nMetoda e cilindrit: V = 2π∫ₐᵇ x·f(x)dx',
+        title: 'Vëllimi me Integrale',
+        theory: 'Trupi i rrotullimit formohet duke rrotulluar figurën nën f(x) rreth boshtit x ose y.\n\nMetoda e disqeve: V = π∫ₐᵇ [f(x)]²dx (rrotullim rreth boshtit x)\nMetoda e unazave: V = π∫ₐᵇ {[f(x)]² - [g(x)]²}dx\nMetoda e cilindrave: V = 2π∫ₐᵇ x·f(x)dx (rrotullim rreth boshtit y)',
         keyPoints: [
           'Disk: V = π∫[f(x)]²dx',
           'Unaza: V = π∫{[f]²-[g]²}dx',
           'Cilindër: V = 2π∫x·f(x)dx',
-          'Kujdes: integrali nuk jep vëllim direkt - shto π',
+          'Kujdes: mos e harro faktorin π',
         ],
         examples: [
           {
-            example: 'Gjej vëllimin e solidit nga rrotullimi y = √x nga 0 në 4 rreth x-boshtit',
+            example: 'Gjej vëllimin e trupit që përftohet nga rrotullimi i y = √x nga 0 në 4 rreth boshtit x',
             solution: 'V = π∫₀⁴ (√x)² dx = π∫₀⁴ x dx = π[x²/2]₀⁴ = 8π',
           },
         ],
@@ -353,11 +353,11 @@ export const courseContents_calculus_al = {
   'calc-006': {
     lessons: [
       {
-        title: 'Ekuacionet e Separueshme',
-        theory: 'Ekuacion diferencial i rendit të parë: dy/dx = f(x, y). Quhet i separueshëm nëse mund të shkruhet dy/dx = g(x)h(y) - varush dy/h(y) = g(x)dx pastaj integrohet të dyja anët.\n\nAplikimet: rritja eksponenciale (popullatë), zbierja radioaktive, ftohja e Njutonit, probleme interesi të vazhdueshëm.',
+        title: 'Ekuacionet me Ndryshore të Ndashme',
+        theory: 'Ekuacion diferencial i rendit të parë: dy/dx = f(x, y). Ka ndryshore të ndashme nëse mund të shkruhet dy/dx = g(x)h(y). Atëherë ndajmë ndryshoret, dy/h(y) = g(x)dx, dhe integrojmë të dyja anët.\n\nZbatime: rritja eksponenciale (popullata), zbërthimi radioaktiv, ligji i ftohjes i Njutonit, interesi i vazhdueshëm.',
         keyPoints: [
           'Forma: dy/dx = g(x)·h(y)',
-          'Separo: dy/h(y) = g(x)dx',
+          'Ndaj ndryshoret: dy/h(y) = g(x)dx',
           'Integro të dyja anët',
           'Gjej C nga kushtet fillestare',
         ],
@@ -387,8 +387,8 @@ export const courseContents_calculus_al = {
   'calc-007': {
     lessons: [
       {
-        title: 'Derivatet Parciale',
-        theory: 'Funksioni f(x, y) ka derivate parciale ∂f/∂x (derivat ndaj x, y mbahet konstant) dhe ∂f/∂y (derivat ndaj y, x konstant).\n\nGradienti ∇f = (∂f/∂x, ∂f/∂y) tregon drejtimin e rritjes maksimale. Norma |∇f| tregon shkallën e rritjes.\n\nDerivata drejtimtare: D_u f = ∇f · u ku u është vektori drejtues njësi.',
+        title: 'Derivatet e Pjesshme',
+        theory: 'Funksioni f(x, y) ka derivatet e pjesshme ∂f/∂x (sipas x, me y konstant) dhe ∂f/∂y (sipas y, me x konstant).\n\nGradienti ∇f = (∂f/∂x, ∂f/∂y) tregon drejtimin e rritjes maksimale. Norma |∇f| tregon shkallën e rritjes.\n\nDerivati sipas drejtimit: D_u f = ∇f · u, ku u është vektori njësi i drejtimit.',
         keyPoints: [
           '∂f/∂x: trajto y si konstant',
           '∂f/∂y: trajto x si konstant',
@@ -397,7 +397,7 @@ export const courseContents_calculus_al = {
         ],
         examples: [
           {
-            example: 'Gjej derivatet parciale të f(x,y) = x²y + 3xy²',
+            example: 'Gjej derivatet e pjesshme të f(x,y) = x²y + 3xy²',
             solution: '∂f/∂x = 2xy + 3y²\n∂f/∂y = x² + 6xy',
           },
         ],

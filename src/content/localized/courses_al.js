@@ -3,7 +3,7 @@ export const coursesTranslations_al = {
   'arith-001': {
     title: 'Numrat dhe Operacionet Bazë',
     duration: '2 orë',
-    description: 'Mëso bazat e numrave dhe operacioneve matematikore',
+    description: 'Bazat e numrave dhe të veprimeve matematikore',
     topics: [
       'Numrat natyrorë dhe të plotë',
       'Mbledhja dhe zbritja',
@@ -35,9 +35,9 @@ export const coursesTranslations_al = {
     ],
   },
   'arith-003': {
-    title: 'Përqindjet dhe Proporcionaliteti',
-    duration: '2.5 orë',
-    description: 'Zotëro përqindjet, raportet dhe proporcionalitetin',
+    title: 'Përqindjet dhe Përpjesëtimet',
+    duration: '2,5 orë',
+    description: 'Zotëroni përqindjet, raportet dhe përpjesëtimet',
     topics: [
       'Koncepti i përqindjes',
       'Llogaritja e përqindjeve',
@@ -54,7 +54,7 @@ export const coursesTranslations_al = {
   'alg-001': {
     title: 'Hyrje në Algjebër',
     duration: '3 orë',
-    description: 'Bazat e algjebres dhe shprehjet algjebrike',
+    description: 'Bazat e algjebrës dhe shprehjet algjebrike',
     topics: [
       'Variablat dhe konstantet',
       'Shprehjet algjebrike',
@@ -71,7 +71,7 @@ export const coursesTranslations_al = {
   'alg-002': {
     title: 'Ekuacionet Lineare',
     duration: '4 orë',
-    description: 'Zgjidh ekuacione lineare me një dhe shumë variabla',
+    description: 'Ekuacionet lineare me një dhe me shumë të panjohura',
     topics: [
       'Ekuacionet me një variabël',
       'Vetitë e barazimit',
@@ -87,8 +87,8 @@ export const coursesTranslations_al = {
   },
   'alg-003': {
     title: 'Inekuacionet dhe Vlera Absolute',
-    duration: '3.5 orë',
-    description: 'Zgjidh inekuacione dhe ekuacione me vlerë absolute',
+    duration: '3,5 orë',
+    description: 'Inekuacionet dhe ekuacionet me vlerë absolute',
     topics: [
       'Inekuacionet lineare',
       'Inekuacionet e përbëra',
@@ -103,9 +103,9 @@ export const coursesTranslations_al = {
     ],
   },
   'alg-004': {
-    title: 'Funksionet dhe Grafikat',
+    title: 'Funksionet dhe Grafikët',
     duration: '5 orë',
-    description: 'Eksploro funksionet, domenet dhe grafikët',
+    description: 'Funksionet, bashkësitë e përkufizimit dhe grafikët',
     topics: [
       'Koncepti i funksionit',
       'Domeni dhe rangu',
@@ -121,8 +121,8 @@ export const coursesTranslations_al = {
   },
   'alg-005': {
     title: 'Ekuacionet Kuadratike',
-    duration: '4.5 orë',
-    description: 'Zotëro ekuacionet kuadratike dhe funksionet',
+    duration: '4,5 orë',
+    description: 'Ekuacionet dhe funksionet kuadratike',
     topics: [
       'Forma standarde kuadratike',
       'Faktorizimi',
@@ -139,7 +139,7 @@ export const coursesTranslations_al = {
   'alg-006': {
     title: 'Polinomet dhe Faktorizimi',
     duration: '4 orë',
-    description: 'Punon me polinome dhe teknika të faktorizimit',
+    description: 'Veprimet me polinome dhe teknikat e faktorizimit',
     topics: [
       'Operacionet me polinome',
       'Faktorizimi i polinomeve',
@@ -155,8 +155,8 @@ export const coursesTranslations_al = {
   },
   'alg-007': {
     title: 'Shprehjet Racionale',
-    duration: '3.5 orë',
-    description: 'Operacionet dhe thjeshtimi i shprehjeve racionale',
+    duration: '3,5 orë',
+    description: 'Veprimet dhe thjeshtimi i shprehjeve racionale',
     topics: [
       'Shprehjet racionale',
       'Thjeshtimi i racionaleve',
@@ -188,9 +188,9 @@ export const coursesTranslations_al = {
     ],
   },
   'alg-009': {
-    title: 'Numrat Kompleks',
+    title: 'Numrat Kompleksë',
     duration: '4 orë',
-    description: 'Zgjero numrat në fushën komplekse dhe zbulo vetitë e tyre',
+    description: 'Numrat kompleksë dhe vetitë e tyre',
     topics: [
       'Njësia imagjinare i',
       'Forma algjebrike a + bi',
@@ -207,9 +207,9 @@ export const coursesTranslations_al = {
     ],
   },
   'alg-010': {
-    title: 'Seritë dhe Sekuencat',
-    duration: '4.5 orë',
-    description: 'Sekuencat aritmetike, gjeometrike dhe seritë infinite',
+    title: 'Vargjet dhe Seritë',
+    duration: '4,5 orë',
+    description: 'Vargjet aritmetike, gjeometrike dhe seritë e pafundme',
     topics: [
       'Sekuencat aritmetike',
       'Sekuencat gjeometrike',
@@ -261,7 +261,7 @@ export const coursesTranslations_al = {
   },
   'geo-003': {
     title: 'Katërkëndëshat dhe Shumëkëndëshat',
-    duration: '3.5 orë',
+    duration: '3,5 orë',
     description: 'Vetitë e katërkëndëshave dhe shumëkëndëshave',
     topics: [
       'Paralelogramet',
@@ -296,7 +296,7 @@ export const coursesTranslations_al = {
   'geo-005': {
     title: 'Gjeometria e Hapësirës',
     duration: '5 orë',
-    description: 'Trupin gjeometrikë në hapësirë 3D',
+    description: 'Trupat gjeometrikë në hapësirë',
     topics: [
       'Prizma dhe piramida',
       'Cilindrat dhe konët',
@@ -312,8 +312,8 @@ export const coursesTranslations_al = {
   },
   'geo-006': {
     title: 'Gjeometria Analitike',
-    duration: '4.5 orë',
-    description: 'Bashkimi i algjebres dhe gjeometrisë',
+    duration: '4,5 orë',
+    description: 'Gjeometria me koordinata dhe ekuacione',
     topics: [
       'Sistema koordinative',
       'Ekuacioni i drejtëzës',
@@ -330,7 +330,7 @@ export const coursesTranslations_al = {
   'geo-007': {
     title: 'Gjeometria Diferenciale',
     duration: '6 orë',
-    description: 'Kurbat, sipërfaqet dhe varietetet diferenciale',
+    description: 'Kurbat, sipërfaqet dhe lakimi',
     topics: [
       'Kurbat në hapësirë',
       'Kurbatura dhe torzioni',
@@ -347,7 +347,7 @@ export const coursesTranslations_al = {
   },
   'geo-008': {
     title: 'Topologjia Bazë',
-    duration: '5.5 orë',
+    duration: '5,5 orë',
     description: 'Hyrje në topologji dhe hapësirat topologjike',
     topics: [
       'Hapësirat metrike',
@@ -381,7 +381,7 @@ export const coursesTranslations_al = {
     ],
   },
   'trig-002': {
-    title: 'Rrethi Njësi dhe Grafikat',
+    title: 'Rrethi Njësi dhe Grafikët',
     duration: '5 orë',
     description: 'Rrethi njësi dhe funksionet trigonometrike',
     topics: [
@@ -399,7 +399,7 @@ export const coursesTranslations_al = {
   },
   'trig-003': {
     title: 'Identitetet Trigonometrike',
-    duration: '4.5 orë',
+    duration: '4,5 orë',
     description: 'Identitetet dhe ekuacionet trigonometrike',
     topics: [
       'Identitetet themelore',
@@ -416,7 +416,7 @@ export const coursesTranslations_al = {
   },
   'trig-004': {
     title: 'Ligjet e Sinusit dhe Kosinusit',
-    duration: '3.5 orë',
+    duration: '3,5 orë',
     description: 'Zgjidhja e trekëndëshave të çfarëdoshëm',
     topics: [
       'Ligji i sinusit',
@@ -434,7 +434,7 @@ export const coursesTranslations_al = {
   'calc-001': {
     title: 'Limitet dhe Vazhdueshmëria',
     duration: '5 orë',
-    description: 'Konceptet themelore të kalkulusit',
+    description: 'Konceptet themelore të analizës matematikore',
     topics: [
       'Koncepti i limitit',
       'Llogaritja e limiteve',
@@ -451,7 +451,7 @@ export const coursesTranslations_al = {
   'calc-002': {
     title: 'Derivatet',
     duration: '6 orë',
-    description: 'Derivatet dhe aplikacionet e tyre',
+    description: 'Derivatet dhe zbatimet e tyre',
     topics: [
       'Përkufizimi i derivatit',
       'Rregullat e derivimit',
@@ -466,8 +466,8 @@ export const coursesTranslations_al = {
     ],
   },
   'calc-003': {
-    title: 'Aplikacionet e Derivateve',
-    duration: '5.5 orë',
+    title: 'Zbatimet e Derivateve',
+    duration: '5,5 orë',
     description: 'Përdorimi i derivateve në analizë dhe optimizim',
     topics: [
       'Ekstremet',
@@ -500,9 +500,9 @@ export const coursesTranslations_al = {
     ],
   },
   'calc-005': {
-    title: 'Aplikacionet e Integraleve',
+    title: 'Zbatimet e Integraleve',
     duration: '5 orë',
-    description: 'Sipërfaqet, vëllimet dhe aplikime të tjera',
+    description: 'Sipërfaqet, vëllimet dhe zbatime të tjera',
     topics: [
       'Sipërfaqja nën kurbë',
       'Vëllimi i trupave rrotullues',
@@ -519,7 +519,7 @@ export const coursesTranslations_al = {
   'calc-006': {
     title: 'Ekuacionet Diferenciale',
     duration: '7 orë',
-    description: 'Zgjidhja dhe aplikimi i ekuacioneve diferenciale',
+    description: 'Zgjidhja dhe zbatimi i ekuacioneve diferenciale',
     topics: [
       'Ekuacionet diferenciale të rendit të parë',
       'Ekuacionet e separueshme',
@@ -537,7 +537,7 @@ export const coursesTranslations_al = {
     ],
   },
   'calc-007': {
-    title: 'Kalkulus Multivariabil',
+    title: 'Funksionet me Shumë Ndryshore',
     duration: '8 orë',
     description: 'Derivate dhe integrale me shumë variabla',
     topics: [
@@ -576,7 +576,7 @@ export const coursesTranslations_al = {
   'stat-002': {
     title: 'Probabiliteti',
     duration: '5 orë',
-    description: 'Teoria e probabilitetit dhe aplikacionet',
+    description: 'Teoria e probabilitetit dhe zbatimet',
     topics: [
       'Konceptet bazë',
       'Rregullat e probabilitetit',
@@ -645,7 +645,7 @@ export const coursesTranslations_al = {
   },
   'stat-006': {
     title: 'Analiza e Serive Kohore',
-    duration: '5.5 orë',
+    duration: '5,5 orë',
     description: 'Modelimi dhe parashikimi i të dhënave kohore',
     topics: [
       'Komponente të serive kohore',
@@ -665,7 +665,7 @@ export const coursesTranslations_al = {
   'linalg-001': {
     title: 'Vektorët dhe Matricat',
     duration: '5 orë',
-    description: 'Bazat e algjebres lineare',
+    description: 'Bazat e algjebrës lineare',
     topics: [
       'Vektorët në Rⁿ',
       'Operacionet me vektorë',
@@ -681,7 +681,7 @@ export const coursesTranslations_al = {
   },
   'linalg-002': {
     title: 'Sistemet Lineare',
-    duration: '4.5 orë',
+    duration: '4,5 orë',
     description: 'Zgjidhja e sistemeve të ekuacioneve lineare',
     topics: [
       'Sistemet e ekuacioneve',
@@ -714,9 +714,9 @@ export const coursesTranslations_al = {
     ],
   },
   'linalg-004': {
-    title: 'Vlerat dhe Vektorët Karakteristik',
+    title: 'Vlerat dhe Vektorët Vetjakë',
     duration: '5 orë',
-    description: 'Eigenvalues, eigenvectors dhe diagonalizimi',
+    description: 'Vlerat vetjake, vektorët vetjakë dhe diagonalizimi',
     topics: [
       'Vlerat karakteristike (eigenvalues)',
       'Vektorët karakteristik (eigenvectors)',
@@ -733,7 +733,7 @@ export const coursesTranslations_al = {
     ],
   },
   'linalg-005': {
-    title: 'Analizë Numerike',
+    title: 'Analiza Numerike',
     duration: '6 orë',
     description: 'Metodat numerike për zgjidhjen e problemeve matematike',
     topics: [
@@ -769,7 +769,7 @@ export const coursesTranslations_al = {
     ],
   },
   'numth-002': {
-    title: 'Teoria e Numrave të Avancuar',
+    title: 'Teoria e Avancuar e Numrave',
     duration: '5 orë',
     description: 'Tema të avancuara në teori numrash',
     topics: [

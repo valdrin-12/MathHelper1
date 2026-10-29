@@ -84,12 +84,12 @@ export const courseContents_algebra_de = {
         ],
         practice: [
           {
-            problem: 'Ein Schüler muss einen Durchschnitt über 75 in 5 Prüfungen erreichen. Er hat erhalten: 70, 80, 65, 90. Welche Mindestnote braucht er in der 5. Prüfung?',
+            problem: 'Ein Schüler braucht in 5 Prüfungen einen Durchschnitt von mindestens 75. Er hat erhalten: 70, 80, 65, 90. Welche Mindestnote braucht er in der 5. Prüfung?',
             solution: 'Mindestnote = 70',
             steps: [
               'Summe der 4 Noten: 70+80+65+90 = 305',
-              'Gesamtsumme muss > 375 sein (75×5)',
-              'Note der 5. Prüfung > 375 - 305 = 70',
+              'Gesamtsumme muss ≥ 375 sein (75×5)',
+              'Note der 5. Prüfung ≥ 375 - 305 = 70',
               'Minimum: 70',
             ],
           },
@@ -406,12 +406,11 @@ export const courseContents_algebra_de = {
         practice: [
           {
             problem: 'Vereinfache: (x²-4)/(x²-x-6)',
-            solution: '(x+2)/(x+3)',
+            solution: '(x-2)/(x-3)',
             steps: [
               'Zähler: x²-4 = (x-2)(x+2)',
               'Nenner: x²-x-6 = (x-3)(x+2)',
               'Ergebnis: (x-2)(x+2)/[(x-3)(x+2)] = (x-2)/(x-3)',
-              'Wait - (x+2) anulojnë: (x+2)/(x+3)... Let me check: x²-x-6=(x-3)(x+2) → (x-2)(x+2)/[(x-3)(x+2)] = (x-2)/(x-3)',
             ],
           },
         ],

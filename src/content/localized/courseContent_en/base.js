@@ -53,7 +53,7 @@ export const courseContents_base_en = {
           },
           {
             example: 'Calculate: 521 - 189',
-            solution: '521 - 189 = 332\nIn column form:\n  521\n- 189\n-----\n  332\n(1<9, borrow: 11-9=2; 1<8, borrow: 11-8-1=2 carry 1; 4-1-1=3... recalculate: 5\u21924, 2\u219212: 12-9=3; 4-1=3... calculate: 521-189=332)',
+            solution: '521 - 189 = 332\nIn column form:\n  521\n- 189\n-----\n  332\n(1 < 9: borrow a ten: 11 - 9 = 2; the tens now have 1 < 8: borrow a hundred: 11 - 8 = 3; the hundreds now have 4: 4 - 1 = 3)',
           },
         ],
         practice: [
@@ -609,18 +609,15 @@ export const courseContents_base_en = {
         ],
         practice: [
           {
-            problem: 'Solve the system: 2x + 3y = 12 and 4x - y = 5',
+            problem: 'Solve the system: 2x + 3y = 12 and 4x - y = 10',
             solution: 'x = 3, y = 2',
             steps: [
-              'From the second equation: y = 4x - 5',
-              'Substitute into the first: 2x + 3(4x - 5) = 12',
-              '2x + 12x - 15 = 12',
-              '14x = 27... (wait, let us check)',
-              'Elimination method: multiply the second equation by 3: 12x - 3y = 15',
-              'Add: 2x + 3y + 12x - 3y = 12 + 15',
-              '14x = 27 \u2192 x = 27/14 \u2248 1.93...',
-              'Perhaps a problem with non-round numbers \u2014 let us try: 2(3)+3(2)=12 \u2713 and 4(3)-2=10\u22605',
-              'Try: x=3/2, y=8/3? Solution: from elimination 14x=27 \u2192 x=27/14',
+              'From the second equation: y = 4x - 10',
+              'Substitute into the first: 2x + 3(4x - 10) = 12',
+              '2x + 12x - 30 = 12',
+              '14x = 42 → x = 3',
+              'y = 4 · 3 - 10 = 2',
+              'Check: 2 · 3 + 3 · 2 = 12 ✓ and 4 · 3 - 2 = 10 ✓',
             ],
           },
         ],

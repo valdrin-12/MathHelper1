@@ -52,7 +52,7 @@ export const courseContents_other_en = {
         practice: [
           {
             problem: 'Compute: 2sin 60° + 3cos 30° - tan 45°',
-            solution: '= 2√3',
+            solution: '= 5√3/2 - 1 ≈ 3.33',
             steps: [
               'sin 60° = √3/2, cos 30° = √3/2, tan 45° = 1',
               '= 2(√3/2) + 3(√3/2) - 1',
@@ -593,7 +593,7 @@ export const courseContents_other_en = {
         practice: [
           {
             problem: 'Apply Newton-Raphson once: f(x)=x³-2, x₀=1.',
-            solution: 'x₁ = 1.667',
+            solution: 'x₁ = 4/3 ≈ 1.333',
             steps: [
               'f(1) = 1-2 = -1',
               "f'(x) = 3x², f'(1) = 3",
@@ -657,14 +657,13 @@ export const courseContents_other_en = {
         ],
         practice: [
           {
-            problem: 'What day of the week is it 100 days after a Friday? (1=Monday, 7=Sunday)',
-            solution: 'Friday',
+            problem: 'Today is Friday. What day of the week will it be in 100 days? (1 = Monday, …, 7 = Sunday)',
+            solution: 'Sunday',
             steps: [
               'Friday = day 5',
               '(5 + 100) mod 7 = 105 mod 7',
-              '105 = 15×7 + 0 → 105 mod 7 = 0',
-              '0 mod 7 = 0 = Sunday',
-              'Wait: 105/7=15 exactly, so it is exactly Sunday',
+              '105 = 15 × 7 + 0 → the remainder is 0',
+              'Remainder 0 corresponds to day 7 = Sunday',
             ],
           },
         ],
