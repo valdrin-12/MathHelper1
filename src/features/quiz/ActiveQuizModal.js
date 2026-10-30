@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Modal, View, Animated, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
+import { Visual } from '../../shared/visuals';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../shared/ui';
@@ -222,6 +223,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
                 {type === 'truefalse' ? ` · ${t('activeQuiz.trueOrFalse')}` : ''}
               </Text>
               <Text style={styles.questionText}>{currentQuestion.question}</Text>
+              {currentQuestion.visual && <Visual spec={currentQuestion.visual} bare style={{ marginTop: 12 }} />}
             </View>
 
             {!!currentQuestion.hint && !answered && (

@@ -77,7 +77,7 @@ const check = (name, ok, detail = '') => {
   const { parseNumericAnswer } = requireSrc('features/quiz/quizAttempt.js');
   const N = ' ';
   check('format 3.5 → al 3,5 / de 3,5 / en 3.5', formatNumber(3.5, 'al') === '3,5' && formatNumber(3.5, 'de') === '3,5' && formatNumber(3.5, 'en') === '3.5');
-  check('format 48800 groups thousands', formatNumber(48800, 'al') === `48${N}800` && formatNumber(48800, 'en') === '48,800');
+  check('format 48800 groups thousands', formatNumber(48800, 'al') === `48${N}800` && formatNumber(48800, 'en') === `48${N}800`);
   check('format 2400 is not grouped', formatNumber(2400, 'de') === '2400');
   check('format negative uses minus sign', formatNumber(-1.25, 'de') === '−1,25');
   check('format fixed decimals', formatNumber(8.7, 'al', { decimals: 2 }) === '8,70');

@@ -29,9 +29,9 @@ const close = (a, b, tol = 1e-9) => (typeof a === 'boolean' || typeof b === 'boo
 const numbersIn = (text, lang) => {
   const s = String(text).replace(/[−–]/g, '-');
   const re = lang === 'en'
-    ? /(?<![\d.,)])-?\d{1,3}(?:,\d{3})+(?:\.\d+)?|(?<![\d.,)])-?\d+(?:\.\d+)?/g
-    : /(?<![\d.,)])-?\d{1,3}(?:[   ]\d{3})+(?:,\d+)?|(?<![\d.,)])-?\d+(?:,\d+)?/g;
-  return (s.match(re) || []).map((m) => Number(lang === 'en' ? m.replace(/,/g, '') : m.replace(/[   ]/g, '').replace(',', '.')));
+    ? /(?<![\d.,)])-?\d{1,3}(?:[,\s\u00A0\u202F]\d{3})+(?:\.\d+)?|(?<![\d.,)])-?\d+(?:\.\d+)?/g
+    : /(?<![\d.,)])-?\d{1,3}(?:[\s\u00A0\u202F]\d{3})+(?:,\d+)?|(?<![\d.,)])-?\d+(?:,\d+)?/g;
+  return (s.match(re) || []).map((m) => Number(lang === 'en' ? m.replace(/[,\s\u00A0\u202F]/g, '') : m.replace(/[\s\u00A0\u202F]/g, '').replace(',', '.')));
 };
 const squash = (s) => String(s).replace(/[−–]/g, '-').replace(/[\s   ]/g, '');
 // expected value written in a text?

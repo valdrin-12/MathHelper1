@@ -14,14 +14,17 @@ const VISUAL_TYPES = ['numberLine', 'fractionBar', 'pieModel', 'geoFigure', 'fun
   'histogram', 'boxPlot', 'scatterPlot', 'treeDiagram', 'vennDiagram', 'valueTable', 'solid'];
 const PLACEHOLDER = /\b(TODO|TBD|FIXME|lorem|ipsum)\b|\?\?\?|XXX/i;
 // concept → first grade where the curriculum introduces it
+// (letters in Albanian/German words are not ASCII, so word edges are checked with Unicode letter classes)
+const W0 = '(?<![\\p{L}])'; const W1 = '(?![\\p{L}])';
+const word = (alts) => new RegExp(`${W0}(${alts})${W1}`, 'iu');
 const CONCEPTS = [
-  { name: 'square roots', grade: 7, re: /√/ },
-  { name: 'Pythagoras', grade: 7, re: /pitagor|pythagor/i },
-  { name: 'powers with negative exponents', grade: 8, re: /⁻/ },
-  { name: 'vectors', grade: 8, re: /\bvektor|\bvector/i },
-  { name: 'trigonometry', grade: 9, re: /\b(sin|cos|tg|tan|cotg|cot)\b|trigonometr/i },
-  { name: 'logarithms', grade: 11, re: /\blog\b|logarit/i },
-  { name: 'calculus', grade: 12, re: /derivat|ableitung|integral|∫|\blim\s*[([]|limes|limiti/i },
+  { name: 'square roots', grade: 7, re: /√/u },
+  { name: 'Pythagoras', grade: 7, re: /pitagor|pythagor/iu },
+  { name: 'powers with negative exponents', grade: 8, re: /⁻/u },
+  { name: 'vectors', grade: 8, re: word('vektor\\p{L}*|vector\\p{L}*') },
+  { name: 'trigonometry', grade: 9, re: word('sin|cos|tg|tan|cotg|cot|trigonometr\\p{L}*') },
+  { name: 'logarithms', grade: 11, re: word('log|logarit\\p{L}*|logarithm\\p{L}*') },
+  { name: 'calculus', grade: 12, re: new RegExp(`${W0}(derivat\\p{L}*|ableitung\\p{L}*|integral\\p{L}*|limes|limiti)${W1}|∫|${W0}lim\\s*[(\\[]`, 'iu') },
 ];
 
 const { CURRICULUM, PUBLISHED_GRADES } = requireSrc('content/grades/curriculum.js');

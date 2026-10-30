@@ -1,10 +1,10 @@
 // Locale number formatting for content and visuals: decimal comma in Albanian and German ("3,5"),
-// decimal point in English ("3.5"); thousands are grouped from 10 000 on with a narrow no-break space
-// (al, de) or a comma (en). Negative numbers use the real minus sign "−".
+// decimal point in English ("3.5"); thousands are grouped from 10 000 on with a narrow no-break space in
+// every language (SI style, never ambiguous with a decimal comma). Negative numbers use the real minus sign "−".
 // Works without Intl (Hermes on older devices ships a reduced Intl).
 
 const DECIMAL = { al: ',', de: ',', en: '.' };
-const GROUP = { al: ' ', de: ' ', en: ',' };
+const GROUP = { al: '\u202F', de: '\u202F', en: '\u202F' };
 
 /**
  * @param {number} value
