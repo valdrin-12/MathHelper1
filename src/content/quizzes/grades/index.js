@@ -13,6 +13,18 @@ import g6OtherMeasures from './g6-other-measures-quiz';
 import g6TransformationsSolids from './g6-transformations-solids-quiz';
 import g6FunctionsSequences from './g6-functions-sequences-quiz';
 import g6StatisticsProbability from './g6-statistics-probability-quiz';
+import g7FractionsDecimals from './g7-fractions-decimals-quiz';
+import g7Angles from './g7-angles-quiz';
+import g7Integers from './g7-integers-quiz';
+import g7RationalNumbers from './g7-rational-numbers-quiz';
+import g7Polygons from './g7-polygons-quiz';
+import g7PowersRoots from './g7-powers-roots-quiz';
+import g7RatiosProportions from './g7-ratios-proportions-quiz';
+import g7Pythagoras from './g7-pythagoras-quiz';
+import g7ExpressionsEquations from './g7-expressions-equations-quiz';
+import g7TransformationsSolids from './g7-transformations-solids-quiz';
+import g7Function from './g7-function-quiz';
+import g7StatisticsProbability from './g7-statistics-probability-quiz';
 
 const ALL = [
   g6NaturalNumbers,
@@ -27,6 +39,18 @@ const ALL = [
   g6TransformationsSolids,
   g6FunctionsSequences,
   g6StatisticsProbability,
+  g7FractionsDecimals,
+  g7Angles,
+  g7Integers,
+  g7RationalNumbers,
+  g7Polygons,
+  g7PowersRoots,
+  g7RatiosProportions,
+  g7Pythagoras,
+  g7ExpressionsEquations,
+  g7TransformationsSolids,
+  g7Function,
+  g7StatisticsProbability,
 ];
 
 export default ALL.filter((set) => PUBLISHED_GRADES.includes(set.grade));
