@@ -21,12 +21,14 @@ export const CHALLENGE_KEY_PREFIX = '@mathhelper_challenge_';
 export const CACHED_USER_KEY = '@mathhelper_cached_user';
 // Last loaded list of saved problems, so the list opens instantly and also works offline
 export const SAVED_ITEMS_CACHE_KEY = '@mathhelper_saved_cache';
+// Grade picked on Learn / Quiz ('general' or 6–12), see shared/grade/useGradeFilter.js
+export const GRADE_FILTER_KEY = '@mathhelper_grade_filter';
 
 /** Any key starting with one of these prefixes is per-user data and is wiped on logout. */
 // Local XP record for practice attempts and hint costs (see features/progress/progress.js XP_LEDGER_KEY)
 const XP_LEDGER_KEY = '@mathhelper_xp_ledger';
 
-export const USER_SCOPED_PREFIXES = [COURSE_PROGRESS_KEY, CHALLENGE_KEY_PREFIX, CACHED_USER_KEY, XP_LEDGER_KEY, SAVED_ITEMS_CACHE_KEY];
+export const USER_SCOPED_PREFIXES = [COURSE_PROGRESS_KEY, CHALLENGE_KEY_PREFIX, CACHED_USER_KEY, XP_LEDGER_KEY, SAVED_ITEMS_CACHE_KEY, GRADE_FILTER_KEY];
 
 let currentUserId = null;
 

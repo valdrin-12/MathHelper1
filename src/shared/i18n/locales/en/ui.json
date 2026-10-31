@@ -294,7 +294,23 @@
     "prerequisitesHint_other": "It is recommended to complete {{count}} courses before starting this course.",
     "startCourse": "Start Course"
   },
+  "grades": {
+    "label": "Grade",
+    "selectorLabel": "Choose your grade",
+    "general": "General",
+    "sectionGeneral": "General Math",
+    "grade": "Grade {{n}}",
+    "themeN": "Theme {{n}}",
+    "comingSoonTitle": "Grade {{n}} is on its way",
+    "comingSoonText": "Lessons and quizzes for this grade are coming soon. Meanwhile, try General Math."
+  },
   "courseContent": {
+    "objectives": "What you will learn",
+    "keyRules": "Key rules",
+    "commonMistakes": "Common mistakes",
+    "mistakeLabel": "Mistake",
+    "fixLabel": "How to avoid it",
+    "figure": "Figure",
     "quickCheck": "Quick check",
     "notQuite": "Not quite",
     "continue": "Continue",

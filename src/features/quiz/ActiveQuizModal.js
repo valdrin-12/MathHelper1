@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Modal, View, Animated, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
+import { Visual } from '../../shared/visuals';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../shared/ui';
@@ -83,7 +84,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
     quizSet.questions.forEach((q, i) => {
       if (i < start) return;
       if (i === idx) {
-        const given = q.type === 'input' ? (Number.isFinite(parseNumericAnswer(text, q.unit)) ? text.trim() : null) : sel;
+        const given = q.type === 'input' ? (Number.isFinite(parseNumericAnswer(text, q.unit, q.numberLang)) ? text.trim() : null) : sel;
         done.push(gradeAnswer(q, given, hint));
       } else {
         done.push(gradeAnswer(q, null, false));
@@ -104,7 +105,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
   const isLast = currentIndex + 1 >= totalQuestions;
   const mode = quizSet.isPractice || !isTest ? 'practice' : 'test';
 
-  const parsedInput = type === 'input' ? parseNumericAnswer(inputText, currentQuestion.unit) : NaN;
+  const parsedInput = type === 'input' ? parseNumericAnswer(inputText, currentQuestion.unit, currentQuestion.numberLang) : NaN;
   const givenNow = type === 'input' ? (inputText.trim() || null) : selectedOption;
   const hasAnswer = givenNow !== null && givenNow !== undefined;
   const answered = showExplanation; // practice mode: answer has been checked
@@ -222,6 +223,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
                 {type === 'truefalse' ? ` · ${t('activeQuiz.trueOrFalse')}` : ''}
               </Text>
               <Text style={styles.questionText}>{currentQuestion.question}</Text>
+              {currentQuestion.visual && <Visual spec={currentQuestion.visual} bare style={{ marginTop: 12 }} />}
             </View>
 
             {!!currentQuestion.hint && !answered && (

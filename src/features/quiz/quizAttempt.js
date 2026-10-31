@@ -63,9 +63,11 @@ const parsePlain = (s) => {
 /**
  * Parse what a student typed: decimal comma or point, minus sign variants, fractions ("3/4", "-1/2"),
  * leading/trailing spaces and an optional trailing unit (e.g. "12 cm" when unit is "cm").
+ * `lang` (optional, given only by the grade 6–12 quizzes): with 'en', "48,800" is read as 48800
+ * (comma = thousands separator); without it a comma is always a decimal comma, as before.
  * @returns {number} the value, or NaN if it is not a number
  */
-export function parseNumericAnswer(input, unit = '') {
+export function parseNumericAnswer(input, unit = '', lang) {
   if (input === null || input === undefined) return NaN;
   let s = String(input).replace(MINUS_SIGNS, '-').trim();
   if (unit) {
@@ -74,6 +76,7 @@ export function parseNumericAnswer(input, unit = '') {
   }
   s = s.replace(SPACES, '');
   if (!s) return NaN;
+  if (lang === 'en' && /^[+-]?\d{1,3}(,\d{3})+(\.\d+)?$/.test(s)) s = s.replace(/,/g, '');
   const slash = s.indexOf('/');
   if (slash > 0 && slash === s.lastIndexOf('/')) {
     const num = parsePlain(s.slice(0, slash));
@@ -123,7 +126,7 @@ export function gradeAnswer(question, given, usedHint = false) {
   const type = question.type || 'choice';
   let correct = false;
   if (given !== null && given !== undefined) {
-    if (type === 'input') correct = isInputCorrect(question, parseNumericAnswer(given, question.unit));
+    if (type === 'input') correct = isInputCorrect(question, parseNumericAnswer(given, question.unit, question.numberLang));
     else if (type === 'truefalse') correct = given === question.correct;
     else correct = given === question.correct;
   }

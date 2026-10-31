@@ -40,8 +40,15 @@ const trueFalse = { true: 0, false: 0 };
 const normalizeNumeric = (s) => String(s).replace(/\s/g, '').replace(/,/g, '.');
 const looksNumeric = (s) => /^[-−+]?[\d.,\s/√π²³^()×·*+−-]+$/.test(String(s).trim());
 
-for (const file of fs.readdirSync(quizDir).filter((f) => f.endsWith('.js') && (!onlyIds.length || onlyIds.includes(f.slice(0, -3)))).sort()) {
-  const set = require(path.join(quizDir, file)).default;
+// General Math sets in quizzes/, grade 6–12 sets in quizzes/grades/ (g<N>-<theme>-quiz.js)
+const gradeDir = path.join(quizDir, 'grades');
+const quizFiles = [
+  ...fs.readdirSync(quizDir).filter((f) => f.endsWith('.js')).sort().map((f) => [f, path.join(quizDir, f)]),
+  ...(fs.existsSync(gradeDir) ? fs.readdirSync(gradeDir).filter((f) => /^g\d+-.+\.js$/.test(f)).sort().map((f) => [f, path.join(gradeDir, f)]) : []),
+].filter(([f]) => !onlyIds.length || onlyIds.includes(f.slice(0, -3)));
+
+for (const [file, fullPath] of quizFiles) {
+  const set = require(fullPath).default;
   const where = (q, l) => `${set.id}#${q.id}${l ? `[${l}]` : ''}`;
 
   if (`${set.id}.js` !== file) errors.push(`${file}: id "${set.id}" does not match the file name`);

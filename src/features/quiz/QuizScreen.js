@@ -11,7 +11,10 @@ import {
   Platform,
 } from 'react-native';
 import { useLocalizedQuizzes } from '../../content/useLocalizedData';
-import { FREE_QUIZ_IDS } from '../../content/quizData';
+import { isQuizFree } from '../../content/quizData';
+import { sectionsByGrade } from '../../content/grades/filterByGrade';
+import useGradeFilter from '../../shared/grade/useGradeFilter';
+import GradeSelector, { GradeSectionHeader } from '../../shared/grade/GradeSelector';
 import { createQuizAttempt, parseDurationSeconds } from './quizAttempt';
 import { useProgress, computeAttemptXp, hintCost } from '../progress/progress';
 import { isPremiumActive } from '../premium/isPremium';
@@ -24,7 +27,7 @@ import { useUser } from '../auth/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../../shared/theme/constants';
 import { useTheme } from '../../shared/theme/ThemeContext';
-import { ScreenHeader, Chip, Pill, IconBadge, Button } from '../../shared/ui';
+import { ScreenHeader, Chip, Pill, IconBadge, Button, EmptyState } from '../../shared/ui';
 import WebContainer from '../../shared/ui/WebContainer';
 import PressableCard from '../../shared/ui/PressableCard';
 import { useResponsive } from '../../shared/utils/responsive';
@@ -108,6 +111,7 @@ export default function QuizScreen() {
   const { recordQuizCompleted, streak, stats } = useStats();
   const { user } = useUser();
   const isPremium = isPremiumActive(user);
+  const [grade, setGrade] = useGradeFilter(user?.id);
   const [selectedDifficulty, setSelectedDifficulty] = useState('all');
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [showQuiz, setShowQuiz] = useState(false);
@@ -154,9 +158,12 @@ export default function QuizScreen() {
 
   const difficulties = ['all', 'beginner', 'intermediate', 'advanced'];
 
-  const filteredQuizzes = selectedDifficulty === 'all'
+  const byDifficulty = selectedDifficulty === 'all'
     ? quizSets
     : quizSets.filter(q => q.difficulty === selectedDifficulty);
+  // grade selector: General Math shows everything in sections, a grade only its own quizzes
+  const quizSections = sectionsByGrade(byDifficulty, grade);
+  const filteredQuizzes = quizSections.flatMap((section) => section.items);
 
   // Get best score for a quiz from completed quizzes
   const getBestScore = (quizId) => {
@@ -170,7 +177,9 @@ export default function QuizScreen() {
   // Uses days-since-epoch of the *local* date so each calendar date maps to a unique index,
   // avoiding the leap-year collision of the old dayOfYear approach.
   const getDailyChallenge = () => {
-    const pool = isPremium ? quizSets : quizSets.filter(q => FREE_QUIZ_IDS.includes(q.id));
+    // the daily challenge stays on the General Math quizzes, as before the grade quizzes existed
+    const general = quizSets.filter(q => q.grade == null);
+    const pool = isPremium ? general : general.filter(q => isQuizFree(q));
     if (pool.length === 0) return null;
     const [y, m, d] = todayDateKey.split('-').map(Number);
     const daysSinceEpoch = Math.floor(Date.UTC(y, m - 1, d) / 86400000);
@@ -179,10 +188,10 @@ export default function QuizScreen() {
 
   const dailyChallenge = getDailyChallenge();
 
-  const isQuizLocked = (quizId) => !isPremium && !FREE_QUIZ_IDS.includes(quizId);
+  const isQuizLocked = (quizSet) => !isPremium && !isQuizFree(quizSet);
 
   const handleStartQuiz = (quizSet) => {
-    if (isQuizLocked(quizSet.id)) {
+    if (isQuizLocked(quizSet)) {
       setShowPremiumModal(true);
       return;
     }
@@ -350,6 +359,9 @@ export default function QuizScreen() {
           </Animated.View>
         )}
 
+        {/* Grade (General Math, 6–12) */}
+        <GradeSelector value={grade} onChange={setGrade} />
+
         {/* Difficulty Filter */}
         <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterContent}>
           {difficulties.map((d) => (
@@ -366,11 +378,20 @@ export default function QuizScreen() {
 
         <Text style={styles.sectionLabel}>{t('quiz.quizCount', { count: filteredQuizzes.length })}</Text>
 
-        {/* Quiz Cards */}
+        {filteredQuizzes.length === 0 && grade !== 'general' && (
+          <EmptyState icon="construct-outline" title={t('grades.comingSoonTitle', { n: grade })} message={t('grades.comingSoonText')} />
+        )}
+
+        {/* Quiz Cards, grouped by grade */}
+        {quizSections.map((section) => (
+        <View key={section.key}>
+        {(grade !== 'general' || quizSections.length > 1) && section.items.length > 0 && (
+          <GradeSectionHeader grade={section.grade} count={t('quiz.quizCount', { count: section.items.length })} />
+        )}
         <View style={[styles.quizList, isDesktop && styles.quizListDesktop]}>
-          {filteredQuizzes.map((quizSet) => {
+          {section.items.map((quizSet) => {
             const bestScore = getBestScore(quizSet.id);
-            const locked = isQuizLocked(quizSet.id);
+            const locked = isQuizLocked(quizSet);
             return (
               <PressableCard
                 key={quizSet.id}
@@ -429,8 +450,10 @@ export default function QuizScreen() {
             );
           })}
         </View>
+        </View>
+        ))}
 
-        <View style={{ height: isWeb ? 20 : 100 }} />
+        <View style={{ height: isWeb ? 90 : 100 }} />
         </WebContainer>
       </ScrollView>
 

@@ -17,7 +17,12 @@ const resources = {
 i18n.use(initReactI18next).init({
   resources,
   lng: 'al',
-  fallbackLng: 'al',
+  // a text missing in one language shows the English text (never the raw key) and is logged
+  fallbackLng: 'en',
+  saveMissing: true,
+  missingKeyHandler: (lngs, ns, key) => {
+    console.warn(`[i18n] missing translation "${key}" for ${lngs.join(', ')}`);
+  },
   interpolation: { escapeValue: false },
   compatibilityJSON: 'v4',
 });

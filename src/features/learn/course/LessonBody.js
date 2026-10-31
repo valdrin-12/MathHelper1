@@ -5,6 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLessonStyles } from './courseStyles';
 import { getLessonChecks } from '../../../content/lessonChecks';
 import LessonCheck from './LessonCheck';
+import { Visual } from '../../../shared/visuals';
 
 /**
  * One lesson: theory, key points, worked examples and practice problems.
@@ -42,6 +43,24 @@ export default function LessonBody({ lesson, courseId, currentLesson, tint, expa
         <Text style={styles.lessonNumber}>{t('courseContent.lessonLabel', { number: currentLesson + 1 })}</Text>
         <Text style={styles.lessonTitle}>{lesson.title}</Text>
       </View>
+
+      {/* Learning objectives (grade 6–12 lessons) */}
+      {lesson.objectives && lesson.objectives.length > 0 && (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionIcon}>🎯</Text>
+            <Text style={styles.sectionTitle}>{t('courseContent.objectives')}</Text>
+          </View>
+          <View style={[styles.card, styles.keyPointsCard]}>
+            {lesson.objectives.map((o, i) => (
+              <View key={i} style={styles.keyPoint}>
+                <Ionicons name="checkmark-circle-outline" size={18} color={tint} />
+                <Text style={styles.keyPointText}>{o}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
 
       {/* Theory */}
       <View style={styles.section}>
@@ -97,12 +116,19 @@ export default function LessonBody({ lesson, courseId, currentLesson, tint, expa
       {theoryDone && (
       <>
 
+      {/* Pictures drawn from data (grade 6–12 lessons) */}
+      {lesson.visuals && lesson.visuals.length > 0 && (
+        <View style={styles.section}>
+          {lesson.visuals.map((v, i) => <Visual key={i} spec={v} />)}
+        </View>
+      )}
+
       {/* Key Points */}
       {lesson.keyPoints && lesson.keyPoints.length > 0 && (
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionIcon}>💡</Text>
-            <Text style={styles.sectionTitle}>{t('courseContent.keyPoints')}</Text>
+            <Text style={styles.sectionTitle}>{lesson.objectives ? t('courseContent.keyRules') : t('courseContent.keyPoints')}</Text>
           </View>
           <View style={[styles.card, styles.keyPointsCard]}>
             {lesson.keyPoints.map((point, i) => (
@@ -128,6 +154,7 @@ export default function LessonBody({ lesson, courseId, currentLesson, tint, expa
                 <Text style={styles.exampleLabel}>{t('courseContent.exampleLabel', { number: i + 1 })}</Text>
               </View>
               <Text style={styles.exampleProblem}>{ex.example}</Text>
+              {ex.visual && <Visual spec={ex.visual} bare style={{ marginTop: 8 }} />}
               {openExamples[i] ? (
                 <>
                   <View style={styles.exampleDivider} />
@@ -146,6 +173,28 @@ export default function LessonBody({ lesson, courseId, currentLesson, tint, expa
                   <Text style={[styles.showSolutionText, { color: tint }]}>{t('courseContent.tryThenShow')}</Text>
                 </TouchableOpacity>
               )}
+            </View>
+          ))}
+        </View>
+      )}
+
+      {/* Common mistakes (grade 6–12 lessons) */}
+      {lesson.commonMistakes && lesson.commonMistakes.length > 0 && (
+        <View style={styles.section}>
+          <View style={styles.sectionHeader}>
+            <Text style={styles.sectionIcon}>⚠️</Text>
+            <Text style={styles.sectionTitle}>{t('courseContent.commonMistakes')}</Text>
+          </View>
+          {lesson.commonMistakes.map((m, i) => (
+            <View key={i} style={[styles.card, styles.cardSpaced, styles.keyPointsCard]}>
+              <View style={styles.keyPoint}>
+                <Ionicons name="close-circle" size={18} color="#FF3B30" />
+                <Text style={styles.keyPointText}>{m.mistake}</Text>
+              </View>
+              <View style={styles.keyPoint}>
+                <Ionicons name="checkmark-circle" size={18} color="#34C759" />
+                <Text style={styles.keyPointText}>{m.fix}</Text>
+              </View>
             </View>
           ))}
         </View>

@@ -294,7 +294,23 @@
     "prerequisitesHint_other": "Es wird empfohlen, {{count}} Kurse vor diesem Kurs abzuschließen.",
     "startCourse": "Kurs starten"
   },
+  "grades": {
+    "label": "Klasse",
+    "selectorLabel": "Klasse wählen",
+    "general": "Allgemein",
+    "sectionGeneral": "Allgemeine Mathematik",
+    "grade": "Klasse {{n}}",
+    "themeN": "Thema {{n}}",
+    "comingSoonTitle": "Klasse {{n}} folgt bald",
+    "comingSoonText": "Lektionen und Quizze für diese Klasse kommen bald. Probieren Sie in der Zwischenzeit die Allgemeine Mathematik."
+  },
   "courseContent": {
+    "objectives": "Das lernen Sie",
+    "keyRules": "Wichtige Regeln",
+    "commonMistakes": "Häufige Fehler",
+    "mistakeLabel": "Fehler",
+    "fixLabel": "So vermeiden Sie ihn",
+    "figure": "Abbildung",
     "quickCheck": "Kurze Frage",
     "notQuite": "Nicht ganz",
     "continue": "Weiter",

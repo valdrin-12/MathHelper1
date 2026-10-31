@@ -329,7 +329,7 @@ export default function SavedScreen() {
         extraData={{ selectionMode, selectedIds, colors }}
         ListHeaderComponent={header}
         ListEmptyComponent={emptyComponent}
-        ListFooterComponent={<View style={{ height: isWeb ? 20 : 100 }} />}
+        ListFooterComponent={<View style={{ height: isWeb ? 90 : 100 }} />}
         showsVerticalScrollIndicator={false}
         initialNumToRender={12}
         windowSize={7}
