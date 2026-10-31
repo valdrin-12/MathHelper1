@@ -244,11 +244,11 @@ export default {
       visuals: [{
         type: 'treeDiagram',
         branches: [
-          { label: alt('S', 'H', 'K'), p: '1/2', children: [{ label: alt('S', 'H', 'K'), p: '1/2' }, { label: alt('Sh', 'T', 'Z'), p: '1/2' }] },
-          { label: alt('Sh', 'T', 'Z'), p: '1/2', children: [{ label: alt('S', 'H', 'K'), p: '1/2' }, { label: alt('Sh', 'T', 'Z'), p: '1/2' }] },
+          { label: alt('S', 'H', 'K'), p: '1/2', children: [{ label: alt('S', 'H', 'K'), p: '1/2' }, { label: alt('N', 'T', 'Z'), p: '1/2' }] },
+          { label: alt('N', 'T', 'Z'), p: '1/2', children: [{ label: alt('S', 'H', 'K'), p: '1/2' }, { label: alt('N', 'T', 'Z'), p: '1/2' }] },
         ],
-        caption: alt('Dy hedhje monedhe (S = stemë, Sh = shifër): 2 · 2 = 4 rezultate të mundshme.', 'Two coin tosses (H = heads, T = tails): 2 · 2 = 4 possible outcomes.', 'Zwei Münzwürfe (K = Kopf, Z = Zahl): 2 · 2 = 4 mögliche Ergebnisse.'),
-        alt: alt('Diagram peme për dy hedhje monedhe me katër degë: S-S, S-Sh, Sh-S, Sh-Sh.', 'Tree diagram for two coin tosses with four outcomes: HH, HT, TH, TT.', 'Baumdiagramm für zwei Münzwürfe mit vier Ergebnissen: KK, KZ, ZK, ZZ.'),
+        caption: alt('Dy hedhje monedhe (S = stemë, N = numër): 2 · 2 = 4 rezultate të mundshme.', 'Two coin tosses (H = heads, T = tails): 2 · 2 = 4 possible outcomes.', 'Zwei Münzwürfe (K = Kopf, Z = Zahl): 2 · 2 = 4 mögliche Ergebnisse.'),
+        alt: alt('Diagram peme për dy hedhje monedhe me katër degë: SS, SN, NS, NN.', 'Tree diagram for two coin tosses with four outcomes: HH, HT, TH, TT.', 'Baumdiagramm für zwei Münzwürfe mit vier Ergebnissen: KK, KZ, ZK, ZZ.'),
       }],
       answers: {
         examples: [[['6 * 2', 12]], [['1 - 1/6', '5/6', 1e-9, '5/6']]],
@@ -264,11 +264,11 @@ export default {
           { example: 'Sa është probabiliteti që në zar të mos dalë 6?', solution: 'P(6) = 1/6, pra P(jo 6) = 1 − 1/6 = 5/6.' },
         ],
         commonMistakes: [
-          { mistake: 'Dy monedha kanë 3 rezultate: dy stema, dy shifra, një nga secila.', fix: 'S-Sh dhe Sh-S janë rezultate të ndryshme: gjithsej 4.' },
+          { mistake: 'Dy monedha kanë 3 rezultate: dy stema, dy numra, një nga secila.', fix: 'SN dhe NS janë rezultate të ndryshme: gjithsej 4.' },
           { mistake: 'Ngjarjet "çift" dhe "më i madh se 4" janë të papajtueshme.', fix: '6 është në të dyja; prerja nuk është boshe.' },
         ],
         practice: [
-          { problem: 'Sa rezultate ka hedhja e dy monedhave?', solution: '4', steps: ['2 · 2.', '= 4 (S-S, S-Sh, Sh-S, Sh-Sh).'] },
+          { problem: 'Sa rezultate ka hedhja e dy monedhave?', solution: '4', steps: ['2 · 2.', '= 4 (SS, SN, NS, NN).'] },
           { problem: 'P(i kuq) = 0,3. Sa është P(jo i kuq)?', solution: '0,7', steps: ['P(A′) = 1 − P(A).', '1 − 0,3 = 0,7.'] },
           { problem: 'Te zari: A = çift, B = numër i thjeshtë. Gjeni A ∩ B.', solution: '{2}', steps: ['A = {2, 4, 6}, B = {2, 3, 5}.', 'A ∩ B = {2}.'] },
         ],

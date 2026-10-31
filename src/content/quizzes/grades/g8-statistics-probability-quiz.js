@@ -99,7 +99,7 @@ export default {
     {
       id: 7, type: 'truefalse', difficulty: 'medium', correct: false,
       verify: ['2 * 2 == 3', false],
-      al: { question: 'Hedhja e dy monedhave ka 3 rezultate të mundshme.', explanation: 'E gabuar: S-S, S-Sh, Sh-S, Sh-Sh, pra 2 · 2 = 4 rezultate.', hint: 'Vizatoni diagramin e pemës.', whyWrong: 'S-Sh dhe Sh-S janë rezultate të ndryshme.' },
+      al: { question: 'Hedhja e dy monedhave ka 3 rezultate të mundshme.', explanation: 'E gabuar: SS, SN, NS, NN, pra 2 · 2 = 4 rezultate.', hint: 'Vizatoni diagramin e pemës.', whyWrong: 'SN dhe NS janë rezultate të ndryshme.' },
       en: { question: 'Tossing two coins has 3 possible outcomes.', explanation: 'False: HH, HT, TH, TT, so 2 · 2 = 4 outcomes.', hint: 'Draw a tree diagram.', whyWrong: 'HT and TH are different outcomes.' },
       de: { question: 'Der Wurf zweier Münzen hat 3 mögliche Ergebnisse.', explanation: 'Falsch: KK, KZ, ZK, ZZ, also 2 · 2 = 4 Ergebnisse.', hint: 'Zeichnen Sie ein Baumdiagramm.', whyWrong: 'KZ und ZK sind verschiedene Ergebnisse.' },
     },
