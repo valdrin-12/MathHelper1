@@ -22,7 +22,7 @@ function valueAxis({ max, top, bottom, left, right, vc, lang, step }) {
 }
 
 /**
- * Bar chart. spec: { bars: [{ label, value, color? }], max?, step?, showValues?: true, yLabel? }
+ * Bar chart. spec: { bars: [{ label, value, color? }], max?, step?, showValues?: true, decimals?, yLabel? }
  */
 export function BarChart({ spec, lang }) {
   const vc = useVisualColors();
@@ -41,7 +41,7 @@ export function BarChart({ spec, lang }) {
         return (
           <G key={i}>
             <Rect x={cx - bw / 2} y={y(b.value)} width={bw} height={bottom - y(b.value)} rx={3} fill={color} />
-            {spec.showValues !== false && <SvgText x={cx} y={y(b.value) - 4} fontSize={10} fontWeight="700" fill={vc.ink} textAnchor="middle">{formatNumber(b.value, lang)}</SvgText>}
+            {spec.showValues !== false && <SvgText x={cx} y={y(b.value) - 4} fontSize={10} fontWeight="700" fill={vc.ink} textAnchor="middle">{formatNumber(b.value, lang, spec.decimals !== undefined ? { decimals: spec.decimals } : {})}</SvgText>}
             <SvgText x={cx} y={bottom + 14} fontSize={10} fill={vc.muted} textAnchor="middle">{tr(b.label, lang)}</SvgText>
           </G>
         );

@@ -6,17 +6,18 @@ import { formatNumber } from '../utils/formatNumber';
 
 /**
  * Number line.
- * spec: { min, max, step = 1, labelEvery = 1 (label every n-th tick),
- *         points?: [{ x, label?, color?, open? }],
+ * spec: { min, max, step = 1, labelEvery = 1 (label every n-th tick), tickLabels = true,
+ *         points?: [{ x, label?, color?, open?, below? }]   (below: label under the axis, clear of arcs),
  *         intervals?: [{ from (null = −∞), to (null = +∞), fromOpen?, toOpen?, color? }],
  *         jumps?: [{ from, to, label?, color? }]   (arcs: "+3", "−5" …),
  *         drag?: { value, label? }                  (a point the student can drag; snaps to step) }
  */
 export default function NumberLine({ spec, lang }) {
   const vc = useVisualColors();
-  const { min, max, step = 1, labelEvery = 1, points = [], intervals = [], jumps = [], drag } = spec;
+  const { min, max, step = 1, labelEvery = 1, tickLabels = true, points = [], intervals = [], jumps = [], drag } = spec;
   const hasJumps = jumps.length > 0;
-  const H = hasJumps ? 96 : 66;
+  const belowRow = points.some((p) => p.below) && tickLabels ? 14 : 0;
+  const H = (hasJumps ? 96 : 66) + belowRow;
   const axisY = hasJumps ? 62 : 32;
   const pad = 18;
   const x = (v) => pad + ((v - min) / (max - min)) * (VIEW_W - 2 * pad);
@@ -86,7 +87,7 @@ export default function NumberLine({ spec, lang }) {
           {ticks.map((t, i) => (
             <G key={`t${t}`}>
               <Line x1={x(t)} y1={axisY - 5} x2={x(t)} y2={axisY + 5} stroke={vc.axis} strokeWidth={t === 0 ? 2 : 1} />
-              {i % labelEvery === 0 && (
+              {tickLabels && i % labelEvery === 0 && (
                 <SvgText x={x(t)} y={axisY + 18} fontSize={10} fill={vc.muted} textAnchor="middle">{formatNumber(t, lang)}</SvgText>
               )}
             </G>
@@ -99,7 +100,7 @@ export default function NumberLine({ spec, lang }) {
               <G key={`p${i}`}>
                 <Circle cx={x(p.x)} cy={axisY} r={p.isDrag ? 7 : 5} fill={p.open ? vc.surface : color} stroke={color} strokeWidth={2} />
                 {p.label !== undefined && (
-                  <SvgText x={x(p.x)} y={axisY - 12} fontSize={11} fontWeight="700" fill={color} textAnchor="middle">{tr(p.label, lang)}</SvgText>
+                  <SvgText x={x(p.x)} y={p.below ? axisY + (tickLabels ? 32 : 18) : axisY - 12} fontSize={11} fontWeight="700" fill={color} textAnchor="middle">{tr(p.label, lang)}</SvgText>
                 )}
               </G>
             );

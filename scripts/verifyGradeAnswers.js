@@ -1,8 +1,9 @@
 #!/usr/bin/env node
 // Recomputes every answer of the grade 6–12 content with mathjs, so no wrong answer ships.
-//  Lessons: answers.examples[i] / answers.practice[i] = 'text' or [[expr, expected, tolerance?], …].
+//  Lessons: answers.examples[i] / answers.practice[i] = 'text' or [[expr, expected, tolerance?, shown?], …].
 //    expr is computed and must equal expected; expected must also appear in the solution text
-//    (solution + steps) of every language, written the local way (3,5 / 3.5, 48 800 / 48,800, −4, 3/4).
+//    (solution + steps) of every language, written the local way (3,5 / 3.5, 48 800, −4, 3/4); `shown` gives the
+//    exact form to look for when it differs from `expected` (mixed numbers: expected '4 + 1/12', shown '4 1/12').
 //  Quizzes: question.verify = 'text' | [expr, expected, tol?] | [[…], …]
 //    choice: expected must be the correct option's value (and no other option's), in every language
 //    input: expected must equal answer.value; truefalse: expected (true/false) must equal correct.
@@ -46,11 +47,12 @@ const appearsIn = (expected, text, lang) => {
 };
 
 const checkPairs = (where, pairs, texts) => {
-  pairs.forEach(([expr, expected, tol]) => {
+  pairs.forEach(([expr, expected, tol, shown]) => {
     let got; let want;
     try { got = evaluate(expr); want = evaluate(expected); } catch (e) { errors.push(`${where}: cannot compute "${expr}" / "${expected}": ${e.message}`); return; }
     if (!close(got, want, tol)) errors.push(`${where}: ${expr} = ${got}, but the answer says ${expected}`);
-    LANGS.forEach((l) => { if (texts[l] !== undefined && !appearsIn(expected, texts[l], l)) errors.push(`${where} [${l}]: answer ${expected} not found in the solution text`); });
+    const look = shown ?? expected;
+    LANGS.forEach((l) => { if (texts[l] !== undefined && !appearsIn(look, texts[l], l)) errors.push(`${where} [${l}]: answer ${look} not found in the solution text`); });
     verified++;
   });
 };
@@ -79,7 +81,7 @@ quizSets.forEach((set) => {
     if (q.verify === 'text') { textOnly++; return; }
     const pairs = Array.isArray(q.verify?.[0]) ? q.verify : [q.verify];
     const type = q.type || 'choice';
-    pairs.forEach(([expr, expected, tol]) => {
+    pairs.forEach(([expr, expected, tol, shown]) => {
       let got; let want;
       try { got = evaluate(expr); want = evaluate(expected); } catch (e) { errors.push(`${where}: cannot compute "${expr}": ${e.message}`); return; }
       if (!close(got, want, tol)) { errors.push(`${where}: ${expr} = ${got}, but verify says ${expected}`); return; }
@@ -88,11 +90,13 @@ quizSets.forEach((set) => {
       if (type === 'input') { if (!close(q.answer?.value, want, q.answer?.tolerance || tol)) errors.push(`${where}: answer.value ${q.answer?.value} ≠ ${want}`); return; }
       LANGS.forEach((l) => {
         const opts = q[l]?.options || [];
-        if (!appearsIn(expected, opts[q.correct], l)) errors.push(`${where} [${l}]: correct option "${opts[q.correct]}" does not show ${expected}`);
+        if (!appearsIn(shown ?? expected, opts[q.correct], l)) errors.push(`${where} [${l}]: correct option "${opts[q.correct]}" does not show ${shown ?? expected}`);
         if (typeof expected === 'number') {
+          // a wrong option may repeat the number only if its words differ ("scalene, 18 cm" vs "isosceles, 18 cm")
+          const words = (o) => String(o).replace(/[−-]?\d[\d\s.,]*/g, '#').trim();
           opts.forEach((o, i) => {
             const nums = numbersIn(o, l);
-            if (i !== q.correct && nums.length === 1 && close(nums[0], want, tol)) errors.push(`${where} [${l}]: wrong option "${o}" has the correct value`);
+            if (i !== q.correct && nums.length === 1 && close(nums[0], want, tol) && words(o) === words(opts[q.correct])) errors.push(`${where} [${l}]: wrong option "${o}" has the correct value`);
           });
         }
       });

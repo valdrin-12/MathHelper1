@@ -96,7 +96,7 @@ export function ValueTable({ spec, lang }) {
 const tableStyles = StyleSheet.create({
   table: { borderWidth: 1, borderRadius: 8, overflow: 'hidden', alignSelf: 'stretch', marginVertical: 4 },
   row: { flexDirection: 'row' },
-  head: { width: 64, paddingVertical: 8, alignItems: 'center', borderRightWidth: 1 },
+  head: { minWidth: 64, paddingVertical: 8, paddingHorizontal: 8, alignItems: 'center', justifyContent: 'center', borderRightWidth: 1 },
   headText: { fontWeight: '700', fontSize: 14 },
   cell: { flex: 1, paddingVertical: 8, alignItems: 'center' },
   cellText: { fontSize: 14, fontVariant: ['tabular-nums'] },

@@ -12,7 +12,7 @@ import { formatNumber } from '../utils/formatNumber';
  *           { kind: 'line', through: [p, q], label?, color?, dashed? }   (drawn across the view),
  *           { kind: 'ray', from, through, label?, color? },
  *           { kind: 'polygon', points: [p…], fill?: true, color?, dashed?, label?: { at, text } },
- *           { kind: 'circle', center, r, color?, fill? },
+ *           { kind: 'circle', center, r, color?, fill?, dashed? },
  *           { kind: 'angle', vertex, from, to, label?, right?: true, color?, r? },
  *           { kind: 'label', at, text, color?, size? },
  *         ] }
@@ -95,7 +95,7 @@ export default function GeoFigure({ spec, lang }) {
       if (sh.label) { const [x, y] = P(sh.label.at); out.push(<SvgText key={`${key}l`} x={x} y={y + 4} fontSize={12} fontWeight="700" fill={color} textAnchor="middle">{tr(sh.label.text, lang)}</SvgText>); }
     } else if (sh.kind === 'circle') {
       const [cx, cy] = P(sh.center);
-      out.push(<Circle key={key} cx={cx} cy={cy} r={sh.r * s.sx} fill={sh.fill ? color + vc.fillAlpha : 'none'} stroke={color} strokeWidth={2} />);
+      out.push(<Circle key={key} cx={cx} cy={cy} r={sh.r * s.sx} fill={sh.fill ? color + vc.fillAlpha : 'none'} stroke={color} strokeWidth={sh.dashed ? 1.2 : 2} strokeDasharray={sh.dashed ? '4,4' : undefined} />);
     } else if (sh.kind === 'angle') {
       const [vx, vy] = P(sh.vertex); const [ax, ay] = P(sh.from); const [bx, by] = P(sh.to);
       const a0 = Math.atan2(ay - vy, ax - vx); let a1 = Math.atan2(by - vy, bx - vx);
