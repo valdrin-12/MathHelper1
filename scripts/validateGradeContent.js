@@ -20,7 +20,7 @@ const word = (alts) => new RegExp(`${W0}(${alts})${W1}`, 'iu');
 const CONCEPTS = [
   { name: 'square roots', grade: 7, re: /√/u },
   { name: 'Pythagoras', grade: 7, re: /pitagor|pythagor/iu },
-  { name: 'powers with negative exponents', grade: 8, re: /⁻/u },
+  { name: 'powers with negative exponents', grade: 8, re: /⁻[⁰¹²³⁴⁵⁶⁷⁸⁹]/u },
   { name: 'vectors', grade: 8, re: word('vektor\\p{L}*|vector\\p{L}*') },
   { name: 'trigonometry', grade: 9, re: word('sin|cos|tg|tan|cotg|cot|trigonometr\\p{L}*') },
   { name: 'logarithms', grade: 11, re: word('log|logarit\\p{L}*|logarithm\\p{L}*') },
