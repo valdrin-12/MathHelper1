@@ -1,0 +1,135 @@
+// Grade 8 · Theme 5 quiz: Geometric transformations (format: see g6-natural-numbers-quiz.js)
+export default {
+  id: 'g8-transformations-quiz',
+  grade: 8,
+  theme: 'g8-transformations',
+  order: 5,
+  difficulty: 'intermediate',
+  icon: '↻',
+  color: '#E76F51',
+  i18n: {
+    al: { title: 'Shndërrimet gjeometrike', category: 'Klasa 8 · Tema 5', duration: '10 min' },
+    en: { title: 'Geometric transformations', category: 'Grade 8 · Theme 5', duration: '10 min' },
+    de: { title: 'Abbildungen', category: 'Klasse 8 · Thema 5', duration: '10 min' },
+  },
+  questions: [
+    {
+      id: 1, type: 'choice', difficulty: 'easy', correct: 1,
+      verify: 'text',
+      al: {
+        question: 'Rrotulloni pikën (3, 1) me 90° kundër akrepave të orës rreth origjinës.', options: ['(1, −3)', '(−1, 3)', '(−3, −1)', '(3, −1)'],
+        explanation: '(x, y) → (−y, x): (−1, 3).', hint: 'Ndërroni koordinatat dhe ndryshoni shenjën e së parës.',
+        whyWrong: ['Ky është rrotullimi sipas akrepave.', null, 'Ky është rrotullimi 180°.', 'Ky është pasqyrimi në boshtin x.'],
+      },
+      en: {
+        question: 'Rotate the point (3, 1) by 90° anticlockwise about the origin.', options: ['(1, −3)', '(−1, 3)', '(−3, −1)', '(3, −1)'],
+        explanation: '(x, y) → (−y, x): (−1, 3).', hint: 'Swap the coordinates and change the sign of the first.',
+        whyWrong: ['That is the clockwise rotation.', null, 'That is the 180° rotation.', 'That is the reflection in the x-axis.'],
+      },
+      de: {
+        question: 'Drehen Sie den Punkt (3 | 1) um 90° gegen den Uhrzeigersinn um den Ursprung.', options: ['(1 | −3)', '(−1 | 3)', '(−3 | −1)', '(3 | −1)'],
+        explanation: '(x | y) → (−y | x): (−1 | 3).', hint: 'Koordinaten vertauschen und das Vorzeichen der ersten ändern.',
+        whyWrong: ['Das ist die Drehung im Uhrzeigersinn.', null, 'Das ist die Drehung um 180°.', 'Das ist die Spiegelung an der x-Achse.'],
+      },
+    },
+    {
+      id: 2, type: 'input', difficulty: 'easy', answer: { value: 5 },
+      verify: ['sqrt((4-1)^2 + (5-1)^2)', 5],
+      al: { question: 'A(1, 1), B(4, 5). Sa është gjatësia e vektorit AB?', explanation: 'AB = (3, 4); |AB| = √(9 + 16) = 5.', hint: '|v| = √(a² + b²).', commonMistakes: [{ value: 7, why: 'Mblodhët përbërëset; gjatësia del nga Pitagora.' }] },
+      en: { question: 'A(1, 1), B(4, 5). What is the length of the vector AB?', explanation: 'AB = (3, 4); |AB| = √(9 + 16) = 5.', hint: '|v| = √(a² + b²).', commonMistakes: [{ value: 7, why: 'You added the components; the length comes from Pythagoras.' }] },
+      de: { question: 'A(1 | 1), B(4 | 5). Wie lang ist der Vektor AB?', explanation: 'AB = (3 | 4); |AB| = √(9 + 16) = 5.', hint: '|v| = √(a² + b²).', commonMistakes: [{ value: 7, why: 'Sie haben die Koordinaten addiert; die Länge kommt aus Pythagoras.' }] },
+    },
+    {
+      id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
+      verify: ['2 * (-1) == -2 and 2 * 4 == 8', true],
+      al: { question: 'Homotetia me qendër në origjinë dhe k = 2 e çon (−1, 4) në (−2, 8).', explanation: 'E vërtetë: (2 · (−1), 2 · 4) = (−2, 8).', hint: '(x, y) → (kx, ky).', whyWrong: 'Të dyja koordinatat shumëzohen me 2.' },
+      en: { question: 'The enlargement with centre at the origin and k = 2 takes (−1, 4) to (−2, 8).', explanation: 'True: (2 · (−1), 2 · 4) = (−2, 8).', hint: '(x, y) → (kx, ky).', whyWrong: 'Both coordinates are multiplied by 2.' },
+      de: { question: 'Die Streckung mit Zentrum im Ursprung und k = 2 bildet (−1 | 4) auf (−2 | 8) ab.', explanation: 'Richtig: (2 · (−1) | 2 · 4) = (−2 | 8).', hint: '(x | y) → (kx | ky).', whyWrong: 'Beide Koordinaten werden mit 2 multipliziert.' },
+    },
+    {
+      id: 4, type: 'choice', difficulty: 'easy', correct: 2,
+      verify: 'text',
+      al: {
+        question: 'Cili vektor e çon pikën P(2, 5) në P′(−1, 7)?', options: ['(3, −2)', '(1, 12)', '(−3, 2)', '(−1, 7)'],
+        explanation: 'v = P′ − P = (−1 − 2, 7 − 5) = (−3, 2).', hint: 'Shëmbëllimi minus pika.',
+        whyWrong: ['Kjo është P − P′ (vektori i kundërt).', 'Mblodhët koordinatat.', null, 'Kjo është vetë pika P′.'],
+      },
+      en: {
+        question: 'Which vector takes the point P(2, 5) to P′(−1, 7)?', options: ['(3, −2)', '(1, 12)', '(−3, 2)', '(−1, 7)'],
+        explanation: 'v = P′ − P = (−1 − 2, 7 − 5) = (−3, 2).', hint: 'Image minus point.',
+        whyWrong: ['That is P − P′ (the opposite vector).', 'You added the coordinates.', null, 'That is the point P′ itself.'],
+      },
+      de: {
+        question: 'Welcher Vektor bildet den Punkt P(2 | 5) auf P′(−1 | 7) ab?', options: ['(3 | −2)', '(1 | 12)', '(−3 | 2)', '(−1 | 7)'],
+        explanation: 'v = P′ − P = (−1 − 2 | 7 − 5) = (−3 | 2).', hint: 'Bildpunkt minus Punkt.',
+        whyWrong: ['Das ist P − P′ (der Gegenvektor).', 'Sie haben die Koordinaten addiert.', null, 'Das ist der Punkt P′ selbst.'],
+      },
+    },
+    {
+      id: 5, type: 'input', difficulty: 'medium', answer: { value: 54 },
+      verify: ['6 * 3^2', 54],
+      al: { question: 'Trekëndëshi ka sipërfaqe 6 cm². Sa cm² ka shëmbëllimi pas homotetisë me k = 3?', explanation: 'Sipërfaqja × k² = 6 · 9 = 54 cm².', hint: 'Sipërfaqet shumëzohen me k².', unit: 'cm²', commonMistakes: [{ value: 18, why: 'Sipërfaqja shumëzohet me k² = 9, jo me k = 3.' }] },
+      en: { question: 'A triangle has area 6 cm². How many cm² is its image after an enlargement with k = 3?', explanation: 'Area × k² = 6 · 9 = 54 cm².', hint: 'Areas are multiplied by k².', unit: 'cm²', commonMistakes: [{ value: 18, why: 'The area is multiplied by k² = 9, not by k = 3.' }] },
+      de: { question: 'Ein Dreieck hat 6 cm² Fläche. Wie viele cm² hat sein Bild nach einer Streckung mit k = 3?', explanation: 'Fläche × k² = 6 · 9 = 54 cm².', hint: 'Flächen werden mit k² multipliziert.', unit: 'cm²', commonMistakes: [{ value: 18, why: 'Die Fläche wird mit k² = 9 multipliziert, nicht mit k = 3.' }] },
+    },
+    {
+      id: 6, type: 'choice', difficulty: 'medium', correct: 0,
+      verify: 'text',
+      al: {
+        question: 'Pasqyroni P(3, −2) në drejtëzën y = x.', options: ['(−2, 3)', '(2, −3)', '(−3, 2)', '(3, 2)'],
+        explanation: 'Në y = x koordinatat ndërrojnë vendet: (−2, 3).', hint: '(x, y) → (y, x).',
+        whyWrong: [null, 'Ndërruat vendet, por edhe shenjat; shenjat mbeten.', 'Kjo është simetria ndaj origjinës.', 'Kjo është pasqyrimi në boshtin x.'],
+      },
+      en: {
+        question: 'Reflect P(3, −2) in the line y = x.', options: ['(−2, 3)', '(2, −3)', '(−3, 2)', '(3, 2)'],
+        explanation: 'In y = x the coordinates swap places: (−2, 3).', hint: '(x, y) → (y, x).',
+        whyWrong: [null, 'You swapped and also changed the signs; the signs stay.', 'That is point symmetry about the origin.', 'That is the reflection in the x-axis.'],
+      },
+      de: {
+        question: 'Spiegeln Sie P(3 | −2) an der Geraden y = x.', options: ['(−2 | 3)', '(2 | −3)', '(−3 | 2)', '(3 | 2)'],
+        explanation: 'An y = x werden die Koordinaten vertauscht: (−2 | 3).', hint: '(x | y) → (y | x).',
+        whyWrong: [null, 'Sie haben vertauscht und die Vorzeichen geändert; die Vorzeichen bleiben.', 'Das ist die Punktspiegelung am Ursprung.', 'Das ist die Spiegelung an der x-Achse.'],
+      },
+    },
+    {
+      id: 7, type: 'truefalse', difficulty: 'medium', correct: false,
+      verify: 'text',
+      al: { question: 'Zhvendosja paralele ndryshon gjatësinë e segmenteve.', explanation: 'E gabuar: zhvendosja ruan gjatësitë dhe këndet; figura dhe shëmbëllimi janë kongruente.', hint: 'Çdo pikë lëviz njësoj.', whyWrong: 'Të gjitha pikat lëvizin me të njëjtin vektor, pra largësitë mbeten.' },
+      en: { question: 'A translation changes the length of segments.', explanation: 'False: a translation keeps lengths and angles; shape and image are congruent.', hint: 'Every point moves the same way.', whyWrong: 'All points move by the same vector, so distances stay the same.' },
+      de: { question: 'Eine Verschiebung verändert die Länge von Strecken.', explanation: 'Falsch: Eine Verschiebung erhält Längen und Winkel; Figur und Bild sind kongruent.', hint: 'Jeder Punkt wandert gleich.', whyWrong: 'Alle Punkte wandern um denselben Vektor, die Abstände bleiben gleich.' },
+    },
+    {
+      id: 8, type: 'choice', difficulty: 'medium', correct: 3,
+      verify: [['2 * 3 - 1', 5], ['2 * 4 - 2', 6]],
+      al: {
+        question: 'Gjeni simetriken e P(1, 2) ndaj qendrës S(3, 4).', options: ['(2, 3)', '(−1, 0)', '(4, 6)', '(5, 6)'],
+        explanation: 'P′ = 2S − P = (6 − 1, 8 − 2) = (5, 6).', hint: 'S është mesi i PP′.',
+        whyWrong: ['Ky është mesi i PS.', 'Kjo është 2P − S: pasqyruat S ndaj P.', 'Mblodhët P + S.', null],
+      },
+      en: {
+        question: 'Find the image of P(1, 2) under point symmetry about S(3, 4).', options: ['(2, 3)', '(−1, 0)', '(4, 6)', '(5, 6)'],
+        explanation: 'P′ = 2S − P = (6 − 1, 8 − 2) = (5, 6).', hint: 'S is the midpoint of PP′.',
+        whyWrong: ['That is the midpoint of PS.', 'That is 2P − S: you reflected S about P.', 'You added P + S.', null],
+      },
+      de: {
+        question: 'Spiegeln Sie P(1 | 2) am Punkt S(3 | 4).', options: ['(2 | 3)', '(−1 | 0)', '(4 | 6)', '(5 | 6)'],
+        explanation: 'P′ = 2S − P = (6 − 1 | 8 − 2) = (5 | 6).', hint: 'S ist der Mittelpunkt von PP′.',
+        whyWrong: ['Das ist der Mittelpunkt von PS.', 'Das ist 2P − S: Sie haben S an P gespiegelt.', 'Sie haben P + S gerechnet.', null],
+      },
+    },
+    {
+      id: 9, type: 'input', difficulty: 'hard', answer: { value: 10 },
+      verify: ['sqrt((5 + 1)^2 + (1 + 7)^2)', 10],
+      al: { question: 'u = (5, 1), v = (1, 7). Sa është gjatësia e vektorit u + v?', explanation: 'u + v = (6, 8); |u + v| = √(36 + 64) = 10.', hint: 'Fillimisht mblidhni, pastaj gjatësia.', commonMistakes: [{ value: 14, why: 'Mblodhët përbërëset e shumës; gjatësia del nga Pitagora.' }] },
+      en: { question: 'u = (5, 1), v = (1, 7). What is the length of the vector u + v?', explanation: 'u + v = (6, 8); |u + v| = √(36 + 64) = 10.', hint: 'Add first, then find the length.', commonMistakes: [{ value: 14, why: 'You added the components of the sum; the length comes from Pythagoras.' }] },
+      de: { question: 'u = (5 | 1), v = (1 | 7). Wie lang ist der Vektor u + v?', explanation: 'u + v = (6 | 8); |u + v| = √(36 + 64) = 10.', hint: 'Erst addieren, dann die Länge.', commonMistakes: [{ value: 14, why: 'Sie haben die Koordinaten der Summe addiert; die Länge kommt aus Pythagoras.' }] },
+    },
+    {
+      id: 10, type: 'input', difficulty: 'hard', answer: { value: 60 },
+      verify: ['360 / 6', 60],
+      al: { question: 'Me sa gradë është rrotullimi më i vogël që e çon gjashtëkëndëshin e rregullt në vetvete?', explanation: '360° : 6 = 60°.', hint: 'Gjashtëkëndëshi ka 6 brinjë të barabarta.', unit: '°', commonMistakes: [{ value: 120, why: 'Edhe 120° funksionon, por 60° është më i vogli.' }, { value: 6, why: '6 është rendi, jo këndi.' }] },
+      en: { question: 'What is the smallest rotation angle that maps a regular hexagon onto itself?', explanation: '360° ÷ 6 = 60°.', hint: 'A hexagon has 6 equal sides.', unit: '°', commonMistakes: [{ value: 120, why: '120° works too, but 60° is the smallest.' }, { value: 6, why: '6 is the order, not the angle.' }] },
+      de: { question: 'Um wie viel Grad muss man ein regelmäßiges Sechseck mindestens drehen, damit es auf sich selbst fällt?', explanation: '360° : 6 = 60°.', hint: 'Ein Sechseck hat 6 gleiche Seiten.', unit: '°', commonMistakes: [{ value: 120, why: '120° geht auch, aber 60° ist der kleinste Winkel.' }, { value: 6, why: '6 ist die Ordnung, nicht der Winkel.' }] },
+    },
+  ],
+};

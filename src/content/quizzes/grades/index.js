@@ -25,6 +25,16 @@ import g7ExpressionsEquations from './g7-expressions-equations-quiz';
 import g7TransformationsSolids from './g7-transformations-solids-quiz';
 import g7Function from './g7-function-quiz';
 import g7StatisticsProbability from './g7-statistics-probability-quiz';
+import g8NumberSense from './g8-number-sense-quiz';
+import g8NumberOperations from './g8-number-operations-quiz';
+import g8Measurement from './g8-measurement-quiz';
+import g8PlaneGeometry from './g8-plane-geometry-quiz';
+import g8Transformations from './g8-transformations-quiz';
+import g8SolidGeometry from './g8-solid-geometry-quiz';
+import g8AlgebraicExpressions from './g8-algebraic-expressions-quiz';
+import g8EquationsSystems from './g8-equations-systems-quiz';
+import g8Function from './g8-function-quiz';
+import g8StatisticsProbability from './g8-statistics-probability-quiz';
 
 const ALL = [
   g6NaturalNumbers,
@@ -51,6 +61,16 @@ const ALL = [
   g7TransformationsSolids,
   g7Function,
   g7StatisticsProbability,
+  g8NumberSense,
+  g8NumberOperations,
+  g8Measurement,
+  g8PlaneGeometry,
+  g8Transformations,
+  g8SolidGeometry,
+  g8AlgebraicExpressions,
+  g8EquationsSystems,
+  g8Function,
+  g8StatisticsProbability,
 ];
 
 export default ALL.filter((set) => PUBLISHED_GRADES.includes(set.grade));
