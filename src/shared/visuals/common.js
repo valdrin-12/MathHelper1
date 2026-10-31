@@ -59,10 +59,12 @@ export function useVisualColors() {
   };
 }
 
-/** Pick a palette colour by index or keyword ('primary', 'secondary', 'success', 'error', 'purple', 'accent'). */
+/** Pick a palette colour by index or keyword ('primary', 'secondary', 'success', 'error', 'purple', 'accent', 'muted', 'ink'). */
 export function pickColor(c, vc, i = 0) {
   const named = { primary: 0, secondary: 1, success: 2, purple: 3, error: 4, accent: 5 };
   if (typeof c === 'string' && c in named) return vc.palette[named[c]];
+  if (c === 'muted') return vc.muted;
+  if (c === 'ink') return vc.ink;
   if (typeof c === 'string') return c;
   return vc.palette[i % vc.palette.length];
 }
