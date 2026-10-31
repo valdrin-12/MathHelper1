@@ -1,0 +1,366 @@
+const { getModel } = require('../config/gemini');
+const { solveWithWolfram } = require('../services/wolframService');
+const { markTicketSucceeded, refundTicket, UUID_RE } = require('../middleware/rateLimit');
+
+const MAX_IMAGE_BYTES = 4 * 1024 * 1024; // 4 MB (base64 decoded)
+const MAX_TEXT_LENGTH = 2000;            // 2000 characters
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+const LANGUAGE_NAMES = {
+  al: 'Albanian (Shqip)',
+  en: 'English',
+  de: 'German (Deutsch)',
+};
+
+function getMathAnalysisPrompt(language) {
+  const lang = LANGUAGE_NAMES[language] || 'Albanian (Shqip)';
+  return `You are an expert math teacher who helps students solve math problems.
+
+TASK: Analyze the given image containing a math problem and provide a complete solution in ${lang}.
+
+RESPONSE FORMAT (VERY IMPORTANT - use these EXACT English markers):
+1. ANSWER: Give the final answer clearly and concisely
+2. STEPS: Show each solution step in detail (use numbers: Step 1, Step 2, etc.)
+3. EXPLANATION: Give a complete explanation and reasoning why this is the correct solution
+
+RULES:
+- Respond in ${lang} (the actual content must be in ${lang}, but keep the markers ANSWER:, STEPS:, EXPLANATION: in English)
+- Use correct mathematical symbols (×, ÷, =, ≠, ≤, ≥, π, √, ∫, Σ, etc.)
+- In ANSWER write the result in a form that can be checked automatically: for equations give each solution as "x = value" (e.g. x = 2, x = 3), for inequalities "x > 3" or an interval, for derivatives and integrals the resulting expression, and for plain calculations the number
+- Explain concepts in a simple and understandable way
+- If the image does not contain a clear math problem, say so in ${lang}
+- If the image is too unclear, say so in ${lang}
+
+EXAMPLE FORMAT:
+
+ANSWER: x = 5
+
+STEPS:
+Step 1: Start with equation 2x + 3 = 13
+Step 2: Subtract 3 from both sides: 2x = 10
+Step 3: Divide both sides by 2: x = 5
+
+EXPLANATION: To solve a linear equation, we isolate variable x by performing the same operations on both sides of the equation.
+
+Now, analyze the image and provide the solution:`;
+}
+
+function getTextAnalysisPrompt(problemText, language) {
+  const lang = LANGUAGE_NAMES[language] || 'Albanian (Shqip)';
+  return `You are an expert math teacher who helps students solve math problems.
+
+TASK: Analyze and solve the following math problem. Respond in ${lang}.
+
+PROBLEM:
+${problemText}
+
+RESPONSE FORMAT (VERY IMPORTANT - use these EXACT English markers):
+1. ANSWER: Give the final answer clearly and concisely
+2. STEPS: Show each solution step in detail (use numbers: Step 1, Step 2, etc.)
+3. EXPLANATION: Give a complete explanation and reasoning why this is the correct solution
+
+RULES:
+- Respond in ${lang} (the actual content must be in ${lang}, but keep the markers ANSWER:, STEPS:, EXPLANATION: in English)
+- Use correct mathematical symbols (×, ÷, =, ≠, ≤, ≥, π, √, ∫, Σ, etc.)
+- In ANSWER write the result in a form that can be checked automatically: for equations give each solution as "x = value" (e.g. x = 2, x = 3), for inequalities "x > 3" or an interval, for derivatives and integrals the resulting expression, and for plain calculations the number
+- Explain concepts in a simple and understandable way
+- If the text does not contain a clear math problem, say so in ${lang}
+
+EXAMPLE FORMAT:
+
+ANSWER: x = 5
+
+STEPS:
+Step 1: Start with equation 2x + 3 = 13
+Step 2: Subtract 3 from both sides: 2x = 10
+Step 3: Divide both sides by 2: x = 5
+
+EXPLANATION: To solve a linear equation, we isolate variable x by performing the same operations on both sides of the equation.
+
+Now, solve the problem:`;
+}
+
+function parseGeminiResponse(text) {
+  try {
+    let answer = '';
+    let steps = [];
+    let explanation = '';
+
+    // Extract answer
+    const answerMatch = text.match(/ANSWER:\s*(.+?)(?=\n\nSTEPS:|$)/s);
+    if (answerMatch) answer = answerMatch[1].trim();
+
+    // Extract steps
+    const stepsMatch = text.match(/STEPS:\s*(.+?)(?=\n\nEXPLANATION:|$)/s);
+    if (stepsMatch) {
+      const stepsText = stepsMatch[1].trim();
+      steps = stepsText
+        .split(/Step \d+:/)
+        .filter(step => step.trim())
+        .map(step => step.trim());
+    }
+
+    // Extract explanation
+    const explanationMatch = text.match(/EXPLANATION:\s*(.+)/s);
+    if (explanationMatch) explanation = explanationMatch[1].trim();
+
+    // Fallback: Albanian markers
+    if (!answer && !steps.length && !explanation) {
+      const answerMatchSq = text.match(/PËRGJIGJA:\s*(.+?)(?=\n\nHAPAT:|$)/s);
+      if (answerMatchSq) answer = answerMatchSq[1].trim();
+
+      const stepsMatchSq = text.match(/HAPAT:\s*(.+?)(?=\n\nSHPJEGIMI:|$)/s);
+      if (stepsMatchSq) {
+        steps = stepsMatchSq[1].trim()
+          .split(/Hapi \d+:/)
+          .filter(step => step.trim())
+          .map(step => step.trim());
+      }
+
+      const explanationMatchSq = text.match(/SHPJEGIMI:\s*(.+)/s);
+      if (explanationMatchSq) explanation = explanationMatchSq[1].trim();
+    }
+
+    // Final fallback
+    if (!answer && !steps.length && !explanation) {
+      return {
+        answer: 'See analysis below',
+        steps: [text],
+        explanation: '',
+      };
+    }
+
+    return { answer, steps, explanation };
+  } catch (error) {
+    console.error('Parse error:', error);
+    return { answer: 'Error parsing response', steps: [text], explanation: '' };
+  }
+}
+
+async function analyzeImage(req, res) {
+  try {
+    const { imageBase64, mimeType, language } = req.body;
+
+    if (!imageBase64) {
+      return res.status(400).json({ success: false, error: 'imageBase64 is required' });
+    }
+
+    // Validate MIME type
+    const resolvedMime = mimeType || 'image/jpeg';
+    if (!ALLOWED_MIME_TYPES.includes(resolvedMime)) {
+      return res.status(400).json({ success: false, error: 'Invalid image type' });
+    }
+
+    // Validate image size (base64 string length * 0.75 ≈ decoded bytes)
+    if (imageBase64.length * 0.75 > MAX_IMAGE_BYTES) {
+      return res.status(413).json({ success: false, error: 'Image too large (max 4 MB)' });
+    }
+
+    const model = getModel();
+    const imagePart = {
+      inlineData: {
+        data: imageBase64,
+        mimeType: resolvedMime,
+      },
+    };
+
+    const result = await model.generateContent([
+      getMathAnalysisPrompt(language || 'al'),
+      imagePart,
+    ]);
+
+    const response = await result.response;
+    const text = response.text();
+    const parsed = parseGeminiResponse(text);
+
+    await markTicketSucceeded(req);
+    res.json({ success: true, ...parsed });
+  } catch (error) {
+    console.error('Image analysis error:', error);
+
+    if (error.message?.includes('API key')) {
+      return res.status(500).json({ success: false, error: 'API key invalid' });
+    }
+    if (error.message?.includes('quota') || error.message?.includes('limit')) {
+      return res.status(429).json({ success: false, error: 'API quota exceeded' });
+    }
+
+    res.status(500).json({ success: false, error: 'Analysis failed' });
+  }
+}
+
+async function analyzeText(req, res) {
+  try {
+    const { problemText, language } = req.body;
+
+    if (!problemText) {
+      return res.status(400).json({ success: false, error: 'problemText is required' });
+    }
+    if (problemText.length > MAX_TEXT_LENGTH) {
+      return res.status(413).json({ success: false, error: `Text too long (max ${MAX_TEXT_LENGTH} characters)` });
+    }
+
+    const model = getModel();
+    const result = await model.generateContent(
+      getTextAnalysisPrompt(problemText, language || 'al')
+    );
+
+    const response = await result.response;
+    const text = response.text();
+    const parsed = parseGeminiResponse(text);
+
+    await markTicketSucceeded(req);
+    res.json({ success: true, ...parsed });
+  } catch (error) {
+    console.error('Text analysis error:', error);
+
+    if (error.message?.includes('API key')) {
+      return res.status(500).json({ success: false, error: 'API key invalid' });
+    }
+    if (error.message?.includes('quota') || error.message?.includes('limit')) {
+      return res.status(429).json({ success: false, error: 'API quota exceeded' });
+    }
+
+    res.status(500).json({ success: false, error: 'Analysis failed' });
+  }
+}
+
+// OCR-only: Extract text from image without solving
+async function extractTextFromImage(req, res) {
+  try {
+    const { imageBase64, mimeType } = req.body;
+
+    if (!imageBase64) {
+      return res.status(400).json({ success: false, error: 'imageBase64 is required' });
+    }
+
+    const resolvedMime = mimeType || 'image/jpeg';
+    if (!ALLOWED_MIME_TYPES.includes(resolvedMime)) {
+      return res.status(400).json({ success: false, error: 'Invalid image type' });
+    }
+    if (imageBase64.length * 0.75 > MAX_IMAGE_BYTES) {
+      return res.status(413).json({ success: false, error: 'Image too large (max 4 MB)' });
+    }
+
+    const model = getModel();
+    const imagePart = {
+      inlineData: {
+        data: imageBase64,
+        mimeType: resolvedMime,
+      },
+    };
+
+    // Simple OCR prompt - just extract the ORIGINAL problem, not the solution steps
+    const ocrPrompt = `You are extracting a math problem from an image.
+
+IMPORTANT RULES:
+1. Extract ONLY the ORIGINAL problem/equation (the first line or main question)
+2. DO NOT include solution steps, working, or intermediate calculations
+3. DO NOT include equals signs that show steps (like "= 14" or "= x + 5")
+4. Return ONLY the problem as it was given, before solving
+5. If you see multiple lines of work, return ONLY the first/original problem
+
+Examples:
+- Image shows: "2x + 5 = 13\n2x = 8\nx = 4" → Return: "2x + 5 = 13"
+- Image shows: "5 + 9\n= 14" → Return: "5 + 9"
+- Image shows: "3(2x+3)+14-2(4^2) = (6x+9)+14-2(16) = 6x-9" → Return: "3(2x+3)+14-2(4^2) = 6x-9"
+
+If no math problem found, return "NO_MATH_FOUND".`;
+
+    const result = await model.generateContent([ocrPrompt, imagePart]);
+    const response = await result.response;
+    const extractedText = response.text().trim();
+
+    // Check if no math was found
+    if (extractedText === 'NO_MATH_FOUND' || !extractedText) {
+      return res.status(400).json({
+        success: false,
+        error: 'No mathematical expression found in image'
+      });
+    }
+
+    res.json({ success: true, text: extractedText });
+  } catch (error) {
+    console.error('OCR extraction error:', error);
+
+    if (error.message?.includes('API key')) {
+      return res.status(500).json({ success: false, error: 'API key invalid' });
+    }
+    if (error.message?.includes('quota') || error.message?.includes('limit')) {
+      return res.status(429).json({ success: false, error: 'API quota exceeded' });
+    }
+
+    res.status(500).json({ success: false, error: 'Text extraction failed' });
+  }
+}
+
+// Wolfram Alpha solver endpoint (does NOT count against Gemini daily limit)
+async function analyzeWithWolfram(req, res) {
+  try {
+    const { problemText } = req.body;
+
+    if (!problemText) {
+      return res.status(400).json({ success: false, error: 'problemText is required' });
+    }
+    if (problemText.length > MAX_TEXT_LENGTH) {
+      return res.status(413).json({ success: false, error: `Text too long (max ${MAX_TEXT_LENGTH} characters)` });
+    }
+
+    const result = await solveWithWolfram(problemText);
+
+    if (!result.success) {
+      return res.status(422).json({ success: false, error: result.reason || 'Wolfram could not solve this problem' });
+    }
+
+    await markTicketSucceeded(req);
+    res.json({
+      success: true,
+      answer: result.answer,
+      steps: result.steps,
+      explanation: result.explanation,
+      source: 'wolfram',
+    });
+  } catch (error) {
+    console.error('Wolfram analysis error:', error);
+    res.status(500).json({ success: false, error: 'Wolfram analysis failed' });
+  }
+}
+
+// Record an analysis: the rate limiter already consumed one credit and issued a ticket
+async function recordAnalysis(req, res) {
+  const ticket = req.analysisTicket;
+  res.json({
+    success: true,
+    ticket: ticket.id,
+    ticketExpiresAt: ticket.expiresAt,
+    tier: ticket.tier,
+    limit: ticket.limit,
+    remaining: ticket.remaining,
+  });
+}
+
+// Refund the credit behind a ticket that never produced a result (idempotent)
+async function refundAnalysis(req, res) {
+  const { ticket } = req.body || {};
+  if (typeof ticket !== 'string' || !UUID_RE.test(ticket)) {
+    return res.status(400).json({ success: false, error: 'ticket is required', code: 'INVALID_TICKET' });
+  }
+
+  try {
+    const outcome = await refundTicket(req.userId, ticket);
+    if (outcome === 'not_found') {
+      return res.status(404).json({ success: false, error: 'Ticket not found', code: 'INVALID_TICKET' });
+    }
+    if (outcome === 'succeeded') {
+      return res.status(409).json({ success: false, error: 'Analysis already completed', code: 'TICKET_SUCCEEDED' });
+    }
+    res.json({ success: true, refunded: true, alreadyRefunded: outcome === 'already_refunded' });
+  } catch (error) {
+    console.error('Refund analysis error:', error);
+    res.status(503).json({ success: false, error: 'Refund temporarily unavailable', code: 'REFUND_FAILED' });
+  }
+}
+
+module.exports = {
+  analyzeImage, analyzeText, extractTextFromImage, analyzeWithWolfram, recordAnalysis, refundAnalysis,
+};
