@@ -350,7 +350,7 @@ export default function SettingsScreen() {
       {/* Version */}
       <Text style={[styles.versionText, { color: colors.textMuted }]}>{t('settings.version')}</Text>
 
-      <View style={{ height: isWeb ? 20 : 100 }} />
+      <View style={{ height: isWeb ? 90 : 100 }} />
       </WebContainer>
 
       {/* Info Modals */}

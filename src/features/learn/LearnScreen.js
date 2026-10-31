@@ -236,7 +236,7 @@ export default function LearnScreen() {
           </View>
         ))}
 
-        <View style={{ height: isWeb ? 20 : 100 }} />
+        <View style={{ height: isWeb ? 90 : 100 }} />
         </WebContainer>
       </ScrollView>
 
