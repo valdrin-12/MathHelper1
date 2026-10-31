@@ -35,6 +35,16 @@ import g8AlgebraicExpressions from './g8-algebraic-expressions-quiz';
 import g8EquationsSystems from './g8-equations-systems-quiz';
 import g8Function from './g8-function-quiz';
 import g8StatisticsProbability from './g8-statistics-probability-quiz';
+import g9NumberSets from './g9-number-sets-quiz';
+import g9Expressions from './g9-expressions-quiz';
+import g9EquationsInequalities from './g9-equations-inequalities-quiz';
+import g9PlaneGeometry from './g9-plane-geometry-quiz';
+import g9Proportionality from './g9-proportionality-quiz';
+import g9LinearSystems from './g9-linear-systems-quiz';
+import g9Vectors from './g9-vectors-quiz';
+import g9Similarity from './g9-similarity-quiz';
+import g9RightTriangleTrig from './g9-right-triangle-trig-quiz';
+import g9DataProbability from './g9-data-probability-quiz';
 
 const ALL = [
   g6NaturalNumbers,
@@ -71,6 +81,16 @@ const ALL = [
   g8EquationsSystems,
   g8Function,
   g8StatisticsProbability,
+  g9NumberSets,
+  g9Expressions,
+  g9EquationsInequalities,
+  g9PlaneGeometry,
+  g9Proportionality,
+  g9LinearSystems,
+  g9Vectors,
+  g9Similarity,
+  g9RightTriangleTrig,
+  g9DataProbability,
 ];
 
 export default ALL.filter((set) => PUBLISHED_GRADES.includes(set.grade));
