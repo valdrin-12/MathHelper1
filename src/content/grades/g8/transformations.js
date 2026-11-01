@@ -165,6 +165,16 @@ export default {
     // ───────── 3. Reflection and point symmetry
     {
       slug: 'g8-transformations-symmetry',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+        points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['p', '-q'], label: 'P′({p}, {-q})', color: 'secondary' }],
+        segments: [{ from: ['p', 'q'], to: ['p', '-q'], color: 'muted', dashed: true }],
+        sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: -4 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: 1 }],
+        readouts: [{ text: { al: 'Pasqyrimi ndaj boshtit x: (x, y) → (x, −y)', en: 'Reflection in the x-axis: (x, y) → (x, −y)', de: 'Spiegelung an der x-Achse: (x | y) → (x | −y)' } }],
+        alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -4, xMax: 4, yMin: -3, yMax: 4 }, grid: true, axes: true, height: 230,
         shapes: [
@@ -242,6 +252,24 @@ export default {
     // ───────── 4. Rotation
     {
       slug: 'g8-transformations-rotation',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+        points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['-q', 'p'], label: 'P′({-q}, {p})', color: 'secondary' }],
+        segments: [{ from: [0, 0], to: ['p', 'q'], color: 'muted', dashed: true }, { from: [0, 0], to: ['-q', 'p'], color: 'muted', dashed: true }],
+        sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 4 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: 2 }],
+        readouts: [{ text: { al: 'Rrotullimi 90° kundër akrepave: (x, y) → (−y, x)', en: 'Rotation 90° anticlockwise: (x, y) → (−y, x)', de: 'Drehung um 90° gegen den Uhrzeigersinn: (x | y) → (−y | x)' } }],
+        alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+      },
+        1: {
+        type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+        points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['q', '-p'], label: 'P′({q}, {-p})', color: 'secondary' }],
+        segments: [{ from: [0, 0], to: ['p', 'q'], color: 'muted', dashed: true }, { from: [0, 0], to: ['q', '-p'], color: 'muted', dashed: true }],
+        sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: -1 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: 3 }],
+        readouts: [{ text: { al: 'Rrotullimi 90° sipas akrepave: (x, y) → (y, −x)', en: 'Rotation 90° clockwise: (x, y) → (y, −x)', de: 'Drehung um 90° im Uhrzeigersinn: (x | y) → (y | −x)' } }],
+        alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -2.5, xMax: 4, yMin: -1, yMax: 4 }, grid: true, axes: true, height: 210,
         shapes: [

@@ -91,6 +91,30 @@ export default {
     // ───────── 2. Monotonicity
     {
       slug: 'g12-derivative-applications-monotonicity',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -1, xMax: 9, yMin: -18, yMax: 6 },
+        functions: [{ expr: 'x^2 - 8*x', label: 'f(x) = x² - 8x' }, { expr: '(2*a - 8)*(x - a) + (a^2 - 8*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', 'a^2 - 8*a'], label: '({a}, {a^2 - 8*a})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -1, max: 9, step: 0.5, value: 2 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {2*a - 8} = pjerrësia e tangjentes; tangjentja: y = {2*a - 8}x {+a^2 - 8*a - (2*a - 8)*a}', en: 'f′({a}) = {2*a - 8} = gradient of the tangent; tangent: y = {2*a - 8}x {+a^2 - 8*a - (2*a - 8)*a}', de: 'f′({a}) = {2*a - 8} = Tangentensteigung; Tangente: y = {2*a - 8}x {+a^2 - 8*a - (2*a - 8)*a}' } },
+          { cases: [{ when: '2*a - 8 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '2*a - 8 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+        2: {
+        type: 'functionPlot', view: { xMin: -4.5, xMax: 4.5, yMin: -20, yMax: 20 },
+        functions: [{ expr: '-x^3 + 12*x', label: 'f(x) = -x³ + 12x' }, { expr: '(-3*a^2 + 12)*(x - a) + (-a^3 + 12*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', '-a^3 + 12*a'], label: '({a}, {-a^3 + 12*a})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -4, max: 4, step: 0.5, value: 0 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {-3*a^2 + 12} = pjerrësia e tangjentes; tangjentja: y = {-3*a^2 + 12}x {+-a^3 + 12*a - (-3*a^2 + 12)*a}', en: 'f′({a}) = {-3*a^2 + 12} = gradient of the tangent; tangent: y = {-3*a^2 + 12}x {+-a^3 + 12*a - (-3*a^2 + 12)*a}', de: 'f′({a}) = {-3*a^2 + 12} = Tangentensteigung; Tangente: y = {-3*a^2 + 12}x {+-a^3 + 12*a - (-3*a^2 + 12)*a}' } },
+          { cases: [{ when: '-3*a^2 + 12 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '-3*a^2 + 12 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+      },
       visuals: [{ ...CUBIC,
         caption: alt('f′(x) = 3(x − 1)(x + 1): rritës për x < −1 dhe x > 1, zbritës për −1 < x < 1.', 'f′(x) = 3(x − 1)(x + 1): increasing for x < −1 and x > 1, decreasing for −1 < x < 1.', 'f′(x) = 3(x − 1)(x + 1): steigend für x < −1 und x > 1, fallend für −1 < x < 1.'),
         alt: alt('Grafiku i y = x³ − 3x me maksimum në (−1, 2) dhe minimum në (1, −2).', 'The graph of y = x³ − 3x with a maximum at (−1, 2) and a minimum at (1, −2).', 'Der Graph von y = x³ − 3x mit Hochpunkt (−1 | 2) und Tiefpunkt (1 | −2).'),
@@ -157,6 +181,30 @@ export default {
     // ───────── 3. Extrema
     {
       slug: 'g12-derivative-applications-extrema',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -3, xMax: 4, yMin: -25, yMax: 12 },
+        functions: [{ expr: '2*x^3 - 3*x^2 - 12*x', label: 'f(x) = 2x³ - 3x² - 12x' }, { expr: '(6*a^2 - 6*a - 12)*(x - a) + (2*a^3 - 3*a^2 - 12*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', '2*a^3 - 3*a^2 - 12*a'], label: '({a}, {2*a^3 - 3*a^2 - 12*a})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -3, max: 4, step: 0.5, value: -1 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {6*a^2 - 6*a - 12} = pjerrësia e tangjentes; tangjentja: y = {6*a^2 - 6*a - 12}x {+2*a^3 - 3*a^2 - 12*a - (6*a^2 - 6*a - 12)*a}', en: 'f′({a}) = {6*a^2 - 6*a - 12} = gradient of the tangent; tangent: y = {6*a^2 - 6*a - 12}x {+2*a^3 - 3*a^2 - 12*a - (6*a^2 - 6*a - 12)*a}', de: 'f′({a}) = {6*a^2 - 6*a - 12} = Tangentensteigung; Tangente: y = {6*a^2 - 6*a - 12}x {+2*a^3 - 3*a^2 - 12*a - (6*a^2 - 6*a - 12)*a}' } },
+          { cases: [{ when: '6*a^2 - 6*a - 12 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '6*a^2 - 6*a - 12 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+        2: {
+        type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -4, yMax: 7 },
+        functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+        points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: -1 }, { name: 'b', min: -8, max: 8, step: 1, value: 4 }, { name: 'c', min: -6, max: 6, step: 1, value: 1 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+      },
       visuals: [{ ...CUBIC,
         caption: alt('Maksimum lokal (−1, 2), minimum lokal (1, −2).', 'Local maximum (−1, 2), local minimum (1, −2).', 'Hochpunkt (−1 | 2), Tiefpunkt (1 | −2).'),
         alt: alt('Grafiku i y = x³ − 3x me pikat ekstreme të shënuara.', 'The graph of y = x³ − 3x with the extreme points marked.', 'Der Graph von y = x³ − 3x mit markierten Extrempunkten.'),
@@ -223,6 +271,19 @@ export default {
     // ───────── 4. Greatest and least values
     {
       slug: 'g12-derivative-applications-max-min-values',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -3.5, xMax: 3.5, yMin: -20, yMax: 20 },
+        functions: [{ expr: 'x^3 - 12*x', label: 'f(x) = x³ - 12x' }, { expr: '(3*a^2 - 12)*(x - a) + (a^3 - 12*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', 'a^3 - 12*a'], label: '({a}, {a^3 - 12*a})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 2 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {3*a^2 - 12} = pjerrësia e tangjentes; tangjentja: y = {3*a^2 - 12}x {+a^3 - 12*a - (3*a^2 - 12)*a}', en: 'f′({a}) = {3*a^2 - 12} = gradient of the tangent; tangent: y = {3*a^2 - 12}x {+a^3 - 12*a - (3*a^2 - 12)*a}', de: 'f′({a}) = {3*a^2 - 12} = Tangentensteigung; Tangente: y = {3*a^2 - 12}x {+a^3 - 12*a - (3*a^2 - 12)*a}' } },
+          { cases: [{ when: '3*a^2 - 12 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '3*a^2 - 12 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -0.3, xMax: 2.3, yMin: -2.5, yMax: 2.5 }, height: 200,
         functions: [{ expr: 'x^3 - 3*x', domain: [0, 2], label: 'y = x³ − 3x, [0, 2]' }],

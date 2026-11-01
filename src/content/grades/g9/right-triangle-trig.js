@@ -159,6 +159,9 @@ export default {
     // ───────── 3. Complementary angles
     {
       slug: 'g9-right-triangle-trig-complementary',
+      practiceVisuals: {
+        0: { type: 'unitCircle', angle: 70, marks: [20], alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
+      },
       visuals: [{
         ...TRIANGLE,
         shapes: [
@@ -231,6 +234,9 @@ export default {
     // ───────── 4. Values for 30°, 45°, 60°
     {
       slug: 'g9-right-triangle-trig-special-values',
+      practiceVisuals: {
+        0: { type: 'unitCircle', angle: 60, marks: [30], alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
+      },
       visuals: [{
         type: 'valueTable',
         rows: [

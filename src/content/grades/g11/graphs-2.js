@@ -88,6 +88,9 @@ export default {
     // ───────── 2. Exponential and trigonometric graphs
     {
       slug: 'g11-graphs-2-exponential-trig',
+      practiceVisuals: {
+        2: { type: 'unitCircle', angle: 30, marks: [30, 150], alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -3, xMax: 3, yMin: 0, yMax: 8 }, height: 220,
         functions: [{ expr: '2^x', label: 'y = 2ˣ' }, { expr: '0.5^x', label: alt('y = 0,5ˣ', 'y = 0.5ˣ', 'y = 0,5ˣ'), color: 'secondary' }],
@@ -308,6 +311,17 @@ export default {
     // ───────── 5. Equation of a circle
     {
       slug: 'g11-graphs-2-circle-equation',
+      practiceVisuals: {
+        1: {
+        type: 'functionPlot', equal: true, view: { xMin: -9, xMax: 9, yMin: -9, yMax: 9 },
+        curves: [{ x: 'a + r*cos(t)', y: 'b + r*sin(t)' }],
+        points: [{ at: ['a', 'b'], label: 'S({a}, {b})', color: 'secondary' }],
+        segments: [{ from: ['a', 'b'], to: ['a + r', 'b'], color: 'secondary', label: 'r = {r}' }],
+        sliders: [{ name: 'a', min: -5, max: 5, step: 1, value: 2 }, { name: 'b', min: -5, max: 5, step: 1, value: -1 }, { name: 'r', min: 1, max: 6, step: 0.5, value: 3 }],
+        readouts: [{ text: { al: '(x − a)² + (y − b)² = r²: qendra ({a}, {b}), r² = {r^2}.', en: '(x − a)² + (y − b)² = r²: centre ({a}, {b}), r² = {r^2}.', de: '(x − a)² + (y − b)² = r²: Mittelpunkt ({a} | {b}), r² = {r^2}.' } }],
+        alt: { al: 'Rreth me qendër (a, b) dhe rreze r me rrëshqitës.', en: 'A circle with centre (a, b) and radius r on sliders.', de: 'Ein Kreis mit Mittelpunkt (a, b) und Radius r als Schieberegler.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -6, xMax: 6, yMin: -6, yMax: 6 }, grid: true, axes: true, height: 250,
         shapes: [

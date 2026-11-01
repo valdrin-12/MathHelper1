@@ -12,6 +12,16 @@ export default {
     // ───────── 1. Polynomials and rational functions
     {
       slug: 'g12-limits-infinity-polynomial-rational',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: 0, xMax: 30, yMin: -1, yMax: 4 },
+        functions: [{ expr: '(5*x^3 - x)/(2*x^3 + 7)', domain: [0, 30], label: 'y = (5x³ − x)/(2x³ + 7)' }, { expr: '2.5 + 0*x', color: 'muted', dashed: true, label: 'y = 2,5' }],
+        points: [{ at: ['x0', '(5*x0^3 - x0)/(2*x0^3 + 7)'], color: 'secondary' }],
+        sliders: [{ name: 'x0', label: 'x', min: 0, max: 30, step: 1, value: 2 }],
+        readouts: [{ text: { al: 'f({x0}) = {(5*x0^3 - x0)/(2*x0^3 + 7)}', en: 'f({x0}) = {(5*x0^3 - x0)/(2*x0^3 + 7)}', de: 'f({x0}) = {(5*x0^3 - x0)/(2*x0^3 + 7)}' } }],
+        alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -10, xMax: 10, yMin: -1, yMax: 4 }, height: 200,
         functions: [{ expr: '(3*x^2 - 1)/(x^2 + 5)', label: 'y = (3x² − 1)/(x² + 5)' }, { expr: '3 + 0*x', color: 'muted', dashed: true, label: 'y = 3' }],
@@ -80,6 +90,16 @@ export default {
     // ───────── 2. Horizontal asymptote
     {
       slug: 'g12-limits-infinity-horizontal-asymptote',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -20, xMax: 30, yMin: -6, yMax: 8 },
+        functions: [{ expr: '(6*x - 1)/(3*x + 2)', domain: [-20, -0.8], label: 'y = (6x − 1)/(3x + 2)' }, { expr: '(6*x - 1)/(3*x + 2)', domain: [-0.55, 30] }, { expr: '2 + 0*x', color: 'muted', dashed: true, label: 'y = 2' }],
+        points: [{ at: ['x0', '(6*x0 - 1)/(3*x0 + 2)'], color: 'secondary' }],
+        sliders: [{ name: 'x0', label: 'x', min: -20, max: 30, step: 1, value: 5 }],
+        readouts: [{ text: { al: 'f({x0}) = {(6*x0 - 1)/(3*x0 + 2)}', en: 'f({x0}) = {(6*x0 - 1)/(3*x0 + 2)}', de: 'f({x0}) = {(6*x0 - 1)/(3*x0 + 2)}' } }],
+        alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -6, xMax: 14, yMin: -6, yMax: 10 }, height: 230,
         functions: [

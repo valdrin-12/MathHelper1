@@ -12,6 +12,18 @@ export default {
     // ───────── 1. Equation of a line
     {
       slug: 'g11-graphs-1-line-equation',
+      practiceVisuals: {
+        2: {
+        type: 'functionPlot', equal: true, view: { xMin: -5, xMax: 5, yMin: -5, yMax: 5 },
+        functions: [{ expr: '2*x + (1)', color: 'muted', label: 'y = 2x + (1)' }, { expr: 'k*x + n', color: 'secondary', label: 'y = {k}x {+n}' }],
+        sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -0.5 }, { name: 'n', min: -6, max: 6, step: 0.5, value: 0 }],
+        readouts: [{ cases: [
+          { when: 'abs(2*k + 1) < 0.001', text: { al: 'k₁ · k₂ = 2 · {k} = −1: drejtëzat janë pingule.', en: 'k₁ · k₂ = 2 · {k} = −1: the lines are perpendicular.', de: 'k₁ · k₂ = 2 · {k} = −1: Die Geraden sind orthogonal.' } },
+          { text: { al: 'k₁ · k₂ = {2*k} ≠ −1: jo pingule.', en: 'k₁ · k₂ = {2*k} ≠ −1: not perpendicular.', de: 'k₁ · k₂ = {2*k} ≠ −1: nicht orthogonal.' } },
+        ] }],
+        alt: { al: 'Dy drejtëza: njëra e dhënë, tjetra y = kx + n me rrëshqitës.', en: 'Two lines: one given, the other y = kx + n on sliders.', de: 'Zwei Geraden: eine gegeben, die andere y = kx + n mit Schiebereglern.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -1, yMax: 11 }, height: 230,
         functions: [{ expr: '2*x + 1', label: 'y = 2x + 1' }],
@@ -84,6 +96,30 @@ export default {
     // ───────── 2. Linear and quadratic graphs
     {
       slug: 'g11-graphs-1-linear-quadratic',
+      practiceVisuals: {
+        1: {
+        type: 'functionPlot', view: { xMin: -3, xMax: 5, yMin: -5, yMax: 9 },
+        functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+        points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 1 }, { name: 'b', min: -8, max: 8, step: 1, value: -2 }, { name: 'c', min: -6, max: 6, step: 1, value: -3 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+        2: {
+        type: 'functionPlot', view: { xMin: -3, xMax: 5, yMin: -5, yMax: 9 },
+        functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+        points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 1 }, { name: 'b', min: -8, max: 8, step: 1, value: -2 }, { name: 'c', min: -6, max: 6, step: 1, value: -3 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -3, xMax: 6, yMin: -5, yMax: 9 }, height: 240,
         functions: [{ expr: 'x^2 - 2*x - 3', label: 'y = x² − 2x − 3' }, { expr: 'x + 1', label: 'y = x + 1', color: 'secondary' }],
@@ -156,6 +192,30 @@ export default {
     // ───────── 3. Properties of the parabola
     {
       slug: 'g11-graphs-1-parabola-properties',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -7, xMax: 2, yMin: -6, yMax: 8 },
+        functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+        points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 1 }, { name: 'b', min: -8, max: 8, step: 1, value: 6 }, { name: 'c', min: -6, max: 6, step: 1, value: 5 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+        2: {
+        type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -7, yMax: 6 },
+        functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+        points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 2 }, { name: 'b', min: -8, max: 8, step: 1, value: -8 }, { name: 'c', min: -6, max: 6, step: 1, value: 3 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -2, xMax: 6, yMin: -4, yMax: 7 }, height: 230,
         functions: [{ expr: 'x^2 - 4*x + 1', label: 'y = x² − 4x + 1' }],

@@ -89,6 +89,16 @@ export default {
     // ───────── 2. Reflection and point symmetry
     {
       slug: 'g6-transformations-solids-symmetry',
+      practiceVisuals: {
+        2: {
+        type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+        points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['p', '-q'], label: 'P′({p}, {-q})', color: 'secondary' }],
+        segments: [{ from: ['p', 'q'], to: ['p', '-q'], color: 'muted', dashed: true }],
+        sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 4 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: 2 }],
+        readouts: [{ text: { al: 'Pasqyrimi ndaj boshtit x: (x, y) → (x, −y)', en: 'Reflection in the x-axis: (x, y) → (x, −y)', de: 'Spiegelung an der x-Achse: (x | y) → (x | −y)' } }],
+        alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -5, xMax: 5, yMin: -1, yMax: 5 }, grid: true, axes: true, height: 190,
         shapes: [

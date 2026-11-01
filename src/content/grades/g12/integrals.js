@@ -153,6 +153,24 @@ export default {
     // ───────── 3. Definite integral
     {
       slug: 'g12-integrals-definite',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -0.3, xMax: 6.5, yMin: -1.3, yMax: 1.3 },
+        functions: [{ expr: 'sin(x)', label: 'y = sin x' }],
+        shade: { expr: 'sin(x)', from: 0, to: 'b' },
+        sliders: [{ name: 'b', min: 0.2, max: 6.28, step: 0.2, value: 3.14 }],
+        readouts: [{ text: { al: '∫₀ᵇ sin x dx = 1 − cos b = {1 - cos(b)}', en: '∫₀ᵇ sin x dx = 1 − cos b = {1 - cos(b)}', de: '∫₀ᵇ sin x dx = 1 − cos b = {1 - cos(b)}' } }],
+        alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+      },
+        2: {
+        type: 'functionPlot', view: { xMin: -2.2, xMax: 2.2, yMin: -8, yMax: 8 },
+        functions: [{ expr: 'x^3', label: 'y = x³' }],
+        shade: { expr: 'x^3', from: '-b', to: 'b' },
+        sliders: [{ name: 'b', min: 0.5, max: 2, step: 0.5, value: 1 }],
+        readouts: [{ text: { al: 'Integrali nga −b te b = 0, por syprina = b⁴/2 = {b^4/2}', en: 'The integral from −b to b = 0, but the area = b⁴/2 = {b^4/2}', de: 'Das Integral von −b bis b = 0, die Fläche aber = b⁴/2 = {b^4/2}' } }],
+        alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -0.5, xMax: 3.5, yMin: -1, yMax: 10 }, height: 210,
         functions: [{ expr: 'x^2', label: 'y = x²' }],
@@ -222,6 +240,24 @@ export default {
     // ───────── 4. Areas
     {
       slug: 'g12-integrals-areas',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -0.5, xMax: 6.5, yMin: -0.5, yMax: 3 },
+        functions: [{ expr: 'sqrt(x)', label: 'y = √x' }],
+        shade: { expr: 'sqrt(x)', from: 0, to: 'b' },
+        sliders: [{ name: 'b', min: 0.5, max: 6, step: 0.5, value: 4 }],
+        readouts: [{ text: { al: '∫₀ᵇ √x dx = 2/3 · b^(3/2) = {2/3*b^1.5}', en: '∫₀ᵇ √x dx = 2/3 · b^(3/2) = {2/3*b^1.5}', de: '∫₀ᵇ √x dx = 2/3 · b^(3/2) = {2/3*b^1.5}' } }],
+        alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+      },
+        1: {
+        type: 'functionPlot', view: { xMin: -0.2, xMax: 1.4, yMin: -0.2, yMax: 1.4 },
+        functions: [{ expr: 'x', label: 'y = x' }, { expr: 'x^2', color: 'secondary' }],
+        shade: { expr: 'x', from: 0, to: 'b', lower: 'x^2' },
+        sliders: [{ name: 'b', min: 0.25, max: 1, step: 0.25, value: 1 }],
+        readouts: [{ text: { al: 'Syprina midis y = x dhe y = x² nga 0 te b: b²/2 − b³/3 = {b^2/2 - b^3/3} (për b = 1: 1/6)', en: 'Area between y = x and y = x² from 0 to b: b²/2 − b³/3 = {b^2/2 - b^3/3} (for b = 1: 1/6)', de: 'Fläche zwischen y = x und y = x² von 0 bis b: b²/2 − b³/3 = {b^2/2 - b^3/3} (für b = 1: 1/6)' } }],
+        alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -0.5, xMax: 2.8, yMin: -0.5, yMax: 5 }, height: 210,
         functions: [{ expr: 'x^2', label: 'y = x²' }, { expr: '2*x', color: 'secondary', label: 'y = 2x' }],

@@ -12,6 +12,19 @@ export default {
     // ───────── 1. Definition
     {
       slug: 'g12-derivatives-definition',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -3, xMax: 3, yMin: -2, yMax: 9 },
+        functions: [{ expr: 'x^2', label: 'f(x) = x²' }, { expr: '(2*a)*(x - a) + (a^2)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', 'a^2'], label: '({a}, {a^2})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: -1 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {2*a} = pjerrësia e tangjentes; tangjentja: y = {2*a}x {+a^2 - (2*a)*a}', en: 'f′({a}) = {2*a} = gradient of the tangent; tangent: y = {2*a}x {+a^2 - (2*a)*a}', de: 'f′({a}) = {2*a} = Tangentensteigung; Tangente: y = {2*a}x {+a^2 - (2*a)*a}' } },
+          { cases: [{ when: '2*a > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '2*a < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: 0, xMax: 5, yMin: -2, yMax: 18 }, height: 220,
         functions: [
@@ -220,6 +233,41 @@ export default {
     // ───────── 4. Tangent
     {
       slug: 'g12-derivatives-tangent',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -2, xMax: 5, yMin: -4, yMax: 8 },
+        functions: [{ expr: 'x^2 - 3*x', label: 'f(x) = x² - 3x' }, { expr: '(2*a - 3)*(x - a) + (a^2 - 3*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', 'a^2 - 3*a'], label: '({a}, {a^2 - 3*a})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -2, max: 5, step: 0.5, value: 0 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {2*a - 3} = pjerrësia e tangjentes; tangjentja: y = {2*a - 3}x {+a^2 - 3*a - (2*a - 3)*a}', en: 'f′({a}) = {2*a - 3} = gradient of the tangent; tangent: y = {2*a - 3}x {+a^2 - 3*a - (2*a - 3)*a}', de: 'f′({a}) = {2*a - 3} = Tangentensteigung; Tangente: y = {2*a - 3}x {+a^2 - 3*a - (2*a - 3)*a}' } },
+          { cases: [{ when: '2*a - 3 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '2*a - 3 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+        1: {
+        type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -6, yMax: 6 },
+        functions: [{ expr: 'x^2 - 4*x', label: 'f(x) = x² - 4x' }, { expr: '(2*a - 4)*(x - a) + (a^2 - 4*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', 'a^2 - 4*a'], label: '({a}, {a^2 - 4*a})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -1, max: 5, step: 0.5, value: 0 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {2*a - 4} = pjerrësia e tangjentes; tangjentja: y = {2*a - 4}x {+a^2 - 4*a - (2*a - 4)*a}', en: 'f′({a}) = {2*a - 4} = gradient of the tangent; tangent: y = {2*a - 4}x {+a^2 - 4*a - (2*a - 4)*a}', de: 'f′({a}) = {2*a - 4} = Tangentensteigung; Tangente: y = {2*a - 4}x {+a^2 - 4*a - (2*a - 4)*a}' } },
+          { cases: [{ when: '2*a - 4 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '2*a - 4 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+        2: {
+        type: 'functionPlot', view: { xMin: 0, xMax: 5, yMin: -1, yMax: 5 },
+        functions: [{ expr: '1/x', label: 'f(x) = 1/x' }, { expr: '(-1/a^2)*(x - a) + (1/a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+        points: [{ at: ['a', '1/a'], label: '({a}, {1/a})', color: 'secondary' }],
+        sliders: [{ name: 'a', min: 0.5, max: 4, step: 0.5, value: 1 }],
+        readouts: [
+          { text: { al: 'f′({a}) = {-1/a^2} = pjerrësia e tangjentes; tangjentja: y = {-1/a^2}x {+1/a - (-1/a^2)*a}', en: 'f′({a}) = {-1/a^2} = gradient of the tangent; tangent: y = {-1/a^2}x {+1/a - (-1/a^2)*a}', de: 'f′({a}) = {-1/a^2} = Tangentensteigung; Tangente: y = {-1/a^2}x {+1/a - (-1/a^2)*a}' } },
+          { cases: [{ when: '-1/a^2 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '-1/a^2 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+        ],
+        alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -1, xMax: 4, yMin: -5, yMax: 12 }, height: 220,
         functions: [{ expr: 'x^2', label: 'y = x²' }, { expr: '4*x - 4', color: 'secondary', dashed: true, label: 'y = 4x − 4' }],

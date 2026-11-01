@@ -84,6 +84,19 @@ export default {
     // ───────── 2. Monotonicity
     {
       slug: 'g12-numeric-function-monotonicity',
+      practiceVisuals: {
+        1: {
+        type: 'functionPlot', view: { xMin: -1, xMax: 7, yMin: -3, yMax: 11 },
+        functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+        points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: -1 }, { name: 'b', min: -8, max: 8, step: 1, value: 6 }, { name: 'c', min: -6, max: 6, step: 1, value: 0 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -2, yMax: 6 }, height: 210,
         functions: [{ expr: 'x^2 - 4*x + 3', domain: [-0.6, 4.6], label: 'y = x² − 4x + 3' }],
@@ -153,6 +166,19 @@ export default {
     // ───────── 3. Extrema
     {
       slug: 'g12-numeric-function-extrema',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -5, xMax: 3, yMin: -1, yMax: 12 },
+        functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+        points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 1 }, { name: 'b', min: -8, max: 8, step: 1, value: 2 }, { name: 'c', min: -6, max: 6, step: 1, value: 5 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -1, xMax: 7, yMin: -2, yMax: 11 }, height: 210,
         functions: [{ expr: '-x^2 + 6*x', domain: [-0.4, 6.4], label: 'y = −x² + 6x' }],
@@ -290,6 +316,15 @@ export default {
     // ───────── 5. Periodicity
     {
       slug: 'g12-numeric-function-periodicity',
+      practiceVisuals: {
+        1: {
+        type: 'functionPlot', view: { xMin: 0, xMax: 360, yMin: -1.4, yMax: 1.4 }, xStep: 60,
+        functions: [{ expr: 'cos(x*pi/180)', color: 'muted', dashed: true, label: 'cos x' }, { expr: 'cos(k*x*pi/180)', label: 'cos({k}x)' }],
+        sliders: [{ name: 'k', min: 1, max: 6, step: 1, value: 3 }],
+        readouts: [{ text: { al: 'Perioda = 360° / k = {360/k}°', en: 'Period = 360° / k = {360/k}°', de: 'Periode = 360° / k = {360/k}°' } }],
+        alt: { al: 'Grafikët e cos x dhe cos(kx) nga 0° deri 360° me rrëshqitës për k.', en: 'The graphs of cos x and cos(kx) from 0° to 360° with a slider for k.', de: 'Die Graphen von cos x und cos(kx) von 0° bis 360° mit Schieberegler für k.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: 0, xMax: 12.6, yMin: -1.5, yMax: 1.5 }, height: 180,
         functions: [{ expr: 'sin(x)', label: 'y = sin x' }],

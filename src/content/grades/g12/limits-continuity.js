@@ -81,6 +81,16 @@ export default {
     // ───────── 2. Vertical asymptotes
     {
       slug: 'g12-limits-continuity-vertical-asymptotes',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -9, xMax: 3, yMin: -10, yMax: 10 },
+        functions: [{ expr: '5/(x + 4)', domain: [-9, -4.1], label: 'y = 5/(x + 4)' }, { expr: '5/(x + 4)', domain: [-3.9, 3] }],
+        points: [{ at: ['x0', '5/(x0 + 4)'], color: 'secondary' }],
+        sliders: [{ name: 'x0', label: 'x', min: -9, max: 3, step: 0.05, value: -3.5 }],
+        readouts: [{ text: { al: 'f({x0}) = {5/(x0 + 4)}', en: 'f({x0}) = {5/(x0 + 4)}', de: 'f({x0}) = {5/(x0 + 4)}' } }],
+        alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -2, xMax: 6, yMin: -6, yMax: 6 }, height: 220,
         functions: [{ expr: '1/(x - 2)', domain: [-2, 1.83], label: 'y = 1/(x − 2)' }, { expr: '1/(x - 2)', domain: [2.17, 6] }],

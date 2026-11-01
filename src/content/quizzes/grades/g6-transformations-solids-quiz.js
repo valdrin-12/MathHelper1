@@ -95,6 +95,14 @@ export default {
     {
       id: 4, type: 'choice', difficulty: 'medium', correct: 1,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+    points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['-p', 'q'], label: 'P′({-p}, {q})', color: 'secondary' }],
+    segments: [{ from: ['p', 'q'], to: ['-p', 'q'], color: 'muted', dashed: true }],
+    sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 3 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: 1 }],
+    readouts: [{ text: { al: 'Pasqyrimi ndaj boshtit y: (x, y) → (−x, y)', en: 'Reflection in the y-axis: (x, y) → (−x, y)', de: 'Spiegelung an der y-Achse: (x | y) → (−x | y)' } }],
+    alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+  },
       al: {
         question: 'Cili është pasqyrimi i A(3, 1) ndaj boshtit y?',
         options: ['(3, −1)', '(−3, 1)', '(−3, −1)', '(1, 3)'],
@@ -244,6 +252,14 @@ export default {
     {
       id: 10, type: 'choice', difficulty: 'hard', correct: 2,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+    points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['-p', '-q'], label: 'P′({-p}, {-q})', color: 'secondary' }],
+    segments: [{ from: ['p', 'q'], to: ['-p', '-q'], color: 'muted', dashed: true }],
+    sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 2 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: -4 }],
+    readouts: [{ text: { al: 'Simetria qendrore ndaj O: (x, y) → (−x, −y)', en: 'Point symmetry about O: (x, y) → (−x, −y)', de: 'Punktspiegelung an O: (x | y) → (−x | −y)' } }],
+    alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+  },
       al: {
         question: 'Cila është simetrikja e pikës (2, −4) ndaj origjinës?',
         options: ['(2, 4)', '(−2, −4)', '(−2, 4)', '(−4, 2)'],

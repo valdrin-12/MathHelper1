@@ -228,6 +228,30 @@ export default {
     // ───────── 4. The parabola y = ax²
     {
       slug: 'g8-function-parabola',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -12, yMax: 6 },
+        functions: [{ expr: 'a*x^2', label: 'y = {a}x²' }],
+        points: [{ at: [3, -9], label: '(3, -9)', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: -1 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { cases: [{ when: 'abs(a*(3)^2 - (-9)) < 0.001', text: { al: 'Parabola kalon nëpër (3, -9).', en: 'The parabola passes through (3, -9).', de: 'Die Parabel geht durch (3 | -9).' } }, { text: { al: 'Te x = 3 parabola ka y = {a*(3)^2}.', en: 'At x = 3 the parabola has y = {a*(3)^2}.', de: 'Bei x = 3 hat die Parabel y = {a*(3)^2}.' } }] },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+        2: {
+        type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -16, yMax: 8 },
+        functions: [{ expr: 'a*x^2', label: 'y = {a}x²' }],
+        points: [{ at: [2, -12], label: '(2, -12)', color: 'secondary' }],
+        sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: -3 }],
+        readouts: [
+          { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+          { cases: [{ when: 'abs(a*(2)^2 - (-12)) < 0.001', text: { al: 'Parabola kalon nëpër (2, -12).', en: 'The parabola passes through (2, -12).', de: 'Die Parabel geht durch (2 | -12).' } }, { text: { al: 'Te x = 2 parabola ka y = {a*(2)^2}.', en: 'At x = 2 the parabola has y = {a*(2)^2}.', de: 'Bei x = 2 hat die Parabel y = {a*(2)^2}.' } }] },
+        ],
+        alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -9, yMax: 9 }, height: 240,
         functions: [{ expr: 'a*x^2', label: 'y = ax²' }, { expr: 'x^2', color: 'muted', dashed: true, label: 'y = x²' }],

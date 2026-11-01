@@ -75,6 +75,21 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 0,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -8, xMax: 8, yMin: -8, yMax: 8 }, xStep: 2, yStep: 2,
+    segments: [
+      { from: [0, 0], to: ['u1', 'u2'], color: 'primary', label: 'u' },
+      { from: ['u1', 'u2'], to: ['u1 + 1*v1', 'u2 + 1*v2'], color: 'secondary', label: 'v' },
+      { from: [0, 0], to: ['u1 + 1*v1', 'u2 + 1*v2'], color: 'success', dashed: true },
+    ],
+    points: [{ at: ['u1 + 1*v1', 'u2 + 1*v2'], label: '({u1 + 1*v1}, {u2 + 1*v2})', color: 'success' }],
+    sliders: [
+      { name: 'u1', min: -5, max: 5, step: 1, value: 2 }, { name: 'u2', min: -5, max: 5, step: 1, value: 1 },
+      { name: 'v1', min: -5, max: 5, step: 1, value: 1 }, { name: 'v2', min: -5, max: 5, step: 1, value: 3 },
+    ],
+    readouts: [{ text: { al: 'u + v = ({u1 + 1*v1}, {u2 + 1*v2})', en: 'u + v = ({u1 + 1*v1}, {u2 + 1*v2})', de: 'u + v = ({u1 + 1*v1} | {u2 + 1*v2})' } }],
+    alt: { al: 'Vektorët u dhe v me rrëshqitës për koordinatat dhe shuma e tyre.', en: 'The vectors u and v with sliders for their coordinates and their sum.', de: 'Die Vektoren u und v mit Schiebereglern für die Koordinaten und ihre Summe.' },
+  },
       al: {
         question: 'u = (2, 1), v = (1, 3). Sa është u + v?', options: ['(3, 4)', '(2, 3)', '(1, −2)', '(3, 3)'],
         explanation: '(2 + 1, 1 + 3) = (3, 4).', hint: 'Mblidhni përbërëse me përbërëse.',
@@ -101,6 +116,21 @@ export default {
     {
       id: 8, type: 'choice', difficulty: 'medium', correct: 3,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -8, xMax: 8, yMin: -8, yMax: 8 }, xStep: 2, yStep: 2,
+    segments: [
+      { from: [0, 0], to: ['u1', 'u2'], color: 'primary', label: 'u' },
+      { from: ['u1', 'u2'], to: ['u1 + -1*v1', 'u2 + -1*v2'], color: 'secondary', label: '−v' },
+      { from: [0, 0], to: ['u1 + -1*v1', 'u2 + -1*v2'], color: 'success', dashed: true },
+    ],
+    points: [{ at: ['u1 + -1*v1', 'u2 + -1*v2'], label: '({u1 + -1*v1}, {u2 + -1*v2})', color: 'success' }],
+    sliders: [
+      { name: 'u1', min: -5, max: 5, step: 1, value: 1 }, { name: 'u2', min: -5, max: 5, step: 1, value: 3 },
+      { name: 'v1', min: -5, max: 5, step: 1, value: -2 }, { name: 'v2', min: -5, max: 5, step: 1, value: 1 },
+    ],
+    readouts: [{ text: { al: 'u − v = ({u1 + -1*v1}, {u2 + -1*v2})', en: 'u − v = ({u1 + -1*v1}, {u2 + -1*v2})', de: 'u − v = ({u1 + -1*v1} | {u2 + -1*v2})' } }],
+    alt: { al: 'Vektorët u dhe v me rrëshqitës për koordinatat dhe shuma e tyre.', en: 'The vectors u and v with sliders for their coordinates and their sum.', de: 'Die Vektoren u und v mit Schiebereglern für die Koordinaten und ihre Summe.' },
+  },
       al: {
         question: 'u = (1, 3), v = (−2, 1). Sa është 2u − v?', options: ['(0, 5)', '(4, 7)', '(3, 2)', '(4, 5)'],
         explanation: '(2, 6) − (−2, 1) = (4, 5).', hint: 'Fillimisht 2u, pastaj zbritni v.',

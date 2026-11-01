@@ -164,6 +164,30 @@ export default {
     // ───────── 3. Position of a line relative to a conic
     {
       slug: 'g12-hyperbola-parabola-line-conic',
+      practiceVisuals: {
+        1: {
+        type: 'functionPlot', equal: true, view: { xMin: -4, xMax: 10, yMin: -9, yMax: 9 },
+        curves: [{ x: 't^2/8', y: 't', t: [-9, 9], label: 'y² = 8x' }],
+        functions: [{ expr: 'x + n', color: 'secondary', label: 'y = x {+n}' }],
+        sliders: [{ name: 'n', min: -4, max: 6, step: 0.5, value: 3 }],
+        readouts: [
+          { text: { al: 'D = 64 − 32n = {64 - 32*n}', en: 'D = 64 − 32n = {64 - 32*n}', de: 'D = 64 − 32n = {64 - 32*n}' } },
+          { cases: [{ when: 'abs(n - 2) < 0.01', text: { al: 'D = 0: tangjente, në (2, 4).', en: 'D = 0: tangent, at (2, 4).', de: 'D = 0: Tangente in (2 | 4).' } }, { when: 'n < 2', text: { al: 'D > 0: dy pika prerjeje.', en: 'D > 0: two points of intersection.', de: 'D > 0: zwei Schnittpunkte.' } }, { text: { al: 'D < 0: asnjë pikë e përbashkët.', en: 'D < 0: no common points.', de: 'D < 0: keine gemeinsamen Punkte.' } }] },
+        ],
+        alt: { al: 'Parabola y² = 8x dhe drejtëza y = x + n me rrëshqitës.', en: 'The parabola y² = 8x and the line y = x + n on a slider.', de: 'Die Parabel y² = 8x und die Gerade y = x + n mit Schieberegler.' },
+      },
+        2: {
+        type: 'functionPlot', equal: true, view: { xMin: -4, xMax: 10, yMin: -9, yMax: 9 },
+        curves: [{ x: 't^2/8', y: 't', t: [-9, 9], label: 'y² = 8x' }],
+        functions: [{ expr: 'x + n', color: 'secondary', label: 'y = x {+n}' }],
+        sliders: [{ name: 'n', min: -4, max: 6, step: 0.5, value: 0 }],
+        readouts: [
+          { text: { al: 'D = 64 − 32n = {64 - 32*n}', en: 'D = 64 − 32n = {64 - 32*n}', de: 'D = 64 − 32n = {64 - 32*n}' } },
+          { cases: [{ when: 'abs(n - 2) < 0.01', text: { al: 'D = 0: tangjente, në (2, 4).', en: 'D = 0: tangent, at (2, 4).', de: 'D = 0: Tangente in (2 | 4).' } }, { when: 'n < 2', text: { al: 'D > 0: dy pika prerjeje.', en: 'D > 0: two points of intersection.', de: 'D > 0: zwei Schnittpunkte.' } }, { text: { al: 'D < 0: asnjë pikë e përbashkët.', en: 'D < 0: no common points.', de: 'D < 0: keine gemeinsamen Punkte.' } }] },
+        ],
+        alt: { al: 'Parabola y² = 8x dhe drejtëza y = x + n me rrëshqitës.', en: 'The parabola y² = 8x and the line y = x + n on a slider.', de: 'Die Parabel y² = 8x und die Gerade y = x + n mit Schieberegler.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -3, xMax: 7, yMin: -8, yMax: 8 }, height: 230,
         functions: [
