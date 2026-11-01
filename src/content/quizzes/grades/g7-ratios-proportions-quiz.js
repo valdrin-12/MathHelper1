@@ -18,12 +18,12 @@ export default {
       verify: [['12 / 6', 2], ['18 / 6', 3]],
       al: {
         question: 'Cila është trajta më e thjeshtë e raportit 12 : 18?', options: ['2 : 3', '6 : 9', '3 : 4', '4 : 6'],
-        explanation: 'SHMV(12, 18) = 6, pra 12 : 18 = 2 : 3.', hint: 'Pjesëtoni të dy anëtarët me SHMV-në.',
+        explanation: 'PMP(12, 18) = 6, pra 12 : 18 = 2 : 3.', hint: 'Pjesëtoni të dy anëtarët me PMP-në.',
         whyWrong: [null, 'I barabartë, por mund të thjeshtohet edhe me 3.', '3 · 18 ≠ 4 · 12; ky është raport tjetër.', 'I barabartë, por mund të thjeshtohet edhe me 2.'],
       },
       en: {
         question: 'What is the simplest form of the ratio 12 : 18?', options: ['2 : 3', '6 : 9', '3 : 4', '4 : 6'],
-        explanation: 'HCF(12, 18) = 6, so 12 : 18 = 2 : 3.', hint: 'Divide both terms by the HCF.',
+        explanation: 'GCD(12, 18) = 6, so 12 : 18 = 2 : 3.', hint: 'Divide both terms by the GCD.',
         whyWrong: [null, 'Equal, but it can still be divided by 3.', '3 · 18 ≠ 4 · 12; that is a different ratio.', 'Equal, but it can still be divided by 2.'],
       },
       de: {

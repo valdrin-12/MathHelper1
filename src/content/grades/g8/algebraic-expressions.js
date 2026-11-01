@@ -334,7 +334,7 @@ export default {
       al: {
         title: 'Faktorizimi',
         objectives: ['Të nxirrni faktorin e përbashkët para kllapave.', 'Të faktorizoni me grupim dhe me formulat e njohura.'],
-        theory: 'Faktorizimi e shndërron shumën në prodhim. Hapi i parë është gjithmonë nxjerrja e faktorit të përbashkët më të madh: 6x²y − 9xy² = 3xy(2x − 3y) (SHMV(6, 9) = 3, fuqitë më të vogla x dhe y).\n\nGrupimi: kur katër kufiza nuk kanë faktor të përbashkët, i grupojmë dyshe: ax + ay + 3x + 3y = a(x + y) + 3(x + y) = (a + 3)(x + y).\n\nFormulat: a² − b² = (a − b)(a + b); a² ± 2ab + b² = (a ± b)². Kontroll: shumëzoni faktorët dhe duhet të dalë shprehja fillestare.',
+        theory: 'Faktorizimi e shndërron shumën në prodhim. Hapi i parë është gjithmonë nxjerrja e faktorit të përbashkët më të madh: 6x²y − 9xy² = 3xy(2x − 3y) (PMP(6, 9) = 3, fuqitë më të vogla x dhe y).\n\nGrupimi: kur katër kufiza nuk kanë faktor të përbashkët, i grupojmë dyshe: ax + ay + 3x + 3y = a(x + y) + 3(x + y) = (a + 3)(x + y).\n\nFormulat: a² − b² = (a − b)(a + b); a² ± 2ab + b² = (a ± b)². Kontroll: shumëzoni faktorët dhe duhet të dalë shprehja fillestare.',
         keyPoints: ['1. Faktori i përbashkët', '2. Grupimi (4 kufiza)', '3. Formulat; kontroll me shumëzim'],
         examples: [
           { example: 'Faktorizoni 6x²y − 9xy².', solution: '3xy(2x − 3y). Kontroll: 3xy · 2x − 3xy · 3y = 6x²y − 9xy².' },
@@ -353,7 +353,7 @@ export default {
       en: {
         title: 'Factorising',
         objectives: ['Take out the common factor.', 'Factorise by grouping and with the known identities.'],
-        theory: 'Factorising turns a sum into a product. The first step is always to take out the highest common factor: 6x²y − 9xy² = 3xy(2x − 3y) (HCF(6, 9) = 3, the lowest powers x and y).\n\nGrouping: when four terms have no common factor, group them in pairs: ax + ay + 3x + 3y = a(x + y) + 3(x + y) = (a + 3)(x + y).\n\nIdentities: a² − b² = (a − b)(a + b); a² ± 2ab + b² = (a ± b)². Check: multiply the factors out and you must get the original expression.',
+        theory: 'Factorising turns a sum into a product. The first step is always to take out the highest common factor: 6x²y − 9xy² = 3xy(2x − 3y) (GCD(6, 9) = 3, the lowest powers x and y).\n\nGrouping: when four terms have no common factor, group them in pairs: ax + ay + 3x + 3y = a(x + y) + 3(x + y) = (a + 3)(x + y).\n\nIdentities: a² − b² = (a − b)(a + b); a² ± 2ab + b² = (a ± b)². Check: multiply the factors out and you must get the original expression.',
         keyPoints: ['1. Common factor', '2. Grouping (4 terms)', '3. Identities; check by multiplying'],
         examples: [
           { example: 'Factorise 6x²y − 9xy².', solution: '3xy(2x − 3y). Check: 3xy · 2x − 3xy · 3y = 6x²y − 9xy².' },
