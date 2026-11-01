@@ -9,9 +9,9 @@ import { useDashboardStyles } from './dashboardStyles';
 
 export const DAILY_GOAL = 10;
 
-// Compact progress strip at the top of Home: the daily-goal ring (n/10), the streak and the level.
+// Compact progress strip at the top of Home: the daily-goal ring (n/10) and the streak.
 // Readable at a glance, like Apple Fitness rings and Duolingo's top bar.
-export default function DailyGoalCard({ todayProblems, streak = 0, level, xp, onPress }) {
+export default function DailyGoalCard({ todayProblems, streak = 0, onPress }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useDashboardStyles();
@@ -44,12 +44,6 @@ export default function DailyGoalCard({ todayProblems, streak = 0, level, xp, on
             <Ionicons name="flame" size={14} color={colors.secondary} />
             <Text style={[styles.stripChipText, { color: colors.secondary }]}>{streak}</Text>
           </View>
-          {level ? (
-            <View style={[styles.stripChip, { backgroundColor: `${colors.primary}1A` }]} accessibilityLabel={`${t('progress.levelN', { level: level.level })}, ${xp} XP`}>
-              <Ionicons name="star" size={13} color={colors.primary} />
-              <Text style={[styles.stripChipText, { color: colors.primary }]}>{t('progress.levelShort', { level: level.level })}</Text>
-            </View>
-          ) : null}
         </View>
       </TouchableOpacity>
     </Card>

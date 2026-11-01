@@ -392,9 +392,6 @@
     "history": "Frühere Versuche",
     "practiceMistakes": "Fehler üben ({{count}})",
     "practiceNotCounted": "Übung – zählt nicht zur Bewertung",
-    "xpGained": "+{{xp}} XP",
-    "hintPenalty": "−{{xp}} XP für genutzte Tipps",
-    "levelUp": "Neue Stufe!",
     "timeUp": "Zeit abgelaufen",
     "testMode": "Test",
     "notAnswered": "Nicht beantwortet"
@@ -778,9 +775,6 @@
     "INVALID_CODE": "Ungültiger oder abgelaufener Code. Bitte versuchen Sie es erneut oder fordern Sie einen neuen Code an."
   },
   "progress": {
-    "levelN": "Stufe {{level}}",
-    "levelShort": "Lvl {{level}}",
-    "xpToNext": "Noch {{xp}} XP bis Stufe {{level}}",
     "mastery": "Themenbeherrschung",
     "masteryValue": "{{percent}} % beherrscht",
     "masteryEmpty": "Schließen Sie ein Quiz ab, um zu sehen, wie gut Sie jedes Thema beherrschen.",

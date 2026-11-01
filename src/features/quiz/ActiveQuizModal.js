@@ -79,16 +79,14 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
   const handleTimeUp = useCallback(() => {
     if (!quizSet || completedRef.current) return;
     const { currentIndex: idx, selectedOption: sel, inputText: text, showHint: hint } = liveRef.current;
-    const done = [...answersRef.current];
-    const start = done.length; // questions before this one are already graded
-    quizSet.questions.forEach((q, i) => {
-      if (i < start) return;
+    // The current question is graded from what is picked now; others keep their saved answer (the student may
+    // have gone back), and questions never reached are wrong
+    const done = quizSet.questions.map((q, i) => {
       if (i === idx) {
         const given = q.type === 'input' ? (Number.isFinite(parseNumericAnswer(text, q.unit, q.numberLang)) ? text.trim() : null) : sel;
-        done.push(gradeAnswer(q, given, hint));
-      } else {
-        done.push(gradeAnswer(q, null, false));
+        return gradeAnswer(q, given, hint);
       }
+      return answersRef.current[i] || gradeAnswer(q, null, false);
     });
     finish(done, { timedOut: true });
   }, [quizSet, finish]);
@@ -138,8 +136,9 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
       setInputError(true);
       return;
     }
-    const record = gradeAnswer(currentQuestion, givenNow, showHint);
-    const newAnswers = [...answers, record];
+    // One record per question: going back and forward again replaces it instead of adding a new one
+    const newAnswers = [...answers];
+    newAnswers[currentIndex] = gradeAnswer(currentQuestion, givenNow, showHint);
     answersRef.current = newAnswers;
 
     Animated.timing(fadeAnim, { toValue: 0, duration: 200, useNativeDriver: true }).start(() => {
@@ -147,14 +146,41 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
         finish(newAnswers);
       } else {
         setAnswers(newAnswers);
-        setCurrentIndex(currentIndex + 1);
-        setSelectedOption(null);
-        setInputText('');
-        setInputError(false);
-        setShowExplanation(false);
-        setShowHint(false);
+        showQuestion(currentIndex + 1, newAnswers);
         Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
       }
+    });
+  };
+
+  // Puts question idx on screen with its saved answer, if any. Practice: an answered question comes back
+  // checked and read-only (with its explanation); test: the answer can still be changed.
+  const showQuestion = (idx, list) => {
+    const rec = list[idx];
+    const q = quizSet.questions[idx];
+    const given = rec ? rec.given : null;
+    const isInput = (q.type || 'choice') === 'input';
+    setCurrentIndex(idx);
+    setSelectedOption(isInput ? null : given);
+    setInputText(isInput && given !== null ? String(given) : '');
+    setInputError(false);
+    setShowHint(!!rec?.usedHint);
+    setShowExplanation(!isTest && given !== null && given !== undefined);
+  };
+
+  const handleBack = () => {
+    if (completedRef.current || currentIndex === 0) return;
+    // Keep what is already picked on this question, so coming back here shows it again
+    const newAnswers = [...answers];
+    // (practice: only once it has been checked; test: any valid pick)
+    if (isTest ? hasAnswer && !(type === 'input' && !Number.isFinite(parsedInput)) : answered) {
+      newAnswers[currentIndex] = gradeAnswer(currentQuestion, givenNow, showHint);
+    }
+    answersRef.current = newAnswers;
+    haptic('light');
+    Animated.timing(fadeAnim, { toValue: 0, duration: 150, useNativeDriver: true }).start(() => {
+      setAnswers(newAnswers);
+      showQuestion(currentIndex - 1, newAnswers);
+      Animated.timing(fadeAnim, { toValue: 1, duration: 250, useNativeDriver: true }).start();
     });
   };
 
@@ -212,6 +238,7 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
           totalQuestions={totalQuestions}
           remaining={remaining}
           onQuit={handleQuit}
+          onBack={handleBack}
         />
 
         <Animated.View style={[styles.content, { opacity: fadeAnim }]}>

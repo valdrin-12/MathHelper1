@@ -10,8 +10,8 @@ const formatClock = (secs) => {
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
 };
 
-// Navigation bar (close · centered title · quiz glyph or timer) and the thin progress bar below it.
-export default function QuizHeader({ quizSet, isTest, currentIndex, totalQuestions, remaining, onQuit }) {
+// Navigation bar (back · close · centered title · quiz glyph or timer) and the thin progress bar below it.
+export default function QuizHeader({ quizSet, isTest, currentIndex, totalQuestions, remaining, onQuit, onBack }) {
   const { t } = useTranslation();
   const { colors } = useTheme();
   const styles = useQuizStyles();
@@ -20,6 +20,19 @@ export default function QuizHeader({ quizSet, isTest, currentIndex, totalQuestio
   return (
     <>
       <View style={styles.header}>
+        {/* Back to the previous question, the same button as in Learn; hidden on the first question */}
+        <TouchableOpacity
+          onPress={onBack}
+          disabled={currentIndex === 0}
+          style={[styles.backButton, currentIndex === 0 && styles.backButtonHidden]}
+          hitSlop={8}
+          accessibilityRole="button"
+          accessibilityLabel={t('a11y.back')}
+          accessibilityElementsHidden={currentIndex === 0}
+          importantForAccessibility={currentIndex === 0 ? 'no-hide-descendants' : 'auto'}
+        >
+          <Ionicons name="chevron-back" size={26} color={colors.primary} />
+        </TouchableOpacity>
         <TouchableOpacity onPress={onQuit} style={styles.quitButton} hitSlop={8} activeOpacity={0.6} accessibilityRole="button" accessibilityLabel={t('activeQuiz.quitTitle')}>
           <Ionicons name="close" size={18} color={colors.textSubtle} />
         </TouchableOpacity>

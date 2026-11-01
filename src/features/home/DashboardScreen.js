@@ -22,7 +22,6 @@ import useSolveFlow from './useSolveFlow';
 import { useDashboardStyles } from './dashboardStyles';
 import DailyGoalCard, { DAILY_GOAL } from './DailyGoalCard';
 import Confetti from '../../shared/ui/Confetti';
-import { useProgress } from '../progress/progress';
 import SolveCard from './SolveCard';
 import StatsGrid from './StatsGrid';
 import RecentActivity from './RecentActivity';
@@ -35,7 +34,6 @@ export default function DashboardScreen() {
   const { addItem, savedItems, removeItem } = useSavedItems();
   const { user } = useUser();
   const { todayProblems, totalProblems, completedCoursesCount, completedQuizzesCount, streak, refresh, stats, loading: statsLoading } = useStats();
-  const { xp, level } = useProgress(stats, user?.id);
   const { colors } = useTheme();
   const { isWeb } = useResponsive();
   const styles = useDashboardStyles();
@@ -185,8 +183,6 @@ export default function DashboardScreen() {
           <DailyGoalCard
             todayProblems={todayProblems}
             streak={streak}
-            level={level}
-            xp={xp.total}
             onPress={() => (user ? setShowProfile(true) : setGuestPrompt('profile'))}
           />
 

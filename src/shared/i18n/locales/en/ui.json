@@ -392,9 +392,6 @@
     "history": "Previous attempts",
     "practiceMistakes": "Practise mistakes ({{count}})",
     "practiceNotCounted": "Practice — not counted in your score",
-    "xpGained": "+{{xp}} XP",
-    "hintPenalty": "−{{xp}} XP for hints used",
-    "levelUp": "Level up!",
     "timeUp": "Time's up",
     "testMode": "Test",
     "notAnswered": "Not answered"
@@ -778,9 +775,6 @@
     "INVALID_CODE": "Invalid or expired code. Please try again or request a new code."
   },
   "progress": {
-    "levelN": "Level {{level}}",
-    "levelShort": "Lv. {{level}}",
-    "xpToNext": "{{xp}} XP to level {{level}}",
     "mastery": "Topic mastery",
     "masteryValue": "{{percent}}% mastery",
     "masteryEmpty": "Finish a quiz to see how well you master each topic.",

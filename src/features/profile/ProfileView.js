@@ -13,7 +13,6 @@ import { useProfileStyles } from './profileStyles';
 import CircularProgress from './CircularProgress';
 import WeeklyChart from './WeeklyChart';
 import AchievementBadge from './AchievementBadge';
-import LevelCard from './LevelCard';
 import MasteryList from './MasteryList';
 
 const formatDate = (dateString, t) => {
@@ -25,7 +24,7 @@ const formatDate = (dateString, t) => {
   return `${day} ${month} ${year}`;
 };
 
-// The profile page: identity, level, stats, streak, weekly chart, mastery, achievements and account actions.
+// The profile page: identity, stats, streak, weekly chart, mastery, achievements and account actions.
 // fadeAnim / scaleAnim belong to the sheet so the avatar animates only when the sheet opens.
 export default function ProfileView({ fadeAnim, scaleAnim, onClose, onEdit, onUpgrade }) {
   const { t } = useTranslation();
@@ -37,7 +36,7 @@ export default function ProfileView({ fadeAnim, scaleAnim, onClose, onEdit, onUp
   const styles = useProfileStyles();
   const isPremium = isPremiumActive(user);
   const { quizSets } = useLocalizedQuizzes();
-  const { xp, level, mastery } = useProgress(stats, user?.id, quizSets);
+  const { mastery } = useProgress(stats, user?.id, quizSets);
 
   const initials = user.name
     ? user.name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2)
@@ -97,9 +96,6 @@ export default function ProfileView({ fadeAnim, scaleAnim, onClose, onEdit, onUp
             </Text>
           </View>
         </Animated.View>
-
-        {/* Level + XP */}
-        <LevelCard level={level} xp={xp.total} />
 
         {/* Circular Stats */}
         <Card style={styles.circularStatsRow}>
