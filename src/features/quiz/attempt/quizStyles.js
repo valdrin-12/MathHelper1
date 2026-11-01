@@ -42,6 +42,12 @@ export const makeStyles = (colors) => StyleSheet.create({
     paddingVertical: SPACING.sm + 2,
     backgroundColor: colors.background,
   },
+  backButton: {
+    marginRight: SPACING.sm,
+  },
+  backButtonHidden: {
+    opacity: 0,
+  },
   quitButton: {
     width: 30,
     height: 30,

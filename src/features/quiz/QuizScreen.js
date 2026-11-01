@@ -123,9 +123,8 @@ export default function QuizScreen() {
   const [challengeCompletedToday, setChallengeCompletedToday] = useState(false);
   const [pendingQuiz, setPendingQuiz] = useState(null); // quiz waiting for a mode choice
   const [quizMode, setQuizMode] = useState('practice');
-  const [xpSummary, setXpSummary] = useState(null);
   const [timedOut, setTimedOut] = useState(false);
-  const { xp, level, addXp } = useProgress(stats, user?.id);
+  const { addXp } = useProgress(stats, user?.id);
 
   useEffect(() => {
     AsyncStorage.getItem(QUIZ_MODE_KEY)
@@ -226,7 +225,6 @@ export default function QuizScreen() {
     if (quizSet?.isPractice) {
       setLastScore(null);
       const attemptXp = computeAttemptXp({ correct, total, hintsUsed, mode: 'practice', isMistakesPractice: true });
-      setXpSummary({ ...attemptXp, totalBefore: xp.total, totalAfter: xp.total + attemptXp.gained });
       if (attemptXp.gained) addXp(attemptXp.gained);
       return;
     }
@@ -234,7 +232,6 @@ export default function QuizScreen() {
     setLastScore(percentage);
     const previousAttempts = (stats?.completedQuizzes || []).filter(q => q.quizId === quizSet?.id).length;
     const attemptXp = computeAttemptXp({ correct, total, hintsUsed, mode: quizSet?.mode, previousAttempts });
-    setXpSummary({ ...attemptXp, totalBefore: xp.total, totalAfter: xp.total + attemptXp.gained });
     // Guard: only record if we have a valid quiz reference
     if (quizSet?.id && quizSet?.title) {
       // Quiz XP is derived from the recorded attempt; hints are charged locally once it is saved
@@ -256,7 +253,6 @@ export default function QuizScreen() {
   const handleRetryQuiz = () => {
     setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet), { mode: completedQuizSet?.mode }));
     setShowResult(false);
-    setXpSummary(null);
     setQuizResult(null);
     setShowQuiz(true);
   };
@@ -267,7 +263,6 @@ export default function QuizScreen() {
     // Always with immediate feedback, whatever the original mode was
     setActiveQuiz(createQuizAttempt(findOriginalSet(completedQuizSet), { questionIds: wrongIds, isPractice: true, mode: 'practice' }));
     setShowResult(false);
-    setXpSummary(null);
     setQuizResult(null);
     setShowQuiz(true);
   };
@@ -278,7 +273,6 @@ export default function QuizScreen() {
     setCompletedQuizSet(null);
     setActiveQuiz(null);
     setLastScore(null);
-    setXpSummary(null);
     setTimedOut(false);
   };
 
@@ -310,15 +304,6 @@ export default function QuizScreen() {
           subtitle={t('quiz.quizzesAvailable', { count: quizSets.length })}
           right={(
             <View style={styles.headerChips}>
-              <View
-                style={styles.levelChip}
-                accessible
-                accessibilityLabel={`${t('progress.levelN', { level: level.level })}, ${xp.total} XP`}
-              >
-                <Ionicons name="sparkles" size={14} color={colors.primary} />
-                <Text style={styles.levelText}>{t('progress.levelShort', { level: level.level })}</Text>
-                <Text style={styles.levelXp}>{xp.total} XP</Text>
-              </View>
               {streak > 0 && (
                 <View style={styles.streakChip}>
                   <Ionicons name="flame" size={15} color={colors.secondary} />
@@ -475,7 +460,6 @@ export default function QuizScreen() {
         onPracticeMistakes={handlePracticeMistakes}
         isPerfectScore={lastScore === 100}
         quizHistory={(stats?.completedQuizzes || []).filter(q => q.quizId === completedQuizSet?.id)}
-        xpSummary={xpSummary}
         timedOut={timedOut}
       />
 
@@ -509,23 +493,6 @@ const makeStyles = (colors) => StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: SPACING.xs + 2,
-  },
-  levelChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    backgroundColor: colors.primaryBg,
-    paddingHorizontal: SPACING.sm + 2,
-    paddingVertical: SPACING.xs + 1,
-    borderRadius: BORDER_RADIUS.round,
-  },
-  levelText: {
-    ...TYPOGRAPHY.subheadBold,
-    color: colors.primary,
-  },
-  levelXp: {
-    ...TYPOGRAPHY.footnote,
-    color: colors.primary,
   },
 
   // Mode sheet

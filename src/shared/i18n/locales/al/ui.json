@@ -392,9 +392,6 @@
     "history": "Tentativa të mëparshme",
     "practiceMistakes": "Ushtroni gabimet ({{count}})",
     "practiceNotCounted": "Ushtrim — nuk llogaritet në rezultat",
-    "xpGained": "+{{xp}} XP",
-    "hintPenalty": "−{{xp}} XP për ndihmat e përdorura",
-    "levelUp": "Niveli i ri!",
     "timeUp": "Koha mbaroi",
     "testMode": "Test",
     "notAnswered": "Pa përgjigje"
@@ -883,9 +880,6 @@
     "INVALID_CODE": "Kodi është i pavlefshëm ose ka skaduar. Provoni përsëri ose kërkoni një kod të ri."
   },
   "progress": {
-    "levelN": "Niveli {{level}}",
-    "levelShort": "Niv. {{level}}",
-    "xpToNext": "Edhe {{xp}} XP deri në nivelin {{level}}",
     "mastery": "Zotërimi i temave",
     "masteryValue": "zotërim {{percent}}%",
     "masteryEmpty": "Përfundoni një kuiz për të parë sa e zotëroni secilën temë.",

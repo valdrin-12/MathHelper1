@@ -15,7 +15,6 @@ import { SPACING, BORDER_RADIUS, TYPOGRAPHY } from '../../shared/theme/constants
 import { useTheme } from '../../shared/theme/ThemeContext';
 import { Button, Pill } from '../../shared/ui';
 import Confetti from '../../shared/ui/Confetti';
-import { getLevelInfo } from '../progress/progress';
 import { formatNumber, parseNumericAnswer, findCommonMistake } from './quizAttempt';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
@@ -123,40 +122,7 @@ function ConfettiAnimation() {
   );
 }
 
-// XP gained in this attempt and the level progress after it
-function XpCard({ xpSummary, styles, colors, t }) {
-  const before = getLevelInfo(xpSummary.totalBefore);
-  const after = getLevelInfo(xpSummary.totalAfter);
-  const leveledUp = after.level > before.level;
-  return (
-    <View style={styles.xpCard} accessible accessibilityLabel={`${t('quizResult.xpGained', { xp: xpSummary.gained })}, ${t('progress.levelN', { level: after.level })}`}>
-      <View style={styles.xpTopRow}>
-        <View style={styles.xpIcon}>
-          <Ionicons name="sparkles" size={18} color={colors.warningAccent} />
-        </View>
-        <View style={styles.flex1}>
-          <Text style={styles.xpGained}>{t('quizResult.xpGained', { xp: xpSummary.gained })}</Text>
-          {xpSummary.hintPenalty > 0 && (
-            <Text style={styles.xpNote}>{t('quizResult.hintPenalty', { xp: xpSummary.hintPenalty })}</Text>
-          )}
-        </View>
-        {leveledUp && <Pill icon="arrow-up-circle" label={t('quizResult.levelUp')} color={colors.success} filled />}
-      </View>
-      <View style={styles.xpLevelRow}>
-        <Text style={styles.xpLevelText} numberOfLines={1}>
-          {t('progress.levelN', { level: after.level })} · {t(after.nameKey)}
-        </Text>
-        <Text style={styles.xpLevelValue}>{after.xpIntoLevel}/{after.xpForLevel} XP</Text>
-      </View>
-      <View style={styles.xpBar}>
-        <View style={[styles.xpBarFill, { width: `${Math.round(after.progress * 100)}%` }]} />
-      </View>
-      <Text style={styles.xpNote}>{t('progress.xpToNext', { xp: after.nextLevelAt - after.xp, level: after.level + 1 })}</Text>
-    </View>
-  );
-}
-
-export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, onPracticeMistakes, isPerfectScore, quizHistory = [], xpSummary, timedOut }) {
+export default function QuizResultModal({ visible, result, quizSet, onClose, onRetry, onPracticeMistakes, isPerfectScore, quizHistory = [], timedOut }) {
   const { t, i18n } = useTranslation();
   const lang = (i18n.language || 'al').slice(0, 2);
   const { colors } = useTheme();
@@ -264,7 +230,6 @@ export default function QuizResultModal({ visible, result, quizSet, onClose, onR
             </View>
           </View>
 
-          {xpSummary && <XpCard xpSummary={xpSummary} styles={styles} colors={colors} t={t} />}
 
           {/* Review Answers */}
           <Text style={styles.reviewTitle}>{t('quizResult.reviewAnswers')}</Text>
@@ -534,64 +499,6 @@ const makeStyles = (colors) => StyleSheet.create({
   },
 
   // XP
-  flex1: {
-    flex: 1,
-  },
-  xpCard: {
-    backgroundColor: colors.surface,
-    borderRadius: BORDER_RADIUS.lg,
-    padding: SPACING.lg,
-    marginTop: SPACING.lg,
-    gap: SPACING.sm,
-  },
-  xpTopRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: SPACING.md,
-  },
-  xpIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.warningLight,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  xpGained: {
-    ...TYPOGRAPHY.h2,
-    color: colors.text,
-  },
-  xpLevelRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    gap: SPACING.sm,
-    marginTop: SPACING.xs,
-  },
-  xpLevelText: {
-    ...TYPOGRAPHY.subheadBold,
-    color: colors.text,
-    flex: 1,
-  },
-  xpLevelValue: {
-    ...TYPOGRAPHY.footnote,
-    color: colors.textSubtle,
-  },
-  xpBar: {
-    height: 8,
-    backgroundColor: colors.borderLight,
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  xpBarFill: {
-    height: '100%',
-    borderRadius: 4,
-    backgroundColor: colors.warningAccent,
-  },
-  xpNote: {
-    ...TYPOGRAPHY.footnote,
-    color: colors.textSubtle,
-  },
 
   // History
   historySection: {
