@@ -16,6 +16,14 @@ export default {
     {
       id: 1, type: 'choice', difficulty: 'easy', correct: 1,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+    points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['p', '-q'], label: 'P′({p}, {-q})', color: 'secondary' }],
+    segments: [{ from: ['p', 'q'], to: ['p', '-q'], color: 'muted', dashed: true }],
+    sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 3 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: -2 }],
+    readouts: [{ text: { al: 'Pasqyrimi ndaj boshtit x: (x, y) → (x, −y)', en: 'Reflection in the x-axis: (x, y) → (x, −y)', de: 'Spiegelung an der x-Achse: (x | y) → (x | −y)' } }],
+    alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+  },
       al: {
         question: 'Cila është pasqyra e pikës A(3, −2) në boshtin x?', options: ['(−3, −2)', '(3, 2)', '(−3, 2)', '(−2, 3)'],
         explanation: 'Në boshtin x ndryshon vetëm shenja e y: (3, 2).', hint: 'Pika lëviz lart-poshtë.',

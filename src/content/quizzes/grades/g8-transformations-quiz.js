@@ -16,6 +16,14 @@ export default {
     {
       id: 1, type: 'choice', difficulty: 'easy', correct: 1,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+    points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['-q', 'p'], label: 'P′({-q}, {p})', color: 'secondary' }],
+    segments: [{ from: [0, 0], to: ['p', 'q'], color: 'muted', dashed: true }, { from: [0, 0], to: ['-q', 'p'], color: 'muted', dashed: true }],
+    sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 3 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: 1 }],
+    readouts: [{ text: { al: 'Rrotullimi 90° kundër akrepave: (x, y) → (−y, x)', en: 'Rotation 90° anticlockwise: (x, y) → (−y, x)', de: 'Drehung um 90° gegen den Uhrzeigersinn: (x | y) → (−y | x)' } }],
+    alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+  },
       al: {
         question: 'Rrotulloni pikën (3, 1) me 90° kundër akrepave të orës rreth origjinës.', options: ['(1, −3)', '(−1, 3)', '(−3, −1)', '(3, −1)'],
         explanation: '(x, y) → (−y, x): (−1, 3).', hint: 'Ndërroni koordinatat dhe ndryshoni shenjën e së parës.',
@@ -75,6 +83,15 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 0,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+    functions: [{ expr: 'x', color: 'muted', dashed: true, label: 'y = x' }],
+    points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['q', 'p'], label: 'P′({q}, {p})', color: 'secondary' }],
+    segments: [{ from: ['p', 'q'], to: ['q', 'p'], color: 'muted', dashed: true }],
+    sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 3 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: -2 }],
+    readouts: [{ text: { al: 'Pasqyrimi ndaj y = x: (x, y) → (y, x)', en: 'Reflection in y = x: (x, y) → (y, x)', de: 'Spiegelung an y = x: (x | y) → (y | x)' } }],
+    alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+  },
       al: {
         question: 'Pasqyroni P(3, −2) në drejtëzën y = x.', options: ['(−2, 3)', '(2, −3)', '(−3, 2)', '(3, 2)'],
         explanation: 'Në y = x koordinatat ndërrojnë vendet: (−2, 3).', hint: '(x, y) → (y, x).',
@@ -101,6 +118,14 @@ export default {
     {
       id: 8, type: 'choice', difficulty: 'medium', correct: 3,
       verify: [['2 * 3 - 1', 5], ['2 * 4 - 2', 6]],
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -2, xMax: 10, yMin: -2, yMax: 10 }, xStep: 1, yStep: 1,
+    points: [{ at: [3, 4], label: 'S', color: 'muted' }, { at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['6 - p', '8 - q'], label: 'P′({6 - p}, {8 - q})', color: 'secondary' }],
+    segments: [{ from: ['p', 'q'], to: ['6 - p', '8 - q'], color: 'muted', dashed: true }],
+    sliders: [{ name: 'p', label: 'x', min: -1, max: 9, step: 1, value: 1 }, { name: 'q', label: 'y', min: -1, max: 9, step: 1, value: 2 }],
+    readouts: [{ text: { al: 'Simetria ndaj S(3, 4): (x, y) → (6 − x, 8 − y)', en: 'Point symmetry about S(3, 4): (x, y) → (6 − x, 8 − y)', de: 'Punktspiegelung an S(3 | 4): (x | y) → (6 − x | 8 − y)' } }],
+    alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+  },
       al: {
         question: 'Gjeni simetriken e P(1, 2) ndaj qendrës S(3, 4).', options: ['(2, 3)', '(−1, 0)', '(4, 6)', '(5, 6)'],
         explanation: 'P′ = 2S − P = (6 − 1, 8 − 2) = (5, 6).', hint: 'S është mesi i PP′.',

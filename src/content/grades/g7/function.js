@@ -82,6 +82,22 @@ export default {
     // ───────── 2. The function y = kx
     {
       slug: 'g7-function-direct-variation',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -2, xMax: 7, yMin: -4, yMax: 22 },
+        functions: [{ expr: 'k*x + 0', label: 'y = {k}x' }],
+        points: [{ at: [5, 15], label: '(5, 15)', color: 'secondary' }],
+        sliders: [{ name: 'k', min: -5, max: 6, step: 0.5, value: 3 }],
+        readouts: [
+          { cases: [{ when: 'k > 0', text: { al: 'k = {k} > 0: drejtëza ngjitet.', en: 'k = {k} > 0: the line goes up.', de: 'k = {k} > 0: Die Gerade steigt.' } }, { when: 'k < 0', text: { al: 'k = {k} < 0: drejtëza zbret.', en: 'k = {k} < 0: the line goes down.', de: 'k = {k} < 0: Die Gerade fällt.' } }, { text: { al: 'k = 0: drejtëza është horizontale.', en: 'k = 0: the line is horizontal.', de: 'k = 0: Die Gerade ist waagerecht.' } }] },
+          { cases: [
+            { when: 'abs(k*5 - (15)) < 0.001', text: { al: 'Drejtëza kalon nëpër (5, 15).', en: 'The line passes through (5, 15).', de: 'Die Gerade geht durch (5 | 15).' } },
+            { text: { al: 'Drejtëza nuk kalon nëpër (5, 15): te x = 5 ajo ka y = {k*5}.', en: 'The line misses (5, 15): at x = 5 it has y = {k*5}.', de: 'Die Gerade verfehlt (5 | 15): bei x = 5 ist y = {k*5}.' } },
+          ] }
+        ],
+        alt: { al: 'Drejtëza y = kx + n me rrëshqitës për koeficientët.', en: 'The line y = kx + n with sliders for the coefficients.', de: 'Die Gerade y = kx + n mit Schiebereglern für die Koeffizienten.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -6, yMax: 6 }, height: 240,
         functions: [{ expr: 'k*x', label: 'y = kx' }],

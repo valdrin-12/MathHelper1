@@ -75,6 +75,21 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 3,
       verify: ['3 + 2*4', 11],
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -12, xMax: 12, yMin: -12, yMax: 12 }, xStep: 2, yStep: 2,
+    segments: [
+      { from: [0, 0], to: ['u1', 'u2'], color: 'primary', label: 'u' },
+      { from: ['u1', 'u2'], to: ['u1 + 2*v1', 'u2 + 2*v2'], color: 'secondary', label: '2v' },
+      { from: [0, 0], to: ['u1 + 2*v1', 'u2 + 2*v2'], color: 'success', dashed: true },
+    ],
+    points: [{ at: ['u1 + 2*v1', 'u2 + 2*v2'], label: '({u1 + 2*v1}, {u2 + 2*v2})', color: 'success' }],
+    sliders: [
+      { name: 'u1', min: -5, max: 5, step: 1, value: 2 }, { name: 'u2', min: -5, max: 5, step: 1, value: 3 },
+      { name: 'v1', min: -5, max: 5, step: 1, value: -1 }, { name: 'v2', min: -5, max: 5, step: 1, value: 4 },
+    ],
+    readouts: [{ text: { al: 'u + 2· v = ({u1 + 2*v1}, {u2 + 2*v2})', en: 'u + 2· v = ({u1 + 2*v1}, {u2 + 2*v2})', de: 'u + 2· v = ({u1 + 2*v1} | {u2 + 2*v2})' } }],
+    alt: { al: 'Vektorët u dhe v me rrëshqitës për koordinatat dhe shuma e tyre.', en: 'The vectors u and v with sliders for their coordinates and their sum.', de: 'Die Vektoren u und v mit Schiebereglern für die Koordinaten und ihre Summe.' },
+  },
       al: {
         question: 'a = (2, 3), b = (−1, 4). Sa është a + 2b?', options: ['(1, 7)', '(4, 11)', '(0, 7)', '(0, 11)'],
         explanation: '2b = (−2, 8); a + 2b = (0, 11).', hint: 'Shumëzoni të dyja koordinatat e b me 2.',

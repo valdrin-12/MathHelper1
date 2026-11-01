@@ -35,6 +35,14 @@ export default {
     {
       id: 2, type: 'input', difficulty: 'easy', answer: { value: 9 },
       verify: ['3^3 / 3', 9],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -0.5, xMax: 4.5, yMin: -1, yMax: 16 },
+    functions: [{ expr: 'x^2', label: 'y = x²' }],
+    shade: { expr: 'x^2', from: 0, to: 'b' },
+    sliders: [{ name: 'b', min: 0.5, max: 4, step: 0.5, value: 3 }],
+    readouts: [{ text: { al: '∫₀ᵇ x² dx = b³/3 = {b^3/3}', en: '∫₀ᵇ x² dx = b³/3 = {b^3/3}', de: '∫₀ᵇ x² dx = b³/3 = {b^3/3}' } }],
+    alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+  },
       al: { question: 'Sa është ∫ nga 0 te 3 i x² dx?', explanation: '[x³/3] = 27/3 − 0 = 9.', hint: 'F(3) − F(0).', commonMistakes: [{ value: 27, why: 'U harrua pjesëtimi me 3.' }, { value: 6, why: 'U përdor derivati 2x te x = 3.' }] },
       en: { question: 'What is ∫ from 0 to 3 of x² dx?', explanation: '[x³/3] = 27/3 − 0 = 9.', hint: 'F(3) − F(0).', commonMistakes: [{ value: 27, why: 'The division by 3 was forgotten.' }, { value: 6, why: 'The derivative 2x at x = 3 was used.' }] },
       de: { question: 'Wie groß ist das Integral von 0 bis 3 von x² dx?', explanation: '[x³/3] = 27/3 − 0 = 9.', hint: 'F(3) − F(0).', commonMistakes: [{ value: 27, why: 'Die Division durch 3 fehlt.' }, { value: 6, why: 'Es wurde die Ableitung 2x bei x = 3 genommen.' }] },
@@ -75,6 +83,14 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 3,
       verify: ['4 - 8/3', '4/3', 1e-9, '4/3'],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -0.5, xMax: 2.5, yMin: -0.5, yMax: 4.5 },
+    functions: [{ expr: '2*x', label: 'y = 2x' }, { expr: 'x^2', color: 'secondary' }],
+    shade: { expr: '2*x', from: 0, to: 'b', lower: 'x^2' },
+    sliders: [{ name: 'b', min: 0.5, max: 2, step: 0.5, value: 2 }],
+    readouts: [{ text: { al: 'Syprina midis y = 2x dhe y = x² nga 0 te b: b² − b³/3 = {b^2 - b^3/3} (për b = 2: 4/3)', en: 'Area between y = 2x and y = x² from 0 to b: b² − b³/3 = {b^2 - b^3/3} (for b = 2: 4/3)', de: 'Fläche zwischen y = 2x und y = x² von 0 bis b: b² − b³/3 = {b^2 - b^3/3} (für b = 2: 4/3)' } }],
+    alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+  },
       al: {
         question: 'Sa është syprina midis y = x² dhe y = 2x?', options: ['4', '8/3', '2', '4/3'],
         explanation: '∫₀² (2x − x²) dx = 4 − 8/3 = 4/3.', hint: 'Prerjet x = 0 dhe x = 2; drejtëza sipër.',
@@ -94,6 +110,14 @@ export default {
     {
       id: 7, type: 'choice', difficulty: 'medium', correct: 2,
       verify: ['-cos(pi) + cos(0)', 2],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -0.3, xMax: 6.5, yMin: -1.3, yMax: 1.3 },
+    functions: [{ expr: 'sin(x)', label: 'y = sin x' }],
+    shade: { expr: 'sin(x)', from: 0, to: 'b' },
+    sliders: [{ name: 'b', min: 0.2, max: 6.28, step: 0.2, value: 3.14 }],
+    readouts: [{ text: { al: '∫₀ᵇ sin x dx = 1 − cos b = {1 - cos(b)}', en: '∫₀ᵇ sin x dx = 1 − cos b = {1 - cos(b)}', de: '∫₀ᵇ sin x dx = 1 − cos b = {1 - cos(b)}' } }],
+    alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+  },
       al: {
         question: 'Sa është ∫ nga 0 te π i sin x dx?', options: ['0', '1', '2', 'π'],
         explanation: '[−cos x] = −cos π + cos 0 = 1 + 1 = 2.', hint: '∫sin x dx = −cos x.',
@@ -113,6 +137,14 @@ export default {
     {
       id: 8, type: 'input', difficulty: 'hard', answer: { value: 25.13, tolerance: 0.01 },
       verify: ['pi * 4^2 / 2', 25.13, 0.01],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -0.5, xMax: 6.5, yMin: -0.5, yMax: 3 },
+    functions: [{ expr: 'sqrt(x)', label: 'y = √x' }],
+    shade: { expr: 'sqrt(x)', from: 0, to: 'b' },
+    sliders: [{ name: 'b', min: 1, max: 6, step: 0.5, value: 4 }],
+    readouts: [{ text: { al: 'V = π ∫₀ᵇ x dx = πb²/2 = {pi*b^2/2}', en: 'V = π ∫₀ᵇ x dx = πb²/2 = {pi*b^2/2}', de: 'V = π ∫₀ᵇ x dx = πb²/2 = {pi*b^2/2}' } }],
+    alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+  },
       al: { question: 'Pjesa nën y = √x, 0 ≤ x ≤ 4, rrotullohet rreth boshtit x. Sa është vëllimi? (2 dhjetore)', explanation: 'π ∫₀⁴ x dx = 8π ≈ 25,13.', hint: 'V = π ∫ f(x)² dx.', commonMistakes: [{ value: 8, why: 'U harrua π.' }, { value: 50.27, why: 'U harrua 1/2 te ∫x dx = x²/2.' }] },
       en: { question: 'The region under y = √x, 0 ≤ x ≤ 4, is rotated about the x-axis. What is the volume? (2 d.p.)', explanation: 'π ∫₀⁴ x dx = 8π ≈ 25.13.', hint: 'V = π ∫ f(x)² dx.', commonMistakes: [{ value: 8, why: 'π was forgotten.' }, { value: 50.27, why: 'The 1/2 in ∫x dx = x²/2 was forgotten.' }] },
       de: { question: 'Die Fläche unter y = √x, 0 ≤ x ≤ 4, rotiert um die x-Achse. Wie groß ist das Volumen? (2 Dezimalstellen)', explanation: 'π ∫₀⁴ x dx = 8π ≈ 25,13.', hint: 'V = π ∫ f(x)² dx.', commonMistakes: [{ value: 8, why: 'π wurde vergessen.' }, { value: 50.27, why: 'Der Faktor 1/2 in ∫x dx = x²/2 fehlt.' }] },
@@ -120,6 +152,14 @@ export default {
     {
       id: 9, type: 'truefalse', difficulty: 'hard', correct: false,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -2.2, xMax: 2.2, yMin: -8, yMax: 8 },
+    functions: [{ expr: 'x^3', label: 'y = x³' }],
+    shade: { expr: 'x^3', from: '-b', to: 'b' },
+    sliders: [{ name: 'b', min: 0.5, max: 2, step: 0.5, value: 1 }],
+    readouts: [{ text: { al: 'Integrali nga −b te b = 0, por syprina = b⁴/2 = {b^4/2}', en: 'The integral from −b to b = 0, but the area = b⁴/2 = {b^4/2}', de: 'Das Integral von −b bis b = 0, die Fläche aber = b⁴/2 = {b^4/2}' } }],
+    alt: { al: 'Grafiku me syprinën e ngjyrosur deri te kufiri b që ndryshon me rrëshqitës.', en: 'The graph with the area shaded up to the limit b, which moves with a slider.', de: 'Der Graph mit der Fläche bis zur Grenze b, die mit einem Schieberegler verschoben wird.' },
+  },
       al: { question: '∫ nga −1 te 1 i x³ dx është syprina midis y = x³ dhe boshtit x në [−1, 1].', explanation: 'E gabuar: integrali është 0, por syprina është 1/4 + 1/4 = 1/2.', hint: 'Pjesa nën bosht numërohet negative te integrali.', whyWrong: 'Syprina = ∫|x³| dx = 1/2.' },
       en: { question: '∫ from −1 to 1 of x³ dx is the area between y = x³ and the x-axis on [−1, 1].', explanation: 'False: the integral is 0, but the area is 1/4 + 1/4 = 1/2.', hint: 'The part below the axis counts as negative in the integral.', whyWrong: 'Area = ∫|x³| dx = 1/2.' },
       de: { question: 'Das Integral von −1 bis 1 von x³ dx ist die Fläche zwischen y = x³ und der x-Achse auf [−1, 1].', explanation: 'Falsch: Das Integral ist 0, die Fläche aber 1/4 + 1/4 = 1/2.', hint: 'Der Teil unter der Achse zählt im Integral negativ.', whyWrong: 'Fläche = ∫|x³| dx = 1/2.' },

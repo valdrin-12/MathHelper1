@@ -233,6 +233,17 @@ export default {
     // ───────── 4. Equations of a line
     {
       slug: 'g12-coordinate-geometry-line-equations',
+      practiceVisuals: {
+        1: {
+        type: 'functionPlot', view: { xMin: -5, xMax: 5, yMin: -8, yMax: 8 },
+        functions: [{ expr: 'k*x + n', label: 'y = {k}x {+n}' }],
+        sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -1.5 }, { name: 'n', min: -6, max: 6, step: 0.5, value: 3 }],
+        readouts: [
+          { cases: [{ when: 'k > 0', text: { al: 'k = {k} > 0: drejtëza ngjitet.', en: 'k = {k} > 0: the line goes up.', de: 'k = {k} > 0: Die Gerade steigt.' } }, { when: 'k < 0', text: { al: 'k = {k} < 0: drejtëza zbret.', en: 'k = {k} < 0: the line goes down.', de: 'k = {k} < 0: Die Gerade fällt.' } }, { text: { al: 'k = 0: drejtëza është horizontale.', en: 'k = 0: the line is horizontal.', de: 'k = 0: Die Gerade ist waagerecht.' } }] }
+        ],
+        alt: { al: 'Drejtëza y = kx + n me rrëshqitës për koeficientët.', en: 'The line y = kx + n with sliders for the coefficients.', de: 'Die Gerade y = kx + n mit Schiebereglern für die Koeffizienten.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -1, xMax: 4, yMin: -2, yMax: 7 }, height: 210,
         functions: [{ expr: '2*x - 1', label: 'y = 2x − 1' }],
@@ -302,6 +313,29 @@ export default {
     // ───────── 5. Parallel and perpendicular
     {
       slug: 'g12-coordinate-geometry-parallel-perpendicular',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: false, view: { xMin: -5, xMax: 5, yMin: -8, yMax: 8 },
+        functions: [{ expr: '2*x + (1)', color: 'muted', label: 'y = 2x + (1)' }, { expr: 'k*x + n', color: 'secondary', label: 'y = {k}x {+n}' }],
+        sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: 2 }, { name: 'n', min: -6, max: 6, step: 0.5, value: 3.5 }],
+        readouts: [{ cases: [
+          { when: 'abs(k - (2)) < 0.001 and abs(n - (1)) < 0.001', text: { al: 'Të njëjtën drejtëz: pafund pika të përbashkëta.', en: 'The same line: infinitely many common points.', de: 'Dieselbe Gerade: unendlich viele gemeinsame Punkte.' } },
+          { when: 'abs(k - (2)) < 0.001', text: { al: 'k = 2 si te drejtëza e parë: paralele, asnjë pikë e përbashkët.', en: 'k = 2 as for the first line: parallel, no common point.', de: 'k = 2 wie bei der ersten Geraden: parallel, kein gemeinsamer Punkt.' } },
+          { text: { al: 'Koeficientë të ndryshëm: drejtëzat priten në një pikë.', en: 'Different gradients: the lines meet at one point.', de: 'Verschiedene Steigungen: Die Geraden schneiden sich in einem Punkt.' } },
+        ] }],
+        alt: { al: 'Dy drejtëza: njëra e dhënë, tjetra y = kx + n me rrëshqitës.', en: 'Two lines: one given, the other y = kx + n on sliders.', de: 'Zwei Geraden: eine gegeben, die andere y = kx + n mit Schiebereglern.' },
+      },
+        1: {
+        type: 'functionPlot', equal: true, view: { xMin: -5, xMax: 5, yMin: -5, yMax: 5 },
+        functions: [{ expr: '3*x + (0)', color: 'muted', label: 'y = 3x + (0)' }, { expr: 'k*x + n', color: 'secondary', label: 'y = {k}x {+n}' }],
+        sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -0.5 }, { name: 'n', min: -6, max: 6, step: 0.5, value: 0 }],
+        readouts: [{ cases: [
+          { when: 'abs(3*k + 1) < 0.001', text: { al: 'k₁ · k₂ = 3 · {k} = −1: drejtëzat janë pingule.', en: 'k₁ · k₂ = 3 · {k} = −1: the lines are perpendicular.', de: 'k₁ · k₂ = 3 · {k} = −1: Die Geraden sind orthogonal.' } },
+          { text: { al: 'k₁ · k₂ = {3*k} ≠ −1: jo pingule.', en: 'k₁ · k₂ = {3*k} ≠ −1: not perpendicular.', de: 'k₁ · k₂ = {3*k} ≠ −1: nicht orthogonal.' } },
+        ] }],
+        alt: { al: 'Dy drejtëza: njëra e dhënë, tjetra y = kx + n me rrëshqitës.', en: 'Two lines: one given, the other y = kx + n on sliders.', de: 'Zwei Geraden: eine gegeben, die andere y = kx + n mit Schiebereglern.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -3, xMax: 5, yMin: -2, yMax: 7 }, height: 220,
         functions: [{ expr: '2*x + 3', label: 'y = 2x + 3' }, { expr: '-x/2 + 5/2', color: 'secondary', label: 'y = −x/2 + 5/2' }],

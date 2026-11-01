@@ -166,6 +166,16 @@ export default {
     // ───────── 3. Transformations
     {
       slug: 'g10-plane-geometry-transformations',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 }, xStep: 1, yStep: 1,
+        points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'primary' }, { at: ['-p', 'q'], label: 'P′({-p}, {q})', color: 'secondary' }],
+        segments: [{ from: ['p', 'q'], to: ['-p', 'q'], color: 'muted', dashed: true }],
+        sliders: [{ name: 'p', label: 'x', min: -6, max: 6, step: 1, value: 3 }, { name: 'q', label: 'y', min: -6, max: 6, step: 1, value: -1 }],
+        readouts: [{ text: { al: 'Pasqyrimi ndaj boshtit y: (x, y) → (−x, y)', en: 'Reflection in the y-axis: (x, y) → (−x, y)', de: 'Spiegelung an der y-Achse: (x | y) → (−x | y)' } }],
+        alt: { al: 'Një pikë P që lëviz me rrëshqitës dhe figura e saj P′.', en: 'A point P moved by sliders and its image P′.', de: 'Ein Punkt P, der mit Schiebereglern bewegt wird, und sein Bild P′.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -0.5, xMax: 6.5, yMin: -3, yMax: 5 }, grid: true, axes: true, height: 230,
         shapes: [

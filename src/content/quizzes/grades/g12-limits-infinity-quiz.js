@@ -16,6 +16,14 @@ export default {
     {
       id: 1, type: 'choice', difficulty: 'easy', correct: 2,
       verify: ['(3*1e6^2 - 1)/(1e6^2 + 5)', 3, 1e-6],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: 0, xMax: 50, yMin: -1, yMax: 4 },
+    functions: [{ expr: '(3*x^2 - 1)/(x^2 + 5)', domain: [0, 50], label: 'y = (3x² − 1)/(x² + 5)' }, { expr: '3 + 0*x', color: 'muted', dashed: true, label: 'y = 3' }],
+    points: [{ at: ['x0', '(3*x0^2 - 1)/(x0^2 + 5)'], color: 'secondary' }],
+    sliders: [{ name: 'x0', label: 'x', min: 0, max: 50, step: 1, value: 5 }],
+    readouts: [{ text: { al: 'f({x0}) = {(3*x0^2 - 1)/(x0^2 + 5)}', en: 'f({x0}) = {(3*x0^2 - 1)/(x0^2 + 5)}', de: 'f({x0}) = {(3*x0^2 - 1)/(x0^2 + 5)}' } }],
+    alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+  },
       al: {
         question: 'Sa është lim (3x² − 1)/(x² + 5) kur x → ∞?', options: ['0', '∞', '3', '−1/5'],
         explanation: 'Gradat e barabarta: 3/1 = 3.', hint: 'Krahasoni koeficientët e x².',
@@ -35,6 +43,14 @@ export default {
     {
       id: 2, type: 'input', difficulty: 'easy', answer: { value: 2 },
       verify: ['2 / 1', 2],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -20, xMax: 40, yMin: -10, yMax: 14 },
+    functions: [{ expr: '(2*x + 1)/(x - 4)', domain: [-20, 3.4], label: 'y = (2x + 1)/(x − 4)' }, { expr: '(2*x + 1)/(x - 4)', domain: [4.6, 40] }, { expr: '2 + 0*x', color: 'muted', dashed: true, label: 'y = 2' }],
+    points: [{ at: ['x0', '(2*x0 + 1)/(x0 - 4)'], color: 'secondary' }],
+    sliders: [{ name: 'x0', label: 'x', min: -20, max: 40, step: 1, value: 10 }],
+    readouts: [{ text: { al: 'f({x0}) = {(2*x0 + 1)/(x0 - 4)}', en: 'f({x0}) = {(2*x0 + 1)/(x0 - 4)}', de: 'f({x0}) = {(2*x0 + 1)/(x0 - 4)}' } }],
+    alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+  },
       al: { question: 'Asimptota horizontale e y = (2x + 1)/(x − 4) është y = ?', explanation: 'Gradat e barabarta: 2/1 = 2 → y = 2.', hint: 'Limiti kur x → ±∞.', commonMistakes: [{ value: 4, why: 'x = 4 është asimptota vertikale.' }, { value: -0.25, why: 'Kjo është vlera te x = 0.' }] },
       en: { question: 'The horizontal asymptote of y = (2x + 1)/(x − 4) is y = ?', explanation: 'Equal degrees: 2/1 = 2 → y = 2.', hint: 'The limit as x → ±∞.', commonMistakes: [{ value: 4, why: 'x = 4 is the vertical asymptote.' }, { value: -0.25, why: 'That is the value at x = 0.' }] },
       de: { question: 'Die waagerechte Asymptote von y = (2x + 1)/(x − 4) ist y = ?', explanation: 'Gleiche Grade: 2/1 = 2 → y = 2.', hint: 'Grenzwert für x → ±∞.', commonMistakes: [{ value: 4, why: 'x = 4 ist die senkrechte Asymptote.' }, { value: -0.25, why: 'Das ist der Wert bei x = 0.' }] },
@@ -127,6 +143,14 @@ export default {
     {
       id: 10, type: 'choice', difficulty: 'hard', correct: 0,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: 0.2, xMax: 40, yMin: -2, yMax: 1.5 },
+    functions: [{ expr: '(x^2 - 1)/(2*x^2 + x)', domain: [0.2, 40], label: 'y = (x² − 1)/(2x² + x)' }, { expr: '0.5 + 0*x', color: 'muted', dashed: true, label: 'y = 0,5' }],
+    points: [{ at: ['x0', '(x0^2 - 1)/(2*x0^2 + x0)'], color: 'secondary' }],
+    sliders: [{ name: 'x0', label: 'x', min: 1, max: 40, step: 1, value: 5 }],
+    readouts: [{ text: { al: 'f({x0}) = {(x0^2 - 1)/(2*x0^2 + x0)}', en: 'f({x0}) = {(x0^2 - 1)/(2*x0^2 + x0)}', de: 'f({x0}) = {(x0^2 - 1)/(2*x0^2 + x0)}' } }],
+    alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+  },
       al: {
         question: 'Cila është asimptota horizontale e y = (x² − 1)/(2x² + x)?', options: ['y = 1/2', 'y = 1', 'y = 0', 'y = −1'],
         explanation: 'Gradat të barabarta (2): raporti 1/2.', hint: 'Koeficientët e x².',

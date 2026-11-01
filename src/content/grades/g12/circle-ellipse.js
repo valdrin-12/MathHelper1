@@ -16,6 +16,33 @@ export default {
     // ───────── 1. Equation of a circle
     {
       slug: 'g12-circle-ellipse-circle-equation',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: true, view: { xMin: -9, xMax: 9, yMin: -9, yMax: 9 },
+        curves: [{ x: 'a + r*cos(t)', y: 'b + r*sin(t)' }],
+        points: [{ at: ['a', 'b'], label: 'S({a}, {b})', color: 'secondary' }],
+        segments: [{ from: ['a', 'b'], to: ['a + r', 'b'], color: 'secondary', label: 'r = {r}' }],
+        sliders: [{ name: 'a', min: -5, max: 5, step: 1, value: -2 }, { name: 'b', min: -5, max: 5, step: 1, value: 5 }, { name: 'r', min: 1, max: 6, step: 0.5, value: 3 }],
+        readouts: [{ text: { al: '(x − a)² + (y − b)² = r²: qendra ({a}, {b}), r² = {r^2}.', en: '(x − a)² + (y − b)² = r²: centre ({a}, {b}), r² = {r^2}.', de: '(x − a)² + (y − b)² = r²: Mittelpunkt ({a} | {b}), r² = {r^2}.' } }],
+        alt: { al: 'Rreth me qendër (a, b) dhe rreze r me rrëshqitës.', en: 'A circle with centre (a, b) and radius r on sliders.', de: 'Ein Kreis mit Mittelpunkt (a, b) und Radius r als Schieberegler.' },
+      },
+        2: {
+        type: 'functionPlot', equal: true, view: { xMin: -4, xMax: 10, yMin: -9, yMax: 5 },
+        curves: [{ x: '3 + 4*cos(t)', y: '-2 + 4*sin(t)' }],
+        points: [{ at: [3, -2], label: 'S', color: 'muted' }, { at: ['p', 'q'], label: 'P({p}, {q})', color: 'secondary' }],
+        segments: [{ from: [3, -2], to: ['p', 'q'], color: 'secondary', dashed: true }],
+        sliders: [{ name: 'p', min: -4, max: 10, step: 0.5, value: 6 }, { name: 'q', min: -9, max: 5, step: 0.5, value: 2 }],
+        readouts: [
+          { text: { al: 'Largësia nga qendra deri te P në katror: {(p - 3)^2 + (q + 2)^2}; r² = 16.', en: 'Squared distance from the centre to P: {(p - 3)^2 + (q + 2)^2}; r² = 16.', de: 'Quadrierter Abstand vom Mittelpunkt zu P: {(p - 3)^2 + (q + 2)^2}; r² = 16.' } },
+          { cases: [
+            { when: 'abs((p - 3)^2 + (q + 2)^2 - 16) < 0.001', text: { al: '= r²: P ndodhet në rreth.', en: '= r²: P lies on the circle.', de: '= r²: P liegt auf dem Kreis.' } },
+            { when: '(p - 3)^2 + (q + 2)^2 < 16', text: { al: '< r²: P ndodhet brenda rrethit.', en: '< r²: P lies inside the circle.', de: '< r²: P liegt innerhalb des Kreises.' } },
+            { text: { al: '> r²: P ndodhet jashtë rrethit.', en: '> r²: P lies outside the circle.', de: '> r²: P liegt außerhalb des Kreises.' } },
+          ] },
+        ],
+        alt: { al: 'Rrethi me qendër S(3, -2) dhe rreze 4, me pikën P që lëviz me rrëshqitës.', en: 'The circle with centre S(3, -2) and radius 4, with a point P moved by sliders.', de: 'Der Kreis mit Mittelpunkt S(3 | -2) und Radius 4 mit einem Punkt P, der mit Schiebereglern bewegt wird.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -2, xMax: 8, yMin: -7, yMax: 3 }, grid: true, axes: true, height: 240,
         shapes: [
@@ -91,6 +118,20 @@ export default {
     // ───────── 2. Tangent and position of a line
     {
       slug: 'g12-circle-ellipse-tangent',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: true, view: { xMin: -9, xMax: 9, yMin: -9, yMax: 9 },
+        curves: [
+          { x: '5*cos(t)', y: '5*sin(t)' },
+          { x: '5*cos(a deg) - t*sin(a deg)', y: '5*sin(a deg) + t*cos(a deg)', t: [-14, 14], color: 'secondary' },
+        ],
+        segments: [{ from: [0, 0], to: ['5*cos(a deg)', '5*sin(a deg)'], color: 'muted', dashed: true }],
+        points: [{ at: ['5*cos(a deg)', '5*sin(a deg)'], label: '({5*cos(a deg)}, {5*sin(a deg)})', color: 'secondary' }],
+        sliders: [{ name: 'a', label: { al: 'këndi', en: 'angle', de: 'Winkel' }, min: 0, max: 360, step: 1, value: 53.13 }],
+        readouts: [{ text: { al: 'Tangjentja: {5*cos(a deg)}·x + {5*sin(a deg)}·y = 25 (pingule me rrezen).', en: 'Tangent: {5*cos(a deg)}·x + {5*sin(a deg)}·y = 25 (perpendicular to the radius).', de: 'Tangente: {5*cos(a deg)}·x + {5*sin(a deg)}·y = 25 (senkrecht zum Radius).' } }],
+        alt: { al: 'Rrethi x² + y² = 25 me një pikë që lëviz në rreth dhe tangjenten në të.', en: 'The circle x² + y² = 25 with a point moving on it and the tangent there.', de: 'Der Kreis x² + y² = 25 mit einem Punkt, der sich auf ihm bewegt, und der Tangente dort.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -6, xMax: 8, yMin: -6, yMax: 8 }, grid: true, axes: true, height: 250,
         shapes: [
@@ -165,6 +206,32 @@ export default {
     // ───────── 3. Ellipse
     {
       slug: 'g12-circle-ellipse-ellipse',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: true, view: { xMin: -12, xMax: 12, yMin: -9.0, yMax: 9.0 },
+        curves: [{ x: 'a*cos(t)', y: 'b*sin(t)', label: 'x²/{a^2} + y²/{b^2} = 1' }],
+        points: [{ at: ['-sqrt(a^2 - b^2)', 0], label: 'F₁', color: 'secondary' }, { at: ['sqrt(a^2 - b^2)', 0], label: 'F₂', color: 'secondary' }],
+        sliders: [{ name: 'a', min: 1, max: 14, step: 1, value: 10 }, { name: 'b', min: 1, max: 13, step: 1, value: 6 }],
+        readouts: [{ cases: [{ when: 'a > b', text: { al: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', en: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; e = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', de: 'e = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = e/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.' } }, { text: { al: 'Zgjidhni a > b (boshti i madh te x).', en: 'Choose a > b (major axis on x).', de: 'a > b wählen (Hauptachse auf x).' } }] }],
+        alt: { al: 'Elipsa me gjysmëboshte a dhe b me rrëshqitës dhe vatrat e saj.', en: 'An ellipse with semi-axes a and b on sliders and its foci.', de: 'Eine Ellipse mit Halbachsen a und b als Schieberegler und ihren Brennpunkten.' },
+      },
+        1: {
+        type: 'functionPlot', equal: true, view: { xMin: -15, xMax: 15, yMin: -11.25, yMax: 11.25 },
+        curves: [{ x: 'a*cos(t)', y: 'b*sin(t)', label: 'x²/{a^2} + y²/{b^2} = 1' }],
+        points: [{ at: ['-sqrt(a^2 - b^2)', 0], label: 'F₁', color: 'secondary' }, { at: ['sqrt(a^2 - b^2)', 0], label: 'F₂', color: 'secondary' }],
+        sliders: [{ name: 'a', min: 1, max: 14, step: 1, value: 13 }, { name: 'b', min: 1, max: 13, step: 1, value: 5 }],
+        readouts: [{ cases: [{ when: 'a > b', text: { al: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', en: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; e = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', de: 'e = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = e/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.' } }, { text: { al: 'Zgjidhni a > b (boshti i madh te x).', en: 'Choose a > b (major axis on x).', de: 'a > b wählen (Hauptachse auf x).' } }] }],
+        alt: { al: 'Elipsa me gjysmëboshte a dhe b me rrëshqitës dhe vatrat e saj.', en: 'An ellipse with semi-axes a and b on sliders and its foci.', de: 'Eine Ellipse mit Halbachsen a und b als Schieberegler und ihren Brennpunkten.' },
+      },
+        2: {
+        type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -5.25, yMax: 5.25 },
+        curves: [{ x: 'a*cos(t)', y: 'b*sin(t)', label: 'x²/{a^2} + y²/{b^2} = 1' }],
+        points: [{ at: ['-sqrt(a^2 - b^2)', 0], label: 'F₁', color: 'secondary' }, { at: ['sqrt(a^2 - b^2)', 0], label: 'F₂', color: 'secondary' }],
+        sliders: [{ name: 'a', min: 1, max: 14, step: 1, value: 5 }, { name: 'b', min: 1, max: 13, step: 1, value: 3 }],
+        readouts: [{ cases: [{ when: 'a > b', text: { al: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', en: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; e = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', de: 'e = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = e/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.' } }, { text: { al: 'Zgjidhni a > b (boshti i madh te x).', en: 'Choose a > b (major axis on x).', de: 'a > b wählen (Hauptachse auf x).' } }] }],
+        alt: { al: 'Elipsa me gjysmëboshte a dhe b me rrëshqitës dhe vatrat e saj.', en: 'An ellipse with semi-axes a and b on sliders and its foci.', de: 'Eine Ellipse mit Halbachsen a und b als Schieberegler und ihren Brennpunkten.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -6, xMax: 6, yMin: -4, yMax: 4 }, grid: true, axes: true, height: 210,
         shapes: [
@@ -242,6 +309,16 @@ export default {
     // ───────── 4. Eccentricity
     {
       slug: 'g12-circle-ellipse-eccentricity',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', equal: true, view: { xMin: -15, xMax: 15, yMin: -11.25, yMax: 11.25 },
+        curves: [{ x: 'a*cos(t)', y: 'b*sin(t)', label: 'x²/{a^2} + y²/{b^2} = 1' }],
+        points: [{ at: ['-sqrt(a^2 - b^2)', 0], label: 'F₁', color: 'secondary' }, { at: ['sqrt(a^2 - b^2)', 0], label: 'F₂', color: 'secondary' }],
+        sliders: [{ name: 'a', min: 1, max: 14, step: 1, value: 13 }, { name: 'b', min: 1, max: 13, step: 1, value: 5 }],
+        readouts: [{ cases: [{ when: 'a > b', text: { al: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', en: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; e = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', de: 'e = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = e/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.' } }, { text: { al: 'Zgjidhni a > b (boshti i madh te x).', en: 'Choose a > b (major axis on x).', de: 'a > b wählen (Hauptachse auf x).' } }] }],
+        alt: { al: 'Elipsa me gjysmëboshte a dhe b me rrëshqitës dhe vatrat e saj.', en: 'An ellipse with semi-axes a and b on sliders and its foci.', de: 'Eine Ellipse mit Halbachsen a und b als Schieberegler und ihren Brennpunkten.' },
+      },
+      },
       noVisual: 'Eccentricity is a single ratio c/a; it is worked out step by step in the examples.',
       answers: {
         examples: [[['4 / 5', 0.8, 0, '4/5']], [['10 * 0.6', 6], ['sqrt(100 - 36)', 8]]],
@@ -305,6 +382,16 @@ export default {
     // ───────── 5. Focal radii
     {
       slug: 'g12-circle-ellipse-focal-radii',
+      practiceVisuals: {
+        2: {
+        type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -5.25, yMax: 5.25 },
+        curves: [{ x: 'a*cos(t)', y: 'b*sin(t)', label: 'x²/{a^2} + y²/{b^2} = 1' }],
+        points: [{ at: ['-sqrt(a^2 - b^2)', 0], label: 'F₁', color: 'secondary' }, { at: ['sqrt(a^2 - b^2)', 0], label: 'F₂', color: 'secondary' }],
+        sliders: [{ name: 'a', min: 1, max: 14, step: 1, value: 5 }, { name: 'b', min: 1, max: 13, step: 1, value: 4 }],
+        readouts: [{ cases: [{ when: 'a > b', text: { al: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', en: 'c = √(a² − b²) = {sqrt(a^2 - b^2)}; e = c/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.', de: 'e = √(a² − b²) = {sqrt(a^2 - b^2)}; ε = e/a = {sqrt(a^2 - b^2)/a}; r₁ + r₂ = 2a = {2*a}.' } }, { text: { al: 'Zgjidhni a > b (boshti i madh te x).', en: 'Choose a > b (major axis on x).', de: 'a > b wählen (Hauptachse auf x).' } }] }],
+        alt: { al: 'Elipsa me gjysmëboshte a dhe b me rrëshqitës dhe vatrat e saj.', en: 'An ellipse with semi-axes a and b on sliders and its foci.', de: 'Eine Ellipse mit Halbachsen a und b als Schieberegler und ihren Brennpunkten.' },
+      },
+      },
       visuals: [{
         type: 'geoFigure', view: { xMin: -6, xMax: 6, yMin: -4, yMax: 4 }, height: 210,
         shapes: [

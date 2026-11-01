@@ -12,6 +12,16 @@ export default {
     // ───────── 1. The graph of y = ax + b
     {
       slug: 'g9-linear-systems-line-graph',
+      practiceVisuals: {
+        0: {
+        type: 'functionPlot', view: { xMin: -2, xMax: 8, yMin: -8, yMax: 8 },
+        functions: [{ expr: 'k*x + n', label: 'y = {k}x {+n}' }],
+        points: [{ at: ['-n/k', 0], label: '({-n/k}, 0)', color: 'secondary' }],
+        sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -1 }, { name: 'n', min: -8, max: 8, step: 1, value: 4 }],
+        readouts: [{ text: { al: 'Prerja me boshtin x: y = 0 → x = −n/k = {-n/k}', en: 'x-intercept: y = 0 → x = −n/k = {-n/k}', de: 'Nullstelle: y = 0 → x = −n/k = {-n/k}' } }],
+        alt: { al: 'Drejtëza y = kx + n dhe pika ku pret boshtin x.', en: 'The line y = kx + n and the point where it crosses the x-axis.', de: 'Die Gerade y = kx + n und ihr Schnittpunkt mit der x-Achse.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -4, xMax: 6, yMin: -8, yMax: 6 }, height: 240,
         functions: [{ expr: 'a*x + b', label: 'y = ax + b' }],
@@ -86,6 +96,18 @@ export default {
     // ───────── 2. Graphical method
     {
       slug: 'g9-linear-systems-graphical-method',
+      practiceVisuals: {
+        1: {
+        type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -8, yMax: 8 },
+        functions: [{ expr: '-2*x + 1', color: 'muted', label: 'y = −2x + 1' }, { expr: '(c - 4*x)/2', color: 'secondary', dashed: true, label: '4x + 2y = {c}' }],
+        sliders: [{ name: 'c', min: -6, max: 8, step: 1, value: 2 }],
+        readouts: [{ cases: [
+          { when: 'c == 2', text: { al: 'Për c = 2 të dyja janë e njëjta drejtëz: pafund zgjidhje.', en: 'For c = 2 both are the same line: infinitely many solutions.', de: 'Für c = 2 sind beide dieselbe Gerade: unendlich viele Lösungen.' } },
+          { text: { al: 'Paralele (të njëjtin koeficient −2): asnjë zgjidhje.', en: 'Parallel (same gradient −2): no solution.', de: 'Parallel (gleiche Steigung −2): keine Lösung.' } },
+        ] }],
+        alt: { al: 'Drejtëzat y = −2x + 1 dhe 4x + 2y = c me rrëshqitës për c.', en: 'The lines y = −2x + 1 and 4x + 2y = c with a slider for c.', de: 'Die Geraden y = −2x + 1 und 4x + 2y = c mit Schieberegler für c.' },
+      },
+      },
       visuals: [{
         type: 'functionPlot', view: { xMin: -1, xMax: 6, yMin: -1, yMax: 6 }, height: 230,
         functions: [{ expr: 'x + 1', label: 'y = x + 1' }, { expr: '-x + 5', label: 'y = −x + 5' }],

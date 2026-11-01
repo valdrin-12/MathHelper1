@@ -42,6 +42,14 @@ export default {
     {
       id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -2, xMax: 6, yMin: -10, yMax: 10 },
+    functions: [{ expr: '1/(x - 2)', domain: [-2, 1.9], label: 'y = 1/(x − 2)' }, { expr: '1/(x - 2)', domain: [2.1, 6] }],
+    points: [{ at: ['x0', '1/(x0 - 2)'], color: 'secondary' }],
+    sliders: [{ name: 'x0', label: 'x', min: -2, max: 6, step: 0.05, value: 2.5 }],
+    readouts: [{ text: { al: 'f({x0}) = {1/(x0 - 2)}', en: 'f({x0}) = {1/(x0 - 2)}', de: 'f({x0}) = {1/(x0 - 2)}' } }],
+    alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+  },
       al: { question: 'Funksioni y = 1/(x − 2) ka asimptotë vertikale x = 2.', explanation: 'E vërtetë: emëruesi bëhet 0 dhe y → ±∞.', hint: 'Ku bëhet 0 emëruesi?', whyWrong: 'Nga e majta −∞, nga e djathta +∞.' },
       en: { question: 'The function y = 1/(x − 2) has the vertical asymptote x = 2.', explanation: 'True: the denominator becomes 0 and y → ±∞.', hint: 'Where is the denominator 0?', whyWrong: 'From the left −∞, from the right +∞.' },
       de: { question: 'Die Funktion y = 1/(x − 2) hat die senkrechte Asymptote x = 2.', explanation: 'Richtig: Der Nenner wird 0 und y → ±∞.', hint: 'Wo wird der Nenner 0?', whyWrong: 'Von links −∞, von rechts +∞.' },
@@ -94,6 +102,14 @@ export default {
     {
       id: 7, type: 'choice', difficulty: 'medium', correct: 2,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -6, xMax: 6, yMin: -6, yMax: 6 },
+    functions: [{ expr: '(x + 1)/(x^2 - 9)', domain: [-6, -3.1], label: 'y = (x + 1)/(x² − 9)' }, { expr: '(x + 1)/(x^2 - 9)', domain: [-2.9, 2.9] }, { expr: '(x + 1)/(x^2 - 9)', domain: [3.1, 6] }],
+    points: [{ at: ['x0', '(x0 + 1)/(x0^2 - 9)'], color: 'secondary' }],
+    sliders: [{ name: 'x0', label: 'x', min: -6, max: 6, step: 0.05, value: 3.2 }],
+    readouts: [{ text: { al: 'f({x0}) = {(x0 + 1)/(x0^2 - 9)}', en: 'f({x0}) = {(x0 + 1)/(x0^2 - 9)}', de: 'f({x0}) = {(x0 + 1)/(x0^2 - 9)}' } }],
+    alt: { al: 'Grafiku me një pikë që lëviz; vlera e funksionit afrohet te asimptota.', en: 'The graph with a moving point; the function value approaches the asymptote.', de: 'Der Graph mit einem beweglichen Punkt; der Funktionswert nähert sich der Asymptote.' },
+  },
       al: {
         question: 'Cilat janë asimptotat vertikale të y = (x + 1)/(x² − 9)?', options: ['x = 9', 'x = −1', 'x = 3 dhe x = −3', 'y = 0'],
         explanation: 'x² − 9 = 0 → x = ±3 (numëruesi aty ≠ 0).', hint: 'Zerot e emëruesit.',
