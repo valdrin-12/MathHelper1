@@ -1,4 +1,21 @@
 // Grade 12 · Theme 11 quiz: Hyperbola and parabola (format: see g6-natural-numbers-quiz.js)
+// Interactive picture shown after answering in practice mode ("Show graph")
+const parabolaLine = (n) => ({
+  type: 'functionPlot', equal: true, view: { xMin: -4, xMax: 10, yMin: -9, yMax: 9 },
+  curves: [{ x: 't^2/8', y: 't', t: [-9, 9], label: 'y² = 8x' }],
+  functions: [{ expr: 'x + n', color: 'secondary', label: 'y = x + {n}' }],
+  sliders: [{ name: 'n', min: -4, max: 6, step: 0.5, value: n }],
+  readouts: [
+    { text: { al: '(x + n)² = 8x → x² + (2n − 8)x + n² = 0, D = 64 − 32n = {64 - 32*n}', en: '(x + n)² = 8x → x² + (2n − 8)x + n² = 0, D = 64 − 32n = {64 - 32*n}', de: '(x + n)² = 8x → x² + (2n − 8)x + n² = 0, D = 64 − 32n = {64 - 32*n}' } },
+    { cases: [
+      { when: 'abs(n - 2) < 0.01', text: { al: 'D = 0: tangjente, në pikën (2, 4).', en: 'D = 0: tangent, at the point (2, 4).', de: 'D = 0: Tangente im Punkt (2 | 4).' } },
+      { when: 'n < 2', text: { al: 'D > 0: dy pika prerjeje.', en: 'D > 0: two points of intersection.', de: 'D > 0: zwei Schnittpunkte.' } },
+      { text: { al: 'D < 0: nuk kanë pika të përbashkëta.', en: 'D < 0: no common points.', de: 'D < 0: keine gemeinsamen Punkte.' } },
+    ] },
+  ],
+  alt: { al: 'Parabola y² = 8x dhe drejtëza y = x + n me rrëshqitës për n.', en: 'The parabola y² = 8x and the line y = x + n with a slider for n.', de: 'Die Parabel y² = 8x und die Gerade y = x + n mit Schieberegler für n.' },
+});
+
 export default {
   id: 'g12-hyperbola-parabola-quiz',
   grade: 12,
@@ -75,6 +92,7 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 1,
       verify: 'text',
+      explainVisual: parabolaLine(2),
       al: {
         question: 'Si qëndron drejtëza y = x + 2 ndaj parabolës y² = 8x?', options: ['e pret në dy pika', 'tangjente në (2, 4)', 'nuk kanë pika të përbashkëta', 'tangjente në (4, 2)'],
         explanation: '(x + 2)² = 8x → x² − 4x + 4 = 0, D = 0 → x = 2, y = 4.', hint: 'Zëvendësoni dhe shikoni D.',
@@ -113,6 +131,7 @@ export default {
     {
       id: 8, type: 'input', difficulty: 'hard', answer: { value: 2 },
       verify: ['64 / 32', 2],
+      explainVisual: parabolaLine(0),
       al: { question: 'Për çfarë n është drejtëza y = x + n tangjente e y² = 8x?', explanation: 'x² + (2n − 8)x + n² = 0, D = 64 − 32n = 0 → n = 2.', hint: 'Kushti D = 0.', commonMistakes: [{ value: 4, why: 'U mor 64/16; D = (2n − 8)² − 4n² = 64 − 32n.' }, { value: -2, why: 'Gabim në shenjë.' }] },
       en: { question: 'For which n is the line y = x + n a tangent to y² = 8x?', explanation: 'x² + (2n − 8)x + n² = 0, D = 64 − 32n = 0 → n = 2.', hint: 'The condition D = 0.', commonMistakes: [{ value: 4, why: '64/16 was used; D = (2n − 8)² − 4n² = 64 − 32n.' }, { value: -2, why: 'A sign slip.' }] },
       de: { question: 'Für welches n ist die Gerade y = x + n Tangente an y² = 8x?', explanation: 'x² + (2n − 8)x + n² = 0, D = 64 − 32n = 0 → n = 2.', hint: 'Bedingung D = 0.', commonMistakes: [{ value: 4, why: 'Es wurde 64/16 gerechnet; D = (2n − 8)² − 4n² = 64 − 32n.' }, { value: -2, why: 'Vorzeichenfehler.' }] },
@@ -120,6 +139,7 @@ export default {
     {
       id: 9, type: 'truefalse', difficulty: 'hard', correct: false,
       verify: ['4 - 36 > 0', false],
+      explainVisual: parabolaLine(3),
       al: { question: 'Drejtëza y = x + 3 e pret parabolën y² = 8x në dy pika.', explanation: 'E gabuar: x² − 2x + 9 = 0, D = 4 − 36 < 0, asnjë pikë.', hint: 'Llogaritni diskriminantin.', whyWrong: 'D = −32 < 0.' },
       en: { question: 'The line y = x + 3 cuts the parabola y² = 8x at two points.', explanation: 'False: x² − 2x + 9 = 0, D = 4 − 36 < 0, no points.', hint: 'Work out the discriminant.', whyWrong: 'D = −32 < 0.' },
       de: { question: 'Die Gerade y = x + 3 schneidet die Parabel y² = 8x in zwei Punkten.', explanation: 'Falsch: x² − 2x + 9 = 0, D = 4 − 36 < 0, keine Punkte.', hint: 'Diskriminante berechnen.', whyWrong: 'D = −32 < 0.' },
@@ -127,6 +147,7 @@ export default {
     {
       id: 10, type: 'choice', difficulty: 'hard', correct: 0,
       verify: 'text',
+      explainVisual: parabolaLine(2),
       al: {
         question: 'Cila është tangjentja e y² = 8x në pikën (2, 4)?', options: ['y = x + 2', 'y = 2x', 'y = 4x − 4', 'y = x + 4'],
         explanation: 'p = 4: 4y = 4(x + 2) → y = x + 2.', hint: 'y₀y = p(x + x₀).',

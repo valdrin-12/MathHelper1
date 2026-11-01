@@ -1,4 +1,9 @@
 {
+  "visuals": {
+    "showGraph": "Show graph",
+    "hideGraph": "Hide graph",
+    "tryIt": "Move the slider or type a number."
+  },
   "common": {
     "cancel": "Cancel",
     "delete": "Delete",

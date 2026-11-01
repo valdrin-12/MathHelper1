@@ -94,7 +94,8 @@ export const gradeCourseContents = (lang) => {
           keyPoints: t.keyPoints || [],
           examples: (t.examples || []).map((ex, i) => ({ ...ex, visual: lesson.exampleVisuals?.[i] || undefined })),
           commonMistakes: t.commonMistakes || [],
-          practice: t.practice || [],
+          // practice problems can carry an interactive picture behind a "Show graph" button
+          practice: (t.practice || []).map((p, i) => ({ ...p, visual: lesson.practiceVisuals?.[i] || undefined })),
           visuals: lesson.visuals || [],
         };
       }),

@@ -1,4 +1,9 @@
 {
+  "visuals": {
+    "showGraph": "Shiko grafikun",
+    "hideGraph": "Fshih grafikun",
+    "tryIt": "Lëvizni rrëshqitësin ose shkruani një numër."
+  },
   "common": {
     "cancel": "Anulo",
     "delete": "Fshi",

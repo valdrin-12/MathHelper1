@@ -72,6 +72,8 @@ const localizeSet = (set, lang) => {
         hint: t.hint || q.al.hint || '',
         // grade sets: optional picture (drawn from data) and per-question difficulty
         ...(q.visual ? { visual: q.visual } : {}),
+        // interactive picture offered after answering, in practice mode only ("Show graph")
+        ...(q.explainVisual ? { explainVisual: q.explainVisual } : {}),
         ...(q.difficulty ? { difficulty: q.difficulty } : {}),
         // grade sets read typed numbers by language ("48,800" = 48800 in English)
         ...(set.grade != null ? { numberLang: l } : {}),

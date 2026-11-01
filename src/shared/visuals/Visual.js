@@ -8,6 +8,7 @@ import NumberLine from './NumberLine';
 import { FractionBar, PieModel } from './FractionModels';
 import GeoFigure from './GeoFigure';
 import FunctionPlot from './FunctionPlot';
+import UnitCircle from './UnitCircle';
 import { BarChart, PieChart, Histogram, BoxPlot, ScatterPlot } from './Charts';
 import { TreeDiagram, VennDiagram, ValueTable, Solid } from './Diagrams';
 
@@ -17,6 +18,7 @@ const COMPONENTS = {
   pieModel: PieModel,
   geoFigure: GeoFigure,
   functionPlot: FunctionPlot,
+  unitCircle: UnitCircle,
   barChart: BarChart,
   pieChart: PieChart,
   histogram: Histogram,

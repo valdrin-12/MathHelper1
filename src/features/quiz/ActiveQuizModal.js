@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { Modal, View, Animated, ScrollView, KeyboardAvoidingView, Platform, Text } from 'react-native';
-import { Visual } from '../../shared/visuals';
+import { Visual, GraphToggle } from '../../shared/visuals';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../../shared/ui';
@@ -302,6 +302,11 @@ export default function ActiveQuizModal({ visible, quizSet, onClose, onComplete 
                 whyWrongText={whyWrongText}
                 whyNotAnswer={whyNotAnswer}
               />
+            )}
+
+            {/* Interactive graph: practice mode only, once the question is answered */}
+            {answered && !isTest && currentQuestion.explainVisual && (
+              <GraphToggle key={`g${currentIndex}`} spec={currentQuestion.explainVisual} color={quizSet.color} />
             )}
 
             {isTest && (

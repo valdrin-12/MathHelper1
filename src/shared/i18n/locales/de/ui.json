@@ -1,4 +1,9 @@
 {
+  "visuals": {
+    "showGraph": "Grafik anzeigen",
+    "hideGraph": "Grafik ausblenden",
+    "tryIt": "Schieberegler bewegen oder eine Zahl eingeben."
+  },
   "common": {
     "cancel": "Abbrechen",
     "delete": "Löschen",

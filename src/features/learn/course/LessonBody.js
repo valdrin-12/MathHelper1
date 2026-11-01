@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useLessonStyles } from './courseStyles';
 import { getLessonChecks } from '../../../content/lessonChecks';
 import LessonCheck from './LessonCheck';
-import { Visual } from '../../../shared/visuals';
+import { Visual, GraphToggle } from '../../../shared/visuals';
 
 /**
  * One lesson: theory, key points, worked examples and practice problems.
@@ -231,6 +231,7 @@ export default function LessonBody({ lesson, courseId, currentLesson, tint, expa
                   ))}
                 </View>
               )}
+              {p.visual && <GraphToggle spec={p.visual} color={tint} />}
             </View>
           ))}
         </View>
