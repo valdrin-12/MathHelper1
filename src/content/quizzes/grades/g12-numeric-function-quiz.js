@@ -95,6 +95,17 @@ export default {
     {
       id: 7, type: 'choice', difficulty: 'medium', correct: 2,
       verify: ['2^2 - 4*2 + 3', -1],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -3, yMax: 6 },
+    functions: [{ expr: 'a*x^2 + b*x + c', label: 'y = {a}x² {+b}x {+c}' }],
+    points: [{ at: ['-b/(2*a)', 'c - b^2/(4*a)'], label: 'V({-b/(2*a)}, {c - b^2/(4*a)})', color: 'success' }],
+    sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 1 }, { name: 'b', min: -8, max: 8, step: 1, value: -4 }, { name: 'c', min: -6, max: 6, step: 1, value: 3 }],
+    readouts: [
+      { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+      { text: { al: 'Boshti i simetrisë x = −b/(2a) = {-b/(2*a)}; vlera në kulm {c - b^2/(4*a)}.', en: 'Axis of symmetry x = −b/(2a) = {-b/(2*a)}; value at the vertex {c - b^2/(4*a)}.', de: 'Symmetrieachse x = −b/(2a) = {-b/(2*a)}; Wert am Scheitel {c - b^2/(4*a)}.' } },
+    ],
+    alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+  },
       al: {
         question: 'Sa është vlera më e vogël e y = x² − 4x + 3?', options: ['2', '3', '−1', '−4'],
         explanation: 'x₀ = 2; y = 4 − 8 + 3 = −1.', hint: 'Llogaritni y te kulmi.',

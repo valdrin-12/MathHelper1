@@ -42,6 +42,17 @@ export default {
     {
       id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
       verify: ['2 * (-2)^2 == 8', true],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -10, yMax: 12 },
+    functions: [{ expr: 'a*x^2', label: 'y = {a}x²' }],
+    points: [{ at: [-2, 8], label: '(-2, 8)', color: 'secondary' }],
+    sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 2 }],
+    readouts: [
+      { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+      { cases: [{ when: 'abs(a*(-2)^2 - (8)) < 0.001', text: { al: 'Parabola kalon nëpër (-2, 8).', en: 'The parabola passes through (-2, 8).', de: 'Die Parabel geht durch (-2 | 8).' } }, { text: { al: 'Te x = -2 parabola ka y = {a*(-2)^2}.', en: 'At x = -2 the parabola has y = {a*(-2)^2}.', de: 'Bei x = -2 hat die Parabel y = {a*(-2)^2}.' } }] },
+    ],
+    alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+  },
       al: { question: 'Parabola y = 2x² kalon nëpër pikën (−2, 8).', explanation: 'E vërtetë: 2 · (−2)² = 2 · 4 = 8.', hint: 'Zëvendësoni x = −2.', whyWrong: '(−2)² = 4, pra y = 8.' },
       en: { question: 'The parabola y = 2x² passes through the point (−2, 8).', explanation: 'True: 2 · (−2)² = 2 · 4 = 8.', hint: 'Substitute x = −2.', whyWrong: '(−2)² = 4, so y = 8.' },
       de: { question: 'Die Parabel y = 2x² geht durch den Punkt (−2 | 8).', explanation: 'Richtig: 2 · (−2)² = 2 · 4 = 8.', hint: 'Setzen Sie x = −2 ein.', whyWrong: '(−2)² = 4, also y = 8.' },
@@ -94,6 +105,15 @@ export default {
     {
       id: 7, type: 'truefalse', difficulty: 'medium', correct: false,
       verify: ['-(1^2) > 0', false],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -10, yMax: 10 },
+    functions: [{ expr: 'a*x^2', label: 'y = {a}x²' }],
+    sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: -1 }],
+    readouts: [
+      { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+    ],
+    alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+  },
       al: { question: 'Parabola y = −x² hapet lart.', explanation: 'E gabuar: a = −1 < 0, prandaj hapet poshtë; O është pika më e lartë.', hint: 'Shikoni shenjën e a.', whyWrong: 'Për çdo x ≠ 0, −x² < 0: grafiku është nën boshtin x.' },
       en: { question: 'The parabola y = −x² opens upwards.', explanation: 'False: a = −1 < 0, so it opens downwards; O is the highest point.', hint: 'Look at the sign of a.', whyWrong: 'For every x ≠ 0, −x² < 0: the graph is below the x-axis.' },
       de: { question: 'Die Parabel y = −x² ist nach oben geöffnet.', explanation: 'Falsch: a = −1 < 0, also nach unten geöffnet; O ist der höchste Punkt.', hint: 'Achten Sie auf das Vorzeichen von a.', whyWrong: 'Für jedes x ≠ 0 ist −x² < 0: Der Graph liegt unter der x-Achse.' },
@@ -120,6 +140,17 @@ export default {
     {
       id: 9, type: 'input', difficulty: 'hard', answer: { value: 2 },
       verify: ['18 / 3^2', 2],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -4, yMax: 22 },
+    functions: [{ expr: 'a*x^2', label: 'y = {a}x²' }],
+    points: [{ at: [3, 18], label: '(3, 18)', color: 'secondary' }],
+    sliders: [{ name: 'a', min: -3, max: 3, step: 0.5, value: 1 }],
+    readouts: [
+      { cases: [{ when: 'a > 0', text: { al: 'a = {a} > 0: hapet lart, kulmi është minimum.', en: 'a = {a} > 0: opens upwards, the vertex is a minimum.', de: 'a = {a} > 0: nach oben geöffnet, der Scheitel ist ein Minimum.' } }, { when: 'a < 0', text: { al: 'a = {a} < 0: hapet poshtë, kulmi është maksimum.', en: 'a = {a} < 0: opens downwards, the vertex is a maximum.', de: 'a = {a} < 0: nach unten geöffnet, der Scheitel ist ein Maximum.' } }, { text: { al: 'a = 0: nuk është më parabolë, por drejtëz.', en: 'a = 0: no longer a parabola but a line.', de: 'a = 0: keine Parabel mehr, sondern eine Gerade.' } }] },
+      { cases: [{ when: 'abs(a*(3)^2 - (18)) < 0.001', text: { al: 'Parabola kalon nëpër (3, 18).', en: 'The parabola passes through (3, 18).', de: 'Die Parabel geht durch (3 | 18).' } }, { text: { al: 'Te x = 3 parabola ka y = {a*(3)^2}.', en: 'At x = 3 the parabola has y = {a*(3)^2}.', de: 'Bei x = 3 hat die Parabel y = {a*(3)^2}.' } }] },
+    ],
+    alt: { al: 'Parabola me rrëshqitës për koeficientët dhe kulmin e saj.', en: 'A parabola with sliders for its coefficients and its vertex.', de: 'Eine Parabel mit Schiebereglern für die Koeffizienten und ihrem Scheitel.' },
+  },
       al: { question: 'Parabola y = ax² kalon nëpër (3, 18). Sa është a?', explanation: 'a = 18/3² = 18/9 = 2.', hint: 'a = y/x².', commonMistakes: [{ value: 6, why: 'Pjesëtuat me x, jo me x².' }] },
       en: { question: 'The parabola y = ax² passes through (3, 18). What is a?', explanation: 'a = 18/3² = 18/9 = 2.', hint: 'a = y/x².', commonMistakes: [{ value: 6, why: 'You divided by x, not by x².' }] },
       de: { question: 'Die Parabel y = ax² geht durch (3 | 18). Wie groß ist a?', explanation: 'a = 18/3² = 18/9 = 2.', hint: 'a = y/x².', commonMistakes: [{ value: 6, why: 'Sie haben durch x statt durch x² geteilt.' }] },

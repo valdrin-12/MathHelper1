@@ -42,6 +42,20 @@ export default {
     {
       id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
       verify: ['-2 * 2 == -4', true],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -5, xMax: 5, yMin: -8, yMax: 8 },
+    functions: [{ expr: 'k*x + 0', label: 'y = {k}x' }],
+    points: [{ at: [2, -4], label: '(2, −4)', color: 'secondary' }],
+    sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -2 }],
+    readouts: [
+      { cases: [{ when: 'k > 0', text: { al: 'k = {k} > 0: drejtëza ngjitet.', en: 'k = {k} > 0: the line goes up.', de: 'k = {k} > 0: Die Gerade steigt.' } }, { when: 'k < 0', text: { al: 'k = {k} < 0: drejtëza zbret.', en: 'k = {k} < 0: the line goes down.', de: 'k = {k} < 0: Die Gerade fällt.' } }, { text: { al: 'k = 0: drejtëza është horizontale.', en: 'k = 0: the line is horizontal.', de: 'k = 0: Die Gerade ist waagerecht.' } }] },
+      { cases: [
+        { when: 'abs(k*2 - (-4)) < 0.001', text: { al: 'Drejtëza kalon nëpër (2, −4).', en: 'The line passes through (2, −4).', de: 'Die Gerade geht durch (2 | −4).' } },
+        { text: { al: 'Drejtëza nuk kalon nëpër (2, −4): te x = 2 ajo ka y = {k*2}.', en: 'The line misses (2, −4): at x = 2 it has y = {k*2}.', de: 'Die Gerade verfehlt (2 | −4): bei x = 2 ist y = {k*2}.' } },
+      ] }
+    ],
+    alt: { al: 'Drejtëza y = kx + n me rrëshqitës për koeficientët.', en: 'The line y = kx + n with sliders for the coefficients.', de: 'Die Gerade y = kx + n mit Schiebereglern für die Koeffizienten.' },
+  },
       al: { question: 'Grafiku i y = −2x kalon nëpër pikën (2, −4).', explanation: 'E vërtetë: për x = 2, y = −2 · 2 = −4.', hint: 'Zëvendësoni x = 2.', whyWrong: 'Formula jep −4 për x = 2, pra pika është në grafik.' },
       en: { question: 'The graph of y = −2x passes through the point (2, −4).', explanation: 'True: for x = 2, y = −2 · 2 = −4.', hint: 'Substitute x = 2.', whyWrong: 'The formula gives −4 for x = 2, so the point is on the graph.' },
       de: { question: 'Der Graph von y = −2x geht durch den Punkt (2 | −4).', explanation: 'Richtig: Für x = 2 ist y = −2 · 2 = −4.', hint: 'Setzen Sie x = 2 ein.', whyWrong: 'Der Term ergibt −4 für x = 2, der Punkt liegt also auf dem Graphen.' },
@@ -68,6 +82,20 @@ export default {
     {
       id: 5, type: 'input', difficulty: 'medium', answer: { value: 4 },
       verify: ['12 / 3', 4],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -2, xMax: 5, yMin: -4, yMax: 16 },
+    functions: [{ expr: 'k*x + 0', label: 'y = {k}x' }],
+    points: [{ at: [3, 12], label: '(3, 12)', color: 'secondary' }],
+    sliders: [{ name: 'k', min: -5, max: 6, step: 0.5, value: 4 }],
+    readouts: [
+      { cases: [{ when: 'k > 0', text: { al: 'k = {k} > 0: drejtëza ngjitet.', en: 'k = {k} > 0: the line goes up.', de: 'k = {k} > 0: Die Gerade steigt.' } }, { when: 'k < 0', text: { al: 'k = {k} < 0: drejtëza zbret.', en: 'k = {k} < 0: the line goes down.', de: 'k = {k} < 0: Die Gerade fällt.' } }, { text: { al: 'k = 0: drejtëza është horizontale.', en: 'k = 0: the line is horizontal.', de: 'k = 0: Die Gerade ist waagerecht.' } }] },
+      { cases: [
+        { when: 'abs(k*3 - (12)) < 0.001', text: { al: 'Drejtëza kalon nëpër (3, 12).', en: 'The line passes through (3, 12).', de: 'Die Gerade geht durch (3 | 12).' } },
+        { text: { al: 'Drejtëza nuk kalon nëpër (3, 12): te x = 3 ajo ka y = {k*3}.', en: 'The line misses (3, 12): at x = 3 it has y = {k*3}.', de: 'Die Gerade verfehlt (3 | 12): bei x = 3 ist y = {k*3}.' } },
+      ] }
+    ],
+    alt: { al: 'Drejtëza y = kx + n me rrëshqitës për koeficientët.', en: 'The line y = kx + n with sliders for the coefficients.', de: 'Die Gerade y = kx + n mit Schiebereglern für die Koeffizienten.' },
+  },
       al: { question: 'Grafiku i y = kx kalon nëpër pikën (3, 12). Sa është k?', explanation: 'k = y : x = 12 : 3 = 4.', hint: 'k = y : x.', commonMistakes: [{ value: 36, why: 'Shumëzuat; k = y : x.' }, { value: 0.25, why: 'Pjesëtuat x me y; k = y : x.' }] },
       en: { question: 'The graph of y = kx passes through the point (3, 12). What is k?', explanation: 'k = y ÷ x = 12 ÷ 3 = 4.', hint: 'k = y ÷ x.', commonMistakes: [{ value: 36, why: 'You multiplied; k = y ÷ x.' }, { value: 0.25, why: 'You divided x by y; k = y ÷ x.' }] },
       de: { question: 'Der Graph von y = kx geht durch den Punkt (3 | 12). Wie groß ist k?', explanation: 'k = y : x = 12 : 3 = 4.', hint: 'k = y : x.', commonMistakes: [{ value: 36, why: 'Sie haben multipliziert; k = y : x.' }, { value: 0.25, why: 'Sie haben x durch y geteilt; k = y : x.' }] },
@@ -99,6 +127,20 @@ export default {
     {
       id: 7, type: 'truefalse', difficulty: 'medium', correct: false,
       verify: ['3 * 0 + 1 == 0', false],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -5, xMax: 5, yMin: -8, yMax: 8 },
+    functions: [{ expr: 'k*x + n', label: 'y = {k}x {+n}' }],
+    points: [{ at: [0, 0], label: '(0, 0)', color: 'secondary' }],
+    sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: 3 }, { name: 'n', min: -6, max: 6, step: 0.5, value: 1 }],
+    readouts: [
+      { cases: [{ when: 'k > 0', text: { al: 'k = {k} > 0: drejtëza ngjitet.', en: 'k = {k} > 0: the line goes up.', de: 'k = {k} > 0: Die Gerade steigt.' } }, { when: 'k < 0', text: { al: 'k = {k} < 0: drejtëza zbret.', en: 'k = {k} < 0: the line goes down.', de: 'k = {k} < 0: Die Gerade fällt.' } }, { text: { al: 'k = 0: drejtëza është horizontale.', en: 'k = 0: the line is horizontal.', de: 'k = 0: Die Gerade ist waagerecht.' } }] },
+      { cases: [
+        { when: 'abs(k*0 + n - (0)) < 0.001', text: { al: 'Drejtëza kalon nëpër (0, 0).', en: 'The line passes through (0, 0).', de: 'Die Gerade geht durch (0 | 0).' } },
+        { text: { al: 'Drejtëza nuk kalon nëpër (0, 0): te x = 0 ajo ka y = {k*0 + n}.', en: 'The line misses (0, 0): at x = 0 it has y = {k*0 + n}.', de: 'Die Gerade verfehlt (0 | 0): bei x = 0 ist y = {k*0 + n}.' } },
+      ] }
+    ],
+    alt: { al: 'Drejtëza y = kx + n me rrëshqitës për koeficientët.', en: 'The line y = kx + n with sliders for the coefficients.', de: 'Die Gerade y = kx + n mit Schiebereglern für die Koeffizienten.' },
+  },
       al: { question: 'Grafiku i y = 3x + 1 kalon nëpër origjinë.', explanation: 'E gabuar: për x = 0 del y = 1, jo 0.', hint: 'Zëvendësoni x = 0.', whyWrong: 'Pika (0, 0) nuk është në grafik, sepse y(0) = 1.' },
       en: { question: 'The graph of y = 3x + 1 passes through the origin.', explanation: 'False: for x = 0 we get y = 1, not 0.', hint: 'Substitute x = 0.', whyWrong: 'The point (0, 0) is not on the graph, because y(0) = 1.' },
       de: { question: 'Der Graph von y = 3x + 1 geht durch den Ursprung.', explanation: 'Falsch: Für x = 0 ergibt sich y = 1, nicht 0.', hint: 'Setzen Sie x = 0 ein.', whyWrong: 'Der Punkt (0 | 0) liegt nicht auf dem Graphen, denn y(0) = 1.' },
@@ -106,6 +148,15 @@ export default {
     {
       id: 8, type: 'choice', difficulty: 'medium', correct: 0,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -5, xMax: 5, yMin: -8, yMax: 8 },
+    functions: [{ expr: 'k*x + 0', label: 'y = {k}x' }],
+    sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -1.5 }],
+    readouts: [
+      { cases: [{ when: 'k > 0', text: { al: 'k = {k} > 0: drejtëza ngjitet.', en: 'k = {k} > 0: the line goes up.', de: 'k = {k} > 0: Die Gerade steigt.' } }, { when: 'k < 0', text: { al: 'k = {k} < 0: drejtëza zbret.', en: 'k = {k} < 0: the line goes down.', de: 'k = {k} < 0: Die Gerade fällt.' } }, { text: { al: 'k = 0: drejtëza është horizontale.', en: 'k = 0: the line is horizontal.', de: 'k = 0: Die Gerade ist waagerecht.' } }] }
+    ],
+    alt: { al: 'Drejtëza y = kx + n me rrëshqitës për koeficientët.', en: 'The line y = kx + n with sliders for the coefficients.', de: 'Die Gerade y = kx + n mit Schiebereglern für die Koeffizienten.' },
+  },
       al: {
         question: 'Si duket grafiku i y = kx kur k < 0?', options: ['Drejtëz nëpër origjinë që zbret', 'Drejtëz nëpër origjinë që rritet', 'Drejtëz horizontale', 'Drejtëz që nuk kalon nëpër origjinë'],
         explanation: 'y = kx kalon gjithmonë nëpër O; me k < 0 zbret nga e majta në të djathtë.', hint: 'Provoni y = −2x për x = 1 dhe x = 2.',
