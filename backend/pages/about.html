@@ -1,0 +1,1432 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>MathHelper - Asistenti yt personal i matematikes</title>
+  <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png?v=3" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico?v=3" />
+  <link rel="apple-touch-icon" href="/favicon.png?v=3" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --primary: #006FE6;
+      --primary-light: #4DA6FF;
+      --primary-soft: #0058CC;
+      --primary-bg: #EBF3FF;
+      --accent: #FF9500;
+      --accent-dark: #CC7700;
+      --success: #34C759;
+      --error: #FF3B30;
+      --text: #000000;
+      --text-secondary: #3C3C43;
+      --text-muted: #8E8E93;
+      --bg: #F2F2F7;
+      --surface: #FFFFFF;
+      --border: #E5E5EA;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled { box-shadow: 0 4px 30px rgba(30,58,138,0.08); }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 32px;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo-icon {
+      width: 40px; height: 40px; border-radius: 12px;
+      background: var(--primary); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 20px; color: #fff;
+    }
+    .nav-logo span { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a {
+      text-decoration: none; color: var(--text-secondary);
+      font-weight: 600; font-size: 15px; transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-cta {
+      background: var(--primary) !important; color: #fff !important;
+      padding: 10px 24px; border-radius: 12px;
+      font-weight: 700 !important; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,58,138,0.25); }
+    .nav-qr {
+      background: var(--primary-bg) !important; color: var(--primary-soft) !important;
+      padding: 10px 18px; border-radius: 12px;
+      font-weight: 700 !important; border: 1.5px solid rgba(59,130,246,0.2);
+      transition: all 0.2s;
+    }
+    .nav-qr:hover { background: #dbeafe !important; border-color: var(--primary-soft); }
+
+    /* Language Switcher */
+    .lang-switcher {
+      display: flex; gap: 4px; background: var(--primary-bg);
+      border-radius: 10px; padding: 3px; border: 1px solid var(--border);
+    }
+    .lang-btn {
+      border: none; background: transparent; cursor: pointer;
+      padding: 6px 10px; border-radius: 8px; font-size: 15px;
+      transition: all 0.2s; line-height: 1;
+    }
+    .lang-btn.active {
+      background: var(--surface); box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .lang-btn:hover { background: rgba(255,255,255,0.6); }
+
+    /* Mobile Menu */
+    .mobile-menu-btn {
+      display: none; background: none; border: none;
+      font-size: 28px; cursor: pointer; color: var(--text);
+      padding: 4px;
+    }
+    .mobile-menu {
+      display: none; position: fixed; top: 73px; left: 0; right: 0;
+      background: var(--surface); border-bottom: 1px solid var(--border);
+      padding: 20px 24px; z-index: 99;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+    }
+    .mobile-menu.open { display: flex; flex-direction: column; gap: 16px; }
+    .mobile-menu a {
+      text-decoration: none; color: var(--text); font-weight: 600;
+      font-size: 16px; padding: 8px 0;
+    }
+    .mobile-lang-row { display: flex; gap: 8px; padding-top: 8px; border-top: 1px solid var(--border); }
+
+    /* HERO */
+    .hero {
+      padding: 160px 32px 80px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; top: -50%; left: -20%; right: -20%; bottom: 10%;
+      background:
+        radial-gradient(ellipse at 30% 20%, rgba(0,111,230,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse at 75% 60%, rgba(77,166,255,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--primary-bg); border: 1px solid rgba(59,130,246,0.2);
+      padding: 8px 20px; border-radius: 100px;
+      font-size: 14px; font-weight: 600; color: var(--primary-soft);
+      margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 6vw, 72px);
+      font-weight: 900; letter-spacing: -2px;
+      line-height: 1.08; margin-bottom: 24px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero p {
+      font-size: clamp(17px, 2vw, 21px);
+      color: var(--text-secondary); max-width: 640px;
+      margin: 0 auto 44px; line-height: 1.7;
+    }
+    .hero-buttons {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: #fff; padding: 16px 36px; border-radius: 16px;
+      font-size: 17px; font-weight: 700; text-decoration: none;
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease;
+      box-shadow: 0 4px 20px rgba(0,111,230,0.28), 0 1px 3px rgba(0,111,230,0.15);
+    }
+    .btn-primary:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 12px 40px rgba(0,111,230,0.35); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--surface); color: var(--text);
+      padding: 16px 36px; border-radius: 16px;
+      font-size: 17px; font-weight: 700; text-decoration: none;
+      border: 2px solid var(--border); transition: all 0.2s;
+    }
+    .btn-secondary:hover { border-color: var(--primary-light); color: var(--primary); }
+
+    /* APP PREVIEW */
+    .preview-section {
+      padding: 40px 32px 100px;
+      position: relative; overflow: hidden;
+    }
+    .preview-section::before {
+      content: '';
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      width: 800px; height: 800px;
+      background: radial-gradient(circle, rgba(59,130,246,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .phones-container {
+      display: flex; justify-content: center; align-items: flex-end;
+      gap: 24px; max-width: 900px; margin: 0 auto;
+      position: relative;
+    }
+    .phone-frame {
+      width: 240px; height: 480px;
+      background: #1a1a2e;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: 0 30px 80px rgba(30,58,138,0.2), 0 0 0 1px rgba(255,255,255,0.1) inset;
+      position: relative;
+      transition: transform 0.4s ease;
+    }
+    .phone-frame:hover { transform: translateY(-8px); }
+    .phone-frame.featured {
+      width: 270px; height: 540px;
+      box-shadow: 0 40px 100px rgba(30,58,138,0.3), 0 0 0 1px rgba(255,255,255,0.1) inset;
+    }
+    .phone-frame::before {
+      content: '';
+      position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+      width: 80px; height: 24px; background: #1a1a2e;
+      border-radius: 0 0 16px 16px; z-index: 2;
+    }
+    .phone-screen {
+      width: 100%; height: 100%;
+      border-radius: 24px; overflow: hidden;
+      position: relative;
+    }
+    .phone-screen img {
+      width: 100%; height: 100%;
+      object-fit: cover; object-position: top;
+    }
+    .phone-screen-placeholder {
+      width: 100%; height: 100%;
+      border-radius: 24px; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: #fff; text-align: center; padding: 20px;
+    }
+    .phone-screen-placeholder.dashboard-bg {
+      background: linear-gradient(180deg, #3B6AE6 0%, #4B7BF5 35%, #F0F4FF 35%, #F0F4FF 100%);
+    }
+    .phone-screen-placeholder.learn-bg {
+      background: linear-gradient(180deg, #3B6AE6 0%, #4B7BF5 30%, #F0F4FF 30%, #F0F4FF 100%);
+    }
+    .phone-screen-placeholder.quiz-bg {
+      background: linear-gradient(180deg, #3B6AE6 0%, #4B7BF5 25%, #F0F4FF 25%, #F0F4FF 100%);
+    }
+    .phone-label {
+      position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
+      font-size: 14px; font-weight: 700; color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    /* HOW IT WORKS */
+    .how-section {
+      padding: 100px 32px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .section-label {
+      font-size: 14px; font-weight: 700; color: var(--primary-soft);
+      text-transform: uppercase; letter-spacing: 2px;
+      text-align: center; margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(30px, 4vw, 48px);
+      font-weight: 900; text-align: center;
+      letter-spacing: -1.5px; margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 18px; color: var(--text-secondary);
+      text-align: center; max-width: 560px;
+      margin: 0 auto 64px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 32px;
+    }
+    .step-card {
+      background: var(--surface);
+      border-radius: 24px; padding: 40px 32px;
+      border: 1px solid var(--border);
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .step-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 24px 64px rgba(0,111,230,0.12);
+    }
+    .step-number {
+      position: absolute; top: 20px; right: 24px;
+      font-size: 80px; font-weight: 900;
+      color: rgba(59,130,246,0.06); line-height: 1;
+    }
+    .step-icon {
+      width: 64px; height: 64px; border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; margin-bottom: 24px;
+    }
+    .step-card:nth-child(1) .step-icon { background: linear-gradient(135deg, #EBF3FF, #BDD9FF); }
+    .step-card:nth-child(2) .step-icon { background: linear-gradient(135deg, #FFF4E0, #FFD999); }
+    .step-card:nth-child(3) .step-icon { background: linear-gradient(135deg, #E9F8EE, #A8EFC0); }
+    .step-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+    .step-card p { color: var(--text-secondary); font-size: 16px; line-height: 1.7; }
+
+    /* FEATURES */
+    .features-section {
+      padding: 100px 32px;
+      background: linear-gradient(180deg, var(--surface) 0%, var(--bg) 100%);
+    }
+    .features-inner { max-width: 1200px; margin: 0 auto; }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 56px rgba(0,111,230,0.10);
+    }
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 20px;
+    }
+    .feature-card:nth-child(1) .feature-icon { background: linear-gradient(135deg, #EBF3FF, #BDD9FF); }
+    .feature-card:nth-child(2) .feature-icon { background: linear-gradient(135deg, #FFF4E0, #FFD999); }
+    .feature-card:nth-child(3) .feature-icon { background: linear-gradient(135deg, #E9F8EE, #A8EFC0); }
+    .feature-card:nth-child(4) .feature-icon { background: linear-gradient(135deg, #F5EEFF, #DCC5FF); }
+    .feature-card:nth-child(5) .feature-icon { background: linear-gradient(135deg, #FFEBEA, #FFBFBB); }
+    .feature-card:nth-child(6) .feature-icon { background: linear-gradient(135deg, #E0F8FF, #9EEDFF); }
+    .feature-card h3 { font-size: 19px; font-weight: 700; margin-bottom: 10px; }
+    .feature-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.7; }
+
+    /* SUBJECTS */
+    .subjects-section {
+      padding: 100px 32px;
+      max-width: 1200px; margin: 0 auto;
+    }
+    .subjects-grid {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center;
+    }
+    .subject-pill {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 14px 28px; border-radius: 100px;
+      font-size: 16px; font-weight: 600; color: var(--text);
+      transition: all 0.2s; cursor: default;
+    }
+    .subject-pill:hover {
+      background: var(--primary-bg); border-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* LANGUAGES */
+    .languages-section {
+      padding: 80px 32px;
+      background: linear-gradient(135deg, #004EB5 0%, var(--primary) 50%, var(--primary-light) 100%);
+      text-align: center; color: #fff;
+    }
+    .languages-section h2 {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 900; letter-spacing: -1px; margin-bottom: 16px;
+    }
+    .languages-section p {
+      font-size: 18px; opacity: 0.85; margin-bottom: 40px;
+      max-width: 500px; margin-left: auto; margin-right: auto;
+    }
+    .lang-flags {
+      display: flex; gap: 24px; justify-content: center; flex-wrap: wrap;
+    }
+    .lang-flag {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 16px; padding: 20px 36px;
+      display: flex; align-items: center; gap: 12px;
+      font-size: 18px; font-weight: 700;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s, background 0.2s;
+    }
+    .lang-flag:hover { transform: scale(1.05); background: rgba(255,255,255,0.22); }
+    .lang-flag .flag { font-size: 28px; }
+
+    /* STATS BAR */
+    .stats-bar {
+      padding: 28px 32px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .stats-bar-inner {
+      max-width: 800px; margin: 0 auto;
+      display: flex; justify-content: center; align-items: center;
+      gap: 0; flex-wrap: wrap;
+    }
+    .stat-item {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 0 40px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-num {
+      font-size: 28px; font-weight: 800;
+      color: var(--primary); letter-spacing: -1px; line-height: 1.1;
+    }
+    .stat-desc {
+      font-size: 13px; color: var(--text-muted);
+      font-weight: 500; margin-top: 4px; text-align: center;
+    }
+    @media (max-width: 600px) {
+      .stats-bar-inner { gap: 16px; }
+      .stat-item { border-right: none; padding: 8px 20px; }
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 120px 32px; text-align: center;
+      background: linear-gradient(180deg, var(--surface) 0%, var(--primary-bg) 60%, var(--bg) 100%);
+    }
+    .cta-section h2 {
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 900; letter-spacing: -1.5px; margin-bottom: 20px;
+    }
+    .cta-section p {
+      font-size: 19px; color: var(--text-secondary);
+      max-width: 520px; margin: 0 auto 40px;
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--text);
+      color: rgba(255,255,255,0.6); padding: 48px 32px;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 24px;
+    }
+    .footer-logo {
+      display: flex; align-items: center; gap: 10px;
+      color: #fff; font-size: 18px; font-weight: 800;
+    }
+    .footer-logo-icon {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--primary-light); display: flex;
+      align-items: center; justify-content: center;
+      font-size: 18px; color: #fff;
+    }
+    .footer-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 24px; }
+    .footer-links a {
+      color: rgba(255,255,255,0.5); text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: color 0.2s;
+    }
+    .footer-links a:hover { color: #fff; }
+
+    /* ANIMATIONS */
+    .fade-up {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .mobile-menu-btn { display: block; }
+      .hero { padding: 130px 20px 60px; }
+      .how-section, .features-section, .subjects-section, .cta-section { padding: 60px 20px; }
+      .steps-grid, .features-grid { grid-template-columns: 1fr; }
+      .lang-flag { padding: 16px 24px; font-size: 16px; }
+      .phones-container { gap: 12px; }
+      .phone-frame { width: 140px; height: 280px; border-radius: 24px; padding: 8px; }
+      .phone-frame.featured { width: 160px; height: 320px; }
+      .phone-frame::before { width: 50px; height: 16px; top: 8px; border-radius: 0 0 10px 10px; }
+      .phone-screen { border-radius: 16px; }
+      .phone-label { font-size: 11px; bottom: -28px; }
+      .preview-section { padding: 20px 16px 70px; }
+    }
+
+    @media (min-width: 769px) {
+      .mobile-menu-btn { display: none; }
+    }
+
+    /* QR CODE SECTION */
+    .qr-section {
+      padding: 80px 32px;
+      background: linear-gradient(135deg, #004EB5 0%, var(--primary) 60%, var(--primary-light) 100%);
+      position: relative; overflow: hidden;
+    }
+    .qr-section::before {
+      content: '';
+      position: absolute; top: -60%; left: -10%; right: -10%; bottom: -60%;
+      background:
+        radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse at 20% 80%, rgba(255,255,255,0.04) 0%, transparent 45%);
+      pointer-events: none;
+    }
+    .qr-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      gap: 64px; flex-wrap: wrap;
+    }
+    .qr-text { flex: 1; min-width: 260px; color: #fff; }
+    .qr-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2);
+      padding: 6px 16px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.9);
+      margin-bottom: 20px;
+    }
+    .qr-text h2 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 900; letter-spacing: -1px;
+      line-height: 1.15; margin-bottom: 16px; color: #fff;
+    }
+    .qr-text p { font-size: 16px; color: rgba(255,255,255,0.8); line-height: 1.7; margin-bottom: 28px; }
+    .qr-steps { list-style: none; margin-bottom: 28px; display: flex; flex-direction: column; gap: 10px; }
+    .qr-steps li {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 15px; color: rgba(255,255,255,0.9); font-weight: 500;
+    }
+    .qr-steps li span.step-dot {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); display: flex; align-items: center;
+      justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0;
+    }
+    .qr-download-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3);
+      color: #fff; padding: 12px 24px; border-radius: 12px;
+      font-size: 14px; font-weight: 700; text-decoration: none;
+      transition: all 0.2s; cursor: pointer;
+    }
+    .qr-download-btn:hover { background: rgba(255,255,255,0.25); border-color: rgba(255,255,255,0.5); }
+    .qr-card {
+      display: flex; flex-direction: column; align-items: center; gap: 16px;
+      background: #fff; border-radius: 24px; padding: 28px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+      flex-shrink: 0;
+    }
+    .qr-card img { width: 200px; height: 200px; display: block; border-radius: 8px; }
+    .qr-url {
+      font-size: 13px; font-weight: 700; color: var(--primary);
+      letter-spacing: 0.5px;
+    }
+    .qr-scan-hint {
+      display: flex; align-items: center; gap: 6px;
+      font-size: 12px; color: var(--text-muted); font-weight: 500;
+    }
+    @media (max-width: 768px) {
+      .qr-inner { flex-direction: column; gap: 40px; text-align: center; }
+      .qr-steps li { justify-content: center; }
+      .qr-section { padding: 60px 24px; }
+    }
+
+    /* COOKIE BANNER */
+    #cookie-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+      background: #0F172A;
+      color: #fff;
+      padding: 16px 24px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; flex-wrap: wrap;
+      box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+    }
+    #cookie-banner p {
+      font-size: 14px; color: rgba(255,255,255,0.85);
+      margin: 0; line-height: 1.5;
+    }
+    #cookie-banner .cookie-actions {
+      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+    }
+    #cookie-banner .cookie-learn {
+      font-size: 14px; color: #93C5FD; font-weight: 600;
+      text-decoration: underline; cursor: pointer;
+      background: none; border: none; font-family: inherit;
+      white-space: nowrap;
+    }
+    #cookie-banner .cookie-learn:hover { color: #BFDBFE; }
+    #cookie-banner .cookie-accept {
+      background: #10B981; color: #fff;
+      border: none; border-radius: 10px;
+      padding: 9px 22px; font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      white-space: nowrap; transition: background 0.2s;
+    }
+    #cookie-banner .cookie-accept:hover { background: #059669; }
+    @media (max-width: 600px) {
+      #cookie-banner { flex-direction: column; text-align: center; }
+    }
+
+    /* ─── LANGUAGE SELECTION POPUP ─── */
+    #lang-popup-overlay {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      display: flex; align-items: flex-end; justify-content: center;
+      padding: 0;
+      animation: overlayIn 0.25s ease both;
+    }
+    @keyframes overlayIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    #lang-popup-overlay.hidden { display: none; }
+    #lang-popup {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(40px) saturate(200%);
+      -webkit-backdrop-filter: blur(40px) saturate(200%);
+      border-radius: 28px 28px 0 0;
+      padding: 8px 0 0;
+      width: 100%; max-width: 480px;
+      box-shadow: 0 -2px 0 rgba(0,0,0,0.06), 0 -20px 60px rgba(0,0,0,0.12);
+      text-align: center;
+      animation: sheetIn 0.42s cubic-bezier(0.32,0.72,0,1) both;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    }
+    @keyframes sheetIn {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    .lp-handle {
+      width: 36px; height: 5px; border-radius: 3px;
+      background: rgba(0,0,0,0.18);
+      margin: 0 auto 24px;
+    }
+    .lp-header {
+      padding: 0 24px 20px;
+      border-bottom: 0.5px solid rgba(0,0,0,0.1);
+    }
+    .lp-app-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; margin-bottom: 14px;
+    }
+    .lp-app-icon {
+      width: 44px; height: 44px; border-radius: 11px;
+      background: linear-gradient(145deg, #1E3A8A, #3B82F6);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      box-shadow: 0 2px 8px rgba(30,58,138,0.3);
+    }
+    .lp-app-name {
+      font-size: 17px; font-weight: 700; color: #000; letter-spacing: -0.3px;
+    }
+    #lang-popup h2 {
+      font-size: 20px; font-weight: 700; color: #000;
+      letter-spacing: -0.5px; line-height: 1.3; margin-bottom: 6px;
+    }
+    .lp-tagline {
+      font-size: 13px; color: rgba(0,0,0,0.45); line-height: 1.5;
+      letter-spacing: -0.1px;
+    }
+    #lang-popup p { display: none; }
+    .lang-popup-options {
+      display: flex; flex-direction: column; gap: 0;
+      padding: 8px 0;
+    }
+    .lang-popup-btn {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 24px;
+      border: none; background: transparent;
+      cursor: pointer; text-align: left;
+      transition: background 0.12s;
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+      position: relative;
+    }
+    .lang-popup-btn::after {
+      content: '';
+      position: absolute; bottom: 0; left: 24px; right: 24px;
+      height: 0.5px; background: rgba(0,0,0,0.08);
+    }
+    .lang-popup-btn:last-child::after { display: none; }
+    .lang-popup-btn:active { background: rgba(0,0,0,0.05); }
+    @media (hover: hover) {
+      .lang-popup-btn:hover { background: rgba(0,0,0,0.04); }
+    }
+    .lp-flag-wrap {
+      width: 44px; height: 44px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px; flex-shrink: 0;
+      background: rgba(0,0,0,0.04);
+    }
+    .lang-popup-btn .lp-text { flex: 1; }
+    .lang-popup-btn .lp-name {
+      font-size: 17px; font-weight: 600; color: #000;
+      letter-spacing: -0.3px; display: block;
+    }
+    .lang-popup-btn .lp-sub {
+      font-size: 13px; color: rgba(0,0,0,0.45);
+      display: block; margin-top: 2px; letter-spacing: -0.1px;
+    }
+    .lp-chevron {
+      width: 20px; height: 20px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .lp-chevron svg { opacity: 0.28; }
+    .lp-footer {
+      padding: 12px 24px 40px;
+      border-top: 0.5px solid rgba(0,0,0,0.1);
+    }
+    .lp-dismiss {
+      width: 100%; padding: 15px;
+      border: none; border-radius: 14px;
+      background: rgba(0,0,0,0.06);
+      font-family: inherit; font-size: 17px; font-weight: 600;
+      color: rgba(0,0,0,0.5); cursor: pointer;
+      transition: background 0.12s;
+      letter-spacing: -0.3px;
+    }
+    .lp-dismiss:active { background: rgba(0,0,0,0.1); }
+  </style>
+</head>
+<body>
+
+  <!-- LANGUAGE SELECTION POPUP (shown on first visit) -->
+  <div id="lang-popup-overlay" class="hidden">
+    <div id="lang-popup">
+      <div class="lp-handle"></div>
+
+      <div class="lp-header">
+        <div class="lp-app-row">
+          <div class="lp-app-icon">🧮</div>
+          <span class="lp-app-name">MathHelper</span>
+        </div>
+        <h2 id="popup-title">Choose your language</h2>
+        <p class="lp-tagline">Zgjidhni gjuhën &bull; Wählen Sie Ihre Sprache</p>
+      </div>
+
+      <p id="popup-sub"></p>
+
+      <div class="lang-popup-options">
+        <button class="lang-popup-btn" data-popup-lang="al">
+          <span class="lp-flag-wrap">🇦🇱</span>
+          <span class="lp-text">
+            <span class="lp-name">Shqip</span>
+            <span class="lp-sub">Zgjidhni këtë gjuhë për të vazhduar</span>
+          </span>
+          <span class="lp-chevron"><svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <button class="lang-popup-btn" data-popup-lang="en">
+          <span class="lp-flag-wrap">🇬🇧</span>
+          <span class="lp-text">
+            <span class="lp-name">English</span>
+            <span class="lp-sub">Select this language to continue</span>
+          </span>
+          <span class="lp-chevron"><svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+        <button class="lang-popup-btn" data-popup-lang="de">
+          <span class="lp-flag-wrap">🇩🇪</span>
+          <span class="lp-text">
+            <span class="lp-name">Deutsch</span>
+            <span class="lp-sub">Wählen Sie diese Sprache, um fortzufahren</span>
+          </span>
+          <span class="lp-chevron"><svg width="8" height="14" viewBox="0 0 8 14" fill="none"><path d="M1 1l6 6-6 6" stroke="#000" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+        </button>
+      </div>
+
+      <div class="lp-footer">
+        <button class="lp-dismiss" id="lp-dismiss-btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NAV -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-icon">&#x1F4D0;</div>
+        <span>MathHelper</span>
+      </a>
+      <div class="nav-links">
+        <a href="#how" data-i18n="nav.how">Si funksionon</a>
+        <a href="#features" data-i18n="nav.features">Karakteristikat</a>
+        <a href="#subjects" data-i18n="nav.subjects">Lendet</a>
+        <div class="lang-switcher">
+          <button class="lang-btn active" data-lang="al" title="Shqip">&#x1F1E6;&#x1F1F1;</button>
+          <button class="lang-btn" data-lang="en" title="English">&#x1F1EC;&#x1F1E7;</button>
+          <button class="lang-btn" data-lang="de" title="Deutsch">&#x1F1E9;&#x1F1EA;</button>
+        </div>
+        <a href="/qr" class="nav-qr" data-i18n="nav.qr">&#x1F4F1; QR Code</a>
+        <a href="/dashboard" class="nav-cta" data-i18n="nav.openApp">Hap aplikacionin</a>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn">&#9776;</button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#how" data-i18n="nav.how">Si funksionon</a>
+    <a href="#features" data-i18n="nav.features">Karakteristikat</a>
+    <a href="#subjects" data-i18n="nav.subjects">Lendet</a>
+    <a href="/qr" data-i18n="nav.qr">&#x1F4F1; QR Code</a>
+    <a href="/dashboard" data-i18n="nav.openApp">Hap aplikacionin</a>
+    <div class="mobile-lang-row">
+      <button class="lang-btn active" data-lang="al">&#x1F1E6;&#x1F1F1;</button>
+      <button class="lang-btn" data-lang="en">&#x1F1EC;&#x1F1E7;</button>
+      <button class="lang-btn" data-lang="de">&#x1F1E9;&#x1F1EA;</button>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">&#x2728; <span data-i18n="hero.badge">Falas per te gjithe</span></div>
+    <h1 data-i18n="hero.title">Ke nevoje per ndihme<br>ne matematike?</h1>
+    <p data-i18n="hero.subtitle">
+      Mos u stresohu,jo te gjithe e kuptojne matematiken qe ne provimin e pare.
+      MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive
+      qe te mesosh duke praktikuar.
+    </p>
+    <div class="hero-buttons">
+      <a href="/dashboard" class="btn-primary">&#x1F680; <span data-i18n="hero.cta">Fillo tani</span></a>
+      <a href="#how" class="btn-secondary">&#x2139;&#xFE0F; <span data-i18n="hero.secondary">Si funksionon?</span></a>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-bar-inner">
+      <div class="stat-item">
+        <span class="stat-num">10K+</span>
+        <span class="stat-desc" data-i18n="stats.problems">Probleme të zgjidhura</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">23</span>
+        <span class="stat-desc" data-i18n="stats.quizzes">Kuize interaktive</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">6</span>
+        <span class="stat-desc" data-i18n="stats.courses">Kurse të plota</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">3</span>
+        <span class="stat-desc" data-i18n="stats.languages">Gjuhë</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP PREVIEW -->
+  <section class="preview-section fade-up">
+    <div class="phones-container">
+      <div class="phone-frame" style="transform: rotate(-4deg);">
+        <div class="phone-screen">
+          <img src="/screenshots/dashboard.png" alt="Dashboard"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="phone-screen-placeholder dashboard-bg" style="display:none;">
+            <div style="font-size:32px; margin-bottom:8px;">&#x1F3E0;</div>
+            <div style="font-size:13px; font-weight:700;">Dashboard</div>
+          </div>
+        </div>
+        <div class="phone-label" data-i18n="preview.dashboard">Paneli kryesor</div>
+      </div>
+      <div class="phone-frame featured">
+        <div class="phone-screen">
+          <img src="/screenshots/learn.png" alt="Learn"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="phone-screen-placeholder learn-bg" style="display:none;">
+            <div style="font-size:32px; margin-bottom:8px;">&#x1F4DA;</div>
+            <div style="font-size:13px; font-weight:700;">Learn</div>
+          </div>
+        </div>
+        <div class="phone-label" data-i18n="preview.learn">Kurset</div>
+      </div>
+      <div class="phone-frame" style="transform: rotate(4deg);">
+        <div class="phone-screen">
+          <img src="/screenshots/quiz.png" alt="Quiz"
+               onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="phone-screen-placeholder quiz-bg" style="display:none;">
+            <div style="font-size:32px; margin-bottom:8px;">&#x1F3AF;</div>
+            <div style="font-size:13px; font-weight:700;">Quiz</div>
+          </div>
+        </div>
+        <div class="phone-label" data-i18n="preview.quiz">Kuizet</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section" id="how">
+    <div class="section-label" data-i18n="how.label">Si funksionon</div>
+    <h2 class="section-title" data-i18n="how.title">Tri hapa te thjeshta</h2>
+    <p class="section-subtitle" data-i18n="how.subtitle">
+      Skenoj, shkruaj ose fotografo problemin tend dhe MathHelper do te te ndihmoje menjehere.
+    </p>
+    <div class="steps-grid">
+      <div class="step-card fade-up">
+        <div class="step-number">1</div>
+        <div class="step-icon">&#x1F4F7;</div>
+        <h3 data-i18n="how.step1.title">Skenoj ose shkruaj</h3>
+        <p data-i18n="how.step1.desc">
+          Ke problem ne detyra? Fotografoje me kamere ose shkruaje me tastieren matematikore.
+          MathHelper e lexon problemin ne cast,edhe problemet me tekst.
+        </p>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-number">2</div>
+        <div class="step-icon">&#x1F9E0;</div>
+        <h3 data-i18n="how.step2.title">Merr zgjidhjen</h3>
+        <p data-i18n="how.step2.desc">
+          AI-ja jone (Gemini) analizon problemin dhe te jep zgjidhjen e plote me
+          te gjitha hapat e shpjeguara. Asnje hap nuk mungon.
+        </p>
+      </div>
+      <div class="step-card fade-up">
+        <div class="step-number">3</div>
+        <div class="step-icon">&#x1F4DA;</div>
+        <h3 data-i18n="how.step3.title">Meso dhe praktiko</h3>
+        <p data-i18n="how.step3.desc">
+          Shiko cdo hap per te kuptuar zgjidhjen. Pastaj testoje veten me
+          kuize interaktive dhe kurse te plota per cdo teme.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features-section" id="features">
+    <div class="features-inner">
+      <div class="section-label" data-i18n="features.label">Karakteristikat</div>
+      <h2 class="section-title" data-i18n="features.title">Gjithcka qe te duhet per matematike</h2>
+      <p class="section-subtitle" data-i18n="features.subtitle">
+        MathHelper kombinon inteligjencen artificiale me metoda mesimore per te te ndihmuar te kuptosh matematiken ne thelb.
+      </p>
+      <div class="features-grid">
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F4F8;</div>
+          <h3 data-i18n="features.camera.title">Zgjidhje me kamere</h3>
+          <p data-i18n="features.camera.desc">Fotografo cdo problem matematikor dhe merr zgjidhjen e plote me shpjegime hap-pas-hapi brenda sekondave. Perdor Gemini AI.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x2328;&#xFE0F;</div>
+          <h3 data-i18n="features.keyboard.title">Tastiere matematikore</h3>
+          <p data-i18n="features.keyboard.desc">Shkruaj problemet me tastieren tone te vecante matematikore qe ka te gjitha simbolet dhe operatoret qe te duhen.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F393;</div>
+          <h3 data-i18n="features.courses.title">Kurse te plota</h3>
+          <p data-i18n="features.courses.desc">Meso matematike nga fillimi me kurse te strukturuara: Aritmetike, Algjeber, Gjeometri, Trigonometri, Statistike dhe Kalkulus.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F3AF;</div>
+          <h3 data-i18n="features.quizzes.title">Kuize interaktive</h3>
+          <p data-i18n="features.quizzes.desc">23 kuize ne nivele te ndryshme: Fillestar, Mesatar dhe i Avancuar. Testoje veten dhe shiko progresin tend.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F516;</div>
+          <h3 data-i18n="features.saved.title">Ruaj problemet</h3>
+          <p data-i18n="features.saved.desc">Ruaj zgjidhjet per me vone dhe rishikoji kurdo qe te duash. Asnje problem i zgjidhur nuk humbet.</p>
+        </div>
+        <div class="feature-card fade-up">
+          <div class="feature-icon">&#x1F310;</div>
+          <h3 data-i18n="features.multilang.title">Shumegjiuheshe</h3>
+          <p data-i18n="features.multilang.desc">Perdore MathHelper ne gjuhen tende: Shqip, Anglisht ose Gjermanisht. Meso matematike ne gjuhen qe te pershtatet me shume.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBJECTS -->
+  <section class="subjects-section" id="subjects">
+    <div class="section-label" data-i18n="subjects.label">Lendet</div>
+    <h2 class="section-title" data-i18n="subjects.title">Matematike e shpjeguar.<br>Nga fillestari deri ne avancuar.</h2>
+    <p class="section-subtitle" data-i18n="subjects.subtitle">
+      MathHelper mbulon te gjitha temat kryesore te matematikes qe mesoni ne shkolle dhe universitet.
+    </p>
+    <div class="subjects-grid">
+      <div class="subject-pill" data-i18n="subjects.arithmetic">&#x2795; Aritmetike baze</div>
+      <div class="subject-pill" data-i18n="subjects.algebra">&#x1F4CA; Algjeber</div>
+      <div class="subject-pill" data-i18n="subjects.geometry">&#x1F4D0; Gjeometri</div>
+      <div class="subject-pill" data-i18n="subjects.trigonometry">&#x1F4D0; Trigonometri</div>
+      <div class="subject-pill" data-i18n="subjects.statistics">&#x1F4C8; Statistike &amp; Probabilitet</div>
+      <div class="subject-pill" data-i18n="subjects.calculus">&#x221E; Kalkulus</div>
+      <div class="subject-pill" data-i18n="subjects.fractions">&#x1F522; Thyesa &amp; Perqindje</div>
+      <div class="subject-pill" data-i18n="subjects.linear">&#x1F4D0; Ekuacione lineare</div>
+      <div class="subject-pill" data-i18n="subjects.quadratic">&#x1F4D0; Ekuacione kuadratike</div>
+      <div class="subject-pill" data-i18n="subjects.functions">&#x1F4CA; Funksione</div>
+      <div class="subject-pill" data-i18n="subjects.matrices">&#x1F4CA; Matrica</div>
+      <div class="subject-pill" data-i18n="subjects.complex">&#x1F4D0; Numra kompleks</div>
+    </div>
+  </section>
+
+  <!-- LANGUAGES -->
+  <section class="languages-section">
+    <h2 data-i18n="lang.title">Meso ne gjuhen tende</h2>
+    <p data-i18n="lang.subtitle">MathHelper eshte i disponueshem ne tri gjuhe per te mesuar matematiken ashtu sic te pershtatet me mire.</p>
+    <div class="lang-flags">
+      <div class="lang-flag"><span class="flag">&#x1F1E6;&#x1F1F1;</span> Shqip</div>
+      <div class="lang-flag"><span class="flag">&#x1F1EC;&#x1F1E7;</span> English</div>
+      <div class="lang-flag"><span class="flag">&#x1F1E9;&#x1F1EA;</span> Deutsch</div>
+    </div>
+  </section>
+
+  <!-- QR CODE -->
+  <section class="qr-section">
+    <div class="qr-inner">
+      <div class="qr-text">
+        <div class="qr-badge">📱 Skeno &amp; Fillo</div>
+        <h2>Hape MathHelper<br>me nje skenim!</h2>
+        <p>Skeno kodin QR me kamerën e telefonit dhe fillo të zgjidhësh probleme matematikore falas pa nevojë për regjistrim.</p>
+        <ul class="qr-steps">
+          <li><span class="step-dot">1</span> Hap kamerën e telefonit</li>
+          <li><span class="step-dot">2</span> Drejtoje te kodi QR</li>
+          <li><span class="step-dot">3</span> Kliko linkun dhe fillo!</li>
+        </ul>
+        <a href="/qr" class="qr-download-btn" target="_blank">🖨️ Shkarko për printim stikera</a>
+      </div>
+      <div class="qr-card">
+        <img
+          src="https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https%3A%2F%2Fmathhelper.online&bgcolor=ffffff&color=1E3A8A&qzone=2&margin=0"
+          alt="QR Code - mathhelper.online"
+          onerror="this.src='https://chart.googleapis.com/chart?chs=200x200&cht=qr&chl=https%3A%2F%2Fmathhelper.online'"
+        />
+        <div class="qr-url">mathhelper.online</div>
+        <div class="qr-scan-hint">📷 Skeno me kamerë</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <h2 data-i18n="cta.title">Gati per te mesuar<br>matematike?</h2>
+    <p data-i18n="cta.subtitle">Bashkohu me mijera perdorues qe cdo dite perdorin MathHelper per te kuptuar matematiken me mire.</p>
+    <div class="hero-buttons">
+      <a href="/dashboard" class="btn-primary">&#x1F4F1; <span data-i18n="cta.button">Hap aplikacionin</span></a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <div class="footer-logo-icon">&#x1F4D0;</div>
+        MathHelper
+      </div>
+      <div class="footer-links">
+        <a href="/about" data-i18n="footer.about">Rreth nesh</a>
+        <a href="/dashboard" data-i18n="footer.app">Aplikacioni</a>
+        <a href="/privacy" data-i18n="footer.privacy">Privatesia</a>
+        <a href="/privacy#cookies" data-i18n="footer.cookie">Cookie Policy</a>
+        <a href="mailto:EnoDevSupport@proton.me" data-i18n="footer.contact">Kontakt</a>
+      </div>
+      <div style="font-size: 14px;" data-i18n="footer.copy">
+        &copy; 2026 MathHelper. Te gjitha te drejtat e rezervuara.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ─── TRANSLATIONS ───
+    const T = {
+      al: {
+        'nav.how': 'Si funksionon',
+        'nav.features': 'Karakteristikat',
+        'nav.subjects': 'Lendet',
+        'nav.qr': '📱 QR Code',
+        'nav.openApp': 'Hap aplikacionin',
+        'stats.problems': 'Probleme të zgjidhura',
+        'stats.quizzes': 'Kuize interaktive',
+        'stats.courses': 'Kurse të plota',
+        'stats.languages': 'Gjuhë',
+        'hero.badge': 'Falas per te gjithe',
+        'hero.title': 'Ke nevoje per ndihme<br>ne matematike?',
+        'hero.subtitle': 'Mos u stresohu, jo te gjithe e kuptojne matematiken qe ne provimin e pare. MathHelper te ndihmon me shpjegime hap-pas-hapi, kurse te plota dhe kuize interaktive qe te mesosh duke praktikuar.',
+        'hero.cta': 'Fillo tani',
+        'hero.secondary': 'Si funksionon?',
+        'preview.dashboard': 'Paneli kryesor',
+        'preview.learn': 'Kurset',
+        'preview.quiz': 'Kuizet',
+        'how.label': 'Si funksionon',
+        'how.title': 'Tri hapa te thjeshta',
+        'how.subtitle': 'Skenoj, shkruaj ose fotografo problemin tend dhe MathHelper do te te ndihmoje menjehere.',
+        'how.step1.title': 'Skenoj ose shkruaj',
+        'how.step1.desc': 'Ke problem ne detyra? Fotografoje me kamere ose shkruaje me tastieren matematikore. MathHelper e lexon problemin ne cast, edhe problemet me tekst.',
+        'how.step2.title': 'Merr zgjidhjen',
+        'how.step2.desc': 'AI-ja jone (Gemini) analizon problemin dhe te jep zgjidhjen e plote me te gjitha hapat e shpjeguara. Asnje hap nuk mungon.',
+        'how.step3.title': 'Meso dhe praktiko',
+        'how.step3.desc': 'Shiko cdo hap per te kuptuar zgjidhjen. Pastaj testoje veten me kuize interaktive dhe kurse te plota per cdo teme.',
+        'features.label': 'Karakteristikat',
+        'features.title': 'Gjithcka qe te duhet per matematike',
+        'features.subtitle': 'MathHelper kombinon inteligjencen artificiale me metoda mesimore per te te ndihmuar te kuptosh matematiken ne thelb.',
+        'features.camera.title': 'Zgjidhje me kamere',
+        'features.camera.desc': 'Fotografo cdo problem matematikor dhe merr zgjidhjen e plote me shpjegime hap-pas-hapi brenda sekondave. Perdor Gemini AI.',
+        'features.keyboard.title': 'Tastiere matematikore',
+        'features.keyboard.desc': 'Shkruaj problemet me tastieren tone te vecante matematikore qe ka te gjitha simbolet dhe operatoret qe te duhen.',
+        'features.courses.title': 'Kurse te plota',
+        'features.courses.desc': 'Meso matematike nga fillimi me kurse te strukturuara: Aritmetike, Algjeber, Gjeometri, Trigonometri, Statistike dhe Kalkulus.',
+        'features.quizzes.title': 'Kuize interaktive',
+        'features.quizzes.desc': '23 kuize ne nivele te ndryshme: Fillestar, Mesatar dhe i Avancuar. Testoje veten dhe shiko progresin tend.',
+        'features.saved.title': 'Ruaj problemet',
+        'features.saved.desc': 'Ruaj zgjidhjet per me vone dhe rishikoji kurdo qe te duash. Asnje problem i zgjidhur nuk humbet.',
+        'features.multilang.title': 'Shumegjiuheshe',
+        'features.multilang.desc': 'Perdore MathHelper ne gjuhen tende: Shqip, Anglisht ose Gjermanisht. Meso matematike ne gjuhen qe te pershtatet me shume.',
+        'subjects.label': 'Lendet',
+        'subjects.title': 'Matematike e shpjeguar.<br>Nga fillestari deri ne avancuar.',
+        'subjects.subtitle': 'MathHelper mbulon te gjitha temat kryesore te matematikes qe mesoni ne shkolle dhe universitet.',
+        'subjects.arithmetic': '\u2795 Aritmetike baze',
+        'subjects.algebra': '\uD83D\uDCCA Algjeber',
+        'subjects.geometry': '\uD83D\uDCD0 Gjeometri',
+        'subjects.trigonometry': '\uD83D\uDCD0 Trigonometri',
+        'subjects.statistics': '\uD83D\uDCC8 Statistike & Probabilitet',
+        'subjects.calculus': '\u221E Kalkulus',
+        'subjects.fractions': '\uD83D\uDD22 Thyesa & Perqindje',
+        'subjects.linear': '\uD83D\uDCD0 Ekuacione lineare',
+        'subjects.quadratic': '\uD83D\uDCD0 Ekuacione kuadratike',
+        'subjects.functions': '\uD83D\uDCCA Funksione',
+        'subjects.matrices': '\uD83D\uDCCA Matrica',
+        'subjects.complex': '\uD83D\uDCD0 Numra kompleks',
+        'lang.title': 'Meso ne gjuhen tende',
+        'lang.subtitle': 'MathHelper eshte i disponueshem ne tri gjuhe per te mesuar matematiken ashtu sic te pershtatet me mire.',
+        'cta.title': 'Gati per te mesuar<br>matematike?',
+        'cta.subtitle': 'Bashkohu me mijera perdorues qe cdo dite perdorin MathHelper per te kuptuar matematiken me mire.',
+        'cta.button': 'Hap aplikacionin',
+        'footer.about': 'Rreth nesh',
+        'footer.app': 'Aplikacioni',
+        'footer.privacy': 'Privatesia',
+        'footer.cookie': 'Cookie Policy',
+        'footer.contact': 'Kontakt',
+        'footer.copy': '\u00A9 2026 MathHelper. Te gjitha te drejtat e rezervuara.',
+        'cookie.banner': 'mathhelper.online p\u00ebrdor cookies th\u00eblb\u00ebsore p\u00ebr funksionimin e aplikacionit.',
+        'cookie.learnMore': 'Lexo m\u00eb shum\u00eb',
+        'cookie.accept': 'Kuptova',
+      },
+      en: {
+        'nav.how': 'How it works',
+        'nav.features': 'Features',
+        'nav.subjects': 'Subjects',
+        'nav.qr': '📱 QR Code',
+        'nav.openApp': 'Open app',
+        'stats.problems': 'Problems solved',
+        'stats.quizzes': 'Interactive quizzes',
+        'stats.courses': 'Full courses',
+        'stats.languages': 'Languages',
+        'hero.badge': 'Free for everyone',
+        'hero.title': 'Need help<br>with math?',
+        'hero.subtitle': 'Don\'t stress. Not everyone understands math on the first try. MathHelper helps you with step-by-step explanations, full courses, and interactive quizzes to learn by practicing.',
+        'hero.cta': 'Start now',
+        'hero.secondary': 'How it works?',
+        'preview.dashboard': 'Dashboard',
+        'preview.learn': 'Courses',
+        'preview.quiz': 'Quizzes',
+        'how.label': 'How it works',
+        'how.title': 'Three simple steps',
+        'how.subtitle': 'Scan, type, or photograph your problem and MathHelper will help you right away.',
+        'how.step1.title': 'Scan or type',
+        'how.step1.desc': 'Having trouble with homework? Take a photo with the camera or type it with the math keyboard. MathHelper reads the problem instantly, even text problems.',
+        'how.step2.title': 'Get the solution',
+        'how.step2.desc': 'Our AI (Gemini) analyzes the problem and gives you the full solution with all steps explained. No step is missing.',
+        'how.step3.title': 'Learn and practice',
+        'how.step3.desc': 'Review each step to understand the solution. Then test yourself with interactive quizzes and full courses for every topic.',
+        'features.label': 'Features',
+        'features.title': 'Everything you need for math',
+        'features.subtitle': 'MathHelper combines artificial intelligence with teaching methods to help you understand math at its core.',
+        'features.camera.title': 'Camera solving',
+        'features.camera.desc': 'Photograph any math problem and get the full solution with step-by-step explanations within seconds. Powered by Gemini AI.',
+        'features.keyboard.title': 'Math keyboard',
+        'features.keyboard.desc': 'Type problems using our special math keyboard that has all the symbols and operators you need.',
+        'features.courses.title': 'Full courses',
+        'features.courses.desc': 'Learn math from scratch with structured courses: Arithmetic, Algebra, Geometry, Trigonometry, Statistics, and Calculus.',
+        'features.quizzes.title': 'Interactive quizzes',
+        'features.quizzes.desc': '23 quizzes at different levels: Beginner, Intermediate, and Advanced. Test yourself and track your progress.',
+        'features.saved.title': 'Save problems',
+        'features.saved.desc': 'Save solutions for later and review them whenever you want. No solved problem is ever lost.',
+        'features.multilang.title': 'Multilingual',
+        'features.multilang.desc': 'Use MathHelper in your language: Albanian, English, or German. Learn math in the language that suits you best.',
+        'subjects.label': 'Subjects',
+        'subjects.title': 'Math explained.<br>From beginner to advanced.',
+        'subjects.subtitle': 'MathHelper covers all major math topics taught in school and university.',
+        'subjects.arithmetic': '\u2795 Basic arithmetic',
+        'subjects.algebra': '\uD83D\uDCCA Algebra',
+        'subjects.geometry': '\uD83D\uDCD0 Geometry',
+        'subjects.trigonometry': '\uD83D\uDCD0 Trigonometry',
+        'subjects.statistics': '\uD83D\uDCC8 Statistics & Probability',
+        'subjects.calculus': '\u221E Calculus',
+        'subjects.fractions': '\uD83D\uDD22 Fractions & Percentages',
+        'subjects.linear': '\uD83D\uDCD0 Linear equations',
+        'subjects.quadratic': '\uD83D\uDCD0 Quadratic equations',
+        'subjects.functions': '\uD83D\uDCCA Functions',
+        'subjects.matrices': '\uD83D\uDCCA Matrices',
+        'subjects.complex': '\uD83D\uDCD0 Complex numbers',
+        'lang.title': 'Learn in your language',
+        'lang.subtitle': 'MathHelper is available in three languages to learn math the way that suits you best.',
+        'cta.title': 'Ready to learn<br>math?',
+        'cta.subtitle': 'Join thousands of users who use MathHelper every day to understand math better.',
+        'cta.button': 'Open app',
+        'footer.about': 'About us',
+        'footer.app': 'App',
+        'footer.privacy': 'Privacy',
+        'footer.cookie': 'Cookie Policy',
+        'footer.contact': 'Contact',
+        'footer.copy': '\u00A9 2026 MathHelper. All rights reserved.',
+        'cookie.banner': 'mathhelper.online uses essential cookies for app functionality.',
+        'cookie.learnMore': 'Learn more',
+        'cookie.accept': 'Got it',
+      },
+      de: {
+        'nav.how': 'Wie es funktioniert',
+        'nav.features': 'Funktionen',
+        'nav.subjects': 'F\u00E4cher',
+        'nav.qr': '📱 QR-Code',
+        'nav.openApp': 'App \u00F6ffnen',
+        'stats.problems': 'Gelöste Aufgaben',
+        'stats.quizzes': 'Interaktive Quizze',
+        'stats.courses': 'Vollständige Kurse',
+        'stats.languages': 'Sprachen',
+        'hero.badge': 'Kostenlos f\u00FCr alle',
+        'hero.title': 'Brauchst du Hilfe<br>in Mathematik?',
+        'hero.subtitle': 'Keine Sorge. Nicht jeder versteht Mathe beim ersten Mal. MathHelper hilft dir mit Schritt-f\u00FCr-Schritt-Erkl\u00E4rungen, vollst\u00E4ndigen Kursen und interaktiven Quizzen zum Lernen durch \u00DCben.',
+        'hero.cta': 'Jetzt starten',
+        'hero.secondary': 'Wie es funktioniert?',
+        'preview.dashboard': '\u00DCbersicht',
+        'preview.learn': 'Kurse',
+        'preview.quiz': 'Quizze',
+        'how.label': 'Wie es funktioniert',
+        'how.title': 'Drei einfache Schritte',
+        'how.subtitle': 'Scanne, tippe oder fotografiere dein Problem und MathHelper hilft dir sofort.',
+        'how.step1.title': 'Scannen oder tippen',
+        'how.step1.desc': 'Probleme mit den Hausaufgaben? Fotografiere sie mit der Kamera oder tippe sie mit der Mathe-Tastatur. MathHelper liest das Problem sofort, auch Textaufgaben.',
+        'how.step2.title': 'L\u00F6sung erhalten',
+        'how.step2.desc': 'Unsere KI (Gemini) analysiert das Problem und gibt dir die vollst\u00E4ndige L\u00F6sung mit allen erkl\u00E4rten Schritten. Kein Schritt fehlt.',
+        'how.step3.title': 'Lernen und \u00FCben',
+        'how.step3.desc': 'Sieh dir jeden Schritt an, um die L\u00F6sung zu verstehen. Dann teste dich mit interaktiven Quizzen und vollst\u00E4ndigen Kursen zu jedem Thema.',
+        'features.label': 'Funktionen',
+        'features.title': 'Alles was du f\u00FCr Mathe brauchst',
+        'features.subtitle': 'MathHelper kombiniert k\u00FCnstliche Intelligenz mit Lehrmethoden, um dir zu helfen, Mathematik im Kern zu verstehen.',
+        'features.camera.title': 'Kamera-L\u00F6sung',
+        'features.camera.desc': 'Fotografiere jedes Matheproblem und erhalte die vollst\u00E4ndige L\u00F6sung mit Schritt-f\u00FCr-Schritt-Erkl\u00E4rungen in Sekunden. Mit Gemini AI.',
+        'features.keyboard.title': 'Mathe-Tastatur',
+        'features.keyboard.desc': 'Tippe Aufgaben mit unserer speziellen Mathe-Tastatur, die alle Symbole und Operatoren enth\u00E4lt, die du brauchst.',
+        'features.courses.title': 'Vollst\u00E4ndige Kurse',
+        'features.courses.desc': 'Lerne Mathe von Grund auf mit strukturierten Kursen: Arithmetik, Algebra, Geometrie, Trigonometrie, Statistik und Analysis.',
+        'features.quizzes.title': 'Interaktive Quizze',
+        'features.quizzes.desc': '23 Quizze auf verschiedenen Niveaus: Anf\u00E4nger, Mittelstufe und Fortgeschritten. Teste dich selbst und verfolge deinen Fortschritt.',
+        'features.saved.title': 'Aufgaben speichern',
+        'features.saved.desc': 'Speichere L\u00F6sungen f\u00FCr sp\u00E4ter und sieh sie dir an, wann immer du willst. Keine gel\u00F6ste Aufgabe geht verloren.',
+        'features.multilang.title': 'Mehrsprachig',
+        'features.multilang.desc': 'Nutze MathHelper in deiner Sprache: Albanisch, Englisch oder Deutsch. Lerne Mathe in der Sprache, die dir am besten passt.',
+        'subjects.label': 'F\u00E4cher',
+        'subjects.title': 'Mathe erkl\u00E4rt.<br>Vom Anf\u00E4nger bis Fortgeschritten.',
+        'subjects.subtitle': 'MathHelper deckt alle wichtigen Mathethemen ab, die in Schule und Universit\u00E4t unterrichtet werden.',
+        'subjects.arithmetic': '\u2795 Grundrechenarten',
+        'subjects.algebra': '\uD83D\uDCCA Algebra',
+        'subjects.geometry': '\uD83D\uDCD0 Geometrie',
+        'subjects.trigonometry': '\uD83D\uDCD0 Trigonometrie',
+        'subjects.statistics': '\uD83D\uDCC8 Statistik & Wahrscheinlichkeit',
+        'subjects.calculus': '\u221E Analysis',
+        'subjects.fractions': '\uD83D\uDD22 Br\u00FCche & Prozent',
+        'subjects.linear': '\uD83D\uDCD0 Lineare Gleichungen',
+        'subjects.quadratic': '\uD83D\uDCD0 Quadratische Gleichungen',
+        'subjects.functions': '\uD83D\uDCCA Funktionen',
+        'subjects.matrices': '\uD83D\uDCCA Matrizen',
+        'subjects.complex': '\uD83D\uDCD0 Komplexe Zahlen',
+        'lang.title': 'Lerne in deiner Sprache',
+        'lang.subtitle': 'MathHelper ist in drei Sprachen verf\u00FCgbar, damit du Mathe so lernen kannst, wie es dir am besten passt.',
+        'cta.title': 'Bereit Mathe<br>zu lernen?',
+        'cta.subtitle': 'Schlie\u00DFe dich Tausenden von Nutzern an, die MathHelper t\u00E4glich nutzen, um Mathe besser zu verstehen.',
+        'cta.button': 'App \u00F6ffnen',
+        'footer.about': '\u00DCber uns',
+        'footer.app': 'App',
+        'footer.privacy': 'Datenschutz',
+        'footer.cookie': 'Cookie-Richtlinie',
+        'footer.contact': 'Kontakt',
+        'footer.copy': '\u00A9 2026 MathHelper. Alle Rechte vorbehalten.',
+        'cookie.banner': 'mathhelper.online verwendet wesentliche Cookies f\u00FCr die App-Funktionalit\u00E4t.',
+        'cookie.learnMore': 'Mehr erfahren',
+        'cookie.accept': 'Verstanden',
+      }
+    };
+
+    // Check ?lang= URL param (e.g. when coming back from QR page)
+    const _urlLangAbout = new URLSearchParams(window.location.search).get('lang');
+    const _validLangsAbout = ['al', 'en', 'de'];
+    if (_urlLangAbout && _validLangsAbout.includes(_urlLangAbout)) {
+      localStorage.setItem('mathhelper-lang', _urlLangAbout);
+    }
+    // Track if user had explicitly chosen a language before (popup logic needs this)
+    const _langAlreadyChosen = !!localStorage.getItem('mathhelper-lang') || !!_urlLangAbout;
+    let currentLang = localStorage.getItem('mathhelper-lang') || 'al';
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('mathhelper-lang', lang);
+      const htmlLangMap = { al: 'sq', en: 'en', de: 'de' };
+      document.documentElement.lang = htmlLangMap[lang] || lang;
+
+      // Update all translatable elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.getAttribute('data-i18n');
+        if (T[lang] && T[lang][key]) {
+          el.innerHTML = T[lang][key];
+        }
+      });
+
+      // Update page title
+      const titles = {
+        al: 'MathHelper - Asistenti yt personal i matematikes',
+        en: 'MathHelper - Your personal math assistant',
+        de: 'MathHelper - Dein pers\u00F6nlicher Mathe-Assistent'
+      };
+      document.title = titles[lang] || titles.al;
+
+      // Update active states on all lang buttons
+      document.querySelectorAll('.lang-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+      });
+
+      // Update all dashboard links to include ?lang= parameter
+      document.querySelectorAll('a[href*="/dashboard"]').forEach(a => {
+        a.href = '/dashboard?lang=' + lang;
+      });
+
+      // Update QR links to include ?lang= parameter
+      document.querySelectorAll('a[href*="/qr"]').forEach(a => {
+        a.href = '/qr?lang=' + lang;
+      });
+
+      // Update privacy links to include ?lang= parameter
+      document.querySelectorAll('a[href*="/privacy"]').forEach(a => {
+        const hash = a.href.includes('#') ? '#' + a.href.split('#')[1] : '';
+        a.href = '/privacy?lang=' + lang + hash;
+      });
+
+      // Update cookie banner text if visible
+      const banner = document.getElementById('cookie-banner');
+      if (banner && T[lang]) {
+        const bannerP = banner.querySelector('p');
+        const learnBtn = banner.querySelector('.cookie-learn');
+        const acceptBtn = banner.querySelector('.cookie-accept');
+        if (bannerP) bannerP.textContent = T[lang]['cookie.banner'] || T['al']['cookie.banner'];
+        if (learnBtn) learnBtn.textContent = T[lang]['cookie.learnMore'] || T['al']['cookie.learnMore'];
+        if (acceptBtn) acceptBtn.textContent = T[lang]['cookie.accept'] || T['al']['cookie.accept'];
+      }
+    }
+
+    // Language button clicks
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+    });
+
+    // Apply saved language on load (always run to set dashboard links correctly)
+    setLanguage(currentLang);
+
+    // Scroll nav shadow
+    const nav = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('open');
+      mobileMenuBtn.textContent = mobileMenu.classList.contains('open') ? '\u2715' : '\u2630';
+    });
+    // Close mobile menu on link click
+    mobileMenu.querySelectorAll('a').forEach(a => {
+      a.addEventListener('click', () => {
+        mobileMenu.classList.remove('open');
+        mobileMenuBtn.textContent = '\u2630';
+      });
+    });
+
+    // Fade-in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(a.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    // ─── COOKIE BANNER ───
+    (function() {
+      const COOKIE_KEY = 'mathhelper_cookie_accepted';
+      if (localStorage.getItem(COOKIE_KEY)) return;
+
+      const t = T[currentLang] || T['al'];
+      const banner = document.createElement('div');
+      banner.id = 'cookie-banner';
+      banner.innerHTML = `
+        <p>${t['cookie.banner']}</p>
+        <div class="cookie-actions">
+          <button class="cookie-learn" onclick="window.location.href='/privacy?lang='+currentLang+'#cookies'">${t['cookie.learnMore']}</button>
+          <button class="cookie-accept" id="cookieAcceptBtn">${t['cookie.accept']}</button>
+        </div>
+      `;
+      document.body.appendChild(banner);
+
+      document.getElementById('cookieAcceptBtn').addEventListener('click', function() {
+        localStorage.setItem(COOKIE_KEY, '1');
+        banner.remove();
+      });
+    })();
+
+    // ─── LANGUAGE POPUP (first visit) ───
+    (function() {
+      const overlay = document.getElementById('lang-popup-overlay');
+
+      // Show popup only if user has NOT explicitly chosen a language before
+      // (_langAlreadyChosen is captured before setLanguage() writes to localStorage)
+      if (!_langAlreadyChosen) {
+        overlay.classList.remove('hidden');
+      }
+
+      // Dismiss via overlay tap or cancel button
+      function closePopup() { overlay.classList.add('hidden'); }
+      overlay.addEventListener('click', function(e) {
+        if (e.target === overlay) closePopup();
+      });
+      const dismissBtn = document.getElementById('lp-dismiss-btn');
+      if (dismissBtn) dismissBtn.addEventListener('click', closePopup);
+
+      // Popup button clicks
+      overlay.querySelectorAll('.lang-popup-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const lang = this.getAttribute('data-popup-lang');
+          closePopup();
+          setLanguage(lang);
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

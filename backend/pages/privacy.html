@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#F2F2F7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <title>MathHelper - Privacy Policy</title>
+  <link rel="icon" href="/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* Matches the app's iOS design system (theme/constants.js); light + dark */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --primary: #006FE6;
+      --primary-bg: #EBF3FF;
+      --text: #000000;
+      --text-secondary: #3A3A3C;
+      --text-muted: #8E8E93;
+      --bg: #F2F2F7;
+      --surface: #FFFFFF;
+      --segment-track: rgba(118,118,128,0.12);
+      --segment-active: #FFFFFF;
+      --separator: rgba(60,60,67,0.18);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #0A84FF;
+        --primary-bg: rgba(10,132,255,0.16);
+        --text: #FFFFFF;
+        --text-secondary: #EBEBF5;
+        --text-muted: #8E8E93;
+        --bg: #000000;
+        --surface: #1C1C1E;
+        --segment-track: #2C2C2E;
+        --segment-active: #636366;
+        --separator: rgba(84,84,88,0.6);
+      }
+    }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Plus Jakarta Sans', system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      overflow-wrap: break-word;
+    }
+
+    /* NAV */
+    nav {
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      -webkit-backdrop-filter: saturate(180%) blur(20px);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 0.5px solid var(--separator);
+      padding: 12px 20px;
+      padding-top: max(12px, env(safe-area-inset-top));
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px; min-width: 0;
+      text-decoration: none; color: var(--text);
+      font-size: 17px; font-weight: 600;
+    }
+    .nav-logo-icon {
+      width: 32px; height: 32px; border-radius: 8px; flex-shrink: 0;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    /* Language switcher as an iOS segmented control */
+    .lang-row {
+      display: flex; flex-shrink: 0;
+      background: var(--segment-track); border-radius: 9px; padding: 2px;
+    }
+    .lang-btn {
+      padding: 6px 12px; border-radius: 7px; border: none; background: transparent;
+      font-family: inherit; font-size: 13px; font-weight: 500; cursor: pointer;
+      color: var(--text); min-height: 32px;
+    }
+    .lang-btn.active {
+      background: var(--segment-active); font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+    }
+    .lang-btn .short { display: none; }
+
+    /* CONTENT */
+    .container {
+      max-width: 720px; margin: 0 auto;
+      padding: 40px 20px 80px;
+      padding-left: max(20px, env(safe-area-inset-left));
+      padding-right: max(20px, env(safe-area-inset-right));
+      padding-bottom: max(80px, env(safe-area-inset-bottom));
+    }
+    .page-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-bg);
+      padding: 4px 12px; border-radius: 100px;
+      font-size: 13px; font-weight: 600; color: var(--primary);
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: clamp(28px, 7vw, 34px);
+      font-weight: 700; color: var(--text);
+      letter-spacing: 0.37px; margin-bottom: 6px; line-height: 1.2;
+      hyphens: auto; -webkit-hyphens: auto;
+    }
+    .last-updated {
+      font-size: 15px; color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .section {
+      background: var(--surface);
+      border-radius: 12px; padding: 16px;
+      margin-bottom: 12px;
+    }
+    .section h2 {
+      font-size: 17px; font-weight: 600; line-height: 1.3;
+      color: var(--text); margin-bottom: 8px;
+      display: flex; align-items: flex-start; gap: 8px;
+      hyphens: auto; -webkit-hyphens: auto;
+    }
+    .section h2 .icon { font-size: 18px; line-height: 1.3; }
+    .section p {
+      font-size: 15px; color: var(--text-secondary);
+      margin-bottom: 8px; line-height: 1.55;
+    }
+    .section p:last-child { margin-bottom: 0; }
+    .section ul { list-style: none; margin: 8px 0; }
+    .section ul li {
+      font-size: 15px; color: var(--text-secondary);
+      padding: 4px 0 4px 18px; position: relative; line-height: 1.5;
+    }
+    .section ul li::before {
+      content: '•'; color: var(--primary);
+      position: absolute; left: 2px; font-weight: 700;
+    }
+    .highlight-box {
+      background: var(--primary-bg);
+      border-radius: 10px;
+      padding: 12px 14px; margin-top: 12px;
+      font-size: 14px; color: var(--text);
+      font-weight: 500;
+    }
+    .contact-box {
+      background: var(--surface);
+      border-radius: 12px; padding: 16px;
+      margin-top: 24px;
+    }
+    .contact-box h2 { color: var(--text); font-size: 17px; font-weight: 600; margin-bottom: 8px; }
+    .contact-box p { color: var(--text-secondary); font-size: 15px; }
+    .contact-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+    /* POLICY TABS — iOS segmented control */
+    .policy-tabs {
+      display: flex; gap: 0; margin-bottom: 24px;
+      background: var(--segment-track); border-radius: 9px; padding: 2px;
+    }
+    .policy-tab {
+      flex: 1 1 0; min-width: 0; min-height: 36px;
+      padding: 7px 10px; border: none; border-radius: 7px; background: transparent;
+      font-family: inherit; font-size: 14px; font-weight: 500; line-height: 1.25;
+      color: var(--text); cursor: pointer;
+      hyphens: auto; -webkit-hyphens: auto;
+    }
+    .policy-tab.active {
+      background: var(--segment-active); font-weight: 600;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.12), 0 3px 1px rgba(0,0,0,0.04);
+    }
+
+    .cookie-title {
+      font-size: clamp(22px, 6vw, 28px); font-weight: 700; line-height: 1.2;
+      color: var(--text); margin-bottom: 20px;
+      hyphens: auto; -webkit-hyphens: auto;
+    }
+
+    /* COOKIE SECTION SEPARATOR */
+    .cookie-section-header {
+      display: flex; align-items: center; gap: 12px;
+      margin: 32px 0 16px;
+    }
+    .cookie-section-header .page-badge { margin-bottom: 0; }
+    .cookie-separator {
+      border: none; border-top: 0.5px solid var(--separator);
+      margin: 32px 0 24px;
+    }
+
+    .legal-links { margin-top: 20px; text-align: center; font-size: 15px; }
+    .legal-links a { color: var(--primary); font-weight: 600; text-decoration: none; }
+
+    @media (max-width: 600px) {
+      .container { padding-top: 24px; }
+      nav { padding-left: 16px; padding-right: 16px; }
+      .lang-btn { padding: 6px 10px; }
+      .lang-btn .full { display: none; }
+      .lang-btn .short { display: inline; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="nav-logo">
+    <div class="nav-logo-icon">&#x1F4D0;</div>
+    MathHelper
+  </a>
+  <div class="lang-row">
+    <button class="lang-btn active" data-lang="al" aria-label="Shqip"><span class="full">Shqip</span><span class="short">AL</span></button>
+    <button class="lang-btn" data-lang="en" aria-label="English"><span class="full">English</span><span class="short">EN</span></button>
+    <button class="lang-btn" data-lang="de" aria-label="Deutsch"><span class="full">Deutsch</span><span class="short">DE</span></button>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="page-badge">&#x1F512; <span id="badgeText">Politika e Privatësisë</span></div>
+  <h1 id="pageTitle">Politika e Privatësisë</h1>
+  <p class="last-updated" id="lastUpdated">Përditësuar: Tetor 2026</p>
+
+  <!-- Policy Tabs -->
+  <div class="policy-tabs">
+    <button class="policy-tab active" id="tabPrivacy" onclick="showSection('privacy')">&#x1F512; <span id="tabPrivacyLabel">Politika e Privatësisë</span></button>
+    <button class="policy-tab" id="tabCookie" onclick="showSection('cookie')">&#x1F36A; <span id="tabCookieLabel">Politika e Cookies</span></button>
+  </div>
+
+  <div id="content"></div>
+  <div id="cookieContent" style="display:none;"></div>
+  <p class="legal-links"><a href="/terms" id="termsLink">Kushtet e Shërbimit</a></p>
+</div>
+
+<script>
+const T = {
+  al: {
+    badge: 'Politika e Privatësisë',
+    title: 'Politika e Privatësisë',
+    updated: 'Përditësuar: Tetor 2026',
+    tabPrivacy: 'Politika e Privatësisë',
+    tabCookie: 'Politika e Cookies',
+    terms: 'Kushtet e Shërbimit',
+    sections: [
+      {
+        icon: '📋',
+        title: 'Hyrje',
+        body: `MathHelper ("ne", "aplikacioni") respekton privatësinë tuaj. Kjo politikë shpjegon se çfarë të dhënash mbledhim, si i përdorim dhe si i mbrojmë ato kur përdorni aplikacionin tonë.`
+      },
+      {
+        icon: '📦',
+        title: 'Të dhënat që mbledhim',
+        body: `Mbledhim këto kategori të dhënash:`,
+        list: [
+          'Email-i juaj dhe emri (gjatë regjistrimit)',
+          'Nëse hyni me Google: emri, email-i i verifikuar dhe identifikuesi i llogarisë suaj Google. Nuk marrim fjalëkalimin tuaj Google dhe nuk kemi qasje në Gmail, kontaktet ose Drive',
+          'Statistikat e përdorimit: numri i problemeve të zgjidhura, kuizeve të kryera, kurseve të nisura',
+          'Problemet matematikore që i dërgoni për zgjidhje (foto ose tekst)',
+          'Informacion teknik: versioni i OS, lloji i pajisjes (vetëm për debug)'
+        ],
+        note: 'Nuk mbledhim të dhëna të ndjeshme personale si numri i kartës, adresa ose vendndodhja.'
+      },
+      {
+        icon: '📷',
+        title: 'Kamera dhe Foto',
+        body: `Aplikacioni kërkon akses në kamerë vetëm kur ju klikoni "Kamera" për të fotografuar një problem matematikor. Fotot dërgohen te serverët tanë për analizë me AI dhe pastaj fshihen. Nuk ruajmë foto në pajisjen tuaj pa lejen tuaj.`
+      },
+      {
+        icon: '🤖',
+        title: 'Inteligjenca Artificiale (AI)',
+        body: `Për zgjidhjen e problemeve matematikore, përdorim:`,
+        list: [
+          'Google Gemini AI - për analizë të imazheve dhe tekstit',
+          'Wolfram Alpha - për llogaritje matematikore',
+          'Llogaritës lokal - për probleme të thjeshta (pa dërguar të dhëna jashtë)'
+        ],
+        note: 'Të dhënat tuaja i dërgojmë te këto shërbime vetëm për të zgjidhur problemin. Nuk i shesim të dhënat tuaja.'
+      },
+      {
+        icon: '💳',
+        title: 'Pagesat',
+        body: `Pagesat për MathHelper Premium procesohen nga Paddle (në web) dhe Google Play. Ne nuk ruajmë informacion të kartës suaj bankare. Ruajmë vetëm konfirmimin e pagesës dhe tierin e llogarisë (free/premium).`
+      },
+      {
+        icon: '🔒',
+        title: 'Si i mbrojmë të dhënat',
+        list: [
+          'Të gjitha komunikimet janë të enkriptuara (HTTPS/TLS)',
+          'Fjalëkalimet ruhen të hashura (bcrypt)',
+          'Tokenat JWT skadojnë automatikisht',
+          'Baza e të dhënave është e mbrojtur me akses të kufizuar'
+        ]
+      },
+      {
+        icon: '🗑️',
+        title: 'Fshirja e të dhënave',
+        body: `Keni të drejtë të kërkoni fshirjen e llogarisë dhe të gjitha të dhënave tuaja. Dërgoni email te EnoDevSupport@proton.me dhe do t'i fshijmë brenda 30 ditëve.`
+      },
+      {
+        icon: '🔄',
+        title: 'Ndryshimet e kësaj politike',
+        body: `Mund të ndryshojmë këtë politikë herë pas here. Do t'ju njoftojmë me email nëse ndryshimet janë të rëndësishme. Vazhdimi i përdorimit pas ndryshimeve nënkupton pranimin e tyre.`
+      }
+    ],
+    contact: {
+      title: 'Keni pyetje?',
+      body: 'Për çdo pyetje lidhur me privatësinë, na kontaktoni:',
+      email: 'EnoDevSupport@proton.me'
+    },
+    cookie: {
+      badge: 'Politika e Cookies',
+      title: 'Politika e Cookies',
+      sections: [
+        {
+          icon: '🍪',
+          title: 'Çfarë janë cookies',
+          body: 'Cookies dhe teknologji të ngjashme (localStorage, sessionStorage) janë skedarë të vegjël që ruhen në pajisjen tuaj kur vizitoni mathhelper.online.'
+        },
+        {
+          icon: '🔑',
+          title: 'Cookies thelbësore (të domosdoshme)',
+          body: 'Këto cookies janë të nevojshme për funksionimin e aplikacionit. Pa to, shërbimi nuk mund të funksionojë siç duhet. Nuk mund të çaktivizohen.',
+          list: [
+            '@math_helper_access_token: Token i autentifikimit JWT (skadon pas 15 minutave)',
+            '@math_helper_refresh_token: Token per rinovim të sesionit (skadon pas 7 ditëve)',
+            '@math_helper_language: Gjuha e preferuar e aplikacionit (pa skadim)',
+            '@mathhelper_course_progress: Progresi ne kurse (pa skadim)'
+          ]
+        },
+        {
+          icon: '📊',
+          title: 'Cookies analitike dhe marketingu',
+          body: 'Aktualisht MathHelper nuk përdor Google Analytics, Facebook Pixel, ose shërbime të ngjashme analitike/marketingu të palëve të treta. Nëse kjo ndryshon, do të kërkojmë pëlqimin tuaj paraprak.'
+        },
+        {
+          icon: '⚙️',
+          title: 'Si të menaxhoni cookies',
+          body: 'Mund të fshini cookies dhe të dhënat lokale në çdo kohë nga cilësimet e shfletuesit tuaj ose nga aplikacioni i telefonit. Fshirja e cookies thelbësore do të shkaktojë dalje nga llogaria juaj.'
+        },
+        {
+          icon: '📅',
+          title: 'Ndryshimet e kësaj politike',
+          body: 'Çdo ndryshim i rëndësishëm do të njoftohet me email ose njoftim brenda aplikacionit. Vazhdimi i përdorimit pas ndryshimeve nënkupton pranimin e tyre.'
+        }
+      ]
+    }
+  },
+  en: {
+    badge: 'Privacy Policy',
+    title: 'Privacy Policy',
+    updated: 'Last updated: October 2026',
+    tabPrivacy: 'Privacy Policy',
+    tabCookie: 'Cookie Policy',
+    terms: 'Terms of Service',
+    sections: [
+      {
+        icon: '📋',
+        title: 'Introduction',
+        body: `MathHelper ("we", "the app") respects your privacy. This policy explains what data we collect, how we use it, and how we protect it when you use our application.`
+      },
+      {
+        icon: '📦',
+        title: 'Data we collect',
+        body: `We collect the following categories of data:`,
+        list: [
+          'Your email and name (during registration)',
+          'If you sign in with Google: your name, verified email and Google account ID. We never receive your Google password and have no access to your Gmail, contacts or Drive',
+          'Usage statistics: number of problems solved, quizzes completed, courses started',
+          'Math problems you submit for solving (photos or text)',
+          'Technical info: OS version, device type (for debugging only)'
+        ],
+        note: 'We do not collect sensitive personal data such as card numbers, addresses, or location.'
+      },
+      {
+        icon: '📷',
+        title: 'Camera and Photos',
+        body: `The app requests camera access only when you click "Camera" to photograph a math problem. Photos are sent to our servers for AI analysis and then deleted. We do not store photos on your device without your permission.`
+      },
+      {
+        icon: '🤖',
+        title: 'Artificial Intelligence (AI)',
+        body: `To solve math problems, we use:`,
+        list: [
+          'Google Gemini AI - for image and text analysis',
+          'Wolfram Alpha - for mathematical computations',
+          'Local calculator - for simple problems (no data sent externally)'
+        ],
+        note: 'Your data is sent to these services only to solve the problem. We do not sell your data.'
+      },
+      {
+        icon: '💳',
+        title: 'Payments',
+        body: `Payments for MathHelper Premium are processed by Paddle (on the web) and Google Play. We do not store your bank card information. We only store payment confirmation and account tier (free/premium).`
+      },
+      {
+        icon: '🔒',
+        title: 'How we protect your data',
+        list: [
+          'All communications are encrypted (HTTPS/TLS)',
+          'Passwords are stored hashed (bcrypt)',
+          'JWT tokens expire automatically',
+          'Database is protected with restricted access'
+        ]
+      },
+      {
+        icon: '🗑️',
+        title: 'Data deletion',
+        body: `You have the right to request deletion of your account and all your data. Send an email to EnoDevSupport@proton.me and we will delete it within 30 days.`
+      },
+      {
+        icon: '🔄',
+        title: 'Changes to this policy',
+        body: `We may update this policy from time to time. We will notify you by email if the changes are significant. Continued use after changes implies acceptance.`
+      }
+    ],
+    contact: {
+      title: 'Have questions?',
+      body: 'For any privacy-related questions, contact us:',
+      email: 'EnoDevSupport@proton.me'
+    },
+    cookie: {
+      badge: 'Cookie Policy',
+      title: 'Cookie Policy',
+      sections: [
+        {
+          icon: '🍪',
+          title: 'What are cookies',
+          body: 'Cookies and similar technologies (localStorage, sessionStorage) are small files stored on your device when you visit mathhelper.online.'
+        },
+        {
+          icon: '🔑',
+          title: 'Essential cookies (required)',
+          body: 'These cookies are necessary for the application to function. Without them, the service cannot work properly. They cannot be disabled.',
+          list: [
+            '@math_helper_access_token: JWT authentication token (expires after 15 minutes)',
+            '@math_helper_refresh_token: Session renewal token (expires after 7 days)',
+            '@math_helper_language: Preferred application language (no expiry)',
+            '@mathhelper_course_progress: Course progress (no expiry)'
+          ]
+        },
+        {
+          icon: '📊',
+          title: 'Analytics and marketing cookies',
+          body: 'MathHelper currently does not use Google Analytics, Facebook Pixel, or similar third-party analytics/marketing services. If this changes, we will request your prior consent.'
+        },
+        {
+          icon: '⚙️',
+          title: 'How to manage cookies',
+          body: 'You can delete cookies and local data at any time from your browser settings or from the phone app. Deleting essential cookies will cause you to be logged out of your account.'
+        },
+        {
+          icon: '📅',
+          title: 'Changes to this policy',
+          body: 'Any significant changes will be notified by email or in-app notification. Continued use after changes implies acceptance.'
+        }
+      ]
+    }
+  },
+  de: {
+    badge: 'Datenschutzrichtlinie',
+    title: 'Datenschutzrichtlinie',
+    updated: 'Zuletzt aktualisiert: Oktober 2026',
+    tabPrivacy: 'Datenschutzrichtlinie',
+    tabCookie: 'Cookie-Richtlinie',
+    terms: 'Nutzungsbedingungen',
+    sections: [
+      {
+        icon: '📋',
+        title: 'Einfuehrung',
+        body: `MathHelper ("wir", "die App") respektiert Ihre Privatsphaere. Diese Richtlinie erklaert, welche Daten wir erheben, wie wir sie verwenden und wie wir sie schuetzen, wenn Sie unsere Anwendung nutzen.`
+      },
+      {
+        icon: '📦',
+        title: 'Daten, die wir erheben',
+        body: `Wir erheben folgende Datenkategorien:`,
+        list: [
+          'Ihre E-Mail und Ihr Name (bei der Registrierung)',
+          'Bei der Anmeldung mit Google: Ihr Name, Ihre verifizierte E-Mail-Adresse und die ID Ihres Google-Kontos. Wir erhalten nie Ihr Google-Passwort und haben keinen Zugriff auf Gmail, Kontakte oder Drive',
+          'Nutzungsstatistiken: Anzahl geloester Aufgaben, absolvierter Quiz, gestarteter Kurse',
+          'Mathematikaufgaben, die Sie zur Loesung einreichen (Fotos oder Text)',
+          'Technische Informationen: OS-Version, Geraetetyp (nur zur Fehlersuche)'
+        ],
+        note: 'Wir erheben keine sensiblen persoenlichen Daten wie Kartennummern, Adressen oder Standort.'
+      },
+      {
+        icon: '📷',
+        title: 'Kamera und Fotos',
+        body: `Die App fordert Kamerazugriff nur an, wenn Sie auf "Kamera" klicken, um eine Mathematikaufgabe zu fotografieren. Fotos werden zur KI-Analyse an unsere Server gesendet und danach geloescht. Wir speichern keine Fotos auf Ihrem Geraet ohne Ihre Erlaubnis.`
+      },
+      {
+        icon: '🤖',
+        title: 'Kuenstliche Intelligenz (KI)',
+        body: `Zur Loesung von Mathematikaufgaben verwenden wir:`,
+        list: [
+          'Google Gemini AI - fuer Bild- und Textanalyse',
+          'Wolfram Alpha - fuer mathematische Berechnungen',
+          'Lokaler Rechner - fuer einfache Aufgaben (keine externe Datenuebertragung)'
+        ],
+        note: 'Ihre Daten werden nur zur Loesung der Aufgabe an diese Dienste gesendet. Wir verkaufen Ihre Daten nicht.'
+      },
+      {
+        icon: '💳',
+        title: 'Zahlungen',
+        body: `Zahlungen fuer MathHelper Premium werden von Paddle (im Web) und Google Play verarbeitet. Wir speichern keine Bankkartendaten. Wir speichern nur die Zahlungsbestaetigung und das Kontotier (Kostenlos/Premium).`
+      },
+      {
+        icon: '🔒',
+        title: 'Wie wir Ihre Daten schuetzen',
+        list: [
+          'Alle Kommunikationen sind verschluesselt (HTTPS/TLS)',
+          'Passwoerter werden gehasht gespeichert (bcrypt)',
+          'JWT-Token laufen automatisch ab',
+          'Datenbank ist mit eingeschraenktem Zugriff geschuetzt'
+        ]
+      },
+      {
+        icon: '🗑️',
+        title: 'Datenloesch\u00ADung',
+        body: `Sie haben das Recht, die Loeschung Ihres Kontos und aller Ihrer Daten zu beantragen. Senden Sie eine E-Mail an EnoDevSupport@proton.me und wir loeschen sie innerhalb von 30 Tagen.`
+      },
+      {
+        icon: '🔄',
+        title: 'Aenderungen dieser Richtlinie',
+        body: `Wir koennen diese Richtlinie von Zeit zu Zeit aktualisieren. Wir benachrichtigen Sie per E-Mail, wenn die Aenderungen wesentlich sind. Die weitere Nutzung nach Aenderungen impliziert deren Akzeptanz.`
+      }
+    ],
+    contact: {
+      title: 'Haben Sie Fragen?',
+      body: 'Fuer datenschutzbezogene Fragen kontaktieren Sie uns:',
+      email: 'EnoDevSupport@proton.me'
+    },
+    cookie: {
+      badge: 'Cookie-Richtlinie',
+      title: 'Cookie-Richtlinie',
+      sections: [
+        {
+          icon: '🍪',
+          title: 'Was sind Cookies',
+          body: 'Cookies und aehnliche Technologien (localStorage, sessionStorage) sind kleine Dateien, die auf Ihrem Geraet gespeichert werden, wenn Sie mathhelper.online besuchen.'
+        },
+        {
+          icon: '🔑',
+          title: 'Wesentliche Cookies (erforderlich)',
+          body: 'Diese Cookies sind fuer das Funktionieren der Anwendung notwendig. Ohne sie kann der Dienst nicht ordnungsgemaess funktionieren. Sie koennen nicht deaktiviert werden.',
+          list: [
+            '@math_helper_access_token: JWT-Authentifizierungstoken (laeuft nach 15 Minuten ab)',
+            '@math_helper_refresh_token: Sitzungserneuerungstoken (laeuft nach 7 Tagen ab)',
+            '@math_helper_language: Bevorzugte App-Sprache (kein Ablaufdatum)',
+            '@mathhelper_course_progress: Kursfortschritt (kein Ablaufdatum)'
+          ]
+        },
+        {
+          icon: '📊',
+          title: 'Analyse- und Marketing-Cookies',
+          body: 'MathHelper verwendet derzeit kein Google Analytics, Facebook Pixel oder aehnliche Analyse-/Marketingdienste von Drittanbietern. Wenn sich dies aendert, werden wir Ihre vorherige Zustimmung einholen.'
+        },
+        {
+          icon: '⚙️',
+          title: 'Cookie-Verwaltung',
+          body: 'Sie koennen Cookies und lokale Daten jederzeit ueber Ihre Browsereinstellungen oder die Telefon-App loeschen. Das Loeschen wesentlicher Cookies fuehrt zur Abmeldung aus Ihrem Konto.'
+        },
+        {
+          icon: '📅',
+          title: 'Aenderungen dieser Richtlinie',
+          body: 'Wesentliche Aenderungen werden per E-Mail oder In-App-Benachrichtigung mitgeteilt. Die weitere Nutzung nach Aenderungen impliziert deren Akzeptanz.'
+        }
+      ]
+    }
+  }
+};
+
+let currentSection = 'privacy';
+
+function showSection(section) {
+  currentSection = section;
+  const privacyDiv = document.getElementById('content');
+  const cookieDiv = document.getElementById('cookieContent');
+  const tabPrivacy = document.getElementById('tabPrivacy');
+  const tabCookie = document.getElementById('tabCookie');
+
+  if (section === 'privacy') {
+    privacyDiv.style.display = '';
+    cookieDiv.style.display = 'none';
+    tabPrivacy.classList.add('active');
+    tabCookie.classList.remove('active');
+  } else {
+    privacyDiv.style.display = 'none';
+    cookieDiv.style.display = '';
+    tabPrivacy.classList.remove('active');
+    tabCookie.classList.add('active');
+  }
+}
+
+function render(lang) {
+  const t = T[lang];
+  document.getElementById('badgeText').textContent = t.badge;
+  document.getElementById('pageTitle').textContent = t.title;
+  document.getElementById('lastUpdated').textContent = t.updated;
+  document.getElementById('tabPrivacyLabel').textContent = t.tabPrivacy;
+  document.getElementById('tabCookieLabel').textContent = t.tabCookie;
+  document.getElementById('termsLink').textContent = t.terms;
+  const htmlLangMap = { al: 'sq', en: 'en', de: 'de' }; document.documentElement.lang = htmlLangMap[lang] || 'en';
+
+  // Render privacy policy sections
+  const content = document.getElementById('content');
+  content.innerHTML = t.sections.map(s => `
+    <div class="section">
+      <h2><span class="icon">${s.icon}</span> ${s.title}</h2>
+      ${s.body ? `<p>${s.body}</p>` : ''}
+      ${s.list ? `<ul>${s.list.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+      ${s.note ? `<div class="highlight-box">&#x2139;&#xFE0F; ${s.note}</div>` : ''}
+    </div>
+  `).join('') + `
+    <div class="contact-box">
+      <h2>${t.contact.title}</h2>
+      <p>${t.contact.body}<br><a href="mailto:${t.contact.email}">${t.contact.email}</a></p>
+    </div>
+  `;
+
+  // Render cookie policy sections
+  const cookieContent = document.getElementById('cookieContent');
+  const ck = t.cookie;
+  cookieContent.innerHTML = `
+    <div class="page-badge">&#x1F36A; ${ck.badge}</div>
+    <h2 class="cookie-title">${ck.title}</h2>
+  ` + ck.sections.map(s => `
+    <div class="section">
+      <h2><span class="icon">${s.icon}</span> ${s.title}</h2>
+      ${s.body ? `<p>${s.body}</p>` : ''}
+      ${s.list ? `<ul>${s.list.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+    </div>
+  `).join('') + `
+    <div class="contact-box">
+      <h2>${t.contact.title}</h2>
+      <p>${t.contact.body}<br><a href="mailto:${t.contact.email}">${t.contact.email}</a></p>
+    </div>
+  `;
+
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.lang === lang);
+  });
+}
+
+document.querySelectorAll('.lang-btn').forEach(b => {
+  b.addEventListener('click', () => {
+    try { localStorage.setItem('mathhelper-lang', b.dataset.lang); } catch (e) {}
+    render(b.dataset.lang);
+  });
+});
+
+// Read ?lang= from URL (set by app or landing page)
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+const T_LANGS = ['al', 'en', 'de'];
+const storedLang = localStorage.getItem('mathhelper-lang'); const initLang = T_LANGS.includes(urlLang) ? urlLang : (T_LANGS.includes(storedLang) ? storedLang : 'al');
+
+// Check if we arrived via #cookies anchor
+if (window.location.hash === '#cookies') {
+  showSection('cookie');
+}
+
+render(initLang);
+</script>
+</body>
+</html>

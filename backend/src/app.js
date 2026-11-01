@@ -1,0 +1,329 @@
+const express = require('express');
+const crypto = require('crypto');
+const path = require('path');
+const cors = require('cors');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const errorHandler = require('./middleware/errorHandler');
+const { assertJwtSecret } = require('./utils/tokens');
+
+// Refuse to boot in production without a strong JWT secret
+assertJwtSecret();
+
+const authRoutes = require('./routes/auth');
+const savedItemsRoutes = require('./routes/savedItems');
+const statsRoutes = require('./routes/stats');
+const analyzeRoutes = require('./routes/analyze');
+const purchaseRoutes = require('./routes/purchases');
+const paddleRoutes = require('./routes/paddle');
+
+const paddleController = require('./controllers/paddleController');
+
+const app = express();
+
+// Render terminates TLS at a single proxy hop; trust it so req.ip (and express-rate-limit) see the real client IP
+app.set('trust proxy', 1);
+
+// Paddle webhook needs the raw body (for signature verification) BEFORE json parsing
+app.post('/api/paddle/webhook',
+  express.raw({ type: 'application/json' }),
+  paddleController.handleWebhook
+);
+
+// Middleware
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+  // Sign in with Google (Google Identity Services) needs both of these:
+  // - the Referer, so Google can tell which origin the page belongs to; "no-referrer" (helmet's default)
+  //   makes it answer "The given origin is not allowed for the given client ID"
+  // - window.opener in its sign-in popup; "same-origin" cuts it off
+  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+  crossOriginOpenerPolicy: { policy: 'same-origin-allow-popups' },
+}));
+const ALLOWED_ORIGINS = [
+  'https://mathhelper.online',
+  'https://www.mathhelper.online',
+  'https://mathhelper1-4zct.onrender.com',
+  // Allow localhost during development
+  ...(process.env.NODE_ENV !== 'production' ? ['http://localhost:8081', 'http://localhost:3000', 'http://localhost:3001', 'http://localhost:19006'] : []),
+];
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, Postman, curl)
+    if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+app.use(morgan('dev'));
+// Body limits: image payloads (base64) only on the routes that need them; everything else stays small.
+// The Paddle webhook above keeps its own raw parser. Route-specific parsers must come before the global one.
+const LARGE_JSON_LIMIT = '6mb';
+app.use('/api/analyze', express.json({ limit: LARGE_JSON_LIMIT }));
+app.use('/api/saved-items', express.json({ limit: LARGE_JSON_LIMIT }));
+// Base64 App Store receipts grow with purchase history and can exceed 100kb
+app.use('/api/purchases', express.json({ limit: '1mb' }));
+app.use(express.json({ limit: '100kb' }));
+
+// CSP for the server-rendered marketing/legal/checkout pages (not the Expo web app, see SPA fallback below).
+// They use inline scripts/styles/handlers, Google Fonts and QR images from api.qrserver.com (+ Google Charts fallback).
+const STATIC_PAGE_CSP = [
+  "default-src 'self'",
+  "script-src 'self' 'unsafe-inline'",
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+  "font-src 'self' https://fonts.gstatic.com",
+  "img-src 'self' data: https://api.qrserver.com https://chart.googleapis.com",
+  "connect-src 'self'",
+  "object-src 'none'",
+  "base-uri 'self'",
+  "form-action 'self'",
+  "frame-ancestors 'self'",
+].join('; ');
+
+function staticPageCsp(req, res, next) {
+  res.setHeader('Content-Security-Policy', STATIC_PAGE_CSP);
+  next();
+}
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// API Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/saved-items', savedItemsRoutes);
+app.use('/api/stats', statsRoutes);
+app.use('/api/analyze', analyzeRoutes);
+app.use('/api/purchases', purchaseRoutes);
+app.use('/api/paddle', paddleRoutes);
+
+// Landing page (About)
+app.get('/', staticPageCsp, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
+});
+app.get('/about', staticPageCsp, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'about.html'));
+});
+
+// QR Code printable sticker page
+app.get('/qr', staticPageCsp, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'qr.html'));
+});
+
+// Privacy Policy page
+app.get('/privacy', staticPageCsp, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'privacy.html'));
+});
+
+// Terms of Service page
+app.get('/terms', staticPageCsp, (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'pages', 'terms.html'));
+});
+
+// Paddle checkout success page (Paddle.Checkout successUrl)
+app.get('/premium/success', staticPageCsp, (req, res) => {
+  const appUrl = process.env.APP_URL || 'https://mathhelper.online';
+  res.send(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathHelper - Payment Successful</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; }
+    .card { background: #FFFFFF; border-radius: 24px; padding: 48px; max-width: 440px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #F59E0B, #D97706); display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 40px; }
+    h1 { font-size: 28px; font-weight: 800; color: #0F172A; margin-bottom: 12px; }
+    p { font-size: 16px; color: #64748B; margin-bottom: 8px; line-height: 1.5; }
+    .status { font-size: 14px; color: #94A3B8; margin: 20px 0; }
+    .spinner { display: inline-block; width: 20px; height: 20px; border: 3px solid #E2E8F0; border-top-color: #F59E0B; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .btn { display: inline-block; background: linear-gradient(135deg, #F59E0B, #D97706); color: #FFF; font-size: 16px; font-weight: 700; padding: 14px 32px; border-radius: 14px; text-decoration: none; margin-top: 16px; transition: transform 0.2s; }
+    .btn:hover { transform: scale(1.03); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">⭐</div>
+    <h1 id="title">Processing Payment...</h1>
+    <p id="desc">Please wait while we confirm your purchase.</p>
+    <div class="status" id="status"><span class="spinner"></span>Verifying...</div>
+    <a href="${appUrl}/dashboard" class="btn hidden" id="btn">Open MathHelper</a>
+  </div>
+  <script>
+    // Premium is activated by the Paddle webhook; poll our own API until it lands.
+    const token = localStorage.getItem('math_helper_access_token');
+    let attempts = 0;
+
+    function show(title, desc, done) {
+      document.getElementById('title').textContent = title;
+      document.getElementById('desc').textContent = desc;
+      if (done) {
+        document.getElementById('status').classList.add('hidden');
+        document.getElementById('btn').classList.remove('hidden');
+      }
+    }
+
+    async function checkPremium() {
+      attempts++;
+      if (!token) {
+        show('Payment Received!', 'Open MathHelper to start using Premium.', true);
+        return;
+      }
+      try {
+        const res = await fetch('/api/auth/me', { headers: { 'Authorization': 'Bearer ' + token } });
+        const data = await res.json();
+        if (data.user && data.user.tier === 'premium') {
+          show('Payment Successful!', 'Welcome to MathHelper Premium! Enjoy 10 analyses per day and all courses & quizzes.', false);
+          document.getElementById('status').textContent = 'Redirecting...';
+          document.getElementById('btn').classList.remove('hidden');
+          setTimeout(() => { window.location.href = '${appUrl}/dashboard'; }, 2500);
+          return;
+        }
+      } catch (e) {
+        // fall through to retry
+      }
+      if (attempts < 10) {
+        setTimeout(checkPremium, 3000);
+      } else {
+        show('Payment Received!', 'Premium will be active in a minute. You can open MathHelper now.', true);
+      }
+    }
+
+    checkPremium();
+  </script>
+</body>
+</html>`);
+});
+
+// LEGACY: graph page for store apps built before the graph was drawn on the device (react-native-svg).
+// Remove it, its CSP and its e2e checks once no app version older than 1.1.0 is in use.
+// Graph rendering endpoint — serves self-contained HTML with function-plot.
+// The expression is never turned into JS by us: it is embedded as JSON data and parsed by
+// function-plot's own math parser. The bootstrap script is static, so its CSP hash is constant.
+const GRAPH_CDN_SCRIPTS = [
+  {
+    src: 'https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js',
+    integrity: 'sha384-CjloA8y00+1SDAUkjs099PVfnY2KmDC2BZnws9kh8D/lX1s46w6EPhpXdqMfjK6i',
+  },
+  {
+    src: 'https://cdn.jsdelivr.net/npm/function-plot@1.22.2/dist/function-plot.js',
+    integrity: 'sha384-UilSOASrT7yOa5JE6wuicoPA1pUNIESPx2lUHG+jmeU0o/P0Rcs8Dwy5tA9JpsUM',
+  },
+];
+
+const GRAPH_BOOTSTRAP_SCRIPT = `
+(function(){
+  var expr = JSON.parse(document.getElementById('expr-data').textContent);
+  document.getElementById('legend').textContent = 'y = ' + expr.replace(/\\*/g, '\\u00b7');
+  try {
+    // Sample with function-plot's own evaluator (no eval of the raw expression) to pick a y-range
+    var datum = { fn: expr };
+    var yMin = Infinity, yMax = -Infinity;
+    for (var xi = -10; xi <= 10; xi += 0.2) {
+      var y;
+      try { y = functionPlot.$eval.builtIn(datum, 'fn', { x: xi }); } catch (e) { y = NaN; }
+      if (typeof y === 'number' && isFinite(y)) { yMin = Math.min(yMin, y); yMax = Math.max(yMax, y); }
+    }
+    var yDomain = [-10, 10];
+    if (isFinite(yMin) && isFinite(yMax)) {
+      var pad = Math.max((yMax - yMin) * 0.2, 1);
+      yDomain = [yMin - pad, yMax + pad];
+    }
+    functionPlot({
+      target: '#plot',
+      width: window.innerWidth,
+      height: window.innerHeight - 52,
+      xAxis: { domain: [-10, 10] },
+      yAxis: { domain: yDomain },
+      grid: true,
+      data: [{ fn: expr, color: '#6C47FF', graphType: 'polyline' }]
+    });
+    var svg = document.querySelector('#plot svg');
+    if (svg) svg.style.background = '#FDF6EC';
+  } catch (e) {
+    document.getElementById('plot').style.display = 'none';
+    var el = document.getElementById('err');
+    el.style.display = 'block';
+    el.textContent = 'Gabim: ' + e.message;
+  }
+})();
+`;
+
+const GRAPH_BOOTSTRAP_HASH = crypto.createHash('sha256').update(GRAPH_BOOTSTRAP_SCRIPT).digest('base64');
+
+// 'unsafe-eval' is required by function-plot's math parser (math-codegen compiles the parsed AST with
+// new Function); the input is restricted to the allowlist below. 'unsafe-inline' is ignored by CSP3
+// browsers when a hash is present and only acts as a fallback for old engines.
+const GRAPH_CSP = [
+  "default-src 'none'",
+  `script-src https://cdn.jsdelivr.net 'sha256-${GRAPH_BOOTSTRAP_HASH}' 'unsafe-inline' 'unsafe-eval'`,
+  "style-src 'unsafe-inline'",
+  'img-src data:',
+  "frame-ancestors 'self'",
+].join('; ');
+
+app.get('/graph', (req, res) => {
+  const rawExpr = String(req.query.expr || '').slice(0, 500);
+  // Basic sanitization: only allow safe math characters
+  const expr = rawExpr.replace(/[^0-9x+\-*/^().sincotaqrple, ]/gi, '');
+  if (!expr) return res.status(400).send('Missing expr');
+
+  // JSON data block (not executed); escape '<' so the content can never close the tag
+  const exprJson = JSON.stringify(expr).replace(/</g, '\\u003c');
+  const cdnScripts = GRAPH_CDN_SCRIPTS
+    .map((s) => `<script src="${s.src}" integrity="${s.integrity}" crossorigin="anonymous"></script>`)
+    .join('\n  ');
+
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.setHeader('Content-Security-Policy', GRAPH_CSP);
+  res.send(`<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  ${cdnScripts}
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    html,body{width:100%;height:100%;background:#FDF6EC;overflow:hidden}
+    #plot{width:100%;height:calc(100% - 52px)}
+    #legend{height:52px;display:flex;align-items:center;justify-content:center;
+      font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:17px;
+      font-weight:600;font-style:italic;color:#6C47FF;
+      border-top:1px solid #E8D5B0;background:#FDF6EC}
+    #err{display:none;padding:24px;color:#8B6914;font-family:sans-serif;font-size:14px;text-align:center}
+  </style>
+</head>
+<body>
+<div id="plot"></div>
+<div id="err"></div>
+<div id="legend"></div>
+<script type="application/json" id="expr-data">${exprJson}</script>
+<script>${GRAPH_BOOTSTRAP_SCRIPT}</script>
+</body>
+</html>`);
+});
+
+// Serve Expo web build assets
+const publicDir = path.join(__dirname, '..', 'public');
+app.use(express.static(publicDir));
+
+// App route + SPA fallback for non-API routes
+app.use((req, res, next) => {
+  if (req.path.startsWith('/api/')) {
+    return next();
+  }
+  res.sendFile(path.join(publicDir, 'index.html'));
+});
+
+// Error handler (must be last)
+app.use(errorHandler);
+
+module.exports = app;
