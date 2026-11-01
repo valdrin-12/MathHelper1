@@ -68,6 +68,7 @@ export default {
     {
       id: 5, type: 'input', difficulty: 'medium', answer: { value: 0.5 },
       verify: ['sin(390 deg)', 0.5],
+      explainVisual: { type: 'unitCircle', angle: 390, alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
       al: { question: 'Sa është sin 390°?', explanation: 'sin(390° − 360°) = sin 30° = 0,5.', hint: 'Perioda e sinusit është 360°.', commonMistakes: [{ value: 1, why: 'sin 90° = 1, por 390° − 360° = 30°.' }, { value: 0.866, why: 'Kjo është sin 60° (ose cos 30°).' }] },
       en: { question: 'What is sin 390°?', explanation: 'sin(390° − 360°) = sin 30° = 0.5.', hint: 'The period of sine is 360°.', commonMistakes: [{ value: 1, why: 'sin 90° = 1, but 390° − 360° = 30°.' }, { value: 0.866, why: 'That is sin 60° (or cos 30°).' }] },
       de: { question: 'Wie groß ist sin 390°?', explanation: 'sin(390° − 360°) = sin 30° = 0,5.', hint: 'Die Periode des Sinus ist 360°.', commonMistakes: [{ value: 1, why: 'sin 90° = 1, aber 390° − 360° = 30°.' }, { value: 0.866, why: 'Das ist sin 60° (oder cos 30°).' }] },
@@ -113,6 +114,13 @@ export default {
     {
       id: 8, type: 'input', difficulty: 'hard', answer: { value: 120 }, unit: '°',
       verify: ['360 / 3', 120],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: 0, xMax: 360, yMin: -1.4, yMax: 1.4 }, xStep: 60,
+    functions: [{ expr: 'cos(x*pi/180)', color: 'muted', dashed: true, label: 'cos x' }, { expr: 'cos(k*x*pi/180)', label: 'cos({k}x)' }],
+    sliders: [{ name: 'k', min: 1, max: 6, step: 1, value: 3 }],
+    readouts: [{ text: { al: 'Perioda = 360° / k = {360/k}°', en: 'Period = 360° / k = {360/k}°', de: 'Periode = 360° / k = {360/k}°' } }],
+    alt: { al: 'Grafikët e cos x dhe cos(kx) nga 0° deri 360° me rrëshqitës për k.', en: 'The graphs of cos x and cos(kx) from 0° to 360° with a slider for k.', de: 'Die Graphen von cos x und cos(kx) von 0° bis 360° mit Schieberegler für k.' },
+  },
       al: { question: 'Sa është perioda e y = cos(3x) në gradë?', explanation: '360° : 3 = 120°.', hint: 'T = 360°/k.', commonMistakes: [{ value: 1080, why: 'U shumëzua me 3 në vend që të pjesëtohej.' }, { value: 360, why: 'Kjo është perioda e cos x, pa faktorin 3.' }] },
       en: { question: 'What is the period of y = cos(3x) in degrees?', explanation: '360° ÷ 3 = 120°.', hint: 'T = 360°/k.', commonMistakes: [{ value: 1080, why: 'It was multiplied by 3 instead of divided.' }, { value: 360, why: 'That is the period of cos x, without the factor 3.' }] },
       de: { question: 'Welche Periode hat y = cos(3x) in Grad?', explanation: '360° : 3 = 120°.', hint: 'T = 360°/k.', commonMistakes: [{ value: 1080, why: 'Es wurde mit 3 multipliziert statt geteilt.' }, { value: 360, why: 'Das ist die Periode von cos x, ohne den Faktor 3.' }] },

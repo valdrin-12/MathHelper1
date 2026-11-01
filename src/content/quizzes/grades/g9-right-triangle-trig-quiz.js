@@ -35,6 +35,7 @@ export default {
     {
       id: 2, type: 'input', difficulty: 'easy', answer: { value: 1 },
       verify: ['sin(30 deg) + cos(60 deg)', 1],
+      explainVisual: { type: 'unitCircle', angle: 30, marks: [60], alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
       al: { question: 'Llogaritni sin 30° + cos 60°.', explanation: '1/2 + 1/2 = 1.', hint: 'sin 30° = cos 60° = 1/2.', commonMistakes: [{ value: 0.5, why: 'Të dy vlerat janë 1/2; shuma është 1.' }] },
       en: { question: 'Work out sin 30° + cos 60°.', explanation: '1/2 + 1/2 = 1.', hint: 'sin 30° = cos 60° = 1/2.', commonMistakes: [{ value: 0.5, why: 'Both values are 1/2; the sum is 1.' }] },
       de: { question: 'Berechnen Sie sin 30° + cos 60°.', explanation: '1/2 + 1/2 = 1.', hint: 'sin 30° = cos 60° = 1/2.', commonMistakes: [{ value: 0.5, why: 'Beide Werte sind 1/2; die Summe ist 1.' }] },
@@ -42,6 +43,7 @@ export default {
     {
       id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
       verify: ['abs(sin(40 deg) - cos(50 deg)) < 1e-9', true],
+      explainVisual: { type: 'unitCircle', angle: 40, marks: [50], alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
       al: { question: 'sin 40° = cos 50°', explanation: 'E vërtetë: 40° + 50° = 90°, pra janë kënde komplementare.', hint: 'sin α = cos(90° − α).', whyWrong: 'cos 50° = sin(90° − 50°) = sin 40°.' },
       en: { question: 'sin 40° = cos 50°', explanation: 'True: 40° + 50° = 90°, so they are complementary angles.', hint: 'sin α = cos(90° − α).', whyWrong: 'cos 50° = sin(90° − 50°) = sin 40°.' },
       de: { question: 'sin 40° = cos 50°', explanation: 'Richtig: 40° + 50° = 90°, es sind Komplementwinkel.', hint: 'sin α = cos(90° − α).', whyWrong: 'cos 50° = sin(90° − 50°) = sin 40°.' },
@@ -49,6 +51,7 @@ export default {
     {
       id: 4, type: 'choice', difficulty: 'easy', correct: 2,
       verify: ['tan(45 deg)', 1],
+      explainVisual: { type: 'unitCircle', angle: 45, alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
       al: {
         question: 'Sa është tg 45°?', options: ['0', '1/2', '1', '√3'],
         explanation: 'Te trekëndëshi 45°–45°–90° katetet janë të barabarta: tg 45° = 1.', hint: 'Përballë = e afërt.',

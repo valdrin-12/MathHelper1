@@ -49,6 +49,15 @@ export default {
     {
       id: 4, type: 'choice', difficulty: 'medium', correct: 3,
       verify: ['abs(9 + 16 - 5) / 5', 4],
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -4, xMax: 8, yMin: -3, yMax: 8 },
+    functions: [{ expr: '(5 - 3*x)/4', label: '3x + 4y − 5 = 0' }],
+    points: [{ at: ['p', 'q'], label: 'P({p}, {q})', color: 'secondary' }],
+    segments: [{ from: ['p', 'q'], to: ['p - 3*(3*p + 4*q - 5)/25', 'q - 4*(3*p + 4*q - 5)/25'], color: 'secondary', dashed: true, label: 'd' }],
+    sliders: [{ name: 'p', min: -3, max: 7, step: 0.5, value: 3 }, { name: 'q', min: -2, max: 7, step: 0.5, value: 4 }],
+    readouts: [{ text: { al: 'd = |3p + 4q − 5| / 5 = {abs(3*p + 4*q - 5)/5}', en: 'd = |3p + 4q − 5| / 5 = {abs(3*p + 4*q - 5)/5}', de: 'd = |3p + 4q − 5| / 5 = {abs(3*p + 4*q - 5)/5}' } }],
+    alt: { al: 'Drejtëza 3x + 4y − 5 = 0, pika P që lëviz dhe pingulja nga P te drejtëza.', en: 'The line 3x + 4y − 5 = 0, a moving point P and the perpendicular from P to the line.', de: 'Die Gerade 3x + 4y − 5 = 0, ein beweglicher Punkt P und das Lot von P auf die Gerade.' },
+  },
       al: {
         question: 'Sa është largësia e pikës (3, 4) nga drejtëza 3x + 4y − 5 = 0?', options: ['20', '5', '25', '4'],
         explanation: '|9 + 16 − 5|/√(9 + 16) = 20/5 = 4.', hint: 'd = |ax₀ + by₀ + c|/√(a² + b²).',

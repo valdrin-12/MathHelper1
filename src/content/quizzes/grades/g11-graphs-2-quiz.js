@@ -16,6 +16,15 @@ export default {
     {
       id: 1, type: 'choice', difficulty: 'easy', correct: 0,
       verify: ['sqrt(25)', 5],
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -9, xMax: 9, yMin: -9, yMax: 9 },
+    curves: [{ x: 'a + r*cos(t)', y: 'b + r*sin(t)' }],
+    points: [{ at: ['a', 'b'], label: 'S({a}, {b})', color: 'secondary' }],
+    segments: [{ from: ['a', 'b'], to: ['a + r', 'b'], color: 'secondary', label: 'r = {r}' }],
+    sliders: [{ name: 'a', min: -5, max: 5, step: 1, value: 0 }, { name: 'b', min: -5, max: 5, step: 1, value: 0 }, { name: 'r', min: 1, max: 6, step: 0.5, value: 5 }],
+    readouts: [{ text: { al: '(x − a)² + (y − b)² = r²: qendra ({a}, {b}), r² = {r^2}.', en: '(x − a)² + (y − b)² = r²: centre ({a}, {b}), r² = {r^2}.', de: '(x − a)² + (y − b)² = r²: Mittelpunkt ({a} | {b}), r² = {r^2}.' } }],
+    alt: { al: 'Rreth me qendër (a, b) dhe rreze r me rrëshqitës.', en: 'A circle with centre (a, b) and radius r on sliders.', de: 'Ein Kreis mit Mittelpunkt (a, b) und Radius r als Schieberegler.' },
+  },
       al: {
         question: 'Cila është qendra dhe rrezja e rrethit x² + y² = 25?', options: ['(0, 0); 5', '(0, 0); 25', '(5, 5); 5', '(0, 0); 12,5'],
         explanation: 'Qendra në origjinë, r = √25 = 5.', hint: 'Ana e djathtë është r².',
@@ -42,6 +51,22 @@ export default {
     {
       id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
       verify: ['3^2 + 4^2 == 25', true],
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -7, xMax: 7, yMin: -7, yMax: 7 },
+    curves: [{ x: '0 + 5*cos(t)', y: '0 + 5*sin(t)' }],
+    points: [{ at: [0, 0], label: 'S', color: 'muted' }, { at: ['p', 'q'], label: 'P({p}, {q})', color: 'secondary' }],
+    segments: [{ from: [0, 0], to: ['p', 'q'], color: 'secondary', dashed: true }],
+    sliders: [{ name: 'p', min: -7, max: 7, step: 0.5, value: 3 }, { name: 'q', min: -7, max: 7, step: 0.5, value: 4 }],
+    readouts: [
+      { text: { al: 'Largësia nga qendra deri te P në katror: {(p - 0)^2 + (q - 0)^2}; r² = 25.', en: 'Squared distance from the centre to P: {(p - 0)^2 + (q - 0)^2}; r² = 25.', de: 'Quadrierter Abstand vom Mittelpunkt zu P: {(p - 0)^2 + (q - 0)^2}; r² = 25.' } },
+      { cases: [
+        { when: 'abs((p - 0)^2 + (q - 0)^2 - 25) < 0.001', text: { al: '= r²: P ndodhet në rreth.', en: '= r²: P lies on the circle.', de: '= r²: P liegt auf dem Kreis.' } },
+        { when: '(p - 0)^2 + (q - 0)^2 < 25', text: { al: '< r²: P ndodhet brenda rrethit.', en: '< r²: P lies inside the circle.', de: '< r²: P liegt innerhalb des Kreises.' } },
+        { text: { al: '> r²: P ndodhet jashtë rrethit.', en: '> r²: P lies outside the circle.', de: '> r²: P liegt außerhalb des Kreises.' } },
+      ] },
+    ],
+    alt: { al: 'Rrethi me qendër S(0, 0) dhe rreze 5, me pikën P që lëviz me rrëshqitës.', en: 'The circle with centre S(0, 0) and radius 5, with a point P moved by sliders.', de: 'Der Kreis mit Mittelpunkt S(0 | 0) und Radius 5 mit einem Punkt P, der mit Schiebereglern bewegt wird.' },
+  },
       al: { question: 'Pika (3, 4) ndodhet në rrethin x² + y² = 25.', explanation: 'E vërtetë: 9 + 16 = 25.', hint: 'Vendosni x = 3, y = 4.', whyWrong: '3² + 4² = 25.' },
       en: { question: 'The point (3, 4) lies on the circle x² + y² = 25.', explanation: 'True: 9 + 16 = 25.', hint: 'Put x = 3, y = 4.', whyWrong: '3² + 4² = 25.' },
       de: { question: 'Der Punkt (3 | 4) liegt auf dem Kreis x² + y² = 25.', explanation: 'Richtig: 9 + 16 = 25.', hint: 'x = 3, y = 4 einsetzen.', whyWrong: '3² + 4² = 25.' },
@@ -75,6 +100,7 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 1,
       verify: ['180 - 30', 150],
+      explainVisual: { type: 'unitCircle', angle: 30, marks: [30, 150], alt: { al: 'Rrethi njësi me një kënd që ndryshon me rrëshqitës; tregohen sin, cos dhe tg.', en: 'The unit circle with an angle on a slider; sin, cos and tan are shown.', de: 'Der Einheitskreis mit einem Winkel als Schieberegler; sin, cos und tan werden angezeigt.' } },
       al: {
         question: 'Cilat janë zgjidhjet e sin x = 0,5 për 0° ≤ x ≤ 360°?', options: ['vetëm 30°', '30° dhe 150°', '30° dhe 330°', '60° dhe 120°'],
         explanation: 'x = 30° dhe nga simetria 180° − 30° = 150°.', hint: 'sin(180° − x) = sin x.',
@@ -120,6 +146,15 @@ export default {
     {
       id: 9, type: 'truefalse', difficulty: 'hard', correct: false,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -9, xMax: 9, yMin: -9, yMax: 9 },
+    curves: [{ x: 'a + r*cos(t)', y: 'b + r*sin(t)' }],
+    points: [{ at: ['a', 'b'], label: 'S({a}, {b})', color: 'secondary' }],
+    segments: [{ from: ['a', 'b'], to: ['a + r', 'b'], color: 'secondary', label: 'r = {r}' }],
+    sliders: [{ name: 'a', min: -5, max: 5, step: 1, value: 2 }, { name: 'b', min: -5, max: 5, step: 1, value: -1 }, { name: 'r', min: 1, max: 6, step: 0.5, value: 3 }],
+    readouts: [{ text: { al: '(x − a)² + (y − b)² = r²: qendra ({a}, {b}), r² = {r^2}.', en: '(x − a)² + (y − b)² = r²: centre ({a}, {b}), r² = {r^2}.', de: '(x − a)² + (y − b)² = r²: Mittelpunkt ({a} | {b}), r² = {r^2}.' } }],
+    alt: { al: 'Rreth me qendër (a, b) dhe rreze r me rrëshqitës.', en: 'A circle with centre (a, b) and radius r on sliders.', de: 'Ein Kreis mit Mittelpunkt (a, b) und Radius r als Schieberegler.' },
+  },
       al: { question: 'Rrethi (x − 2)² + (y + 1)² = 9 ka qendrën (−2, 1).', explanation: 'E gabuar: qendra është (2, −1); shenjat ndryshojnë.', hint: '(x − a)² + (y − b)².', whyWrong: 'x − 2 → a = 2; y + 1 = y − (−1) → b = −1.' },
       en: { question: 'The circle (x − 2)² + (y + 1)² = 9 has centre (−2, 1).', explanation: 'False: the centre is (2, −1); the signs change.', hint: '(x − a)² + (y − b)².', whyWrong: 'x − 2 → a = 2; y + 1 = y − (−1) → b = −1.' },
       de: { question: 'Der Kreis (x − 2)² + (y + 1)² = 9 hat den Mittelpunkt (−2 | 1).', explanation: 'Falsch: Der Mittelpunkt ist (2 | −1); die Vorzeichen wechseln.', hint: '(x − a)² + (y − b)².', whyWrong: 'x − 2 → a = 2; y + 1 = y − (−1) → b = −1.' },

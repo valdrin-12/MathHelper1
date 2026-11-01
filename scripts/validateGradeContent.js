@@ -10,7 +10,7 @@ const fs = require('fs');
 const { root, loadSrc, requireSrc } = require('./lib/loadSrc');
 
 const LANGS = ['al', 'en', 'de'];
-const VISUAL_TYPES = ['numberLine', 'fractionBar', 'pieModel', 'geoFigure', 'functionPlot', 'barChart', 'pieChart',
+const VISUAL_TYPES = ['numberLine', 'fractionBar', 'pieModel', 'geoFigure', 'functionPlot', 'unitCircle', 'barChart', 'pieChart',
   'histogram', 'boxPlot', 'scatterPlot', 'treeDiagram', 'vennDiagram', 'valueTable', 'solid'];
 const PLACEHOLDER = /\b(TODO|TBD|FIXME|lorem|ipsum)\b|\?\?\?|XXX/i;
 // concept → first grade where the curriculum introduces it
@@ -46,9 +46,26 @@ const textCheck = (where, grade, obj) => {
     CONCEPTS.forEach((c) => { if (grade < c.grade && c.re.test(s)) err(where, `uses ${c.name} (introduced in grade ${c.grade}): "${s.slice(0, 60)}"`); });
   });
 };
+const { parse } = require('mathjs');
+// every expression of an interactive graph must parse; slider start values must lie inside their range
+const checkExpressions = (where, v) => {
+  if (v.type !== 'functionPlot') return;
+  const exprs = [];
+  const add = (e) => { if (typeof e === 'string') exprs.push(e); };
+  (v.functions || []).forEach((f) => { add(f.expr); (f.domain || []).forEach(add); });
+  (v.curves || []).forEach((c) => { add(c.x); add(c.y); (c.t || []).forEach(add); });
+  (v.points || []).forEach((p) => p.at.forEach(add));
+  (v.segments || []).forEach((g) => [...g.from, ...g.to].forEach(add));
+  if (v.shade) { add(v.shade.expr); add(v.shade.lower); add(v.shade.from); add(v.shade.to); }
+  (v.readouts || []).forEach((r) => (r.cases || []).forEach((c) => add(c.when)));
+  allStrings([v.functions, v.curves, v.points, v.segments, v.readouts]).forEach((t) => (t.match(/\{([^{}]+)\}/g) || []).forEach((m) => add(m.slice(1, -1))));
+  exprs.forEach((e) => { try { parse(e); } catch (x) { err(where, `graph expression "${e}" does not parse: ${x.message}`); } });
+  (v.sliders || []).forEach((sl) => { if (!(sl.min <= sl.value && sl.value <= sl.max)) err(where, `slider ${sl.name} starts outside [${sl.min}, ${sl.max}]`); });
+};
 const checkVisual = (where, v) => {
   if (!v || !VISUAL_TYPES.includes(v.type)) { err(where, `unknown visual type ${v?.type}`); return; }
   LANGS.forEach((l) => { if (!nonEmpty(v.alt?.[l])) err(where, `visual ${v.type} has no ${l} alt text`); });
+  checkExpressions(where, v);
 };
 const checkAnswers = (where, list, count) => {
   if (!Array.isArray(list) || list.length !== count) { err(where, `answers needs ${count} entries, has ${list?.length ?? 0}`); return; }
@@ -58,7 +75,7 @@ const checkAnswers = (where, list, count) => {
   });
 };
 
-let lessonCount = 0; let visualCount = 0; let quizCount = 0; let questionCount = 0;
+let lessonCount = 0; let visualCount = 0; let interactiveCount = 0; let quizCount = 0; let questionCount = 0;
 const counts = {};
 
 CURRICULUM.filter((g) => PUBLISHED_GRADES.includes(g.grade)).forEach(({ grade, themes }) => {
@@ -103,6 +120,10 @@ CURRICULUM.filter((g) => PUBLISHED_GRADES.includes(g.grade)).forEach(({ grade, t
       visuals.forEach((v) => checkVisual(lw, v));
       textCheck(lw, grade, visuals.map((v) => v.alt));
       visualCount += visuals.length; counts[grade].visuals += visuals.length;
+      Object.entries(lesson.practiceVisuals || {}).forEach(([i, v]) => {
+        if (!(Number(i) < (n.al?.pr || 0))) err(lw, `practiceVisuals[${i}] has no practice problem`);
+        checkVisual(`${lw} practice ${i}`, v); textCheck(lw, grade, v.alt); interactiveCount++;
+      });
       checkAnswers(`${lw} examples`, lesson.answers?.examples, n.al?.ex);
       checkAnswers(`${lw} practice`, lesson.answers?.practice, n.al?.pr);
     });
@@ -121,6 +142,7 @@ CURRICULUM.filter((g) => PUBLISHED_GRADES.includes(g.grade)).forEach(({ grade, t
       if (!['easy', 'medium', 'hard'].includes(q.difficulty)) err(w, 'difficulty must be easy/medium/hard');
       if (q.verify === undefined) err(w, "verify missing ('text' or [expr, expected])");
       if (q.visual) { checkVisual(w, q.visual); visualCount++; counts[grade].visuals++; }
+      if (q.explainVisual) { checkVisual(`${w} explainVisual`, q.explainVisual); textCheck(w, grade, q.explainVisual.alt); interactiveCount++; }
       LANGS.forEach((l) => { if (!q[l]) err(w, `${l} missing`); });
       textCheck(w, grade, [q.al, q.en, q.de]);
     });
@@ -137,5 +159,5 @@ fs.readdirSync(gradeQuizDir).filter((f) => /^g\d+-.*\.js$/.test(f)).forEach((f) 
 
 if (errors.length) { console.log(errors.join('\n')); console.log(`${errors.length} problem(s) in grade content`); process.exit(1); }
 Object.entries(counts).forEach(([g, c]) => console.log(`  grade ${g}: ${c.themes} themes, ${c.lessons} lessons × 3 languages, ${c.quizzes} quizzes (${c.questions} questions), ${c.visuals} visuals`));
-console.log(`OK grade content: ${lessonCount} lessons, ${quizCount} quizzes, ${questionCount} questions, ${visualCount} visuals in al/en/de`
+console.log(`OK grade content: ${lessonCount} lessons, ${quizCount} quizzes, ${questionCount} questions, ${visualCount} visuals in al/en/de, ${interactiveCount} "show graph" visuals`
   + ` (published grades: ${PUBLISHED_GRADES.join(', ') || 'none'})`);
