@@ -9,7 +9,7 @@
 
 // Grades whose content ships. A grade is added here only when all its lessons and quizzes exist in al/en/de
 // (scripts/validateGradeContent.js enforces it).
-export const PUBLISHED_GRADES = [6, 7, 8, 9, 10, 11];
+export const PUBLISHED_GRADES = [6, 7, 8, 9, 10, 11, 12];
 
 export const ALL_GRADES = [6, 7, 8, 9, 10, 11, 12];
 

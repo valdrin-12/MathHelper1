@@ -67,6 +67,16 @@ import g11PythagorasTrigVectors from './g11-pythagoras-trig-vectors-quiz';
 import g11CombinedProbability from './g11-combined-probability-quiz';
 import g11Sequences from './g11-sequences-quiz';
 import g11UnitsProportion from './g11-units-proportion-quiz';
+import g12NumericFunction from './g12-numeric-function-quiz';
+import g12SequencesProgressions from './g12-sequences-progressions-quiz';
+import g12LimitsInfinity from './g12-limits-infinity-quiz';
+import g12CoordinateGeometry from './g12-coordinate-geometry-quiz';
+import g12LimitsContinuity from './g12-limits-continuity-quiz';
+import g12Derivatives from './g12-derivatives-quiz';
+import g12CircleEllipse from './g12-circle-ellipse-quiz';
+import g12DerivativeApplications from './g12-derivative-applications-quiz';
+import g12HyperbolaParabola from './g12-hyperbola-parabola-quiz';
+import g12Integrals from './g12-integrals-quiz';
 
 const ALL = [
   g6NaturalNumbers,
@@ -135,6 +145,16 @@ const ALL = [
   g11CombinedProbability,
   g11Sequences,
   g11UnitsProportion,
+  g12NumericFunction,
+  g12SequencesProgressions,
+  g12LimitsInfinity,
+  g12CoordinateGeometry,
+  g12LimitsContinuity,
+  g12Derivatives,
+  g12CircleEllipse,
+  g12DerivativeApplications,
+  g12HyperbolaParabola,
+  g12Integrals,
 ];
 
 export default ALL.filter((set) => PUBLISHED_GRADES.includes(set.grade));
