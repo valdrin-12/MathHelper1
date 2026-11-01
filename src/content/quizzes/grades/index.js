@@ -45,6 +45,18 @@ import g9Vectors from './g9-vectors-quiz';
 import g9Similarity from './g9-similarity-quiz';
 import g9RightTriangleTrig from './g9-right-triangle-trig-quiz';
 import g9DataProbability from './g9-data-probability-quiz';
+import g10NumberOperations from './g10-number-operations-quiz';
+import g10AlgebraicExpressions from './g10-algebraic-expressions-quiz';
+import g10AnglesPolygons from './g10-angles-polygons-quiz';
+import g10DataHandling from './g10-data-handling-quiz';
+import g10FractionsPercentages from './g10-fractions-percentages-quiz';
+import g10FormulasFunctions from './g10-formulas-functions-quiz';
+import g10PlaneGeometry from './g10-plane-geometry-quiz';
+import g10Probability from './g10-probability-quiz';
+import g10MeasuresAccuracy from './g10-measures-accuracy-quiz';
+import g10EquationsInequalities from './g10-equations-inequalities-quiz';
+import g10CircleLoci from './g10-circle-loci-quiz';
+import g10RatioProportion from './g10-ratio-proportion-quiz';
 
 const ALL = [
   g6NaturalNumbers,
@@ -91,6 +103,18 @@ const ALL = [
   g9Similarity,
   g9RightTriangleTrig,
   g9DataProbability,
+  g10NumberOperations,
+  g10AlgebraicExpressions,
+  g10AnglesPolygons,
+  g10DataHandling,
+  g10FractionsPercentages,
+  g10FormulasFunctions,
+  g10PlaneGeometry,
+  g10Probability,
+  g10MeasuresAccuracy,
+  g10EquationsInequalities,
+  g10CircleLoci,
+  g10RatioProportion,
 ];
 
 export default ALL.filter((set) => PUBLISHED_GRADES.includes(set.grade));
