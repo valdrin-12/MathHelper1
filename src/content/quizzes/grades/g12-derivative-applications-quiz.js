@@ -16,6 +16,17 @@ export default {
     {
       id: 1, type: 'choice', difficulty: 'easy', correct: 2,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -2.5, xMax: 2.5, yMin: -4, yMax: 4 },
+    functions: [{ expr: 'x^3 - 3*x', label: 'f(x) = x³ − 3x' }, { expr: '(3*a^2 - 3)*(x - a) + (a^3 - 3*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+    points: [{ at: ['a', 'a^3 - 3*a'], label: '({a}, {a^3 - 3*a})', color: 'secondary' }],
+    sliders: [{ name: 'a', min: -2, max: 2, step: 0.5, value: -1 }],
+    readouts: [
+      { text: { al: 'f′({a}) = {3*a^2 - 3} = pjerrësia e tangjentes; tangjentja: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}', en: 'f′({a}) = {3*a^2 - 3} = gradient of the tangent; tangent: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}', de: 'f′({a}) = {3*a^2 - 3} = Tangentensteigung; Tangente: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}' } },
+      { cases: [{ when: '3*a^2 - 3 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '3*a^2 - 3 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+    ],
+    alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+  },
       al: {
         question: 'Ku ka maksimum lokal f(x) = x³ − 3x?', options: ['x = 1', 'x = 0', 'x = −1', 'x = 3'],
         explanation: 'f′ = 3(x − 1)(x + 1); te x = −1 f′ kalon nga + në −.', hint: 'f′ = 0 dhe ndryshimi i shenjës.',
@@ -68,6 +79,17 @@ export default {
     {
       id: 5, type: 'input', difficulty: 'medium', answer: { value: -2 },
       verify: ['1^3 - 3*1', -2],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -0.5, xMax: 2.5, yMin: -3, yMax: 3 },
+    functions: [{ expr: 'x^3 - 3*x', label: 'f(x) = x³ − 3x' }, { expr: '(3*a^2 - 3)*(x - a) + (a^3 - 3*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+    points: [{ at: ['a', 'a^3 - 3*a'], label: '({a}, {a^3 - 3*a})', color: 'secondary' }],
+    sliders: [{ name: 'a', min: 0, max: 2, step: 0.5, value: 1 }],
+    readouts: [
+      { text: { al: 'f′({a}) = {3*a^2 - 3} = pjerrësia e tangjentes; tangjentja: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}', en: 'f′({a}) = {3*a^2 - 3} = gradient of the tangent; tangent: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}', de: 'f′({a}) = {3*a^2 - 3} = Tangentensteigung; Tangente: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}' } },
+      { cases: [{ when: '3*a^2 - 3 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '3*a^2 - 3 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+    ],
+    alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+  },
       al: { question: 'Sa është vlera më e vogël e f(x) = x³ − 3x në [0, 2]?', explanation: 'f(0) = 0, f(1) = −2, f(2) = 2 → min −2.', hint: 'Pikat kritike dhe skajet.', commonMistakes: [{ value: 0, why: 'U shikuan vetëm skajet.' }, { value: 1, why: 'Ky është x i minimumit, jo vlera.' }] },
       en: { question: 'What is the least value of f(x) = x³ − 3x on [0, 2]?', explanation: 'f(0) = 0, f(1) = −2, f(2) = 2 → min −2.', hint: 'Critical points and end points.', commonMistakes: [{ value: 0, why: 'Only the end points were checked.' }, { value: 1, why: 'That is the x of the minimum, not the value.' }] },
       de: { question: 'Welchen kleinsten Wert hat f(x) = x³ − 3x auf [0, 2]?', explanation: 'f(0) = 0, f(1) = −2, f(2) = 2 → Min −2.', hint: 'Kritische Stellen und Ränder.', commonMistakes: [{ value: 0, why: 'Es wurden nur die Ränder geprüft.' }, { value: 1, why: 'Das ist die Stelle x, nicht der Wert.' }] },
@@ -75,6 +97,17 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 3,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -2.5, xMax: 2.5, yMin: -4, yMax: 4 },
+    functions: [{ expr: 'x^3 - 3*x', label: 'f(x) = x³ − 3x' }, { expr: '(3*a^2 - 3)*(x - a) + (a^3 - 3*a)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+    points: [{ at: ['a', 'a^3 - 3*a'], label: '({a}, {a^3 - 3*a})', color: 'secondary' }],
+    sliders: [{ name: 'a', min: -2, max: 2, step: 0.5, value: 0 }],
+    readouts: [
+      { text: { al: 'f′({a}) = {3*a^2 - 3} = pjerrësia e tangjentes; tangjentja: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}', en: 'f′({a}) = {3*a^2 - 3} = gradient of the tangent; tangent: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}', de: 'f′({a}) = {3*a^2 - 3} = Tangentensteigung; Tangente: y = {3*a^2 - 3}x {+a^3 - 3*a - (3*a^2 - 3)*a}' } },
+      { cases: [{ when: '3*a^2 - 3 > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '3*a^2 - 3 < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+    ],
+    alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+  },
       al: {
         question: 'Ku është zbritës f(x) = x³ − 3x?', options: ['x < −1', 'x > 1', 'x < 1', '−1 < x < 1'],
         explanation: 'f′ = 3(x − 1)(x + 1) < 0 vetëm për −1 < x < 1.', hint: 'Tabela e shenjave të f′.',

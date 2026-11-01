@@ -35,6 +35,17 @@ export default {
     {
       id: 2, type: 'input', difficulty: 'easy', answer: { value: 6 },
       verify: ['2 * 3', 6],
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -4, yMax: 20 },
+    functions: [{ expr: 'x^2', label: 'f(x) = x²' }, { expr: '(2*a)*(x - a) + (a^2)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+    points: [{ at: ['a', 'a^2'], label: '({a}, {a^2})', color: 'secondary' }],
+    sliders: [{ name: 'a', min: -1, max: 4, step: 0.5, value: 3 }],
+    readouts: [
+      { text: { al: 'f′({a}) = {2*a} = pjerrësia e tangjentes; tangjentja: y = {2*a}x {+a^2 - (2*a)*a}', en: 'f′({a}) = {2*a} = gradient of the tangent; tangent: y = {2*a}x {+a^2 - (2*a)*a}', de: 'f′({a}) = {2*a} = Tangentensteigung; Tangente: y = {2*a}x {+a^2 - (2*a)*a}' } },
+      { cases: [{ when: '2*a > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '2*a < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+    ],
+    alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+  },
       al: { question: 'f(x) = x². Sa është f′(3)?', explanation: 'f′(x) = 2x → f′(3) = 6.', hint: '(x²)′ = 2x.', commonMistakes: [{ value: 9, why: 'Kjo është f(3), jo f′(3).' }, { value: 3, why: 'U harrua faktori 2.' }] },
       en: { question: 'f(x) = x². What is f′(3)?', explanation: 'f′(x) = 2x → f′(3) = 6.', hint: '(x²)′ = 2x.', commonMistakes: [{ value: 9, why: 'That is f(3), not f′(3).' }, { value: 3, why: 'The factor 2 was forgotten.' }] },
       de: { question: 'f(x) = x². Wie groß ist f′(3)?', explanation: 'f′(x) = 2x → f′(3) = 6.', hint: '(x²)′ = 2x.', commonMistakes: [{ value: 9, why: 'Das ist f(3), nicht f′(3).' }, { value: 3, why: 'Der Faktor 2 fehlt.' }] },
@@ -49,6 +60,17 @@ export default {
     {
       id: 4, type: 'choice', difficulty: 'medium', correct: 2,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -1, xMax: 5, yMin: -6, yMax: 14 },
+    functions: [{ expr: 'x^2', label: 'f(x) = x²' }, { expr: '(2*a)*(x - a) + (a^2)', color: 'secondary', dashed: true, label: { al: 'tangjentja', en: 'tangent', de: 'Tangente' } }],
+    points: [{ at: ['a', 'a^2'], label: '({a}, {a^2})', color: 'secondary' }],
+    sliders: [{ name: 'a', min: -1, max: 4, step: 0.5, value: 2 }],
+    readouts: [
+      { text: { al: 'f′({a}) = {2*a} = pjerrësia e tangjentes; tangjentja: y = {2*a}x {+a^2 - (2*a)*a}', en: 'f′({a}) = {2*a} = gradient of the tangent; tangent: y = {2*a}x {+a^2 - (2*a)*a}', de: 'f′({a}) = {2*a} = Tangentensteigung; Tangente: y = {2*a}x {+a^2 - (2*a)*a}' } },
+      { cases: [{ when: '2*a > 0', text: { al: 'f′ > 0: funksioni është rritës këtu.', en: 'f′ > 0: the function is increasing here.', de: 'f′ > 0: Die Funktion steigt hier.' } }, { when: '2*a < 0', text: { al: 'f′ < 0: funksioni është zbritës këtu.', en: 'f′ < 0: the function is decreasing here.', de: 'f′ < 0: Die Funktion fällt hier.' } }, { text: { al: 'f′ = 0: tangjentja horizontale (pikë kritike).', en: 'f′ = 0: horizontal tangent (critical point).', de: 'f′ = 0: waagerechte Tangente (kritische Stelle).' } }] },
+    ],
+    alt: { al: 'Grafiku i funksionit me një pikë që lëviz dhe tangjenten në të.', en: 'The graph of the function with a moving point and the tangent there.', de: 'Der Graph der Funktion mit einem beweglichen Punkt und der Tangente dort.' },
+  },
       al: {
         question: 'Cila është tangjentja e y = x² në pikën (2, 4)?', options: ['y = 2x', 'y = 4x', 'y = 4x − 4', 'y = 2x + 4'],
         explanation: 'f′(2) = 4; y = 4 + 4(x − 2) = 4x − 4.', hint: 'y = f(a) + f′(a)(x − a).',

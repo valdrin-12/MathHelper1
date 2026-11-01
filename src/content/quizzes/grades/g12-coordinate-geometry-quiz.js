@@ -84,6 +84,17 @@ export default {
     {
       id: 6, type: 'choice', difficulty: 'medium', correct: 1,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -5, xMax: 5, yMin: -5, yMax: 5 },
+    functions: [{ expr: '2*x + (3)', color: 'muted', label: 'y = 2x + 3' }, { expr: 'k*x + n', color: 'secondary', label: 'y = {k}x {+n}' }],
+    points: [{ at: [1, 2], label: '(1, 2)', color: 'success' }],
+    sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -0.5 }, { name: 'n', min: -6, max: 6, step: 0.5, value: 2.5 }],
+    readouts: [{ cases: [
+      { when: 'abs(2*k + 1) < 0.001', text: { al: 'k₁ · k₂ = 2 · {k} = −1: drejtëzat janë pingule.', en: 'k₁ · k₂ = 2 · {k} = −1: the lines are perpendicular.', de: 'k₁ · k₂ = 2 · {k} = −1: Die Geraden sind orthogonal.' } },
+      { text: { al: 'k₁ · k₂ = {2*k} ≠ −1: jo pingule.', en: 'k₁ · k₂ = {2*k} ≠ −1: not perpendicular.', de: 'k₁ · k₂ = {2*k} ≠ −1: nicht orthogonal.' } },
+    ] }],
+    alt: { al: 'Dy drejtëza: njëra e dhënë, tjetra y = kx + n me rrëshqitës.', en: 'Two lines: one given, the other y = kx + n on sliders.', de: 'Zwei Geraden: eine gegeben, die andere y = kx + n mit Schiebereglern.' },
+  },
       al: {
         question: 'Cila drejtëz kalon nëpër (1, 2) dhe është pingule me y = 2x + 3?', options: ['y = 2x', 'y = −x/2 + 5/2', 'y = −x/2 + 2', 'y = −2x + 4'],
         explanation: 'k = −1/2; 2 = −1/2 + n → n = 5/2.', hint: 'k₁ · k₂ = −1, pastaj vendosni pikën.',
@@ -129,6 +140,16 @@ export default {
     {
       id: 9, type: 'truefalse', difficulty: 'hard', correct: false,
       verify: ['2 * (-2) == -1', false],
+      explainVisual: {
+    type: 'functionPlot', equal: true, view: { xMin: -5, xMax: 5, yMin: -5, yMax: 5 },
+    functions: [{ expr: '2*x + (1)', color: 'muted', label: 'y = 2x + 1' }, { expr: 'k*x + n', color: 'secondary', label: 'y = {k}x {+n}' }],
+    sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: -2 }, { name: 'n', min: -6, max: 6, step: 0.5, value: 1 }],
+    readouts: [{ cases: [
+      { when: 'abs(2*k + 1) < 0.001', text: { al: 'k₁ · k₂ = 2 · {k} = −1: drejtëzat janë pingule.', en: 'k₁ · k₂ = 2 · {k} = −1: the lines are perpendicular.', de: 'k₁ · k₂ = 2 · {k} = −1: Die Geraden sind orthogonal.' } },
+      { text: { al: 'k₁ · k₂ = {2*k} ≠ −1: jo pingule.', en: 'k₁ · k₂ = {2*k} ≠ −1: not perpendicular.', de: 'k₁ · k₂ = {2*k} ≠ −1: nicht orthogonal.' } },
+    ] }],
+    alt: { al: 'Dy drejtëza: njëra e dhënë, tjetra y = kx + n me rrëshqitës.', en: 'Two lines: one given, the other y = kx + n on sliders.', de: 'Zwei Geraden: eine gegeben, die andere y = kx + n mit Schiebereglern.' },
+  },
       al: { question: 'Drejtëzat y = 2x + 1 dhe y = −2x + 1 janë pingule.', explanation: 'E gabuar: 2 · (−2) = −4 ≠ −1.', hint: 'k₁ · k₂ = −1?', whyWrong: 'Pingulja me k = 2 ka k = −1/2.' },
       en: { question: 'The lines y = 2x + 1 and y = −2x + 1 are perpendicular.', explanation: 'False: 2 · (−2) = −4 ≠ −1.', hint: 'k₁ · k₂ = −1?', whyWrong: 'The perpendicular to k = 2 has k = −1/2.' },
       de: { question: 'Die Geraden y = 2x + 1 und y = −2x + 1 sind orthogonal.', explanation: 'Falsch: 2 · (−2) = −4 ≠ −1.', hint: 'k₁ · k₂ = −1?', whyWrong: 'Die Senkrechte zu k = 2 hat k = −1/2.' },

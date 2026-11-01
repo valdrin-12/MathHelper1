@@ -16,6 +16,14 @@ export default {
     {
       id: 1, type: 'choice', difficulty: 'easy', correct: 1,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -2, xMax: 8, yMin: -8, yMax: 8 },
+    functions: [{ expr: 'k*x + n', label: 'y = {k}x {+n}' }],
+    points: [{ at: ['-n/k', 0], label: '({-n/k}, 0)', color: 'secondary' }],
+    sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: 2 }, { name: 'n', min: -8, max: 8, step: 1, value: -6 }],
+    readouts: [{ text: { al: 'Prerja me boshtin x: y = 0 → x = −n/k = {-n/k}', en: 'x-intercept: y = 0 → x = −n/k = {-n/k}', de: 'Nullstelle: y = 0 → x = −n/k = {-n/k}' } }],
+    alt: { al: 'Drejtëza y = kx + n dhe pika ku pret boshtin x.', en: 'The line y = kx + n and the point where it crosses the x-axis.', de: 'Die Gerade y = kx + n und ihr Schnittpunkt mit der x-Achse.' },
+  },
       al: {
         question: 'Ku e pret drejtëza y = 2x − 6 boshtin x?', options: ['(−6, 0)', '(3, 0)', '(0, 3)', '(6, 0)'],
         explanation: 'y = 0: 2x = 6, x = 3.', hint: 'Në boshtin x, y = 0.',
@@ -49,6 +57,17 @@ export default {
     {
       id: 4, type: 'choice', difficulty: 'easy', correct: 2,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', equal: false, view: { xMin: -5, xMax: 5, yMin: -8, yMax: 8 },
+    functions: [{ expr: '2*x + (1)', color: 'muted', label: 'y = 2x + 1' }, { expr: 'k*x + n', color: 'secondary', label: 'y = {k}x {+n}' }],
+    sliders: [{ name: 'k', min: -4, max: 4, step: 0.5, value: 2 }, { name: 'n', min: -6, max: 6, step: 0.5, value: -3 }],
+    readouts: [{ cases: [
+      { when: 'abs(k - (2)) < 0.001 and abs(n - (1)) < 0.001', text: { al: 'Të njëjtën drejtëz: pafund pika të përbashkëta.', en: 'The same line: infinitely many common points.', de: 'Dieselbe Gerade: unendlich viele gemeinsame Punkte.' } },
+      { when: 'abs(k - (2)) < 0.001', text: { al: 'k = 2 si te drejtëza e parë: paralele, asnjë pikë e përbashkët.', en: 'k = 2 as for the first line: parallel, no common point.', de: 'k = 2 wie bei der ersten Geraden: parallel, kein gemeinsamer Punkt.' } },
+      { text: { al: 'Koeficientë të ndryshëm: drejtëzat priten në një pikë.', en: 'Different gradients: the lines meet at one point.', de: 'Verschiedene Steigungen: Die Geraden schneiden sich in einem Punkt.' } },
+    ] }],
+    alt: { al: 'Dy drejtëza: njëra e dhënë, tjetra y = kx + n me rrëshqitës.', en: 'Two lines: one given, the other y = kx + n on sliders.', de: 'Zwei Geraden: eine gegeben, die andere y = kx + n mit Schiebereglern.' },
+  },
       al: {
         question: 'Sa pika të përbashkëta kanë y = 2x + 1 dhe y = 2x − 3?', options: ['Një', 'Dy', 'Asnjë', 'Pafund'],
         explanation: 'Pjerrësia e njëjtë, prerje të ndryshme: drejtëzat janë paralele.', hint: 'Krahasoni pjerrësitë.',
@@ -94,6 +113,16 @@ export default {
     {
       id: 7, type: 'truefalse', difficulty: 'medium', correct: false,
       verify: 'text',
+      explainVisual: {
+    type: 'functionPlot', view: { xMin: -4, xMax: 4, yMin: -8, yMax: 8 },
+    functions: [{ expr: '-2*x + 1', color: 'muted', label: 'y = −2x + 1' }, { expr: '(c - 4*x)/2', color: 'secondary', dashed: true, label: '4x + 2y = {c}' }],
+    sliders: [{ name: 'c', min: -6, max: 8, step: 1, value: 2 }],
+    readouts: [{ cases: [
+      { when: 'c == 2', text: { al: 'Për c = 2 të dyja janë e njëjta drejtëz: pafund zgjidhje.', en: 'For c = 2 both are the same line: infinitely many solutions.', de: 'Für c = 2 sind beide dieselbe Gerade: unendlich viele Lösungen.' } },
+      { text: { al: 'Paralele (të njëjtin koeficient −2): asnjë zgjidhje.', en: 'Parallel (same gradient −2): no solution.', de: 'Parallel (gleiche Steigung −2): keine Lösung.' } },
+    ] }],
+    alt: { al: 'Drejtëzat y = −2x + 1 dhe 4x + 2y = c me rrëshqitës për c.', en: 'The lines y = −2x + 1 and 4x + 2y = c with a slider for c.', de: 'Die Geraden y = −2x + 1 und 4x + 2y = c mit Schieberegler für c.' },
+  },
       al: { question: 'Sistemi y = −2x + 1 dhe 4x + 2y = 2 ka saktësisht një zgjidhje.', explanation: 'E gabuar: nga 4x + 2y = 2 del y = −2x + 1, e njëjta drejtëz; ka pafund zgjidhje.', hint: 'Shprehni y nga ekuacioni i dytë.', whyWrong: 'Dy ekuacionet përshkruajnë të njëjtën drejtëz.' },
       en: { question: 'The system y = −2x + 1 and 4x + 2y = 2 has exactly one solution.', explanation: 'False: 4x + 2y = 2 gives y = −2x + 1, the same line; there are infinitely many solutions.', hint: 'Make y the subject of the second equation.', whyWrong: 'Both equations describe the same line.' },
       de: { question: 'Das System y = −2x + 1 und 4x + 2y = 2 hat genau eine Lösung.', explanation: 'Falsch: Aus 4x + 2y = 2 folgt y = −2x + 1, dieselbe Gerade; es gibt unendlich viele Lösungen.', hint: 'Die zweite Gleichung nach y auflösen.', whyWrong: 'Beide Gleichungen beschreiben dieselbe Gerade.' },

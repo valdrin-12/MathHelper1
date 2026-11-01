@@ -3,7 +3,7 @@
 const circleLine = (n) => ({
   type: 'functionPlot', equal: true, view: { xMin: -9, xMax: 9, yMin: -9, yMax: 9 },
   curves: [{ x: '5*cos(t)', y: '5*sin(t)', label: 'x² + y² = 25' }],
-  functions: [{ expr: 'x + n', color: 'secondary', label: 'y = x + {n}' }],
+  functions: [{ expr: 'x + n', color: 'secondary', label: 'y = x {+n}' }],
   sliders: [{ name: 'n', min: -10, max: 10, step: 0.5, value: n }],
   readouts: [
     { text: { al: 'Largësia e qendrës nga drejtëza: d = |n|/√2 = {abs(n)/sqrt(2)}; rrezja r = 5.', en: 'Distance from the centre to the line: d = |n|/√2 = {abs(n)/sqrt(2)}; radius r = 5.', de: 'Abstand des Mittelpunkts von der Geraden: d = |n|/√2 = {abs(n)/sqrt(2)}; Radius r = 5.' } },
@@ -96,7 +96,7 @@ export default {
     segments: [{ from: [0, 0], to: ['5*cos(a deg)', '5*sin(a deg)'], color: 'muted', dashed: true }],
     points: [{ at: ['5*cos(a deg)', '5*sin(a deg)'], label: '({5*cos(a deg)}, {5*sin(a deg)})', color: 'secondary' }],
     sliders: [{ name: 'a', label: { al: 'këndi', en: 'angle', de: 'Winkel' }, min: 0, max: 360, step: 1, value: 53.13 }],
-    readouts: [{ text: { al: 'Tangjentja: {5*cos(a deg)}·x + {5*sin(a deg)}·y = 25 (pingule me rrezen).', en: 'Tangent: {5*cos(a deg)}·x + {5*sin(a deg)}·y = 25 (perpendicular to the radius).', de: 'Tangente: {5*cos(a deg)}·x + {5*sin(a deg)}·y = 25 (senkrecht zum Radius).' } }],
+    readouts: [{ text: { al: 'Tangjentja: {5*cos(a deg)}·x {+5*sin(a deg)}·y = 25 (pingule me rrezen).', en: 'Tangent: {5*cos(a deg)}·x {+5*sin(a deg)}·y = 25 (perpendicular to the radius).', de: 'Tangente: {5*cos(a deg)}·x {+5*sin(a deg)}·y = 25 (senkrecht zum Radius).' } }],
     alt: { al: 'Rrethi x² + y² = 25 me një pikë që lëviz në rreth dhe tangjenten në të.', en: 'The circle x² + y² = 25 with a point moving on it and the tangent there.', de: 'Der Kreis x² + y² = 25 mit einem Punkt, der sich auf ihm bewegt, und der Tangente dort.' },
   },
       al: {

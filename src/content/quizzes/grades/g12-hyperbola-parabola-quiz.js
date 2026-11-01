@@ -3,7 +3,7 @@
 const parabolaLine = (n) => ({
   type: 'functionPlot', equal: true, view: { xMin: -4, xMax: 10, yMin: -9, yMax: 9 },
   curves: [{ x: 't^2/8', y: 't', t: [-9, 9], label: 'y² = 8x' }],
-  functions: [{ expr: 'x + n', color: 'secondary', label: 'y = x + {n}' }],
+  functions: [{ expr: 'x + n', color: 'secondary', label: 'y = x {+n}' }],
   sliders: [{ name: 'n', min: -4, max: 6, step: 0.5, value: n }],
   readouts: [
     { text: { al: '(x + n)² = 8x → x² + (2n − 8)x + n² = 0, D = 64 − 32n = {64 - 32*n}', en: '(x + n)² = 8x → x² + (2n − 8)x + n² = 0, D = 64 − 32n = {64 - 32*n}', de: '(x + n)² = 8x → x² + (2n − 8)x + n² = 0, D = 64 − 32n = {64 - 32*n}' } },

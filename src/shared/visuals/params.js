@@ -22,10 +22,18 @@ export function evalNum(value, scope = {}) {
 /** Rounds to 2 decimals for display and writes the number the local way (3,5 / 3.5). */
 export const showNum = (v, lang) => (Number.isFinite(v) ? formatNumber(Math.round(v * 100) / 100, lang) : '–');
 
-/** Replaces every {expression} in a label with its value: '({p}, {q})' → '(6, 2)'. */
+/**
+ * Replaces every {expression} in a label with its value: '({p}, {q})' → '(6, 2)'.
+ * {+expression} writes the value as a signed term: 'y = 2x {+n}' → 'y = 2x + 3' or 'y = 2x − 3'.
+ */
 export function fillTemplate(text, scope, lang) {
   if (typeof text !== 'string' || !text.includes('{')) return text;
-  return text.replace(/\{([^{}]+)\}/g, (_, expr) => showNum(evalNum(expr, scope), lang));
+  return text.replace(/\{([^{}]+)\}/g, (_, expr) => {
+    if (!expr.startsWith('+')) return showNum(evalNum(expr, scope), lang);
+    const v = evalNum(expr.slice(1), scope);
+    if (!Number.isFinite(v)) return '';
+    return v < 0 ? `− ${showNum(-v, lang)}` : `+ ${showNum(v, lang)}`;
+  });
 }
 
 /** The first case whose condition holds ({ when: 'abs(n)/sqrt(2) < 5', text }), or the plain text. */
