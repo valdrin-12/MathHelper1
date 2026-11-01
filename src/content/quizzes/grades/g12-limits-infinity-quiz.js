@@ -1,0 +1,147 @@
+// Grade 12 · Themes 3–4 quiz: Limits at infinity and limits of sequences (format: see g6-natural-numbers-quiz.js)
+export default {
+  id: 'g12-limits-infinity-quiz',
+  grade: 12,
+  theme: 'g12-limits-infinity',
+  order: 3,
+  difficulty: 'advanced',
+  icon: '∞',
+  color: '#8338EC',
+  i18n: {
+    al: { title: 'Limitet kur x → ±∞', category: 'Klasa 12 · Tema 3–4', duration: '12 min' },
+    en: { title: 'Limits at infinity', category: 'Grade 12 · Themes 3–4', duration: '12 min' },
+    de: { title: 'Grenzwerte im Unendlichen', category: 'Klasse 12 · Themen 3–4', duration: '12 min' },
+  },
+  questions: [
+    {
+      id: 1, type: 'choice', difficulty: 'easy', correct: 2,
+      verify: ['(3*1e6^2 - 1)/(1e6^2 + 5)', 3, 1e-6],
+      al: {
+        question: 'Sa është lim (3x² − 1)/(x² + 5) kur x → ∞?', options: ['0', '∞', '3', '−1/5'],
+        explanation: 'Gradat e barabarta: 3/1 = 3.', hint: 'Krahasoni koeficientët e x².',
+        whyWrong: ['Limiti 0 del kur grada e numëruesit është më e vogël.', 'Gradat janë të barabarta, jo më e madhe sipër.', null, 'Kjo është vlera te x = 0, jo kur x → ∞.'],
+      },
+      en: {
+        question: 'What is lim (3x² − 1)/(x² + 5) as x → ∞?', options: ['0', '∞', '3', '−1/5'],
+        explanation: 'Equal degrees: 3/1 = 3.', hint: 'Compare the coefficients of x².',
+        whyWrong: ['A limit of 0 needs a lower degree on top.', 'The degrees are equal, not higher on top.', null, 'That is the value at x = 0, not as x → ∞.'],
+      },
+      de: {
+        question: 'Wie groß ist lim (3x² − 1)/(x² + 5) für x → ∞?', options: ['0', '∞', '3', '−1/5'],
+        explanation: 'Gleiche Grade: 3/1 = 3.', hint: 'Die Koeffizienten von x² vergleichen.',
+        whyWrong: ['Grenzwert 0 gibt es nur bei kleinerem Zählergrad.', 'Die Grade sind gleich, nicht oben größer.', null, 'Das ist der Wert bei x = 0, nicht für x → ∞.'],
+      },
+    },
+    {
+      id: 2, type: 'input', difficulty: 'easy', answer: { value: 2 },
+      verify: ['2 / 1', 2],
+      al: { question: 'Asimptota horizontale e y = (2x + 1)/(x − 4) është y = ?', explanation: 'Gradat e barabarta: 2/1 = 2 → y = 2.', hint: 'Limiti kur x → ±∞.', commonMistakes: [{ value: 4, why: 'x = 4 është asimptota vertikale.' }, { value: -0.25, why: 'Kjo është vlera te x = 0.' }] },
+      en: { question: 'The horizontal asymptote of y = (2x + 1)/(x − 4) is y = ?', explanation: 'Equal degrees: 2/1 = 2 → y = 2.', hint: 'The limit as x → ±∞.', commonMistakes: [{ value: 4, why: 'x = 4 is the vertical asymptote.' }, { value: -0.25, why: 'That is the value at x = 0.' }] },
+      de: { question: 'Die waagerechte Asymptote von y = (2x + 1)/(x − 4) ist y = ?', explanation: 'Gleiche Grade: 2/1 = 2 → y = 2.', hint: 'Grenzwert für x → ±∞.', commonMistakes: [{ value: 4, why: 'x = 4 ist die senkrechte Asymptote.' }, { value: -0.25, why: 'Das ist der Wert bei x = 0.' }] },
+    },
+    {
+      id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
+      verify: 'text',
+      al: { question: 'lim 1/n = 0 kur n → ∞.', explanation: 'E vërtetë: 1/10, 1/100, 1/1 000, … afrohen te 0.', hint: 'Çfarë ndodh me 1/n për n të mëdha?', whyWrong: 'Emëruesi rritet pa fund.' },
+      en: { question: 'lim 1/n = 0 as n → ∞.', explanation: 'True: 1/10, 1/100, 1/1 000, … approach 0.', hint: 'What happens to 1/n for large n?', whyWrong: 'The denominator grows without end.' },
+      de: { question: 'lim 1/n = 0 für n → ∞.', explanation: 'Richtig: 1/10, 1/100, 1/1 000, … nähern sich 0.', hint: 'Was passiert mit 1/n für große n?', whyWrong: 'Der Nenner wächst über alle Grenzen.' },
+    },
+    {
+      id: 4, type: 'choice', difficulty: 'medium', correct: 0,
+      verify: ['(2*1e6 + 1)/(1e12 - 4)', 0, 1e-5],
+      al: {
+        question: 'Sa është lim (2x + 1)/(x² − 4) kur x → ∞?', options: ['0', '2', '∞', '1/2'],
+        explanation: 'Grada e numëruesit 1 < 2: limiti 0.', hint: 'Krahasoni gradat.',
+        whyWrong: [null, 'U morën vetëm koeficientët 2 dhe 1, pa parë gradat.', 'Emëruesi rritet më shpejt.', 'Gradat nuk janë të barabarta.'],
+      },
+      en: {
+        question: 'What is lim (2x + 1)/(x² − 4) as x → ∞?', options: ['0', '2', '∞', '1/2'],
+        explanation: 'Degree of the numerator 1 < 2: limit 0.', hint: 'Compare the degrees.',
+        whyWrong: [null, 'Only the coefficients 2 and 1 were used, ignoring the degrees.', 'The denominator grows faster.', 'The degrees are not equal.'],
+      },
+      de: {
+        question: 'Wie groß ist lim (2x + 1)/(x² − 4) für x → ∞?', options: ['0', '2', '∞', '1/2'],
+        explanation: 'Zählergrad 1 < 2: Grenzwert 0.', hint: 'Die Grade vergleichen.',
+        whyWrong: [null, 'Es wurden nur die Koeffizienten 2 und 1 genommen, ohne die Grade.', 'Der Nenner wächst schneller.', 'Die Grade sind nicht gleich.'],
+      },
+    },
+    {
+      id: 5, type: 'input', difficulty: 'medium', answer: { value: 2.5 },
+      verify: ['(5*1e6^3 - 1e6)/(2*1e6^3 + 7)', 2.5, 1e-6],
+      al: { question: 'Sa është lim (5x³ − x)/(2x³ + 7) kur x → ∞? Shkruajeni si dhjetore.', explanation: 'Gradat të barabarta: 5/2 = 2,5.', hint: 'Raporti i koeficientëve kryesorë.', commonMistakes: [{ value: 0, why: 'Gradat janë të barabarta, jo më e vogël sipër.' }, { value: -0.14, why: 'Kjo është vlera te x = 0.' }] },
+      en: { question: 'What is lim (5x³ − x)/(2x³ + 7) as x → ∞? Give it as a decimal.', explanation: 'Equal degrees: 5/2 = 2.5.', hint: 'Ratio of the leading coefficients.', commonMistakes: [{ value: 0, why: 'The degrees are equal, not lower on top.' }, { value: -0.14, why: 'That is the value at x = 0.' }] },
+      de: { question: 'Wie groß ist lim (5x³ − x)/(2x³ + 7) für x → ∞? Als Dezimalzahl.', explanation: 'Gleiche Grade: 5/2 = 2,5.', hint: 'Quotient der Leitkoeffizienten.', commonMistakes: [{ value: 0, why: 'Die Grade sind gleich, nicht oben kleiner.' }, { value: -0.14, why: 'Das ist der Wert bei x = 0.' }] },
+    },
+    {
+      id: 6, type: 'choice', difficulty: 'medium', correct: 1,
+      verify: 'text',
+      al: {
+        question: 'Te cili numër afrohet (1 + 1/n)ⁿ kur n → ∞?', options: ['1', 'e ≈ 2,718', '∞', '2'],
+        explanation: 'lim (1 + 1/n)ⁿ = e ≈ 2,718.', hint: 'Provoni n = 10, 100, 10 000.',
+        whyWrong: ['1^∞ është formë e pacaktuar; vargu rritet mbi 2.', null, 'Vargu është i kufizuar (nën 3).', 'Kjo është vetëm kufiza e parë, n = 1.'],
+      },
+      en: {
+        question: 'Which number does (1 + 1/n)ⁿ approach as n → ∞?', options: ['1', 'e ≈ 2.718', '∞', '2'],
+        explanation: 'lim (1 + 1/n)ⁿ = e ≈ 2.718.', hint: 'Try n = 10, 100, 10 000.',
+        whyWrong: ['1^∞ is indeterminate; the sequence rises above 2.', null, 'The sequence is bounded (below 3).', 'That is only the first term, n = 1.'],
+      },
+      de: {
+        question: 'Welcher Zahl nähert sich (1 + 1/n)ⁿ für n → ∞?', options: ['1', 'e ≈ 2,718', '∞', '2'],
+        explanation: 'lim (1 + 1/n)ⁿ = e ≈ 2,718.', hint: 'n = 10, 100, 10 000 ausprobieren.',
+        whyWrong: ['1^∞ ist unbestimmt; die Folge steigt über 2.', null, 'Die Folge ist beschränkt (unter 3).', 'Das ist nur das erste Glied, n = 1.'],
+      },
+    },
+    {
+      id: 7, type: 'choice', difficulty: 'medium', correct: 3,
+      verify: ['0.5^100', 0, 1e-9],
+      al: {
+        question: 'Sa është lim (1/2)ⁿ kur n → ∞?', options: ['1/2', '1', '∞', '0'],
+        explanation: '|q| = 1/2 < 1, pra qⁿ → 0.', hint: '1/2, 1/4, 1/8, …',
+        whyWrong: ['Kjo është vetëm kufiza e parë.', 'Kufizat zvogëlohen, nuk afrohen te 1.', 'Kufizat zvogëlohen, nuk rriten.', null],
+      },
+      en: {
+        question: 'What is lim (1/2)ⁿ as n → ∞?', options: ['1/2', '1', '∞', '0'],
+        explanation: '|q| = 1/2 < 1, so qⁿ → 0.', hint: '1/2, 1/4, 1/8, …',
+        whyWrong: ['That is only the first term.', 'The terms get smaller; they do not approach 1.', 'The terms get smaller, not bigger.', null],
+      },
+      de: {
+        question: 'Wie groß ist lim (1/2)ⁿ für n → ∞?', options: ['1/2', '1', '∞', '0'],
+        explanation: '|q| = 1/2 < 1, also qⁿ → 0.', hint: '1/2, 1/4, 1/8, …',
+        whyWrong: ['Das ist nur das erste Glied.', 'Die Glieder werden kleiner, sie nähern sich nicht 1.', 'Die Glieder werden kleiner, nicht größer.', null],
+      },
+    },
+    {
+      id: 8, type: 'input', difficulty: 'hard', answer: { value: 7.39, tolerance: 0.01 },
+      verify: ['e^2', 7.39, 0.01],
+      al: { question: 'Sa është lim (1 + 2/n)ⁿ kur n → ∞? (2 dhjetore)', explanation: 'lim (1 + k/n)ⁿ = eᵏ → e² ≈ 7,39.', hint: 'k = 2.', commonMistakes: [{ value: 2.72, why: 'Ky është e, për k = 1.' }, { value: 1, why: '1^∞ nuk është 1.' }] },
+      en: { question: 'What is lim (1 + 2/n)ⁿ as n → ∞? (2 d.p.)', explanation: 'lim (1 + k/n)ⁿ = eᵏ → e² ≈ 7.39.', hint: 'k = 2.', commonMistakes: [{ value: 2.72, why: 'That is e, for k = 1.' }, { value: 1, why: '1^∞ is not 1.' }] },
+      de: { question: 'Wie groß ist lim (1 + 2/n)ⁿ für n → ∞? (2 Dezimalstellen)', explanation: 'lim (1 + k/n)ⁿ = eᵏ → e² ≈ 7,39.', hint: 'k = 2.', commonMistakes: [{ value: 2.72, why: 'Das ist e, für k = 1.' }, { value: 1, why: '1^∞ ist nicht 1.' }] },
+    },
+    {
+      id: 9, type: 'truefalse', difficulty: 'hard', correct: false,
+      verify: 'text',
+      al: { question: 'Forma ∞/∞ jep gjithmonë 1, p.sh. lim (2n + 3)/(n + 1) = 1.', explanation: 'E gabuar: ∞/∞ është e pacaktuar; këtu limiti është 2/1 = 2.', hint: 'Pjesëtoni me n.', whyWrong: '(2 + 3/n)/(1 + 1/n) → 2.' },
+      en: { question: 'The form ∞/∞ always gives 1, e.g. lim (2n + 3)/(n + 1) = 1.', explanation: 'False: ∞/∞ is indeterminate; here the limit is 2/1 = 2.', hint: 'Divide by n.', whyWrong: '(2 + 3/n)/(1 + 1/n) → 2.' },
+      de: { question: 'Die Form ∞/∞ ergibt immer 1, z. B. lim (2n + 3)/(n + 1) = 1.', explanation: 'Falsch: ∞/∞ ist unbestimmt; hier ist der Grenzwert 2/1 = 2.', hint: 'Durch n teilen.', whyWrong: '(2 + 3/n)/(1 + 1/n) → 2.' },
+    },
+    {
+      id: 10, type: 'choice', difficulty: 'hard', correct: 0,
+      verify: 'text',
+      al: {
+        question: 'Cila është asimptota horizontale e y = (x² − 1)/(2x² + x)?', options: ['y = 1/2', 'y = 1', 'y = 0', 'y = −1'],
+        explanation: 'Gradat të barabarta (2): raporti 1/2.', hint: 'Koeficientët e x².',
+        whyWrong: [null, 'U harrua koeficienti 2 në emërues.', 'Kjo do të vlente për gradë më të vogël sipër.', 'U mor termi konstant −1.'],
+      },
+      en: {
+        question: 'What is the horizontal asymptote of y = (x² − 1)/(2x² + x)?', options: ['y = 1/2', 'y = 1', 'y = 0', 'y = −1'],
+        explanation: 'Equal degrees (2): ratio 1/2.', hint: 'The coefficients of x².',
+        whyWrong: [null, 'The coefficient 2 in the denominator was forgotten.', 'That would be for a lower degree on top.', 'The constant term −1 was taken.'],
+      },
+      de: {
+        question: 'Welche waagerechte Asymptote hat y = (x² − 1)/(2x² + x)?', options: ['y = 1/2', 'y = 1', 'y = 0', 'y = −1'],
+        explanation: 'Gleiche Grade (2): Quotient 1/2.', hint: 'Die Koeffizienten von x².',
+        whyWrong: [null, 'Der Koeffizient 2 im Nenner wurde vergessen.', 'Das gälte bei kleinerem Zählergrad.', 'Es wurde das Absolutglied −1 genommen.'],
+      },
+    },
+  ],
+};
