@@ -51,12 +51,12 @@ export default {
       verify: 'text',
       al: {
         question: 'Cili është faktorizimi i plotë i 6x²y − 9xy²?', options: ['3(2x²y − 3xy²)', 'xy(6x − 9y)', '3x(2xy − 3y²)', '3xy(2x − 3y)'],
-        explanation: 'Faktori i përbashkët më i madh është 3xy: 3xy(2x − 3y).', hint: 'Merrni SHMV-në e koeficientëve dhe fuqitë më të vogla.',
+        explanation: 'Faktori i përbashkët më i madh është 3xy: 3xy(2x − 3y).', hint: 'Merrni PMP-në e koeficientëve dhe fuqitë më të vogla.',
         whyWrong: ['E saktë, por mund të nxirret edhe xy.', 'E saktë, por mund të nxirret edhe 3.', 'E saktë, por mund të nxirret edhe y.', null],
       },
       en: {
         question: 'What is the full factorisation of 6x²y − 9xy²?', options: ['3(2x²y − 3xy²)', 'xy(6x − 9y)', '3x(2xy − 3y²)', '3xy(2x − 3y)'],
-        explanation: 'The highest common factor is 3xy: 3xy(2x − 3y).', hint: 'Take the HCF of the coefficients and the lowest powers.',
+        explanation: 'The highest common factor is 3xy: 3xy(2x − 3y).', hint: 'Take the GCD of the coefficients and the lowest powers.',
         whyWrong: ['Correct, but xy can still come out.', 'Correct, but 3 can still come out.', 'Correct, but y can still come out.', null],
       },
       de: {

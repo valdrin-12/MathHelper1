@@ -1,0 +1,147 @@
+// Grade 11 · Theme 6 quiz: Graphs 2 (format: see g6-natural-numbers-quiz.js)
+export default {
+  id: 'g11-graphs-2-quiz',
+  grade: 11,
+  theme: 'g11-graphs-2',
+  order: 6,
+  difficulty: 'advanced',
+  icon: '〰️',
+  color: '#3A86FF',
+  i18n: {
+    al: { title: 'Grafikët 2', category: 'Klasa 11 · Tema 6', duration: '12 min' },
+    en: { title: 'Graphs 2', category: 'Grade 11 · Theme 6', duration: '12 min' },
+    de: { title: 'Graphen 2', category: 'Klasse 11 · Thema 6', duration: '12 min' },
+  },
+  questions: [
+    {
+      id: 1, type: 'choice', difficulty: 'easy', correct: 0,
+      verify: ['sqrt(25)', 5],
+      al: {
+        question: 'Cila është qendra dhe rrezja e rrethit x² + y² = 25?', options: ['(0, 0); 5', '(0, 0); 25', '(5, 5); 5', '(0, 0); 12,5'],
+        explanation: 'Qendra në origjinë, r = √25 = 5.', hint: 'Ana e djathtë është r².',
+        whyWrong: [null, '25 është r², jo r.', 'Qendra është në origjinë, sepse nuk ka (x − a) ose (y − b).', '25 u nda me 2 në vend që të nxirrej rrënja.'],
+      },
+      en: {
+        question: 'What are the centre and radius of the circle x² + y² = 25?', options: ['(0, 0); 5', '(0, 0); 25', '(5, 5); 5', '(0, 0); 12.5'],
+        explanation: 'Centre at the origin, r = √25 = 5.', hint: 'The right-hand side is r².',
+        whyWrong: [null, '25 is r², not r.', 'The centre is the origin, since there is no (x − a) or (y − b).', '25 was halved instead of square-rooted.'],
+      },
+      de: {
+        question: 'Welchen Mittelpunkt und Radius hat der Kreis x² + y² = 25?', options: ['(0 | 0); 5', '(0 | 0); 25', '(5 | 5); 5', '(0 | 0); 12,5'],
+        explanation: 'Mittelpunkt im Ursprung, r = √25 = 5.', hint: 'Rechts steht r².',
+        whyWrong: [null, '25 ist r², nicht r.', 'Der Mittelpunkt ist der Ursprung, da es kein (x − a) oder (y − b) gibt.', '25 wurde halbiert statt die Wurzel zu ziehen.'],
+      },
+    },
+    {
+      id: 2, type: 'input', difficulty: 'easy', answer: { value: 2662 },
+      verify: ['2000 * 1.1^3', 2662],
+      al: { question: 'Një popullsi 2 000 rritet 10% në vit. Sa është pas 3 vjetësh?', explanation: '2 000 · 1,1³ = 2 662.', hint: 'Shumëzuesi 1,1 tri herë.', commonMistakes: [{ value: 2600, why: 'U shtua 200 çdo vit; përqindja llogaritet mbi vlerën e re.' }, { value: 2200, why: 'Kjo është vetëm pas një viti.' }] },
+      en: { question: 'A population of 2 000 grows by 10% a year. What is it after 3 years?', explanation: '2 000 · 1.1³ = 2 662.', hint: 'The multiplier 1.1 three times.', commonMistakes: [{ value: 2600, why: '200 was added each year; the percentage is of the new value.' }, { value: 2200, why: 'That is after one year only.' }] },
+      de: { question: 'Eine Population von 2 000 wächst jährlich um 10 %. Wie groß ist sie nach 3 Jahren?', explanation: '2 000 · 1,1³ = 2 662.', hint: 'Dreimal der Faktor 1,1.', commonMistakes: [{ value: 2600, why: 'Es wurden jedes Jahr 200 addiert; der Prozentsatz bezieht sich auf den neuen Wert.' }, { value: 2200, why: 'Das ist nur nach einem Jahr.' }] },
+    },
+    {
+      id: 3, type: 'truefalse', difficulty: 'easy', correct: true,
+      verify: ['3^2 + 4^2 == 25', true],
+      al: { question: 'Pika (3, 4) ndodhet në rrethin x² + y² = 25.', explanation: 'E vërtetë: 9 + 16 = 25.', hint: 'Vendosni x = 3, y = 4.', whyWrong: '3² + 4² = 25.' },
+      en: { question: 'The point (3, 4) lies on the circle x² + y² = 25.', explanation: 'True: 9 + 16 = 25.', hint: 'Put x = 3, y = 4.', whyWrong: '3² + 4² = 25.' },
+      de: { question: 'Der Punkt (3 | 4) liegt auf dem Kreis x² + y² = 25.', explanation: 'Richtig: 9 + 16 = 25.', hint: 'x = 3, y = 4 einsetzen.', whyWrong: '3² + 4² = 25.' },
+    },
+    {
+      id: 4, type: 'choice', difficulty: 'medium', correct: 3,
+      verify: ['12 / (-4)', -3],
+      al: {
+        question: 'Sa është y = 12/x për x = −4?', options: ['3', '−48', '16', '−3'],
+        explanation: '12 : (−4) = −3.', hint: 'Pjesëtim me numër negativ.',
+        whyWrong: ['U harrua shenja minus.', 'U shumëzua në vend që të pjesëtohej.', 'U llogarit 12 − (−4).', null],
+      },
+      en: {
+        question: 'What is y = 12/x at x = −4?', options: ['3', '−48', '16', '−3'],
+        explanation: '12 ÷ (−4) = −3.', hint: 'Dividing by a negative number.',
+        whyWrong: ['The minus sign was forgotten.', 'It was multiplied instead of divided.', '12 − (−4) was worked out.', null],
+      },
+      de: {
+        question: 'Wie groß ist y = 12/x für x = −4?', options: ['3', '−48', '16', '−3'],
+        explanation: '12 : (−4) = −3.', hint: 'Division durch eine negative Zahl.',
+        whyWrong: ['Das Minuszeichen fehlt.', 'Es wurde multipliziert statt dividiert.', 'Es wurde 12 − (−4) gerechnet.', null],
+      },
+    },
+    {
+      id: 5, type: 'input', difficulty: 'medium', answer: { value: 4 },
+      verify: ['(9 - 1) / (3 - 1)', 4],
+      al: { question: 'Sa është shpejtësia mesatare e ndryshimit të y = x² nga x = 1 te x = 3?', explanation: '(9 − 1)/(3 − 1) = 8/2 = 4.', hint: 'Pjerrësia e kordës: Δy/Δx.', commonMistakes: [{ value: 8, why: 'Ky është vetëm Δy.' }, { value: 2, why: 'Ky është vetëm Δx.' }] },
+      en: { question: 'What is the average rate of change of y = x² from x = 1 to x = 3?', explanation: '(9 − 1)/(3 − 1) = 8/2 = 4.', hint: 'Gradient of the chord: Δy/Δx.', commonMistakes: [{ value: 8, why: 'That is only Δy.' }, { value: 2, why: 'That is only Δx.' }] },
+      de: { question: 'Wie groß ist die mittlere Änderungsrate von y = x² von x = 1 bis x = 3?', explanation: '(9 − 1)/(3 − 1) = 8/2 = 4.', hint: 'Steigung der Sekante: Δy/Δx.', commonMistakes: [{ value: 8, why: 'Das ist nur Δy.' }, { value: 2, why: 'Das ist nur Δx.' }] },
+    },
+    {
+      id: 6, type: 'choice', difficulty: 'medium', correct: 1,
+      verify: ['180 - 30', 150],
+      al: {
+        question: 'Cilat janë zgjidhjet e sin x = 0,5 për 0° ≤ x ≤ 360°?', options: ['vetëm 30°', '30° dhe 150°', '30° dhe 330°', '60° dhe 120°'],
+        explanation: 'x = 30° dhe nga simetria 180° − 30° = 150°.', hint: 'sin(180° − x) = sin x.',
+        whyWrong: ['Në këtë interval ka dy zgjidhje.', null, 'sin 330° = −0,5; kjo është simetria e kosinusit.', 'Këto janë zgjidhjet e cos x = 0,5 dhe sin x ≈ 0,87.'],
+      },
+      en: {
+        question: 'What are the solutions of sin x = 0.5 for 0° ≤ x ≤ 360°?', options: ['30° only', '30° and 150°', '30° and 330°', '60° and 120°'],
+        explanation: 'x = 30° and by symmetry 180° − 30° = 150°.', hint: 'sin(180° − x) = sin x.',
+        whyWrong: ['There are two solutions in this interval.', null, 'sin 330° = −0.5; that is the cosine symmetry.', 'Those belong to cos x = 0.5 and sin x ≈ 0.87.'],
+      },
+      de: {
+        question: 'Welche Lösungen hat sin x = 0,5 für 0° ≤ x ≤ 360°?', options: ['nur 30°', '30° und 150°', '30° und 330°', '60° und 120°'],
+        explanation: 'x = 30° und wegen der Symmetrie 180° − 30° = 150°.', hint: 'sin(180° − x) = sin x.',
+        whyWrong: ['In diesem Intervall gibt es zwei Lösungen.', null, 'sin 330° = −0,5; das ist die Symmetrie des Kosinus.', 'Das gehört zu cos x = 0,5 bzw. sin x ≈ 0,87.'],
+      },
+    },
+    {
+      id: 7, type: 'choice', difficulty: 'medium', correct: 2,
+      verify: ['5000 * 0.8^2', 3200],
+      al: {
+        question: 'Një makinë 5 000 € humb 20% të vlerës në vit. Sa vlen pas 2 vjetësh?', options: ['3 000 €', '4 000 €', '3 200 €', '200 €'],
+        explanation: '5 000 · 0,8² = 3 200 €.', hint: 'Shumëzuesi 0,8 dy herë.',
+        whyWrong: ['U zbrit 40% njëherësh; përqindja e vitit të dytë llogaritet mbi 4 000 €.', 'Kjo është vetëm pas një viti.', null, 'U shumëzua me 0,2² në vend të 0,8².'],
+      },
+      en: {
+        question: 'A €5 000 car loses 20% of its value each year. What is it worth after 2 years?', options: ['€3 000', '€4 000', '€3 200', '€200'],
+        explanation: '5 000 · 0.8² = €3 200.', hint: 'The multiplier 0.8 twice.',
+        whyWrong: ['40% was taken off at once; the second year\'s 20% is of €4 000.', 'That is after one year only.', null, 'It was multiplied by 0.2² instead of 0.8².'],
+      },
+      de: {
+        question: 'Ein Auto für 5 000 € verliert jährlich 20 % an Wert. Wie viel ist es nach 2 Jahren wert?', options: ['3 000 €', '4 000 €', '3 200 €', '200 €'],
+        explanation: '5 000 · 0,8² = 3 200 €.', hint: 'Zweimal der Faktor 0,8.',
+        whyWrong: ['Es wurden 40 % auf einmal abgezogen; die 20 % im zweiten Jahr beziehen sich auf 4 000 €.', 'Das ist nur nach einem Jahr.', null, 'Es wurde mit 0,2² statt 0,8² multipliziert.'],
+      },
+    },
+    {
+      id: 8, type: 'input', difficulty: 'hard', answer: { value: 100 }, unit: 'm',
+      verify: ['0.5*4*10 + 6*10 + 0.5*4*10', 100],
+      al: { question: 'Shpejtësia rritet nga 0 në 10 m/s për 4 s, mbetet 10 m/s deri në 10 s dhe bie në 0 te 14 s. Sa metra kalohen?', explanation: '20 + 60 + 20 = 100 m.', hint: 'Syprina nën grafik: trekëndësh + drejtkëndësh + trekëndësh.', commonMistakes: [{ value: 140, why: 'U mor drejtkëndëshi 14 · 10; në fillim dhe në fund shpejtësia ishte më e vogël.' }, { value: 60, why: 'U llogarit vetëm pjesa me shpejtësi konstante.' }] },
+      en: { question: 'The speed rises from 0 to 10 m/s in 4 s, stays at 10 m/s until 10 s and falls to 0 at 14 s. How many metres are covered?', explanation: '20 + 60 + 20 = 100 m.', hint: 'Area under the graph: triangle + rectangle + triangle.', commonMistakes: [{ value: 140, why: 'The rectangle 14 · 10 was used; at the start and end the speed was lower.' }, { value: 60, why: 'Only the constant-speed part was counted.' }] },
+      de: { question: 'Die Geschwindigkeit steigt in 4 s von 0 auf 10 m/s, bleibt bis 10 s bei 10 m/s und fällt bis 14 s auf 0. Wie viele Meter werden zurückgelegt?', explanation: '20 + 60 + 20 = 100 m.', hint: 'Fläche unter dem Graphen: Dreieck + Rechteck + Dreieck.', commonMistakes: [{ value: 140, why: 'Es wurde das Rechteck 14 · 10 genommen; am Anfang und Ende war die Geschwindigkeit kleiner.' }, { value: 60, why: 'Nur der Teil mit konstanter Geschwindigkeit wurde gezählt.' }] },
+    },
+    {
+      id: 9, type: 'truefalse', difficulty: 'hard', correct: false,
+      verify: 'text',
+      al: { question: 'Rrethi (x − 2)² + (y + 1)² = 9 ka qendrën (−2, 1).', explanation: 'E gabuar: qendra është (2, −1); shenjat ndryshojnë.', hint: '(x − a)² + (y − b)².', whyWrong: 'x − 2 → a = 2; y + 1 = y − (−1) → b = −1.' },
+      en: { question: 'The circle (x − 2)² + (y + 1)² = 9 has centre (−2, 1).', explanation: 'False: the centre is (2, −1); the signs change.', hint: '(x − a)² + (y − b)².', whyWrong: 'x − 2 → a = 2; y + 1 = y − (−1) → b = −1.' },
+      de: { question: 'Der Kreis (x − 2)² + (y + 1)² = 9 hat den Mittelpunkt (−2 | 1).', explanation: 'Falsch: Der Mittelpunkt ist (2 | −1); die Vorzeichen wechseln.', hint: '(x − a)² + (y − b)².', whyWrong: 'x − 2 → a = 2; y + 1 = y − (−1) → b = −1.' },
+    },
+    {
+      id: 10, type: 'choice', difficulty: 'hard', correct: 0,
+      verify: ['0.5*(0 + 1) + 0.5*(1 + 4)', 3],
+      al: {
+        question: 'Vlerësoni syprinën nën y = x² nga x = 0 te x = 2 me dy trapezë me gjerësi 1.', options: ['3', '2,5', '8/3', '5'],
+        explanation: '1/2 · (0 + 1) + 1/2 · (1 + 4) = 0,5 + 2,5 = 3.', hint: 'y(0) = 0, y(1) = 1, y(2) = 4.',
+        whyWrong: [null, 'U llogarit vetëm trapezi i dytë.', 'Kjo është syprina e saktë, jo vlerësimi me trapezë.', 'U përdorën drejtkëndësha me lartësitë 1 dhe 4.'],
+      },
+      en: {
+        question: 'Estimate the area under y = x² from x = 0 to x = 2 with two trapezia of width 1.', options: ['3', '2.5', '8/3', '5'],
+        explanation: '1/2 · (0 + 1) + 1/2 · (1 + 4) = 0.5 + 2.5 = 3.', hint: 'y(0) = 0, y(1) = 1, y(2) = 4.',
+        whyWrong: [null, 'Only the second trapezium was counted.', 'That is the exact area, not the trapezium estimate.', 'Rectangles with heights 1 and 4 were used.'],
+      },
+      de: {
+        question: 'Schätzen Sie die Fläche unter y = x² von x = 0 bis x = 2 mit zwei Trapezen der Breite 1.', options: ['3', '2,5', '8/3', '5'],
+        explanation: '1/2 · (0 + 1) + 1/2 · (1 + 4) = 0,5 + 2,5 = 3.', hint: 'y(0) = 0, y(1) = 1, y(2) = 4.',
+        whyWrong: [null, 'Nur das zweite Trapez wurde gezählt.', 'Das ist die exakte Fläche, nicht die Trapezschätzung.', 'Es wurden Rechtecke mit den Höhen 1 und 4 verwendet.'],
+      },
+    },
+  ],
+};

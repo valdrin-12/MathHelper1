@@ -124,7 +124,7 @@ export default {
           { mistake: '150 000 cm is written as 15 km.', fix: '1 km = 100 000 cm, so 150 000 cm = 1.5 km.' },
         ],
         practice: [
-          { problem: 'Simplify the ratio 18 : 24.', solution: '3 : 4', steps: ['HCF(18, 24) = 6.', '18 ÷ 6 = 3 and 24 ÷ 6 = 4 → 3 : 4.'] },
+          { problem: 'Simplify the ratio 18 : 24.', solution: '3 : 4', steps: ['GCD(18, 24) = 6.', '18 ÷ 6 = 3 and 24 ÷ 6 = 4 → 3 : 4.'] },
           { problem: 'The ratio boys : girls is 2 : 3. There are 12 boys. How many girls are there?', solution: '18', steps: ['One part: 12 ÷ 2 = 6.', 'Girls: 3 · 6 = 18.'] },
           { problem: 'A real distance is 2.4 km. How long is it on a map with scale 1 : 50 000?', solution: '4.8 cm', steps: ['2.4 km = 240 000 cm.', '240 000 ÷ 50 000 = 4.8 cm.'] },
         ],

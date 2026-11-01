@@ -13,8 +13,9 @@ import grade7 from './g7';
 import grade8 from './g8';
 import grade9 from './g9';
 import grade10 from './g10';
+import grade11 from './g11';
 
-const THEMES_BY_GRADE = { 6: grade6, 7: grade7, 8: grade8, 9: grade9, 10: grade10 };
+const THEMES_BY_GRADE = { 6: grade6, 7: grade7, 8: grade8, 9: grade9, 10: grade10, 11: grade11 };
 const LANGS = ['al', 'en', 'de'];
 
 // Grade 6–7: beginner, 8–10: intermediate, 11–12: advanced (used by the existing difficulty filter)

@@ -57,6 +57,16 @@ import g10MeasuresAccuracy from './g10-measures-accuracy-quiz';
 import g10EquationsInequalities from './g10-equations-inequalities-quiz';
 import g10CircleLoci from './g10-circle-loci-quiz';
 import g10RatioProportion from './g10-ratio-proportion-quiz';
+import g11FactorsPowersRoots from './g11-factors-powers-roots-quiz';
+import g11Graphs1 from './g11-graphs-1-quiz';
+import g11SolidGeometry from './g11-solid-geometry-quiz';
+import g11DataHandling from './g11-data-handling-quiz';
+import g11NumberOperations from './g11-number-operations-quiz';
+import g11Graphs2 from './g11-graphs-2-quiz';
+import g11PythagorasTrigVectors from './g11-pythagoras-trig-vectors-quiz';
+import g11CombinedProbability from './g11-combined-probability-quiz';
+import g11Sequences from './g11-sequences-quiz';
+import g11UnitsProportion from './g11-units-proportion-quiz';
 
 const ALL = [
   g6NaturalNumbers,
@@ -115,6 +125,16 @@ const ALL = [
   g10EquationsInequalities,
   g10CircleLoci,
   g10RatioProportion,
+  g11FactorsPowersRoots,
+  g11Graphs1,
+  g11SolidGeometry,
+  g11DataHandling,
+  g11NumberOperations,
+  g11Graphs2,
+  g11PythagorasTrigVectors,
+  g11CombinedProbability,
+  g11Sequences,
+  g11UnitsProportion,
 ];
 
 export default ALL.filter((set) => PUBLISHED_GRADES.includes(set.grade));

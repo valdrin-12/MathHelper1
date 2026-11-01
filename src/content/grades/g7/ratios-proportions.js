@@ -27,7 +27,7 @@ export default {
         theory: 'Raporti a : b krahason dy madhësi të të njëjtit lloj: sa herë është njëra më e madhe se tjetra, ose si ndahet një e tërë. Raporti 12 : 18 lexohet "12 me 18" dhe është i barabartë me herësin 12/18.\n\nRaporti thjeshtohet si thyesa: pjesëtojmë të dy anëtarët me të njëjtin numër. 12 : 18 = 2 : 3 (pjesëtuam me 6). Para se të shkruajmë raportin, madhësitë duhet të jenë në të njëjtën njësi: 50 cm : 2 m = 50 cm : 200 cm = 1 : 4.\n\nPër të ndarë një sasi në raportin 3 : 4, mbledhim pjesët (3 + 4 = 7), gjejmë sa vlen një pjesë dhe shumëzojmë.',
         keyPoints: ['a : b = a/b', 'Thjeshtimi: pjesëtoni të dy anëtarët me të njëjtin numër.', 'Ndarja në raport: shuma ÷ numri i pjesëve, pastaj × secilin anëtar.'],
         examples: [
-          { example: 'Thjeshtoni raportin 12 : 18.', solution: 'SHMV(12, 18) = 6: 12 : 18 = 2 : 3.' },
+          { example: 'Thjeshtoni raportin 12 : 18.', solution: 'PMP(12, 18) = 6: 12 : 18 = 2 : 3.' },
           { example: 'Ana dhe Besa ndajnë 35 € në raportin 3 : 4. Sa merr secila?', solution: '3 + 4 = 7 pjesë; 35 : 7 = 5 € për pjesë. Ana 3 · 5 = 15 €, Besa 4 · 5 = 20 €.' },
         ],
         commonMistakes: [
@@ -46,7 +46,7 @@ export default {
         theory: 'The ratio a : b compares two quantities of the same kind: how many times one is the other, or how a whole is shared. The ratio 12 : 18 is read "12 to 18" and equals the quotient 12/18.\n\nA ratio is simplified like a fraction: divide both terms by the same number. 12 : 18 = 2 : 3 (we divided by 6). Before writing a ratio, the quantities must be in the same unit: 50 cm : 2 m = 50 cm : 200 cm = 1 : 4.\n\nTo share an amount in the ratio 3 : 4, add the parts (3 + 4 = 7), find what one part is worth and multiply.',
         keyPoints: ['a : b = a/b', 'Simplifying: divide both terms by the same number.', 'Sharing in a ratio: total ÷ number of parts, then × each term.'],
         examples: [
-          { example: 'Simplify the ratio 12 : 18.', solution: 'HCF(12, 18) = 6: 12 : 18 = 2 : 3.' },
+          { example: 'Simplify the ratio 12 : 18.', solution: 'GCD(12, 18) = 6: 12 : 18 = 2 : 3.' },
           { example: 'Ana and Besa share €35 in the ratio 3 : 4. How much does each get?', solution: '3 + 4 = 7 parts; 35 ÷ 7 = €5 per part. Ana 3 · 5 = €15, Besa 4 · 5 = €20.' },
         ],
         commonMistakes: [
